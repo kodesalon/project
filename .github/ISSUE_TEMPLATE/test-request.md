@@ -1,7 +1,7 @@
 ---
 name: Test request
 about: Suggest testing
-title: ''
+title: "[TEST] - "
 labels: 'Status: Proposal, Type: Testing'
 assignees: ''
 
