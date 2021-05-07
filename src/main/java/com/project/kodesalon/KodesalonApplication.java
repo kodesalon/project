@@ -5,9 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class KodesalonApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(KodesalonApplication.class, args);
 	}
-
 }
