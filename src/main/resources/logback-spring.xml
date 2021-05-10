@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30 seconds">
     <property name="LOG_PATH" value="./logback/log/"/>
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -9,6 +10,11 @@
         <encoder>
             <pattern>%msg%n</pattern>
         </encoder>
+    </appender>
+
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <maxFlushTime>0</maxFlushTime>
+        <appender-ref ref="FILE"/>
     </appender>
 
     <root level="INFO">
