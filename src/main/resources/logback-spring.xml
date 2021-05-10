@@ -7,8 +7,7 @@
             <fileNamePattern>${LOG_PATH}backup/app-%d{yyyy-MM-dd}.log.zip</fileNamePattern>
             <maxHistory>2</maxHistory>
         </rollingPolicy>
-        <encoder>
-            <pattern>%msg%n</pattern>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
         </encoder>
     </appender>
 
@@ -18,6 +17,6 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="FILE" />
+        <appender-ref ref="ASYNC" />
     </root>
 </configuration>
