@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30 seconds">
-    <property name="LOG_PATH" value="./logback/log/"/>
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}app.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}backup/app-%d{yyyy-MM-dd}.log.zip</fileNamePattern>
-            <maxHistory>2</maxHistory>
-        </rollingPolicy>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-        </encoder>
-    </appender>
+    <springProfile name="local">
+        <property name="LOG_PATH" value="./logback/log/"/>
+        <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>${LOG_PATH}app.log</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                <fileNamePattern>${LOG_PATH}backup/app-%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+                <maxHistory>2</maxHistory>
+            </rollingPolicy>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            </encoder>
+        </appender>
 
-    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
-        <maxFlushTime>0</maxFlushTime>
-        <appender-ref ref="FILE"/>
-    </appender>
+        <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+            <maxFlushTime>0</maxFlushTime>
+            <appender-ref ref="FILE"/>
+        </appender>
 
-    <root level="INFO">
-        <appender-ref ref="ASYNC" />
-    </root>
+        <root level="INFO">
+            <appender-ref ref="ASYNC"/>
+        </root>
+    </springProfile>
 </configuration>
