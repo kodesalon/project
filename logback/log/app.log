@@ -32,3 +32,31 @@ HHH000477: Starting delayed evictData of schema as part of SessionFactory shut-d
 Invocation of destroy method failed on bean with name 'inMemoryDatabaseShutdownExecutor': org.h2.jdbc.JdbcSQLNonTransientConnectionException: Database is already closed (to disable automatic closing at VM shutdown, add ";DB_CLOSE_ON_EXIT=FALSE" to the db URL) [90121-200]
 HikariPool-1 - Shutdown initiated...
 HikariPool-1 - Shutdown completed.
+Starting KodesalonApplication using Java 11.0.10 on heesangui-MacBookPro.local with PID 21077 (/Users/heesang/dev/dev_spring/project/out/production/classes started by heesang in /Users/heesang/dev/dev_spring/project)
+No active profile set, falling back to default profiles: default
+Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+Finished Spring Data repository scanning in 7 ms. Found 0 JPA repository interfaces.
+Tomcat initialized with port(s): 8080 (http)
+Initializing ProtocolHandler ["http-nio-8080"]
+Starting service [Tomcat]
+Starting Servlet engine: [Apache Tomcat/9.0.45]
+Initializing Spring embedded WebApplicationContext
+Root WebApplicationContext: initialization completed in 1478 ms
+HikariPool-1 - Starting...
+HikariPool-1 - Start completed.
+H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:8bdf14fa-10a0-4a59-9d88-2c7a190e9a75'
+HHH000204: Processing PersistenceUnitInfo [name: default]
+HHH000412: Hibernate ORM core version 5.4.30.Final
+HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+HHH000400: Using dialect: org.hibernate.dialect.H2Dialect
+HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+Initialized JPA EntityManagerFactory for persistence unit 'default'
+LiveReload server is running on port 35729
+spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+Initializing ExecutorService 'applicationTaskExecutor'
+Cannot find template location: classpath:/templates/ (please add some templates or check your Thymeleaf configuration)
+Starting ProtocolHandler ["http-nio-8080"]
+Tomcat started on port(s): 8080 (http) with context path ''
+Started KodesalonApplication in 3.713 seconds (JVM running for 4.722)
