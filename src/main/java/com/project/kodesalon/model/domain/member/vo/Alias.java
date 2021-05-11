@@ -8,6 +8,10 @@ public class Alias {
     }
 
     public String value() {
+        return alias;
+    }
+
+    private String validateAlias(String alias) {
         return null;
     }
 }
