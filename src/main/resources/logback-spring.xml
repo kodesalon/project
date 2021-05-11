@@ -4,7 +4,7 @@
         <include resource="org/springframework/boot/logging/logback/base.xml"/>
     </springProfile>
 
-    <springProfile name="prod">
+    <springProfile name="dev">
         <property name="LOG_PATH" value="./logback/log/"/>
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>${LOG_PATH}app.log</file>
