@@ -19,7 +19,7 @@ class AliasTest {
     public static final String MINIMUM_LENGTH_ALIAS = "";
     public static final String BLANK_INCLUDE_ALIAS = "alias 1234";
     public static final String NUMBER_NOT_INCLUDED = "alias";
-    public static final String NOT_START_WITH_ACSII = "1234";
+    public static final String NOT_START_WITH_ALPHABET = "1234";
 
     private Alias alias;
 
@@ -54,7 +54,7 @@ class AliasTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {MINIMUM_LENGTH_ALIAS, BLANK_INCLUDE_ALIAS, NUMBER_NOT_INCLUDED, NOT_START_WITH_ACSII})
+    @ValueSource(strings = {MINIMUM_LENGTH_ALIAS, BLANK_INCLUDE_ALIAS, NUMBER_NOT_INCLUDED, NOT_START_WITH_ALPHABET})
     @DisplayName("alias에 타당한 문자열 포맷이 아니면 예외를 리턴합니다.")
     void invalidateFormatAlias_throw_exception(String invalidFormat)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
