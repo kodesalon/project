@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.IllegalFormatException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -32,6 +31,8 @@ class AliasTest {
     @Test
     @DisplayName("value 메서드를 호출하면 별명의 값을 리턴합니다.")
     void value() {
+        //given
+
         //when
         String value = alias.value();
 
@@ -59,15 +60,13 @@ class AliasTest {
             INCLUDE_BLANK, NOT_START_WITH_ALPHABET, INCLUDE_SPECIAL_SYMBOL})
     @DisplayName("alias에 타당한 문자열 포맷이 아니면 예외를 리턴합니다.")
     void invalidateFormatAlias_throw_exception(String invalidFormat)
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        //given
-        Method validateAliasMethod = alias.getClass().getDeclaredMethod("validateAlias", String.class);
-        validateAliasMethod.setAccessible(true);
+            throws NoSuchMethodException {
+        //givne
+
         //when
 
         //then
-        assertThatThrownBy(() -> validateAliasMethod.invoke(alias, invalidFormat)).isInstanceOf(IllegalFormatException.class)
+        assertThatThrownBy(() -> new Alias(invalidFormat)).isInstanceOf(RuntimeException.class)
                 .hasMessageContaining("잘못된 Alias 형식입니다.");
     }
 }
-
