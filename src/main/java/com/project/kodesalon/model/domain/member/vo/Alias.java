@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 public class Alias {
     public static final String ALIAS_PATTERN = "^[a-zA-Z]{1}[a-zA-Z0-9]{4,11}$";
+    public static final String INVALID_ALIAS_EXCEPTION_MESSAGE = "잘못된 Alias 형식입니다.";
 
     private final String alias;
 
@@ -21,6 +22,6 @@ public class Alias {
             return alias;
         }
 
-        throw new RuntimeException("잘못된 Alias 형식입니다.");
+        throw new RuntimeException(INVALID_ALIAS_EXCEPTION_MESSAGE);
     }
 }

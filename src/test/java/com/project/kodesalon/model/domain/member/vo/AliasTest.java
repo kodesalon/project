@@ -67,6 +67,6 @@ class AliasTest {
 
         //then
         assertThatThrownBy(() -> new Alias(invalidFormat)).isInstanceOf(RuntimeException.class)
-                .hasMessageContaining("잘못된 Alias 형식입니다.");
+                .hasMessageContaining(Alias.INVALID_ALIAS_EXCEPTION_MESSAGE);
     }
 }
