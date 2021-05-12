@@ -15,11 +15,12 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 
 class AliasTest {
-    public static final String ALIAS = "alias1234";
-    public static final String MINIMUM_LENGTH_ALIAS = "";
-    public static final String BLANK_INCLUDE_ALIAS = "alias 1234";
-    public static final String NUMBER_NOT_INCLUDED = "alias";
+    public static final String ALIAS = "alias";
+    public static final String UNDER_LENGTH = "aa";
+    public static final String OVER_LENGTH = "alias1234alias1234alias1234";
+    public static final String INCLUDE_BLANK = "alias 1234";
     public static final String NOT_START_WITH_ALPHABET = "1234";
+    public static final String INCLUDE_SPECIAL_SYMBOL = "a_______";
 
     private Alias alias;
 
@@ -54,7 +55,8 @@ class AliasTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {MINIMUM_LENGTH_ALIAS, BLANK_INCLUDE_ALIAS, NUMBER_NOT_INCLUDED, NOT_START_WITH_ALPHABET})
+    @ValueSource(strings = {UNDER_LENGTH, OVER_LENGTH,
+            INCLUDE_BLANK, NOT_START_WITH_ALPHABET, INCLUDE_SPECIAL_SYMBOL})
     @DisplayName("alias에 타당한 문자열 포맷이 아니면 예외를 리턴합니다.")
     void invalidateFormatAlias_throw_exception(String invalidFormat)
             throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
