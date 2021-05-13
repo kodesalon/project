@@ -16,7 +16,7 @@ class PhoneTest {
     private static final String PHONE_MIDDLE_NUMBER_UNDER_LENGTH = "010-1-3333";
     private static final String PHONE_MIDDLE_NUMBER_OVER_LENGTH = "010-11111-3333";
     private static final String PHONE_LAST_NUMBER_UNDER_LENGTH = "010-2222-7";
-    private static final String PHONE_LAST_NUMBER_OVER_LENGTH = "010-2222-7777";
+    private static final String PHONE_LAST_NUMBER_OVER_LENGTH = "010-2222-77777";
     private static final String PHONE_ERROR_MESSAGE = "잘못된 Phone 형식입니다.";
 
     @ParameterizedTest
