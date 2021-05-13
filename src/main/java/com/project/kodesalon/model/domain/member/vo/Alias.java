@@ -1,7 +1,5 @@
 package com.project.kodesalon.model.domain.member.vo;
 
-import java.util.IllegalFormatException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Alias {
@@ -12,18 +10,13 @@ public class Alias {
     private final String alias;
 
     public Alias (final String alias) {
-        this.alias = validateAlias(alias);
+        if (ALIAS_PATTERN.matcher(alias).matches()) {
+            this.alias = alias;
+        }
+        throw new RuntimeException(INVALID_ALIAS_EXCEPTION_MESSAGE);
     }
 
     public String value() {
         return alias;
-    }
-
-    private String validateAlias(final String alias) {
-        if (ALIAS_PATTERN.matcher(alias).matches()) {
-            return alias;
-        }
-
-        throw new RuntimeException(INVALID_ALIAS_EXCEPTION_MESSAGE);
     }
 }
