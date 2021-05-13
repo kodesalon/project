@@ -14,12 +14,13 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 
 class AliasTest {
-    public static final String ALIAS = "alias";
-    public static final String UNDER_LENGTH = "aa";
-    public static final String OVER_LENGTH = "alias1234alias1234alias1234";
-    public static final String INCLUDE_BLANK = "alias 1234";
-    public static final String NOT_START_WITH_ALPHABET = "1234";
-    public static final String INCLUDE_SPECIAL_SYMBOL = "a_______";
+    private static final String ALIAS = "alias";
+    private static final String UNDER_LENGTH = "aa";
+    private static final String OVER_LENGTH = "alias1234alias1234alias1234";
+    private static final String INCLUDE_BLANK = "alias 1234";
+    private static final String NOT_START_WITH_ALPHABET = "1234";
+    private static final String INCLUDE_SPECIAL_SYMBOL = "a_______";
+    private static final String INVALID_ALIAS_EXCEPTION_MESSAGE = "잘못된 Alias 형식입니다.";
 
     private Alias alias;
 
@@ -67,6 +68,6 @@ class AliasTest {
 
         //then
         assertThatThrownBy(() -> new Alias(invalidFormat)).isInstanceOf(RuntimeException.class)
-                .hasMessageContaining(Alias.INVALID_ALIAS_EXCEPTION_MESSAGE);
+                .hasMessageContaining(INVALID_ALIAS_EXCEPTION_MESSAGE);
     }
 }
