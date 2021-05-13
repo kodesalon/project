@@ -39,21 +39,6 @@ class AliasTest {
         then(value).isEqualTo(ALIAS);
     }
 
-    @Test
-    @DisplayName("alias 올바른 형식이면 alias 리턴합니다")
-    void validateAlias()
-            throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        //given
-        Method method = alias.getClass().getDeclaredMethod("validateAlias", String.class);
-        method.setAccessible(true);
-
-        //when
-        String result = (String) method.invoke(alias, ALIAS);
-
-        //then
-        then(result).isEqualTo(ALIAS);
-    }
-
     @ParameterizedTest
     @ValueSource(strings = {UNDER_LENGTH, OVER_LENGTH,
             INCLUDE_BLANK, NOT_START_WITH_ALPHABET, INCLUDE_SPECIAL_SYMBOL})
