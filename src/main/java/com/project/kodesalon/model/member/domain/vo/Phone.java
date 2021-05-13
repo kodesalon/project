@@ -8,6 +8,6 @@ public class Phone {
     }
 
     public String getValue() {
-        return null;
+        return phone;
     }
 }
