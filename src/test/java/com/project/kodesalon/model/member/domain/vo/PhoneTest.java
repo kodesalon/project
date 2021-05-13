@@ -43,9 +43,5 @@ class PhoneTest {
                 .hasMessageContaining(PHONE_ERROR_MESSAGE);
     }
 
-    @Test
-    void get_value_return_value() {
-
-    }
 }
 
