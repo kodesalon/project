@@ -1,4 +1,4 @@
-package com.project.kodesalon.model.domain.vo;
+package com.project.kodesalon.model.member.domain.vo;
 
 import java.util.regex.Pattern;
 
