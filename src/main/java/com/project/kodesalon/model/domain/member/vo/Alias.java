@@ -10,10 +10,10 @@ public class Alias {
     private final String alias;
 
     public Alias (final String alias) {
-        if (ALIAS_PATTERN.matcher(alias).matches()) {
-            this.alias = alias;
+        if (!ALIAS_PATTERN.matcher(alias).matches()) {
+            throw new RuntimeException(INVALID_ALIAS_EXCEPTION_MESSAGE);
         }
-        throw new RuntimeException(INVALID_ALIAS_EXCEPTION_MESSAGE);
+        this.alias = alias;
     }
 
     public String getValue() {
