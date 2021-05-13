@@ -17,7 +17,7 @@ public class Alias {
         return alias;
     }
 
-    private String validateAlias(String alias) throws IllegalFormatException {
+    private String validateAlias(final String alias) {
         if (Pattern.matches(ALIAS_PATTERN, alias)) {
             return alias;
         }
