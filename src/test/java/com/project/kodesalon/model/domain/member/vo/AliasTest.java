@@ -32,8 +32,6 @@ class AliasTest {
     @Test
     @DisplayName("value 메서드를 호출하면 별명의 값을 리턴합니다.")
     void value() {
-        //given
-
         //when
         String value = alias.value();
 
@@ -60,12 +58,7 @@ class AliasTest {
     @ValueSource(strings = {UNDER_LENGTH, OVER_LENGTH,
             INCLUDE_BLANK, NOT_START_WITH_ALPHABET, INCLUDE_SPECIAL_SYMBOL})
     @DisplayName("alias에 타당한 문자열 포맷이 아니면 예외를 리턴합니다.")
-    void invalidateFormatAlias_throw_exception(String invalidFormat)
-            throws NoSuchMethodException {
-        //givne
-
-        //when
-
+    void invalidateFormatAlias_throw_exception(String invalidFormat) {
         //then
         assertThatThrownBy(() -> new Alias(invalidFormat)).isInstanceOf(RuntimeException.class)
                 .hasMessageContaining(INVALID_ALIAS_EXCEPTION_MESSAGE);
