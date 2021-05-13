@@ -1,9 +1,11 @@
 package com.project.kodesalon.model.member.domain.vo;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,6 +19,7 @@ class PhoneTest {
     private static final String PHONE_MIDDLE_NUMBER_OVER_LENGTH = "010-11111-3333";
     private static final String PHONE_LAST_NUMBER_UNDER_LENGTH = "010-2222-7";
     private static final String PHONE_LAST_NUMBER_OVER_LENGTH = "010-2222-7777";
+    private static final String PHONE_ERROR_MESSAGE = "잘못된 Phone 형식입니다.";
 
     @ParameterizedTest
     @ValueSource(strings = {VALID_PHONE_MIDDLE_NUMBER_LENGTH_FOUR,
@@ -30,9 +33,14 @@ class PhoneTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {})
-    void invalid_phone_throw_exception() {
-
+    @ValueSource(strings = {PHONE_IDENTIFIER_NUMBER_UNDER_LENGTH,
+            PHONE_IDENTIFIER_NUMBER_OVER_LENGTH, INVALID_PHONE_IDENTIFIER_NUMBER_FORMAT,
+            PHONE_MIDDLE_NUMBER_UNDER_LENGTH, PHONE_MIDDLE_NUMBER_OVER_LENGTH,
+            PHONE_LAST_NUMBER_UNDER_LENGTH, PHONE_LAST_NUMBER_OVER_LENGTH})
+    void invalid_phone_throw_exception(String invalidPhoneNumber) {
+        //then
+        assertThatThrownBy(() -> new Phone(invalidPhoneNumber)).isInstanceOf(RuntimeException.class)
+                .hasMessageContaining(PHONE_ERROR_MESSAGE);
     }
 
     @Test
