@@ -34,7 +34,7 @@ class AliasTest {
     @DisplayName("value 메서드를 호출하면 별명의 값을 리턴합니다.")
     void value() {
         //when
-        String value = alias.value();
+        String value = alias.getValue();
 
         //then
         then(value).isEqualTo(ALIAS);

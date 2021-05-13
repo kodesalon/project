@@ -16,7 +16,7 @@ public class Alias {
         throw new RuntimeException(INVALID_ALIAS_EXCEPTION_MESSAGE);
     }
 
-    public String value() {
+    public String getValue() {
         return alias;
     }
 }
