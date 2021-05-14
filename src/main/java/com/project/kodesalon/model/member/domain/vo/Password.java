@@ -8,6 +8,6 @@ public class Password {
     }
 
     public String getValue() {
-        return null;
+        return password;
     }
 }
