@@ -10,7 +10,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PasswordTest {
-    private static final String PASSWORD_EXCEPTION_MESSAGE = "";
+    private static final String PASSWORD_EXCEPTION_MESSAGE = "잘못된 Password 형식입니다.";
     private static final String VALID_PASSWORD_LENGTH_EIGHT = "!!Pass12";
     private static final String VALID_PASSWORD_LENGTH_SIXTEEN = "!!Password123456";
     private static final String INVALID_PASSWORD_LENGTH_SEVEN = "!pass12";
