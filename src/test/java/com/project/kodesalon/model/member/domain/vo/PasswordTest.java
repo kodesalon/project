@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PasswordTest {
@@ -20,10 +21,14 @@ class PasswordTest {
     private static final String INVALID_PASSWORD_INCLUDE_NON_ALPHABET = "!비밀!pass1234";
 
     @ParameterizedTest
-    @ValueSource(strings = {})
+    @ValueSource(strings = {VALID_PASSWORD_LENGTH_EIGHT, VALID_PASSWORD_LENGTH_SIXTEEN})
     @DisplayName("유효한 비밀번호는 값을 초기화 합니다.")
-    void valid_password_init_value() {
+    void valid_password_init_value(String validPassword) {
+        //given
+        Password password = new Password(validPassword);
 
+        //then
+        then(password.getValue()).isEqualTo(validPassword);
     }
 
     @ParameterizedTest
