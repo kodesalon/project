@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,9 +33,14 @@ class PasswordTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {})
+    @ValueSource(strings = {INVALID_PASSWORD_LENGTH_SEVEN, INVALID_PASSWORD_LENGTH_SEVENTEEN,
+            INVALID_PASSWORD_NON_INCLUDE_SPECIAL_SYMBOL, INVALID_PASSWORD_NON_INCLUDE_NUMBER,
+            INVALID_PASSWORD_NON_INCLUDE_UPPER_CASE, INVALID_PASSWORD_NON_INCLUDE_LOWER_CASE,
+            INVALID_PASSWORD_INCLUDE_NON_ALPHABET})
     @DisplayName("유효하지 않은 비밀번호는 예외를 발생시킵니다.")
-    void invalid_password_throw_exception() {
-
+    void invalid_password_throw_exception(String invalidPassword) {
+        //then
+        assertThatThrownBy(() -> new Password(invalidPassword)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(PASSWORD_EXCEPTION_MESSAGE);
     }
 }
