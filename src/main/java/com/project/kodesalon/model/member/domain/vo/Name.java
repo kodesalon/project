@@ -8,6 +8,6 @@ public class Name {
     }
 
     public String getValue() {
-        return null;
+        return name;
     }
 }
