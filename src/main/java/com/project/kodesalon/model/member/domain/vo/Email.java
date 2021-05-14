@@ -12,7 +12,7 @@ public class Email {
 
     public Email (final String email) {
         if (!EMAIL_PATTERN.matcher(email).matches()) {
-            throw new RuntimeException(EMAIL_EXCEPTION_MESSAGE);
+            throw new IllegalArgumentException(EMAIL_EXCEPTION_MESSAGE);
         }
 
         this.email = email;

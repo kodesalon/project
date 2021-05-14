@@ -31,7 +31,7 @@ class EmailTest {
     @DisplayName("유효하지 않은 이메일은 예외를 발생시킵니다")
     void invalid_email_throw_exception(String value) {
         //then
-        assertThatThrownBy(() -> new Email(value)).isInstanceOf(RuntimeException.class)
+        assertThatThrownBy(() -> new Email(value)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(EMAIL_EXCEPTION_MESSAGE);
     }
 }
