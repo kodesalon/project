@@ -1,13 +1,11 @@
 package com.project.kodesalon.model.member.domain.vo;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.BDDAssertions.then;
-import static org.junit.jupiter.api.Assertions.*;
 
 class PasswordTest {
     private static final String PASSWORD_EXCEPTION_MESSAGE = "잘못된 Password 형식입니다.";
