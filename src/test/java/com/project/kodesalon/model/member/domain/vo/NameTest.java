@@ -4,6 +4,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static org.assertj.core.api.BDDAssertions.then;
+
 
 class NameTest {
     private static final String NAME_EXCEPTION_MESSAGE= "잘못된 Name 형식입니다.";
@@ -16,14 +18,20 @@ class NameTest {
     private static final String INVALID_NAME_INCLUDE_NON_KOREAN = "abc";
 
     @ParameterizedTest
-    @ValueSource(strings = {})
+    @ValueSource(strings = {VALID_NAME_LENGTH_TWO, VALID_NAME_LENGTH_SEVENTEEN})
     @DisplayName("유효한 이름은 값을 초기화 합니다.")
-    void validate_name_init_value() {
+    void validate_name_init_value(String validName) {
+        //given
+        Name name = new Name(validName);
 
+        //then
+        then(name.getValue()).isEqualTo(validName);
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {})
+    @ValueSource(strings = {INVALID_NAME_LENGTH_ONE, INVALID_NAME_LENGTH_EIGHTEEN,
+            INVALID_NAME_INCLUDE_BLANK, INVALID_NAME_INCLUDE_SPECIAL_SYMBOL,
+            INVALID_NAME_INCLUDE_NON_KOREAN})
     @DisplayName("유효하지 않은 이름은 예외를 발생시킵니다.")
     void invalid_name_throw_exception() {
 
