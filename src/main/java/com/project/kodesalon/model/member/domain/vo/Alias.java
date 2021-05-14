@@ -1,7 +1,11 @@
 package com.project.kodesalon.model.member.domain.vo;
 
+import javax.persistence.*;
 import java.util.regex.Pattern;
 
+@Embeddable
+@AttributeOverride(name = "alias", column = @Column(name = "alias"))
+@Access(AccessType.FIELD)
 public class Alias {
     private static final String ALIAS_REGEX= "^[a-zA-Z]{1}[a-zA-Z0-9]{4,11}$";
     private static final Pattern ALIAS_PATTERN = Pattern.compile(ALIAS_REGEX);
