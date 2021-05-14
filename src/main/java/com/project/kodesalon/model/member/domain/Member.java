@@ -2,6 +2,7 @@ package com.project.kodesalon.model.member.domain;
 
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Email;
+import com.project.kodesalon.model.member.domain.vo.Phone;
 
 import javax.persistence.*;
 
@@ -16,4 +17,7 @@ public class Member {
 
     @Embedded
     private Email email;
+
+    @Embedded
+    private Phone phone;
 }

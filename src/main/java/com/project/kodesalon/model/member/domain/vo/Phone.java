@@ -1,7 +1,11 @@
 package com.project.kodesalon.model.member.domain.vo;
 
+import javax.persistence.*;
 import java.util.regex.Pattern;
 
+@Embeddable
+@AttributeOverride(name = "phone", column = @Column(name = "phone"))
+@Access(AccessType.FIELD)
 public class Phone {
     private static final String PHONE_ERROR_MESSAGE = "잘못된 Phone 형식입니다.";
     private static final String PHONE_REGEX = "^01(?:0|1|[6-9])[-](\\d{3}|\\d{4})[-](\\d{4})";
