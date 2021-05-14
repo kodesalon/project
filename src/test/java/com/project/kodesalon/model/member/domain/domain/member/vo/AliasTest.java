@@ -1,5 +1,6 @@
-package com.project.kodesalon.model.domain.member.vo;
+package com.project.kodesalon.model.member.domain.domain.member.vo;
 
+import com.project.kodesalon.model.member.domain.vo.Alias;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
