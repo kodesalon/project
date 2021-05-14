@@ -44,7 +44,7 @@ class AliasTest {
     @DisplayName("alias에 타당한 문자열 포맷이 아니면 예외를 리턴합니다.")
     void invalidateFormatAlias_throw_exception(String invalidFormat) {
         //then
-        assertThatThrownBy(() -> new Alias(invalidFormat)).isInstanceOf(RuntimeException.class)
+        assertThatThrownBy(() -> new Alias(invalidFormat)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(INVALID_ALIAS_EXCEPTION_MESSAGE);
     }
 }

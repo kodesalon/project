@@ -11,7 +11,7 @@ public class Alias {
 
     public Alias (final String alias) {
         if (!ALIAS_PATTERN.matcher(alias).matches()) {
-            throw new RuntimeException(INVALID_ALIAS_EXCEPTION_MESSAGE);
+            throw new IllegalArgumentException(INVALID_ALIAS_EXCEPTION_MESSAGE);
         }
         this.alias = alias;
     }
