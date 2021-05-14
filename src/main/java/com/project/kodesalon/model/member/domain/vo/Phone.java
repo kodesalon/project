@@ -11,7 +11,7 @@ public class Phone {
 
     public Phone (final String phone) {
         if (!PHONE_PATTERN.matcher(phone).matches()) {
-            throw new RuntimeException(PHONE_ERROR_MESSAGE);
+            throw new IllegalArgumentException(PHONE_ERROR_MESSAGE);
         }
 
         this.phone = phone;

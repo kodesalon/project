@@ -39,7 +39,7 @@ class PhoneTest {
     @DisplayName("유효하지 않은 형식의 핸드폰 번호는 예외를 발생시킵니다.")
     void invalid_phone_throw_exception(String invalidPhoneNumber) {
         //then
-        assertThatThrownBy(() -> new Phone(invalidPhoneNumber)).isInstanceOf(RuntimeException.class)
+        assertThatThrownBy(() -> new Phone(invalidPhoneNumber)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PHONE_ERROR_MESSAGE);
     }
 
