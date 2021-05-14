@@ -1,6 +1,5 @@
 package com.project.kodesalon.model.member.domain.vo;
 
-import javax.print.attribute.standard.MediaSize;
 import java.util.regex.Pattern;
 
 public class Name {
