@@ -3,8 +3,6 @@ package com.project.kodesalon.model.member.domain.vo;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.regex.Pattern;
