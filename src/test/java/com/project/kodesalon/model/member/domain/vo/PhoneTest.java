@@ -27,7 +27,6 @@ class PhoneTest {
         //given
         Phone phone = new Phone(validPhoneNumber);
 
-        //then
         then(phone.getValue()).isEqualTo(validPhoneNumber);
     }
 
