@@ -1,7 +1,9 @@
 package com.project.kodesalon.model.member.domain.vo;
 
+import javax.persistence.Embeddable;
 import java.util.regex.Pattern;
 
+@Embeddable
 public class Name {
     private final String name;
     private static final String NAME_EXCEPTION_MESSAGE= "잘못된 Name 형식입니다.";

@@ -1,7 +1,9 @@
 package com.project.kodesalon.model.member.domain.vo;
 
+import javax.persistence.Embeddable;
 import java.util.regex.Pattern;
 
+@Embeddable
 public class Password {
     private static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$";
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
