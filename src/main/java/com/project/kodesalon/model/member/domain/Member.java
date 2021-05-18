@@ -5,6 +5,7 @@ import com.project.kodesalon.model.member.domain.vo.Email;
 import com.project.kodesalon.model.member.domain.vo.Name;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.domain.vo.Phone;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Immutable;
 
@@ -38,5 +39,9 @@ public class Member {
         this.email = new Email(email);
         this.name = new Name(name);
         this.phone = new Phone(phone);
+    }
+
+    public String getAlias() {
+        return alias.getValue();
     }
 }
