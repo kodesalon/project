@@ -17,7 +17,7 @@ class AliasTest {
     private static final String INCLUDE_BLANK = "alias 1234";
     private static final String NOT_START_WITH_ALPHABET = "1234";
     private static final String INCLUDE_SPECIAL_SYMBOL = "a_______";
-    private static final String INVALID_ALIAS_EXCEPTION_MESSAGE = "잘못된 Alias 형식입니다.";
+    private static final String INVALID_ALIAS_EXCEPTION_MESSAGE = "Alias 는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다.";
     private static final String INCLUDE_NON_ALPHABET = "한글Alias";
 
     private Alias alias;

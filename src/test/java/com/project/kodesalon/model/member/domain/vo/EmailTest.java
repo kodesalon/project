@@ -13,7 +13,7 @@ class EmailTest {
     private static final String NO_AT_EMAIL = "email1234.com";
     private static final String NO_DOT_EMAIL = "email1234@emailcom";
     private static final String NON_ALPHABET_EMAIL = "한국어1234@email.com";
-    private static final String EMAIL_EXCEPTION_MESSAGE = "잘못된 이메일 형식입니다";
+    private static final String EMAIL_EXCEPTION_MESSAGE = "Email은 이메일주소@회사.com 형식 이어야 합니다.";
 
     @ParameterizedTest
     @ValueSource(strings = {NORMAL_EMAIL, NORMAL_EMAIL_INCLUDE_NUMBER})
