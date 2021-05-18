@@ -29,20 +29,4 @@ public class Member {
         this.email = new Email(email);
         this.phone = new Phone(phone);
     }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getAlias() {
-        return alias.getValue();
-    }
-
-    public String getEmail() {
-        return email.getValue();
-    }
-
-    public String getPhone() {
-        return phone.getValue();
-    }
 }
