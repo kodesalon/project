@@ -22,7 +22,6 @@ class EmailTest {
         //given
         Email email = new Email(value);
 
-        //then
         then(email.getValue()).isEqualTo(value);
     }
 

@@ -25,7 +25,6 @@ class NameTest {
         //given
         Name name = new Name(validName);
 
-        //then
         then(name.getValue()).isEqualTo(validName);
     }
 
