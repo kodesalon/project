@@ -9,7 +9,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 
 class NameTest {
-    private static final String NAME_EXCEPTION_MESSAGE= "잘못된 Name 형식입니다.";
+    private static final String NAME_EXCEPTION_MESSAGE = "잘못된 Name 형식입니다.";
     private static final String VALID_NAME_LENGTH_TWO = "김씨";
     private static final String VALID_NAME_LENGTH_SEVENTEEN = "박하늘별님구름햇님보다사랑스러우리";
     private static final String INVALID_NAME_LENGTH_ONE = "김";
