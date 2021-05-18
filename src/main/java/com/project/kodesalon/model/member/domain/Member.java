@@ -5,11 +5,13 @@ import com.project.kodesalon.model.member.domain.vo.Email;
 import com.project.kodesalon.model.member.domain.vo.Name;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.domain.vo.Phone;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Immutable;
 
-import javax.persistence.*;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 @NoArgsConstructor
