@@ -44,4 +44,20 @@ public class Member {
     public String getAlias() {
         return alias.getValue();
     }
+
+    public String getPassword() {
+        return password.getValue();
+    }
+
+    public String getName() {
+        return name.getValue();
+    }
+
+    public String getEmail() {
+        return email.getValue();
+    }
+
+    public String getPhone() {
+        return phone.getValue();
+    }
 }

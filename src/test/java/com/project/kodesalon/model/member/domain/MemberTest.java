@@ -48,6 +48,6 @@ class MemberTest {
     @Test
     @DisplayName(("Member 객체를 생성하면 Phone을 초기화 합니다."))
     void create_phone() {
-        then(member.getPhone).isEqualTo(PHONE);
+        then(member.getPhone()).isEqualTo(PHONE);
     }
 }
