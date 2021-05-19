@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 class MemberRepositoryTest {
-    private static final String NOT_PRSENT_MEMBER_ALIAS = "notAlias";
+    private static final String NOT_PRESENT_MEMBER_ALIAS = "notAlias";
     @Autowired
     private MemberRepository memberRepository;
 
@@ -49,7 +49,7 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("DB에 존재하지 않는 멤버를 존재하면 Optional.empty를 리턴합니다.")
     void find_by_alias_not_present_member_return_optional_empty() {
-        Optional<Member> notPresentMember = memberRepository.findMemberByAlias(new Alias(NOT_PRSENT_MEMBER_ALIAS));
+        Optional<Member> notPresentMember = memberRepository.findMemberByAlias(new Alias(NOT_PRESENT_MEMBER_ALIAS));
 
         then(notPresentMember).isEmpty();
     }
