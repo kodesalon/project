@@ -19,7 +19,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @ExtendWith(SpringExtension.class)
 @DataJpaTest
 class MemberRepositoryTest {
+    private static final String PRESENT_MEMBER_ALIAS = "alias";
     private static final String NOT_PRESENT_MEMBER_ALIAS = "notAlias";
+
     @Autowired
     private MemberRepository memberRepository;
 
@@ -27,14 +29,14 @@ class MemberRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        member = new Member("alias", "Password1234!", "엄희상", "email@email.com", "010-1111-2222");
+        member = new Member(PRESENT_MEMBER_ALIAS, "Password1234!", "엄희상", "email@email.com", "010-1111-2222");
         memberRepository.save(member);
     }
 
     @Test
     @DisplayName("DB에 존재하는 member를 alias로 조회하면 member를 리턴합니다")
     void find_by_alias_present_member() {
-        Member savedMember = memberRepository.findMemberByAlias(new Alias("alias"))
+        Member savedMember = memberRepository.findMemberByAlias(new Alias(PRESENT_MEMBER_ALIAS))
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 멤버입니다."));
 
         assertAll(
