@@ -63,6 +63,6 @@ class MemberTest {
     @CsvSource({INCORRECT_PASSWORD_TEST_CASE, CORRECT_PASSWORD_TEST_CASE})
     @DisplayName("Member의 비밀번호가 일치하지 않으면 true, 일치하면 false를 리턴합니다.")
     void is_incorrect_password(String password, boolean expected) {
-        then(Member.isIncorrectPassword(password)).isEqualTo(expected);
+        then(member.isIncorrectPassword(password)).isEqualTo(expected);
     }
 }
