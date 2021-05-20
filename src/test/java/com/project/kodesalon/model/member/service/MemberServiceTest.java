@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-//@MockitoSettings(strictness = Strictness.LENIENT)
 public class MemberServiceTest {
     private static final String CORRECT_MEMBER_ALIAS = "alias";
     private static final String VALID_MEMBER_PASSWORD = "Password123!!";
