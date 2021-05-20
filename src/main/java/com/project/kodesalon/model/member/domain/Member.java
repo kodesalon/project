@@ -42,6 +42,9 @@ public class Member {
         this.name = new Name(name);
         this.phone = new Phone(phone);
     }
+    public Long getId() {
+        return id;
+    }
 
     public String getAlias() {
         return alias.getValue();
