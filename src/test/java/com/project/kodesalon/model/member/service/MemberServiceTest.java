@@ -5,15 +5,12 @@ import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.repository.MemberRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
 
 import java.util.NoSuchElementException;
@@ -25,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
+//@MockitoSettings(strictness = Strictness.LENIENT)
 public class MemberServiceTest {
     private static final String CORRECT_MEMBER_ALIAS = "alias";
     private static final String VALID_MEMBER_PASSWORD = "Password123!!";
@@ -41,12 +38,6 @@ public class MemberServiceTest {
 
     @Mock
     private Member member;
-
-    @BeforeEach
-    void setUp() {
-        when(member.getAlias()).thenReturn(CORRECT_MEMBER_ALIAS);
-        when(member.getId()).thenReturn(ID);
-    }
 
     @Test
     @DisplayName("존재하지 않는 Alias는 예외를 발생시킵니다.")
@@ -65,6 +56,9 @@ public class MemberServiceTest {
     void exist_login_return_success() {
         LoginRequestDto loginRequestDto = new LoginRequestDto(CORRECT_MEMBER_ALIAS, VALID_MEMBER_PASSWORD);
 
+        when(member.getId()).thenReturn(ID);
+        when(member.getAlias()).thenReturn(CORRECT_MEMBER_ALIAS);
+        when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(false);
         when(memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias())))
                 .thenReturn(Optional.of(member));
 
@@ -82,6 +76,7 @@ public class MemberServiceTest {
     void exist_login_return_fail() {
         LoginRequestDto loginRequestDto = new LoginRequestDto(CORRECT_MEMBER_ALIAS, NOT_CORRECT_MEMBER_PASSWORD);
 
+        when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(true);
         when(memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias())))
                 .thenReturn(Optional.of(member));
 
