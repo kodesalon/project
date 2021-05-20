@@ -22,7 +22,6 @@ class AliasTest {
     @Test
     @DisplayName("value 메서드를 호출하면 별명의 값을 리턴합니다.")
     void value() {
-        //when
         Alias alias = new Alias(ALIAS);
 
         then(alias.getValue()).isEqualTo(ALIAS);

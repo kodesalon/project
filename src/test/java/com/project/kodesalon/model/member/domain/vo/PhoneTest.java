@@ -24,7 +24,6 @@ class PhoneTest {
             VALID_PHONE_MIDDLE_NUMBER_LENGTH_THREE})
     @DisplayName("유효한 핸드폰 번호는 값을 초기화 시킵니다.")
     void validate_phone_init_value(String validPhoneNumber) {
-        //given
         Phone phone = new Phone(validPhoneNumber);
 
         then(phone.getValue()).isEqualTo(validPhoneNumber);
@@ -37,7 +36,6 @@ class PhoneTest {
             PHONE_LAST_NUMBER_UNDER_LENGTH, PHONE_LAST_NUMBER_OVER_LENGTH})
     @DisplayName("유효하지 않은 형식의 핸드폰 번호는 예외를 발생시킵니다.")
     void invalid_phone_throw_exception(String invalidPhoneNumber) {
-        //then
         assertThatThrownBy(() -> new Phone(invalidPhoneNumber)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PHONE_ERROR_MESSAGE);
     }

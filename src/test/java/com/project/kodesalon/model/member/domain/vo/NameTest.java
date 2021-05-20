@@ -22,7 +22,6 @@ class NameTest {
     @ValueSource(strings = {VALID_NAME_LENGTH_TWO, VALID_NAME_LENGTH_SEVENTEEN})
     @DisplayName("유효한 이름은 값을 초기화 합니다.")
     void validate_name_init_value(String validName) {
-        //given
         Name name = new Name(validName);
 
         then(name.getValue()).isEqualTo(validName);
@@ -34,7 +33,6 @@ class NameTest {
             INVALID_NAME_INCLUDE_NON_KOREAN})
     @DisplayName("유효하지 않은 이름은 예외를 발생시킵니다.")
     void invalid_name_throw_exception(String invalidName) {
-        //then
         assertThatThrownBy(() -> new Name(invalidName)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(NAME_EXCEPTION_MESSAGE);
     }

@@ -19,7 +19,6 @@ class EmailTest {
     @ValueSource(strings = {NORMAL_EMAIL, NORMAL_EMAIL_INCLUDE_NUMBER})
     @DisplayName("getValue 메서드를 호출하면 이메일의 값을 리턴합니다.")
     void get_value_return_value(String value) {
-        //given
         Email email = new Email(value);
 
         then(email.getValue()).isEqualTo(value);
@@ -29,7 +28,6 @@ class EmailTest {
     @ValueSource(strings = {NO_AT_EMAIL, NO_DOT_EMAIL, NON_ALPHABET_EMAIL})
     @DisplayName("유효하지 않은 이메일은 예외를 발생시킵니다")
     void invalid_email_throw_exception(String value) {
-        //then
         assertThatThrownBy(() -> new Email(value)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(EMAIL_EXCEPTION_MESSAGE);
     }

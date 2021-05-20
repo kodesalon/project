@@ -23,7 +23,6 @@ class PasswordTest {
     @ValueSource(strings = {VALID_PASSWORD_LENGTH_EIGHT, VALID_PASSWORD_LENGTH_SIXTEEN})
     @DisplayName("유효한 비밀번호는 값을 초기화 합니다.")
     void valid_password_init_value(String validPassword) {
-        //given
         Password password = new Password(validPassword);
 
         then(password.getValue()).isEqualTo(validPassword);
@@ -36,7 +35,6 @@ class PasswordTest {
             INVALID_PASSWORD_INCLUDE_NON_ALPHABET})
     @DisplayName("유효하지 않은 비밀번호는 예외를 발생시킵니다.")
     void invalid_password_throw_exception(String invalidPassword) {
-        //then
         assertThatThrownBy(() -> new Password(invalidPassword)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PASSWORD_EXCEPTION_MESSAGE);
     }
