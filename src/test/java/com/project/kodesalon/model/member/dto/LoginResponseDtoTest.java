@@ -3,9 +3,6 @@ package com.project.kodesalon.model.member.dto;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.http.HttpStatus;
 
-import static org.assertj.core.api.BDDAssertions.then;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
 public class LoginResponseDtoTest {
     private static final Long ID = 1L;
     private static final String ALIAS = "alias";
