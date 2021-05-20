@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class MemberTest {
     private static final String ALIAS = "alias";
@@ -30,33 +31,15 @@ class MemberTest {
     }
 
     @Test
-    @DisplayName("Member 객체를 생성하면 Alias를 초기화 합니다.")
-    void create_alias() {
-        then(member.getAlias()).isEqualTo(ALIAS);
-    }
-
-    @Test
-    @DisplayName("Member 객체를 생성하면 Password를 초기화 합니다.")
-    void create_password() {
-        then(member.getPassword()).isEqualTo(PASSWORD);
-    }
-
-    @Test
-    @DisplayName("Member 객체를 생성하면 Name을 초기화 합니다.")
-    void create_name() {
-        then(member.getName()).isEqualTo(NAME);
-    }
-
-    @Test
-    @DisplayName("Member 객체를 생성하면 Email을 초기화 합니다.")
-    void create_email() {
-        then(member.getEmail()).isEqualTo(EMAIL);
-    }
-
-    @Test
-    @DisplayName(("Member 객체를 생성하면 Phone을 초기화 합니다."))
-    void create_phone() {
-        then(member.getPhone()).isEqualTo(PHONE);
+    @DisplayName("Member 객체를 생성하면 각 필드가 초기화 됩니다.")
+    void create_member_init_filed() {
+        assertAll(
+                () -> then(member.getAlias()).isEqualTo(ALIAS),
+                () -> then(member.getPassword()).isEqualTo(PASSWORD),
+                () -> then(member.getName()).isEqualTo(NAME),
+                () -> then(member.getEmail()).isEqualTo(EMAIL),
+                () -> then(member.getPhone()).isEqualTo(PHONE)
+        );
     }
 
     @ParameterizedTest
