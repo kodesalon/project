@@ -3,6 +3,7 @@ package com.project.kodesalon.model.member.service;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
+import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -76,8 +77,10 @@ public class MemberServiceTest {
     void exist_login_return_fail() {
         LoginRequestDto loginRequestDto = new LoginRequestDto(CORRECT_MEMBER_ALIAS, NOT_CORRECT_MEMBER_PASSWORD);
 
-        when(memberRepository.findMemberByAlias(anyString()))
+        when(memberRepository.findMemberByAlias(new Alias(anyString())))
                 .thenReturn(Optional.of(member));
+
+        LoginResponseDto loginResponseDto = memberService.login(loginRequestDto);
 
         then(loginResponseDto.getHttpStatus()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
