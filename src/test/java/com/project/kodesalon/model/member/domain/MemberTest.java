@@ -50,5 +50,4 @@ class MemberTest {
     void create_phone() {
         then(member.getPhone()).isEqualTo(PHONE);
     }
-
 }
