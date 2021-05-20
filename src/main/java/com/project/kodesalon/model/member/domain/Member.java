@@ -42,6 +42,7 @@ public class Member {
         this.name = new Name(name);
         this.phone = new Phone(phone);
     }
+
     public Long getId() {
         return id;
     }
@@ -64,5 +65,9 @@ public class Member {
 
     public String getPhone() {
         return phone.getValue();
+    }
+
+    public boolean isIncorrectPassword(String password) {
+        return !this.getPassword().equals(password);
     }
 }
