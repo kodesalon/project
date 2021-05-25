@@ -4,6 +4,7 @@ import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.exception.UnAuthorizedException;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +26,10 @@ public class MemberService {
 
     public ResponseEntity<LoginResponseDto> login(LoginRequestDto loginRequestDto) {
         Member member = memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias()))
-                .orElseThrow(() -> new NoSuchElementException(NO_MEMBER_ELEMENT_EXCEPTION_MESSAGE));
+                .orElseThrow(() -> new UnAuthorizedException(NO_MEMBER_ELEMENT_EXCEPTION_MESSAGE));
 
         if (member.isIncorrectPassword(loginRequestDto.getPassword())) {
-            return new ResponseEntity<>(new LoginResponseDto(PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE), HttpStatus.UNAUTHORIZED);
+            throw new UnAuthorizedException(PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE);
         }
 
         return new ResponseEntity<>(new LoginResponseDto(member.getId(), member.getAlias()), HttpStatus.OK);
