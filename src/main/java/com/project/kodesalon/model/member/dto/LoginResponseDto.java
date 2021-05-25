@@ -2,26 +2,23 @@ package com.project.kodesalon.model.member.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 @NoArgsConstructor
+@Getter
 public class LoginResponseDto {
-    @Getter
-    private HttpStatus httpStatus;
 
-    @Getter
-    private Long id;
+    private Long memberId;
 
-    @Getter
     private String alias;
 
-    public LoginResponseDto(HttpStatus httpStatus) {
-        this.httpStatus = httpStatus;
+    private String message;
+
+    public LoginResponseDto(Long id, String alias) {
+        this.memberId = id;
+        this.alias = alias;
     }
 
-    public LoginResponseDto(HttpStatus httpStatus, Long id, String alias) {
-        this.httpStatus = httpStatus;
-        this.id = id;
-        this.alias = alias;
+    public LoginResponseDto(String message) {
+        this.message = message;
     }
 }

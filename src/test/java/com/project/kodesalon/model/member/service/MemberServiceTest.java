@@ -11,9 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -23,11 +24,13 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
+    private static final String NO_MEMBER_ELEMENT_EXCEPTION_MESSAGE = "존재하는 Alias를 입력해주세요.";
+    private static final String PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE = "일치하는 비밀번호를 입력해주세요.";
     private static final String CORRECT_MEMBER_ALIAS = "alias";
     private static final String VALID_MEMBER_PASSWORD = "Password123!!";
     private static final String NOT_EXIST_MEMBER_ALIAS = "alias1234";
     private static final String NOT_CORRECT_MEMBER_PASSWORD = "Password123!!!";
-    private static final Long ID = 1L;
+    private static final Long MEMBER_ID = 1L;
 
     @InjectMocks
     private MemberService memberService;
@@ -47,40 +50,44 @@ public class MemberServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> memberService.login(loginRequestDto)).isInstanceOf(NoSuchElementException.class)
-                .hasMessage("존재하는 Alias를 입력해 주세요.");
+                .hasMessage(NO_MEMBER_ELEMENT_EXCEPTION_MESSAGE);
     }
 
     @Test
     @DisplayName("존재하는 Alias가 Alias와 Password가 일치하면 200 status 코드, Id, Alias를 리턴합니다.")
-    void exist_login_return_success() {
+    void exist_login_return_success2() {
         LoginRequestDto loginRequestDto = new LoginRequestDto(CORRECT_MEMBER_ALIAS, VALID_MEMBER_PASSWORD);
 
-        when(member.getId()).thenReturn(ID);
+        when(member.getId()).thenReturn(MEMBER_ID);
         when(member.getAlias()).thenReturn(CORRECT_MEMBER_ALIAS);
         when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(false);
         when(memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias())))
                 .thenReturn(Optional.of(member));
 
-        LoginResponseDto loginResponseDto = memberService.login(loginRequestDto);
+        ResponseEntity<LoginResponseDto> loginResponseDto = memberService.login(loginRequestDto);
 
         assertAll(
-                () -> then(loginResponseDto.getHttpStatus()).isEqualTo(HttpStatus.OK),
-                () -> then(loginResponseDto.getId()).isEqualTo(ID),
-                () -> then(loginResponseDto.getAlias()).isEqualTo(CORRECT_MEMBER_ALIAS)
+                () -> then(Objects.requireNonNull(loginResponseDto.getBody())
+                        .getMemberId())
+                        .isEqualTo(MEMBER_ID),
+                () -> then(Objects.requireNonNull(loginResponseDto.getBody())
+                        .getAlias())
+                        .isEqualTo(CORRECT_MEMBER_ALIAS)
         );
     }
 
     @Test
-    @DisplayName("존재하는 Alias가 Password가 일치하지 않는다면 401 status 코드를 리턴합니다.")
-    void exist_login_return_fail() {
+    @DisplayName("존재하는 Alias가 Password가 일치하지 않는다면 메세지드를 리턴합니다.")
+    void exist_login_return_fail2() {
         LoginRequestDto loginRequestDto = new LoginRequestDto(CORRECT_MEMBER_ALIAS, NOT_CORRECT_MEMBER_PASSWORD);
 
         when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(true);
         when(memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias())))
                 .thenReturn(Optional.of(member));
 
-        LoginResponseDto loginResponseDto = memberService.login(loginRequestDto);
-
-        then(loginResponseDto.getHttpStatus()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        then(Objects.requireNonNull(memberService.login(loginRequestDto)
+                .getBody())
+                .getMessage())
+                .isEqualTo(PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE);
     }
 }
