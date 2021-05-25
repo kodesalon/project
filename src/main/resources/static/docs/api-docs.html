@@ -565,7 +565,7 @@ Host: localhost:8080
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Member 식별자</p></td>
 </tr>
@@ -575,9 +575,9 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">member alias</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>httpStatus</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">http status code</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">error message</p></td>
 </tr>
 </tbody>
 </table>
@@ -592,9 +592,9 @@ Host: localhost:8080
 <div class="content">
 <pre>HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 42
+Content-Length: 45
 
-{"httpStatus":"OK","id":1,"alias":"alias"}</pre>
+{"memberId":1,"alias":"alias","message":null}</pre>
 </div>
 </div>
 </div>

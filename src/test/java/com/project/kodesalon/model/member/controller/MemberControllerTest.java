@@ -64,7 +64,7 @@ public class MemberControllerTest {
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
                                 fieldWithPath("password").description("로그인 할 패스워드")
-                                ),
+                        ),
                         responseFields(
                                 fieldWithPath("memberId").description("Member 식별자"),
                                 fieldWithPath("alias").description("member alias"),
