@@ -49,6 +49,10 @@ public class Member {
         this.phone = new Phone(phone);
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getAlias() {
         return alias.value();
     }
