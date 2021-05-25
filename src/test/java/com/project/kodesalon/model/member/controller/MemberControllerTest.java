@@ -7,9 +7,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -32,10 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         SpringExtension.class, MockitoExtension.class})
 @SpringBootTest
 public class MemberControllerTest {
-
     private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private MemberService memberService;
 
     @BeforeEach
@@ -51,16 +50,18 @@ public class MemberControllerTest {
     void login_controller_return_success_response() throws Exception {
         LoginRequestDto loginRequestDto = new LoginRequestDto("alias", "Password1!!");
 
-        when(memberService.login(any()))
+        when(memberService.login(any(LoginRequestDto.class)))
                 .thenReturn(new LoginResponseDto(HttpStatus.OK, 1L, "alias"));
 
         this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"alias\" : \"alias\", \"password\" : \"Password123!!\"}")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("login",
                         responseFields(
-                                fieldWithPath("member.id").description("member id field"),
-                                fieldWithPath("member.alias").description("member alias field"))));
+                                fieldWithPath("id").description("identifier"),
+                                fieldWithPath("alias").description("member alias"),
+                                fieldWithPath("httpStatus").description("http status code"))));
     }
 }
