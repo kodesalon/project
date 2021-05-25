@@ -24,7 +24,7 @@ public class Password {
         this.password = password;
     }
 
-    public String getValue() {
+    public String value() {
         return password;
     }
 }
