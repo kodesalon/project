@@ -25,7 +25,7 @@ class NameTest {
         //given
         Name name = new Name(validName);
 
-        then(name.getValue()).isEqualTo(validName);
+        then(name.value()).isEqualTo(validName);
     }
 
     @ParameterizedTest

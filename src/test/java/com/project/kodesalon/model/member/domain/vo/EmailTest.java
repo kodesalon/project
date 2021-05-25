@@ -22,7 +22,7 @@ class EmailTest {
         //given
         Email email = new Email(value);
 
-        then(email.getValue()).isEqualTo(value);
+        then(email.value()).isEqualTo(value);
     }
 
     @ParameterizedTest

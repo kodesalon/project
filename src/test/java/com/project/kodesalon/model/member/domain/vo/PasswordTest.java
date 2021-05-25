@@ -26,7 +26,7 @@ class PasswordTest {
         //given
         Password password = new Password(validPassword);
 
-        then(password.getValue()).isEqualTo(validPassword);
+        then(password.value()).isEqualTo(validPassword);
     }
 
     @ParameterizedTest
