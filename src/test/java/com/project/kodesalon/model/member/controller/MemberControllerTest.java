@@ -81,7 +81,7 @@ public class MemberControllerTest {
     void login_failed_response_failed_message()
             throws Exception {
         when(memberService.login(any(LoginRequestDto.class)))
-                .thenThrow(UnAuthorizedException.class);
+                .thenThrow(new UnAuthorizedException(PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE));
 
         this.mockMvc.perform(post(LOGIN_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -101,7 +101,7 @@ public class MemberControllerTest {
     void not_exisit_alias_response_failed_message()
             throws Exception {
         when(memberService.login(any(LoginRequestDto.class)))
-                .thenThrow(UnAuthorizedException.class);
+                .thenThrow(new UnAuthorizedException(NO_MEMBER_ELEMENT_EXCEPTION_MESSAGE));
 
         this.mockMvc.perform(post(LOGIN_URL)
                 .contentType(MediaType.APPLICATION_JSON)

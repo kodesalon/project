@@ -546,7 +546,7 @@ Host: localhost:8080
 <div class="ulist">
 <ul>
 <li>
-<p>로그인 성공 테이블</p>
+<p>로그인 성공 Response</p>
 </li>
 </ul>
 </div>
@@ -597,6 +597,94 @@ Content-Length: 45
 {"memberId":1,"alias":"alias","message":null}</pre>
 </div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>로그인 실패 Response (Alias가 없는 경우)</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">예외 메세지</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>로그인 실패 example (Alias가 없는 경우)</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Content-Length: 55
+
+{"message":"존재하는 Alias를 입력해주세요."}</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>로그인 실패 Response (Password가 일치하지 않는 경우)</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">예외 메세지</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>로그인 실패 example (Password가 일치하지 않는 경우)</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>HTTP/1.1 401 Unauthorized
+Content-Type: application/json
+Content-Length: 62
+
+{"message":"일치하는 비밀번호를 입력해주세요."}</pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -605,7 +693,7 @@ Content-Length: 45
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2021-05-25 13:57:34 +0900
+Last updated 2021-05-25 20:35:21 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
