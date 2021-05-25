@@ -2,6 +2,7 @@ package com.project.kodesalon.model.member.controller;
 
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.exception.UnAuthorizedException;
 import com.project.kodesalon.model.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +55,8 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("로그인이 성공하면 Alias, ID, Http Status 200를 Response 합니다.")
-    void login_controller_return_success_response() throws Exception {
+    void login_controller_return_success_response()
+            throws Exception {
         when(memberService.login(any(LoginRequestDto.class)))
                 .thenReturn(new ResponseEntity<>(new LoginResponseDto(1L, "alias"), HttpStatus.OK));
 
@@ -76,9 +78,10 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("비밀번호 실패시 401 Status와 예외 메세지를 Response합니다.")
-    void login_failed_response_failed_message() throws Exception {
+    void login_failed_response_failed_message()
+            throws Exception {
         when(memberService.login(any(LoginRequestDto.class)))
-                .thenReturn(new ResponseEntity<>(new LoginResponseDto(PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE), HttpStatus.UNAUTHORIZED));
+                .thenThrow(UnAuthorizedException.class);
 
         this.mockMvc.perform(post(LOGIN_URL)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -88,10 +91,28 @@ public class MemberControllerTest {
                 .andDo(document("login_failed_mismatch_password",
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
-                                fieldWithPath("password").description("로그인 할 패스워드")
-                        ),responseFields(
-                                fieldWithPath("memberId").description("Member 식별자"),
-                                fieldWithPath("alias").description("member alias"),
-                                fieldWithPath("message").description("error message"))));
+                                fieldWithPath("password").description("로그인 할 password")
+                        ), responseFields(
+                                fieldWithPath("message").description("예외 메세지"))));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 사용자는 401 Status와 에러 메세지를 Response 합니다.")
+    void not_exisit_alias_response_failed_message()
+            throws Exception {
+        when(memberService.login(any(LoginRequestDto.class)))
+                .thenThrow(UnAuthorizedException.class);
+
+        this.mockMvc.perform(post(LOGIN_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(LOGIN_REQUEST_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(document("login_fail_no_alias",
+                        requestFields(
+                                fieldWithPath("alias").description("로그인 할 alias"),
+                                fieldWithPath("password").description("로그인 할 password")
+                        ), responseFields(
+                                fieldWithPath("message").description("예외 메세지")
+                        )));
     }
 }
