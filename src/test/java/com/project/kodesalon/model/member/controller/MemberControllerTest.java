@@ -35,6 +35,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class MemberControllerTest {
     private static final String LOGIN_REQUEST_JSON = "{\"alias\" : \"alias\", \"password\" : \"Password123!!\"}";
+    private static final String NO_MEMBER_ELEMENT_EXCEPTION_MESSAGE = "존재하는 Alias를 입력해주세요.";
+    private static final String PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE = "일치하는 비밀번호를 입력해주세요.";
+    private static final String LOGIN_URL = "/api/v1/members/login";
 
     private MockMvc mockMvc;
 
@@ -55,17 +58,38 @@ public class MemberControllerTest {
         when(memberService.login(any(LoginRequestDto.class)))
                 .thenReturn(new ResponseEntity<>(new LoginResponseDto(1L, "alias"), HttpStatus.OK));
 
-        this.mockMvc.perform(post("/api/v1/members/login")
+        this.mockMvc.perform(post(LOGIN_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(LOGIN_REQUEST_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("login",
+                .andDo(document("login_success",
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
                                 fieldWithPath("password").description("로그인 할 패스워드")
                         ),
                         responseFields(
+                                fieldWithPath("memberId").description("Member 식별자"),
+                                fieldWithPath("alias").description("member alias"),
+                                fieldWithPath("message").description("error message"))));
+    }
+
+    @Test
+    @DisplayName("비밀번호 실패시 401 Status와 예외 메세지를 Response합니다.")
+    void login_failed_response_failed_message() throws Exception {
+        when(memberService.login(any(LoginRequestDto.class)))
+                .thenReturn(new ResponseEntity<>(new LoginResponseDto(PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE), HttpStatus.UNAUTHORIZED));
+
+        this.mockMvc.perform(post(LOGIN_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(LOGIN_REQUEST_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andDo(document("login_failed_mismatch_password",
+                        requestFields(
+                                fieldWithPath("alias").description("로그인 할 alias"),
+                                fieldWithPath("password").description("로그인 할 패스워드")
+                        ),responseFields(
                                 fieldWithPath("memberId").description("Member 식별자"),
                                 fieldWithPath("alias").description("member alias"),
                                 fieldWithPath("message").description("error message"))));
