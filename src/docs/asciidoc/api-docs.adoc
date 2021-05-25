@@ -15,17 +15,29 @@ kodesalon;
 === Login API
 ==== Request
 - CURL:
-include::{snippets}/login/curl-request.adoc[]
+include::{snippets}/login_success/curl-request.adoc[]
 
 - Response Body
-include::{snippets}/login/request-fields.adoc[]
+include::{snippets}/login_success/request-fields.adoc[]
 
 - Request Body Example
-include::{snippets}/login/http-request.adoc[]
+include::{snippets}/login_success/http-request.adoc[]
 
 ==== Reponse
-- 로그인 성공 테이블
-include::{snippets}/login/response-fields.adoc[]
+- 로그인 성공 Response
+include::{snippets}/login_success/response-fields.adoc[]
 
 - 로그인 성공 Example
-include::{snippets}/login/http-response.adoc[]
+include::{snippets}/login_success/http-response.adoc[]
+
+- 로그인 실패 Response (Alias가 없는 경우)
+include::{snippets}/login_fail_no_alias/response-fields.adoc[]
+
+- 로그인 실패 example (Alias가 없는 경우)
+include::{snippets}/login_fail_no_alias/http-response.adoc[]
+
+- 로그인 실패 Response (Password가 일치하지 않는 경우)
+include::{snippets}/login_failed_mismatch_password/response-fields.adoc[]
+
+- 로그인 실패 example (Password가 일치하지 않는 경우)
+include::{snippets}/login_failed_mismatch_password/http-response.adoc[]
