@@ -1,0 +1,31 @@
+# KodeSalon Server API Document
+kodesalon;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+
+[[Introduction]]
+=== Kodesalon server document
+
+[[sample]]
+== Member
+=== Login API
+==== Request
+- CURL:
+include::{snippets}/login/curl-request.adoc[]
+
+- Response Body
+include::{snippets}/login/request-fields.adoc[]
+
+- Request Body Example
+include::{snippets}/login/http-request.adoc[]
+
+==== Reponse
+- 로그인 성공 테이블
+include::{snippets}/login/response-fields.adoc[]
+
+- 로그인 성공 Example
+include::{snippets}/login/http-response.adoc[]

@@ -25,7 +25,9 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith({RestDocumentationExtension.class,
@@ -59,8 +61,12 @@ public class MemberControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("login",
+                        requestFields(
+                                fieldWithPath("alias").description("로그인 할 alias"),
+                                fieldWithPath("password").description("로그인 할 패스워드")
+                        ),
                         responseFields(
-                                fieldWithPath("id").description("identifier"),
+                                fieldWithPath("id").description("Member 식별자"),
                                 fieldWithPath("alias").description("member alias"),
                                 fieldWithPath("httpStatus").description("http status code"))));
     }
