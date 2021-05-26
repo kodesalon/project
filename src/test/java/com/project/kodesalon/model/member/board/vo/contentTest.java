@@ -1,6 +1,7 @@
 package com.project.kodesalon.model.member.board.vo;
 
 import com.project.kodesalon.model.board.domain.vo.Content;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,12 +11,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 public class contentTest {
+    private String boardContent;
+    private Content content;
+
+    @BeforeEach
+    void setUp() {
+        boardContent = "test content";
+        content = new Content(boardContent);
+    }
 
     @Test
     @DisplayName("문자열을 입력받아 내용 객체를 생성한다.")
     public void create() {
-        String boardContent = "test content";
-        Content content = new Content(boardContent);
         assertThat(content).isEqualTo(new Content(boardContent));
     }
 
@@ -26,5 +33,12 @@ public class contentTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Content(blank))
                 .withMessageContaining("내용에 공백 아닌 1자 이상의 문자를 입력");
+    }
+
+    @Test
+    @DisplayName("내용의 문자열 값을 반환한다.")
+    public void getValue() {
+        String value = content.getValue();
+        assertThat(value).isEqualTo(boardContent);
     }
 }
