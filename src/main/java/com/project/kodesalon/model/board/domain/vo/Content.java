@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 
@@ -14,6 +15,7 @@ public class Content {
     private static final String CHECK_CONTENT_IS_BLANK = "내용에 공백 아닌 1자 이상의 문자를 입력하였는지 확인해주세요.";
 
     @Lob
+    @Column(nullable = false)
     private String content;
 
     public Content(String content) {
