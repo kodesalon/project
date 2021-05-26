@@ -17,12 +17,12 @@ public class Title {
     }
 
     private void validate(String title) {
-        checkBlank(title);
+        checkNullOrBlank(title);
         checkLength(title);
     }
 
-    private void checkBlank(String title) {
-        if (title.isBlank()) {
+    private void checkNullOrBlank(String title) {
+        if (title == null || title.isBlank()) {
             throw new IllegalArgumentException(CHECK_TITLE_IS_BLANK);
         }
     }
