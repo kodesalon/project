@@ -30,7 +30,7 @@ public class CreateMemberDtoTest {
                 () -> then(createMemberDto.getPassword()).isEqualTo(PASSWORD),
                 () -> then(createMemberDto.getName()).isEqualTo(NAME),
                 () -> then(createMemberDto.getEmail()).isEqualTo(EMAIL),
-                () -> then(createMemberDto.getPhone).isEqualTo(PHONE)
+                () -> then(createMemberDto.getPhone()).isEqualTo(PHONE)
         );
     }
 }
