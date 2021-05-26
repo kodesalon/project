@@ -26,12 +26,4 @@ public class TitleTest {
                 .isThrownBy(() -> new Title(input))
                 .withMessageContaining("제목에 공백 아닌 1자 이상의 문자를 입력");
     }
-
-    @Test
-    @DisplayName("제목의 길이가 30자를 초과할 경우, 예외가 발생한다.")
-    public void check_length() {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Title("this title length is 31        "))
-                .withMessageContaining("제목 글자 수가 30을 초과");
-    }
 }
