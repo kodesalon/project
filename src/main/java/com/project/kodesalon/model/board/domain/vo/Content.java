@@ -23,4 +23,8 @@ public class Content {
 
         this.content = content;
     }
+
+    public String getValue() {
+        return content;
+    }
 }
