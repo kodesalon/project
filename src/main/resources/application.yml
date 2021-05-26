@@ -18,5 +18,7 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
+        query:
+          in_cloud_memory_padding : true
         format_sql: true
     open-in-view: false
