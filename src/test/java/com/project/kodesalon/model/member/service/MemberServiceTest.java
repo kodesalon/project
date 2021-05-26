@@ -31,6 +31,9 @@ public class MemberServiceTest {
     private static final String NOT_EXIST_MEMBER_ALIAS = "alias1234";
     private static final String NOT_CORRECT_MEMBER_PASSWORD = "Password123!!!";
     private static final Long MEMBER_ID = 1L;
+    private static final String NAME = "이름";
+    private static final String EMAIL = "email@email.com";
+    private static final String PHONE = "010-1111-2222";
 
     @InjectMocks
     private MemberService memberService;
@@ -92,5 +95,22 @@ public class MemberServiceTest {
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
                 .isInstanceOf(UnAuthorizedException.class)
                 .hasMessage(PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 Alias면 회원가입을 진행하고 Login Response를 반환합니다")
+    void not_existing_member_save_member() {
+        CreateMemberRequestDto createMemberRequestDto
+                = new CreateRequestDto(CORRECT_MEMBER_ALIAS,
+                VALID_MEMBER_PASSWORD, NAME, EMAIL, PHONE);
+
+        when(memberRepository.findMemberByAlias(new Alias(createMemberRequestDto.getAlias())))
+                .thenReturn(Optional.empty());
+        LoginResponseDto loginResponseDto = memberService.joinMember(createMemberRequestDto);
+
+        assertAll(
+                () -> then(loginResponseDto.getMemberId()).isEqualTo(MEMBER_ID),
+                () -> then(loginResponseDto.getAlias()).isEqualTo(CORRECT_MEMBER_ALIAS)
+        );
     }
 }
