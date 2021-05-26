@@ -18,6 +18,7 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
+        default_batch_size : 50
         query:
           in_cloud_memory_padding : true
         format_sql: true
