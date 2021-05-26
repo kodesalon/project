@@ -1,5 +1,7 @@
 package com.project.kodesalon.model.member.domain.vo;
 
+import com.project.kodesalon.model.member.domain.vo.Alias;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,10 +21,16 @@ class AliasTest {
     private static final String INVALID_ALIAS_EXCEPTION_MESSAGE = "Alias 는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다.";
     private static final String INCLUDE_NON_ALPHABET = "한글Alias";
 
+    private Alias alias;
+
+    @BeforeEach
+    void setup() {
+        alias = new Alias(ALIAS);
+    }
+
     @Test
     @DisplayName("value 메서드를 호출하면 별명의 값을 리턴합니다.")
     void value() {
-        //when
         Alias alias = new Alias(ALIAS);
 
         then(alias.value()).isEqualTo(ALIAS);

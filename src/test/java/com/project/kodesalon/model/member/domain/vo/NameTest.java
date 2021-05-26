@@ -34,7 +34,6 @@ class NameTest {
             INVALID_NAME_INCLUDE_NON_KOREAN})
     @DisplayName("유효하지 않은 이름은 예외를 발생시킵니다.")
     void invalid_name_throw_exception(String invalidName) {
-        //then
         assertThatThrownBy(() -> new Name(invalidName)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(NAME_EXCEPTION_MESSAGE);
     }

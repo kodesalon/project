@@ -1,6 +1,7 @@
 package com.project.kodesalon.model.member.domain.vo;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
@@ -9,6 +10,7 @@ import java.util.regex.Pattern;
 
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@EqualsAndHashCode
 public class Alias {
     private static final String ALIAS_REGEX = "^[a-zA-Z]{1}[a-zA-Z0-9]{4,15}$";
     private static final Pattern ALIAS_PATTERN = Pattern.compile(ALIAS_REGEX);
