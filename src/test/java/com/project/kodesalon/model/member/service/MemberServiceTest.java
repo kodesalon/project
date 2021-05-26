@@ -2,6 +2,7 @@ package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
+import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.exception.UnAuthorizedException;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -101,16 +103,23 @@ public class MemberServiceTest {
     @DisplayName("존재하지 않는 Alias면 회원가입을 진행하고 Login Response를 반환합니다")
     void not_existing_member_save_member() {
         CreateMemberRequestDto createMemberRequestDto
-                = new CreateRequestDto(CORRECT_MEMBER_ALIAS,
+                = new CreateMemberRequestDto(CORRECT_MEMBER_ALIAS,
                 VALID_MEMBER_PASSWORD, NAME, EMAIL, PHONE);
 
-        when(memberRepository.findMemberByAlias(new Alias(createMemberRequestDto.getAlias())))
-                .thenReturn(Optional.empty());
-        LoginResponseDto loginResponseDto = memberService.joinMember(createMemberRequestDto);
+        when(member.getId()).thenReturn(MEMBER_ID);
+        when(member.getAlias()).thenReturn(CORRECT_MEMBER_ALIAS);
+        when(memberRepository.save(any(Member.class)))
+                .thenReturn(member);
+
+        ResponseEntity<LoginResponseDto> loginResponseDto = memberService.joinMember(createMemberRequestDto);
 
         assertAll(
-                () -> then(loginResponseDto.getMemberId()).isEqualTo(MEMBER_ID),
-                () -> then(loginResponseDto.getAlias()).isEqualTo(CORRECT_MEMBER_ALIAS)
+                () -> then(Objects.requireNonNull(loginResponseDto.getBody())
+                        .getMemberId())
+                        .isEqualTo(MEMBER_ID),
+                () -> then(Objects.requireNonNull(loginResponseDto.getBody())
+                        .getAlias())
+                        .isEqualTo(CORRECT_MEMBER_ALIAS)
         );
     }
 }

@@ -2,6 +2,7 @@ package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
+import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.exception.UnAuthorizedException;
@@ -30,5 +31,13 @@ public class MemberService {
         }
 
         return new ResponseEntity<>(new LoginResponseDto(member.getId(), member.getAlias()), HttpStatus.OK);
+    }
+
+    public ResponseEntity<LoginResponseDto> joinMember(CreateMemberRequestDto createMemberRequestDto) {
+        Member member = new Member(createMemberRequestDto.getAlias(), createMemberRequestDto.getPassword(),
+                createMemberRequestDto.getName(), createMemberRequestDto.getEmail(), createMemberRequestDto.getPhone());
+        Member savedMember = memberRepository.save(member);
+
+        return new ResponseEntity<>(new LoginResponseDto(savedMember.getId(), savedMember.getAlias()), HttpStatus.CREATED);
     }
 }
