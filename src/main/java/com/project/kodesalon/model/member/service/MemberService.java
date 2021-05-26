@@ -34,9 +34,8 @@ public class MemberService {
     }
 
     public ResponseEntity<LoginResponseDto> joinMember(CreateMemberRequestDto createMemberRequestDto) {
-        Member member = new Member(createMemberRequestDto.getAlias(), createMemberRequestDto.getPassword(),
-                createMemberRequestDto.getName(), createMemberRequestDto.getEmail(), createMemberRequestDto.getPhone());
-        Member savedMember = memberRepository.save(member);
+        Member savedMember = memberRepository.save(new Member(createMemberRequestDto.getAlias(), createMemberRequestDto.getPassword(),
+                createMemberRequestDto.getName(), createMemberRequestDto.getEmail(), createMemberRequestDto.getPhone()));
 
         return new ResponseEntity<>(new LoginResponseDto(savedMember.getId(), savedMember.getAlias()), HttpStatus.CREATED);
     }
