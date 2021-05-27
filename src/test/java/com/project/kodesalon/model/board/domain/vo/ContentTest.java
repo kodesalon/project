@@ -1,6 +1,5 @@
-package com.project.kodesalon.model.member.board.vo;
+package com.project.kodesalon.model.board.domain.vo;
 
-import com.project.kodesalon.model.board.domain.vo.Content;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
