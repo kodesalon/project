@@ -19,6 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -42,6 +43,7 @@ public class MemberServiceTest {
     private static final String INVALID_NAME_EXCEPTION = "Name은 2자리 이상 17자리 이하의 한글이어야 합니다.";
     private static final String INVALID_EMAIL_EXCEPTION = "Email은 이메일주소@회사.com 형식 이어야 합니다.";
     private static final String INVALID_PHONE_EXCEPTION = "핸드폰 번호는 [휴대폰 앞자리 번호]- 3자리 혹은 4자리 수 - 4자리수의 형식 이어야 합니다.";
+    private static final String ALREADY_EXIST_MEMBER_EXCEPTION_MESSAGE = "이미 존재하는 Alias 입니다.";
 
     @InjectMocks
     private MemberService memberService;
@@ -177,5 +179,18 @@ public class MemberServiceTest {
         assertThatIllegalArgumentException().isThrownBy(() -> memberService
                 .joinMember(createMemberRequestDto))
                 .withMessage(INVALID_PHONE_EXCEPTION);
+    }
+
+    @Test
+    @DisplayName("존재하는 Alias는 예외를 던집니다.")
+    void exist_member_throws_exception() {
+        CreateMemberRequestDto createMemberRequestDto = new CreateMemberRequestDto(CORRECT_MEMBER_ALIAS, VALID_MEMBER_PASSWORD, NAME, EMAIL, PHONE);
+
+        when(memberRepository.findMemberByAlias(any(Alias.class)))
+                .thenThrow(new IllegalStateException(ALREADY_EXIST_MEMBER_EXCEPTION_MESSAGE));
+
+        assertThatIllegalStateException().isThrownBy(() -> memberService
+                .joinMember(createMemberRequestDto))
+                .withMessage(ALREADY_EXIST_MEMBER_EXCEPTION_MESSAGE);
     }
 }
