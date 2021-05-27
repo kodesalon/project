@@ -18,11 +18,18 @@ public class Title {
     private String title;
 
     public Title(final String title) {
-        if (title.isBlank()) {
+        validate(title);
+        this.title = title;
+    }
+
+    private void validate(String title) {
+        checkNullOrBlank(title);
+    }
+
+    private void checkNullOrBlank(String title) {
+        if (title == null || title.isBlank()) {
             throw new IllegalArgumentException(CHECK_TITLE_IS_BLANK);
         }
-
-        this.title = title;
     }
 
     public String value() {
