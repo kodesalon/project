@@ -127,13 +127,13 @@ public class MemberControllerTest {
                                 fieldWithPath("message").description("예외 메세지")
                         )));
     }
-    
+
     @Test
     @DisplayName("회원 가입에 성공하면 201 Status와 Id, Alias를 response 합니다.")
     void join_member_response_success() throws Exception {
         when(memberService.joinMember(any(CreateMemberRequestDto.class)))
                 .thenReturn(new ResponseEntity<>(new LoginResponseDto(1L, "alias"), HttpStatus.CREATED));
-        
+
         this.mockMvc.perform(post(CREATE_MEMBER_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(CREATE_MEMBER_JSON)
@@ -154,7 +154,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("이미 존재하는 Alias는 HttpStatus 409와 예외 메세지를 리턴합니다")
+    @DisplayName("이미 존재하는 Alias는 HttpStatus 409와 예외 메세지를 리턴합니다.")
     void existing_alias_response_fail() throws Exception {
         when(memberService.joinMember(any(CreateMemberRequestDto.class)))
                 .thenThrow(new IllegalStateException(ALREADY_EXIST_MEMBER_EXCEPTION_MESSAGE));
@@ -168,5 +168,86 @@ public class MemberControllerTest {
                         responseFields(
                                 fieldWithPath("message").description("예외 메세지")
                         )));
+    }
+
+    @Test
+    @DisplayName("Alias 형식이 맞지 않으면 HttpStatus 403과 예외 메세지를 리턴합니다.")
+    void invalid_alias_response_fail() throws Exception {
+        when(memberService.joinMember(any(CreateMemberRequestDto.class)))
+                .thenThrow(new IllegalArgumentException(INVALID_ALIAS_EXCEPTION));
+
+        this.mockMvc.perform(post(CREATE_MEMBER_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(CREATE_MEMBER_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andDo(document("create_member_fail/invalid_alias",
+                        responseFields(
+                                fieldWithPath("message").description("예외 메세지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("Phone 형식이 맞지 않으면 HttpStatus 403과 예외 메세지를 리턴합니다.")
+    void invalid_password_response_fail() throws Exception {
+        when(memberService.joinMember(any(CreateMemberRequestDto.class)))
+                .thenThrow(new IllegalArgumentException(INVALID_PASSWORD_EXCEPTION));
+
+        this.mockMvc.perform(post(CREATE_MEMBER_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(CREATE_MEMBER_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andDo(document("create_member_fail/invalid_password",
+                        responseFields(
+                                fieldWithPath("message").description("예외메세지"))));
+    }
+
+    @Test
+    @DisplayName("Name 형식이 맞지 않으면 HttpStatus 403과 예외 메세지를 리턴합니다.")
+    void invalid_name_response_fail() throws Exception {
+        when(memberService.joinMember(any(CreateMemberRequestDto.class)))
+                .thenThrow(new IllegalArgumentException(INVALID_NAME_EXCEPTION));
+
+        this.mockMvc.perform(post(CREATE_MEMBER_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(CREATE_MEMBER_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andDo(document("create_member_fail/invalid_name",
+                        responseFields(
+                                fieldWithPath("message").description("예외메세지"))));
+    }
+
+    @Test
+    @DisplayName("Password 형식이 맞지 않으면 HttpStatus 403과 예외 메세지를 리턴합니다.")
+    void invalid_email_response_fail() throws Exception {
+        when(memberService.joinMember(any(CreateMemberRequestDto.class)))
+                .thenThrow(new IllegalArgumentException(INVALID_EMAIL_EXCEPTION));
+
+        this.mockMvc.perform(post(CREATE_MEMBER_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(CREATE_MEMBER_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andDo(document("create_member_fail/invalid_email",
+                        responseFields(
+                                fieldWithPath("message").description("예외메세지"))));
+    }
+
+    @Test
+    @DisplayName("Phone 형식이 맞지 않으면 HttpStatus 403과 예외 메세지를 리턴합니다.")
+    void invalid_phone_response_fail() throws Exception {
+        when(memberService.joinMember(any(CreateMemberRequestDto.class)))
+                .thenThrow(new IllegalArgumentException(INVALID_PHONE_EXCEPTION));
+
+        this.mockMvc.perform(post(CREATE_MEMBER_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(CREATE_MEMBER_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andDo(document("create_member_fail/invalid_phone",
+                        responseFields(
+                                fieldWithPath("message").description("예외메세지"))));
     }
 }
