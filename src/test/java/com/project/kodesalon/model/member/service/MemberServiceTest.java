@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.Objects;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -36,6 +37,11 @@ public class MemberServiceTest {
     private static final String NAME = "이름";
     private static final String EMAIL = "email@email.com";
     private static final String PHONE = "010-1111-2222";
+    private static final String INVALID_ALIAS_EXCEPTION = "Alias 는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다.";
+    private static final String INVALID_PASSWORD_EXCEPTION = "Password는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.";
+    private static final String INVALID_NAME_EXCEPTION = "Name은 2자리 이상 17자리 이하의 한글이어야 합니다.";
+    private static final String INVALID_EMAIL_EXCEPTION = "Email은 이메일주소@회사.com 형식 이어야 합니다.";
+    private static final String INVALID_PHONE_EXCEPTION = "핸드폰 번호는 [휴대폰 앞자리 번호]- 3자리 혹은 4자리 수 - 4자리수의 형식 이어야 합니다.";
 
     @InjectMocks
     private MemberService memberService;
@@ -121,5 +127,55 @@ public class MemberServiceTest {
                         .getAlias())
                         .isEqualTo(CORRECT_MEMBER_ALIAS)
         );
+    }
+
+    @Test
+    @DisplayName("형식에 맞지 않는 Alias는 에외를 던집니다.")
+    void invalid_alias_throws_exception() {
+        CreateMemberRequestDto createMemberRequestDto = new CreateMemberRequestDto("", VALID_MEMBER_PASSWORD, NAME, EMAIL, PHONE);
+
+        assertThatIllegalArgumentException().isThrownBy(() -> memberService
+                .joinMember(createMemberRequestDto))
+                .withMessage(INVALID_ALIAS_EXCEPTION);
+    }
+
+    @Test
+    @DisplayName("형식에 맞지 않는 Password는 예외를 던집니다.")
+    void invalid_password_throw_exception() {
+        CreateMemberRequestDto createMemberRequestDto = new CreateMemberRequestDto(CORRECT_MEMBER_ALIAS, "", NAME, EMAIL, PHONE);
+
+        assertThatIllegalArgumentException().isThrownBy(() -> memberService
+                .joinMember(createMemberRequestDto))
+                .withMessage(INVALID_PASSWORD_EXCEPTION);
+    }
+
+    @Test
+    @DisplayName("형식에 맞지 않는 Name은 예외를 던집니다.")
+    void invalid_name_throw_exception() {
+        CreateMemberRequestDto createMemberRequestDto = new CreateMemberRequestDto(CORRECT_MEMBER_ALIAS, VALID_MEMBER_PASSWORD, "", EMAIL, PHONE);
+
+        assertThatIllegalArgumentException().isThrownBy(() -> memberService
+                .joinMember(createMemberRequestDto))
+                .withMessage(INVALID_NAME_EXCEPTION);
+    }
+
+    @Test
+    @DisplayName("형식에 맞지 않는 Email은 예외를 던집니다.")
+    void invalid_email_throw_exception() {
+        CreateMemberRequestDto createMemberRequestDto = new CreateMemberRequestDto(CORRECT_MEMBER_ALIAS, VALID_MEMBER_PASSWORD, NAME, "", PHONE);
+
+        assertThatIllegalArgumentException().isThrownBy(() -> memberService
+                .joinMember(createMemberRequestDto))
+                .withMessage(INVALID_EMAIL_EXCEPTION);
+    }
+
+    @Test
+    @DisplayName("형식에 맞지 않는 Phone은 예외를 던집니다.")
+    void invalid_phone_throw_exception() {
+        CreateMemberRequestDto createMemberRequestDto = new CreateMemberRequestDto(CORRECT_MEMBER_ALIAS, VALID_MEMBER_PASSWORD, NAME, EMAIL, "");
+
+        assertThatIllegalArgumentException().isThrownBy(() -> memberService
+                .joinMember(createMemberRequestDto))
+                .withMessage(INVALID_PHONE_EXCEPTION);
     }
 }
