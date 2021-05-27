@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.member.controller;
 
+import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.exception.UnAuthorizedException;
@@ -21,6 +22,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.net.URI;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -39,6 +42,9 @@ public class MemberControllerTest {
     private static final String NO_MEMBER_ELEMENT_EXCEPTION_MESSAGE = "존재하는 Alias를 입력해주세요.";
     private static final String PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE = "일치하는 비밀번호를 입력해주세요.";
     private static final String LOGIN_URL = "/api/v1/members/login";
+    private static final String CREATE_MEMBER_URL = "/api/v1/members";
+    private static final String CREATE_MEMBER_SUCCESS_JSON = "{\"alias\" : \"alias\", \"password\" : \"Password123!!\", " +
+            "\"name\" : \"이름\", \"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}";
 
     private MockMvc mockMvc;
 
@@ -113,6 +119,30 @@ public class MemberControllerTest {
                                 fieldWithPath("password").description("로그인 할 password")
                         ), responseFields(
                                 fieldWithPath("message").description("예외 메세지")
+                        )));
+    }
+    
+    @Test
+    @DisplayName("회원 가입에 성공하면 201 Status와 Id, Alias를 response 합니다.")
+    void join_member_response_success() throws Exception {
+        when(memberService.joinMember(any(CreateMemberRequestDto.class)))
+                .thenReturn(new ResponseEntity<>(new LoginResponseDto(1L, "alias"), HttpStatus.CREATED));
+        
+        this.mockMvc.perform(post(CREATE_MEMBER_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(CREATE_MEMBER_SUCCESS_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(document("create_member_success",
+                        requestFields(
+                                fieldWithPath("alias").description("회원 가입 할 alias"),
+                                fieldWithPath("password").description("회원 가입 할 password"),
+                                fieldWithPath("name").description("회원 가입 할 name"),
+                                fieldWithPath("email").description("회원 가입 할 email"),
+                                fieldWithPath("phone").description("회원 가입 할 휴대전화 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").description("식별자"),
+                                fieldWithPath("alias").description("회원 alias")
                         )));
     }
 }
