@@ -19,7 +19,7 @@ public class Content {
     private String content;
 
     public Content(String content) {
-        if (content.isBlank()) {
+        if (content == null || content.isBlank()) {
             throw new IllegalArgumentException(CHECK_CONTENT_IS_BLANK);
         }
 
