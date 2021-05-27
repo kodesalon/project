@@ -35,6 +35,14 @@ public class TitleTest {
     }
 
     @Test
+    @DisplayName("제목의 길이가 30자를 초과할 경우, 예외가 발생한다.")
+    public void check_length() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Title("this title length is 31        "))
+                .withMessageContaining("제목 글자 수가 30을 초과");
+    }
+
+    @Test
     @DisplayName("제목의 문자열 값을 반환한다.")
     public void value() {
         String value = title.value();
