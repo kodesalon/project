@@ -20,12 +20,4 @@ public class LoginResponseDtoTest {
                 () -> then(loginResponseDto.getAlias()).isEqualTo(ALIAS)
         );
     }
-
-    @Test
-    @DisplayName("Login이 실패하면 예외 메세지를 리턴합니다")
-    void login_failed_create_failed_response_dto() {
-        LoginResponseDto loginResponseDto = new LoginResponseDto(LOGIN_FAILED_MESSAGE);
-
-        then(loginResponseDto.getMessage()).isEqualTo(LOGIN_FAILED_MESSAGE);
-    }
 }
