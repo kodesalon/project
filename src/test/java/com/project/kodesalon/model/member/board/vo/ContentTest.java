@@ -29,10 +29,18 @@ public class ContentTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("공백 또는 아무것도 입력하지 않을 경우, 예외가 발생한다.")
-    public void check_blank(String input) {
+    public void checkNullOrBlank(String input) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Content(input))
                 .withMessageContaining("내용에 공백 아닌 1자 이상의 문자를 입력");
+    }
+
+    @Test
+    @DisplayName("500자를 초과할 경우, 예외가 발생한다.")
+    public void checkLength() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Content("1".repeat(501)))
+                .withMessageContaining("내용이 500자를 초과");
     }
 
     @Test
