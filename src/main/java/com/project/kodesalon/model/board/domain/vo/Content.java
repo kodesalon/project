@@ -26,7 +26,7 @@ public class Content {
         this.content = content;
     }
 
-    public String getValue() {
+    public String value() {
         return content;
     }
 }

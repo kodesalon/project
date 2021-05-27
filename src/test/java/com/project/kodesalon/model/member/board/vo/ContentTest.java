@@ -37,8 +37,8 @@ public class ContentTest {
 
     @Test
     @DisplayName("내용의 문자열 값을 반환한다.")
-    public void getValue() {
-        String value = content.getValue();
+    public void value() {
+        String value = content.value();
         assertThat(value).isEqualTo(boardContent);
     }
 }
