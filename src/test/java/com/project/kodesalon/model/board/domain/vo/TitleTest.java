@@ -36,8 +36,8 @@ public class TitleTest {
 
     @Test
     @DisplayName("제목의 문자열 값을 반환한다.")
-    public void getValue() {
-        String value = title.getValue();
+    public void value() {
+        String value = title.value();
         assertThat(value).isEqualTo(boardTitle);
     }
 }

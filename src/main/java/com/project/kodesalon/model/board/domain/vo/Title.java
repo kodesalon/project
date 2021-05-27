@@ -25,7 +25,7 @@ public class Title {
         this.title = title;
     }
 
-    public String getValue() {
+    public String value() {
         return title;
     }
 }
