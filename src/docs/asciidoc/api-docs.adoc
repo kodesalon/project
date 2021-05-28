@@ -12,32 +12,68 @@ kodesalon;
 
 [[sample]]
 == Member
-=== Login API
+=== Login
 ==== Request
 - CURL:
-include::{snippets}/login_success/curl-request.adoc[]
+include::{snippets}/login/success/success/curl-request.adoc[]
 
-- Response Body
-include::{snippets}/login_success/request-fields.adoc[]
+- Request Body
+include::{snippets}/login/success/success/request-fields.adoc[]
 
 - Request Body Example
-include::{snippets}/login_success/http-request.adoc[]
+include::{snippets}/login/success/success/http-request.adoc[]
 
 ==== Reponse
 - 로그인 성공 Response
-include::{snippets}/login_success/response-fields.adoc[]
+include::{snippets}/login/success/success/response-fields.adoc[]
 
 - 로그인 성공 Example
-include::{snippets}/login_success/http-response.adoc[]
+include::{snippets}/login/success/success/http-response.adoc[]
 
-- 로그인 실패 Response (Alias가 없는 경우)
-include::{snippets}/login_fail_no_alias/response-fields.adoc[]
+- 로그인 실패 Response
+include::{snippets}/login/fail/no_alias/response-fields.adoc[]
 
 - 로그인 실패 example (Alias가 없는 경우)
-include::{snippets}/login_fail_no_alias/http-response.adoc[]
-
-- 로그인 실패 Response (Password가 일치하지 않는 경우)
-include::{snippets}/login_failed_mismatch_password/response-fields.adoc[]
+include::{snippets}/login/fail/no_alias/http-response.adoc[]
 
 - 로그인 실패 example (Password가 일치하지 않는 경우)
-include::{snippets}/login_failed_mismatch_password/http-response.adoc[]
+include::{snippets}/login/fail/mismatch_password/http-response.adoc[]
+
+=== Join
+==== Request
+- CURL :
+include::{snippets}/join/success/success/curl-request.adoc[]
+
+- Request Body
+include::{snippets}/join/success/success/request-fields.adoc[]
+
+- Request Body Example
+include::{snippets}/join/success/success/http-response.adoc[]
+
+==== Response
+- 회원가입 성공 Response
+include::{snippets}/join/success/success/response-fields.adoc[]
+
+- 회원가입 성공 Example
+include::{snippets}/join/success/success/http-response.adoc[]
+
+- 회원가입 실패 Response
+include::{snippets}/join/fail/existing_member/response-fields.adoc[]
+
+- 회원가입 실패 Example (이미 존재하는 Alias일 경우)
+include::{snippets}/join/fail/existing_member/http-response.adoc[]
+
+- 회원가입 실패 Example (Alias 형식이 맞지 않을 경우)
+include::{snippets}/join/fail/invalid_alias/http-response.adoc[]
+
+- 회원가입 실패 Example (Password 형식이 맞지 않을 경우)
+include::{snippets}/join/fail/invalid_password/http-response.adoc[]
+
+- 회원가입 실패 Example (Name 형식이 맞지 않을 경우)
+include::{snippets}/join/fail/invalid_name/http-response.adoc[]
+
+- 회원가입 실패 Example (email이 email 형식이 아닌 경우)
+include::{snippets}/join/fail/invalid_email/http-response.adoc[]
+
+- 회원가입 실패 Example (Phone이 핸드폰 형식이 아닌 경우)
+include::{snippets}/join/fail/invalid_phone/http-response.adoc[]
