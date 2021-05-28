@@ -1,5 +1,7 @@
 package com.project.kodesalon.model.member.dto;
 
+import com.project.kodesalon.model.member.domain.vo.Alias;
+import com.project.kodesalon.model.member.domain.vo.Password;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +18,8 @@ public class LoginRequestDtoTest {
         LoginRequestDto loginRequestDto = new LoginRequestDto(ALIAS, PASSWORD);
 
         assertAll(
-                () -> then(loginRequestDto.getAlias()).isEqualTo(ALIAS),
-                () -> then(loginRequestDto.getPassword()).isEqualTo(PASSWORD)
+                () -> then(loginRequestDto.getAlias()).isEqualTo(new Alias(ALIAS)),
+                () -> then(loginRequestDto.getPassword()).isEqualTo(new Password(PASSWORD))
         );
     }
 }
