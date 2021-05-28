@@ -73,7 +73,7 @@ public class Member {
         return phone.value();
     }
 
-    public boolean isIncorrectPassword(String password) {
-        return !this.password.value().equals(password);
+    public boolean isIncorrectPassword(Password password) {
+        return !this.password.equals(password);
     }
 }

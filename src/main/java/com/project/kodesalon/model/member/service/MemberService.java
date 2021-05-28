@@ -24,7 +24,7 @@ public class MemberService {
     }
 
     public ResponseEntity<LoginResponseDto> login(LoginRequestDto loginRequestDto) {
-        Member member = memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias()))
+        Member member = memberRepository.findMemberByAlias(loginRequestDto.getAlias())
                 .orElseThrow(() -> new UnAuthorizedException(NO_MEMBER_ELEMENT_EXCEPTION_MESSAGE));
 
         if (member.isIncorrectPassword(loginRequestDto.getPassword())) {

@@ -60,7 +60,7 @@ public class MemberServiceTest {
         LoginRequestDto loginRequestDto =
                 new LoginRequestDto(NOT_EXIST_MEMBER_ALIAS, VALID_MEMBER_PASSWORD);
 
-        when(memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias())))
+        when(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
@@ -77,7 +77,7 @@ public class MemberServiceTest {
         when(member.getId()).thenReturn(MEMBER_ID);
         when(member.getAlias()).thenReturn(CORRECT_MEMBER_ALIAS);
         when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(false);
-        when(memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias())))
+        when(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
                 .thenReturn(Optional.of(member));
 
         ResponseEntity<LoginResponseDto> loginResponseDto = memberService.login(loginRequestDto);
@@ -99,7 +99,7 @@ public class MemberServiceTest {
                 = new LoginRequestDto(CORRECT_MEMBER_ALIAS, NOT_CORRECT_MEMBER_PASSWORD);
 
         when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(true);
-        when(memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias())))
+        when(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
                 .thenReturn(Optional.of(member));
 
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
