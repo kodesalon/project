@@ -75,7 +75,7 @@ public class MemberControllerTest {
                 .content(LOGIN_REQUEST_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("login_success",
+                .andDo(document("login/success/success",
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
                                 fieldWithPath("password").description("로그인 할 패스워드")
@@ -97,7 +97,7 @@ public class MemberControllerTest {
                 .content(LOGIN_REQUEST_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
-                .andDo(document("login_failed_mismatch_password",
+                .andDo(document("login/fail/mismatch_password",
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
                                 fieldWithPath("password").description("로그인 할 password")
@@ -117,7 +117,7 @@ public class MemberControllerTest {
                 .content(LOGIN_REQUEST_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
-                .andDo(document("login_fail_no_alias",
+                .andDo(document("login/fail/no_alias",
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
                                 fieldWithPath("password").description("로그인 할 password")
@@ -137,7 +137,7 @@ public class MemberControllerTest {
                 .content(CREATE_MEMBER_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andDo(document("create_member_success",
+                .andDo(document("join/success/success",
                         requestFields(
                                 fieldWithPath("alias").description("회원 가입 할 alias"),
                                 fieldWithPath("password").description("회원 가입 할 password"),
@@ -162,7 +162,7 @@ public class MemberControllerTest {
                 .content(CREATE_MEMBER_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isConflict())
-                .andDo(document("create_member_fail/existing_member",
+                .andDo(document("join/fail/existing_member",
                         responseFields(
                                 fieldWithPath("message").description("예외 메세지")
                         )));
@@ -179,7 +179,7 @@ public class MemberControllerTest {
                 .content(CREATE_MEMBER_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
-                .andDo(document("create_member_fail/invalid_alias",
+                .andDo(document("join/fail/invalid_alias",
                         responseFields(
                                 fieldWithPath("message").description("예외 메세지")
                         )));
@@ -196,7 +196,7 @@ public class MemberControllerTest {
                 .content(CREATE_MEMBER_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
-                .andDo(document("create_member_fail/invalid_password",
+                .andDo(document("join/fail/invalid_password",
                         responseFields(
                                 fieldWithPath("message").description("예외메세지"))));
     }
@@ -212,7 +212,7 @@ public class MemberControllerTest {
                 .content(CREATE_MEMBER_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
-                .andDo(document("create_member_fail/invalid_name",
+                .andDo(document("join/fail/invalid_name",
                         responseFields(
                                 fieldWithPath("message").description("예외메세지"))));
     }
@@ -228,7 +228,7 @@ public class MemberControllerTest {
                 .content(CREATE_MEMBER_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
-                .andDo(document("create_member_fail/invalid_email",
+                .andDo(document("join/fail/invalid_email",
                         responseFields(
                                 fieldWithPath("message").description("예외메세지"))));
     }
@@ -244,7 +244,7 @@ public class MemberControllerTest {
                 .content(CREATE_MEMBER_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
-                .andDo(document("create_member_fail/invalid_phone",
+                .andDo(document("join/fail/invalid_phone",
                         responseFields(
                                 fieldWithPath("message").description("예외메세지"))));
     }
