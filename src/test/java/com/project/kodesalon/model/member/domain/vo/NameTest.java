@@ -1,7 +1,9 @@
 package com.project.kodesalon.model.member.domain.vo;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -17,6 +19,13 @@ class NameTest {
     private static final String INVALID_NAME_INCLUDE_BLANK = "엄 이";
     private static final String INVALID_NAME_INCLUDE_SPECIAL_SYMBOL = "엄~";
     private static final String INVALID_NAME_INCLUDE_NON_KOREAN = "abc";
+
+    private Name testName;
+
+    @BeforeEach
+    void setUp() {
+        testName = new Name(VALID_NAME_LENGTH_TWO);
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {VALID_NAME_LENGTH_TWO, VALID_NAME_LENGTH_SEVENTEEN})
@@ -36,5 +45,12 @@ class NameTest {
     void invalid_name_throw_exception(String invalidName) {
         assertThatThrownBy(() -> new Name(invalidName)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(NAME_EXCEPTION_MESSAGE);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {VALID_NAME_LENGTH_TWO + ",true", VALID_NAME_LENGTH_SEVENTEEN + ",false"})
+    @DisplayName("Name 값이 같으면 true, 다르면 false를 리턴합니다.")
+    void same_name_value_return_true(String name, boolean expect) {
+        then(testName.equals(new Name(name))).isEqualTo(expect);
     }
 }

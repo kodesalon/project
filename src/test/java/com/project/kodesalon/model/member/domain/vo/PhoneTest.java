@@ -1,7 +1,9 @@
 package com.project.kodesalon.model.member.domain.vo;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -18,6 +20,13 @@ class PhoneTest {
     private static final String PHONE_LAST_NUMBER_UNDER_LENGTH = "010-2222-7";
     private static final String PHONE_LAST_NUMBER_OVER_LENGTH = "010-2222-77777";
     private static final String PHONE_ERROR_MESSAGE = "핸드폰 번호는 [휴대폰 앞자리 번호]- 3자리 혹은 4자리 수 - 4자리수의 형식 이어야 합니다.";
+
+    private Phone testPhone;
+
+    @BeforeEach
+    void setUp() {
+        testPhone = new Phone(VALID_PHONE_MIDDLE_NUMBER_LENGTH_FOUR);
+    }
 
     @ParameterizedTest
     @ValueSource(strings = {VALID_PHONE_MIDDLE_NUMBER_LENGTH_FOUR,
@@ -38,6 +47,13 @@ class PhoneTest {
     void invalid_phone_throw_exception(String invalidPhoneNumber) {
         assertThatThrownBy(() -> new Phone(invalidPhoneNumber)).isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(PHONE_ERROR_MESSAGE);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {VALID_PHONE_MIDDLE_NUMBER_LENGTH_FOUR + ",true", VALID_PHONE_MIDDLE_NUMBER_LENGTH_THREE + ",false"})
+    @DisplayName("Phone의 값이 같으면 true, 다르면 false를 리탄합니다")
+    void same_phone_value_retunr_true(String phone, boolean expect) {
+        then(testPhone.equals(new Phone(phone))).isEqualTo(expect);
     }
 }
 
