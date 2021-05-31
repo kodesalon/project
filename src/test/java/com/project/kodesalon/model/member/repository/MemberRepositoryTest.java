@@ -16,7 +16,6 @@ import java.util.Optional;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@ExtendWith(SpringExtension.class)
 @DataJpaTest
 class MemberRepositoryTest {
     @Autowired
