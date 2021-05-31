@@ -11,4 +11,11 @@ public class BoardCreateRequest {
     private String title;
     private String content;
     private String createdDateTime;
+
+    public BoardCreateRequest(Long memberId, String title, String content, String createdDateTime) {
+        this.memberId = memberId;
+        this.title = title;
+        this.content = content;
+        this.createdDateTime = createdDateTime;
+    }
 }
