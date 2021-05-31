@@ -21,7 +21,7 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public ResponseEntity<LoginResponseDto> login(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Member member = memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias()))
                 .orElseThrow(() -> new UnAuthorizedException(NO_MEMBER_ELEMENT_EXCEPTION_MESSAGE));
 
@@ -29,6 +29,6 @@ public class MemberService {
             throw new UnAuthorizedException(PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE);
         }
 
-        return new ResponseEntity<>(new LoginResponseDto(member.getId(), member.getAlias()), HttpStatus.OK);
+        return new LoginResponseDto(member.getId(), member.getAlias());
     }
 }

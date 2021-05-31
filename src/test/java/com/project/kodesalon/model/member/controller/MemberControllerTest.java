@@ -58,7 +58,7 @@ public class MemberControllerTest {
     void login_controller_return_success_response()
             throws Exception {
         when(memberService.login(any(LoginRequestDto.class)))
-                .thenReturn(new ResponseEntity<>(new LoginResponseDto(1L, "alias"), HttpStatus.OK));
+                .thenReturn(new LoginResponseDto(1L, "alias"));
 
         this.mockMvc.perform(post(LOGIN_URL)
                 .contentType(MediaType.APPLICATION_JSON)
