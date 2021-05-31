@@ -43,6 +43,10 @@ public class Board {
         this.createdDateTime = createdDateTime;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title.value();
     }
