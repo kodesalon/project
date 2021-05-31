@@ -12,9 +12,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private static final String NO_MEMBER_ELEMENT_EXCEPTION_MESSAGE = "존재하는 Alias를 입력해주세요.";
-    private static final String PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE = "일치하는 비밀번호를 입력해주세요.";
-
     private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -23,10 +20,10 @@ public class MemberService {
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Member member = memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias()))
-                .orElseThrow(() -> new UnAuthorizedException(NO_MEMBER_ELEMENT_EXCEPTION_MESSAGE));
+                .orElseThrow(() -> new UnAuthorizedException("존재하는 Alias를 입력해주세요."));
 
         if (member.isIncorrectPassword(loginRequestDto.getPassword())) {
-            throw new UnAuthorizedException(PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE);
+            throw new UnAuthorizedException("일치하는 비밀번호를 입력해주세요.");
         }
 
         return new LoginResponseDto(member.getId(), member.getAlias());
