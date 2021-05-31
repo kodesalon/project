@@ -19,6 +19,7 @@ import javax.persistence.UniqueConstraint;
 @NoArgsConstructor
 @Table(name = "member", uniqueConstraints = {
         @UniqueConstraint(
+                name = "unique_alias_constraint",
                 columnNames = {"alias"}
         )})
 public class Member {
