@@ -20,7 +20,7 @@ class PasswordTest {
     private static final String INVALID_PASSWORD_INCLUDE_NON_ALPHABET = "!비밀!pass1234";
 
     @ParameterizedTest
-    @ValueSource(strings = {VALID_PASSWORD_LENGTH_EIGHT, VALID_PASSWORD_LENGTH_SIXTEEN})
+    @ValueSource(strings = {"!!Pass12", "!!Password123456"})
     @DisplayName("유효한 비밀번호는 값을 초기화 합니다.")
     void valid_password_init_value(String validPassword) {
         Password password = new Password(validPassword);
@@ -29,10 +29,8 @@ class PasswordTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {INVALID_PASSWORD_LENGTH_SEVEN, INVALID_PASSWORD_LENGTH_SEVENTEEN,
-            INVALID_PASSWORD_NON_INCLUDE_SPECIAL_SYMBOL, INVALID_PASSWORD_NON_INCLUDE_NUMBER,
-            INVALID_PASSWORD_NON_INCLUDE_UPPER_CASE, INVALID_PASSWORD_NON_INCLUDE_LOWER_CASE,
-            INVALID_PASSWORD_INCLUDE_NON_ALPHABET})
+    @ValueSource(strings = {"!pass12", "!!Password1234567", "Password12",
+            "!!Password", "!!password12", "!!PASSWORD12", "!비밀!pass1234"})
     @DisplayName("유효하지 않은 비밀번호는 예외를 발생시킵니다.")
     void invalid_password_throw_exception(String invalidPassword) {
         assertThatThrownBy(() -> new Password(invalidPassword)).isInstanceOf(IllegalArgumentException.class)
