@@ -1,10 +1,14 @@
 package com.project.kodesalon.model.board.controller;
 
 import com.project.kodesalon.common.GlobalExceptionHandler;
+import com.project.kodesalon.model.board.service.BoardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -19,14 +23,20 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith({RestDocumentationExtension.class})
+@ExtendWith({RestDocumentationExtension.class, MockitoExtension.class})
 public class BoardControllerTest {
 
     private MockMvc mockMvc;
 
+    @InjectMocks
+    private BoardController boardController;
+
+    @Mock
+    private BoardService boardService;
+
     @BeforeEach
     public void setUp(RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(BoardController.class)
+        this.mockMvc = MockMvcBuilders.standaloneSetup(boardController)
                 .apply(documentationConfiguration(restDocumentation))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
@@ -34,7 +44,7 @@ public class BoardControllerTest {
 
     @Test
     @DisplayName("회원 식별 번호, 제목, 내용, 생성 날짜를 json으로 전달받아 게시물을 생성하고 HTTP status 201을 반환한다.")
-    public void create() throws Exception {
+    public void save() throws Exception {
         String requestBody = "{ \"memberId\": 1, \"title\": \"게시물 제목\", \"content\": \"게시물 내용\", \"createdDateTime\": \"작성 날짜\"}";
         mockMvc.perform(post("/api/v1/boards/")
                 .content(requestBody)
