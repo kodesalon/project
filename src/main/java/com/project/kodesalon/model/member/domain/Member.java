@@ -68,6 +68,6 @@ public class Member {
     }
 
     public boolean isIncorrectPassword(Password password) {
-        return !this.getPassword().equals(password);
+        return !this.password.equals(password);
     }
 }
