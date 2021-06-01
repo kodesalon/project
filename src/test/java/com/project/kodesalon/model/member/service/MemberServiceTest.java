@@ -16,13 +16,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
+    private final LoginRequestDto loginRequestDto = new LoginRequestDto("alias", "Password123!!");
+    private final CreateMemberRequestDto createMemberRequestDto  = new CreateMemberRequestDto("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+
     @InjectMocks
     private MemberService memberService;
 
@@ -49,9 +54,6 @@ public class MemberServiceTest {
     @Test
     @DisplayName("존재하는 Alias가 Alias와 Password가 일치하면 200 status 코드, Id, Alias를 리턴합니다.")
     void exist_login_return_success2() {
-        LoginRequestDto loginRequestDto =
-                new LoginRequestDto("alias", "Password123!!");
-
         when(member.getId()).thenReturn(1L);
         when(member.getAlias()).thenReturn("alias");
         when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(false);
@@ -69,9 +71,6 @@ public class MemberServiceTest {
     @Test
     @DisplayName("존재하는 Alias가 Password가 일치하지 않는다면 예외 메세지를 발생시킵니다.")
     void exist_login_return_fail2() {
-        LoginRequestDto loginRequestDto
-                = new LoginRequestDto("alias", "Password123!!!");
-
         when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(true);
         when(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
                 .thenReturn(Optional.of(member));
@@ -84,15 +83,9 @@ public class MemberServiceTest {
     @Test
     @DisplayName("존재하지 않는 아이디이면 회원가입을 진행합니다.")
     void create_member_success() {
-        CreateMemberRequestDto createMemberRequestDto
-                = new CreateMemberRequestDto("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
-
-        when(memberRepository.save(member))
-                .thenReturn(member);
-        when(member.getId())
-                .thenReturn(1L);
-        when(member.getAlias())
-                .thenReturn("alias");
+        when(memberRepository.save(any(Member.class))).thenReturn(member);
+        when(member.getId()).thenReturn(1L);
+        when(member.getAlias()).thenReturn("alias");
 
         LoginResponseDto loginResponseDto = memberService.join(createMemberRequestDto);
 
@@ -100,5 +93,15 @@ public class MemberServiceTest {
                 () -> then(loginResponseDto.getMemberId()).isEqualTo(1L),
                 () -> then(loginResponseDto.getAlias()).isEqualTo("alias")
         );
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 Alias면 예외를 발생시킵니다.")
+    void exist_alias_throws_exception() {
+       when(memberRepository.findMemberByAlias(any(Alias.class))).thenReturn(Optional.empty());
+
+       assertThatIllegalStateException().isThrownBy(
+               () -> memberService.join(createMemberRequestDto))
+               .withMessage("이미 존재하는 아이디입니다");
     }
 }
