@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -45,7 +46,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("회원 식별 번호, 제목, 내용, 생성 날짜를 json으로 전달받아 게시물을 생성하고 HTTP status 201을 반환한다.")
     public void save() throws Exception {
-        String requestBody = "{ \"memberId\": 1, \"title\": \"게시물 제목\", \"content\": \"게시물 내용\", \"createdDateTime\": \"작성 날짜\"}";
+        String requestBody = "{ \"memberId\": 1, \"title\": \"게시물 제목\", \"content\": \"게시물 내용\", \"createdDateTime\": \"2021-06-01T23:59:59.999999\"}";
         mockMvc.perform(post("/api/v1/boards/")
                 .content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON))
@@ -53,10 +54,10 @@ public class BoardControllerTest {
                 .andDo(document("board/create/success",
                         getDocumentRequest(),
                         requestFields(
-                                fieldWithPath("memberId").description("작성자 식별 번호"),
-                                fieldWithPath("title").description("게시물 제목"),
-                                fieldWithPath("content").description("게시물 내용"),
-                                fieldWithPath("createdDateTime").description("게시물 작성 날짜")
+                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("작성자 식별 번호"),
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("게시물 내용"),
+                                fieldWithPath("createdDateTime").type(JsonFieldType.STRING).description("게시물 작성 날짜")
                         ))
                 );
     }
