@@ -100,8 +100,7 @@ public class MemberServiceTest {
     void exist_alias_throws_exception() {
        when(memberRepository.findMemberByAlias(any(Alias.class))).thenReturn(Optional.empty());
 
-       assertThatIllegalStateException().isThrownBy(
-               () -> memberService.join(createMemberRequestDto))
+       assertThatIllegalStateException().isThrownBy(() -> memberService.join(createMemberRequestDto))
                .withMessage("이미 존재하는 아이디입니다");
     }
 }

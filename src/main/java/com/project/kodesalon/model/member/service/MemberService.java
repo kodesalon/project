@@ -30,7 +30,7 @@ public class MemberService {
 
     public LoginResponseDto join(CreateMemberRequestDto createMemberRequestDto) {
         memberRepository.findMemberByAlias(createMemberRequestDto.getAlias())
-                .orElseThrow(() -> new IllegalStateException("이미 존재하는 아이디입니다."));
+                .orElseThrow(() -> new IllegalStateException("이미 존재하는 아이디입니다"));
 
         Member savedMember = memberRepository.save(new Member(createMemberRequestDto.getAlias().value(), createMemberRequestDto.getPassword().value(),
                 createMemberRequestDto.getName().value(), createMemberRequestDto.getEmail().value(), createMemberRequestDto.getPhone().value()));
