@@ -24,6 +24,6 @@ class NameTest {
     @DisplayName("유효하지 않은 이름은 예외를 발생시킵니다.")
     void invalid_name_throw_exception(String invalidName) {
         assertThatThrownBy(() -> new Name(invalidName)).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Name은 2자리 이상 17자리 이하의 한글이어야 합니다.");
+                .hasMessageContaining("이름은 2자리 이상 17자리 이하의 한글이어야 합니다.");
     }
 }

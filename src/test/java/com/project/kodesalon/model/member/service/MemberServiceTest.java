@@ -42,7 +42,7 @@ public class MemberServiceTest {
 
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
                 .isInstanceOf(UnAuthorizedException.class)
-                .hasMessage("존재하는 Alias를 입력해주세요.");
+                .hasMessage("존재하는 아이디를 입력해주세요.");
     }
 
     @Test
@@ -77,6 +77,6 @@ public class MemberServiceTest {
 
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
                 .isInstanceOf(UnAuthorizedException.class)
-                .hasMessage("일치하는 비밀번호를 입력해주세요.");
+                .hasMessage("비밀 번호가 일치하지 않습니다.");
     }
 }
