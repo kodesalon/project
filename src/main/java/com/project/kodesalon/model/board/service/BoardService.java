@@ -4,6 +4,7 @@ import com.project.kodesalon.model.board.domain.Board;
 import com.project.kodesalon.model.board.domain.dto.BoardCreateRequestDto;
 import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
+import com.project.kodesalon.model.board.exception.ForbiddenException;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,12 +21,19 @@ public class BoardService {
     }
 
     public void save(BoardCreateRequestDto boardCreateRequestDto) {
-        Board board = Board.builder()
-                .title(new Title(boardCreateRequestDto.getTitle()))
-                .content(new Content(boardCreateRequestDto.getContent()))
-                .createdDateTime(LocalDateTime.parse(boardCreateRequestDto.getCreatedDateTime()))
-                .build();
-
+        Board board = boardEntityFrom(boardCreateRequestDto);
         boardRepository.save(board);
+    }
+
+    private Board boardEntityFrom(BoardCreateRequestDto boardCreateRequestDto) {
+        try {
+            return Board.builder()
+                    .title(new Title(boardCreateRequestDto.getTitle()))
+                    .content(new Content(boardCreateRequestDto.getContent()))
+                    .createdDateTime(LocalDateTime.parse(boardCreateRequestDto.getCreatedDateTime()))
+                    .build();
+        } catch (Exception e) {
+            throw new ForbiddenException(e.getMessage());
+        }
     }
 }
