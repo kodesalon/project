@@ -1,6 +1,7 @@
 package com.project.kodesalon.model.member.controller;
 
 import com.project.kodesalon.common.GlobalExceptionHandler;
+import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.exception.UnAuthorizedException;
@@ -35,6 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MemberControllerTest {
     private final String loginRequestJson = "{\"alias\" : \"alias\", \"password\" : \"Password123!!\"}";
     private final String loginUrl = "/api/v1/members/login";
+    private final String createRequestJson = "{\"alias\" : \"alias\", \"password\" : \"Password123!!\", \"name\" : \"이름\", \"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}";
+    private final String joinUrl = "/api/v1/members";
 
     private MockMvc mockMvc;
 
@@ -56,10 +59,8 @@ public class MemberControllerTest {
     @Test
     @DisplayName("로그인이 성공하면 Alias, ID, Http Status 200를 Response 합니다.")
     void login_controller_return_success_response() throws Exception {
-        LoginResponseDto loginResponseDto = new LoginResponseDto(1L, "alias");
-
         given(memberService.login(any(LoginRequestDto.class)))
-                .willReturn(loginResponseDto);
+                .willReturn(new LoginResponseDto(1L, "alias"));
 
         this.mockMvc.perform(
                 post(loginUrl)
@@ -67,7 +68,7 @@ public class MemberControllerTest {
                         .content(loginRequestJson))
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"memberId\":1,\"alias\":\"alias\"}"))
-                .andDo(document("login_success",
+                .andDo(document("login/success",
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
                                 fieldWithPath("password").description("로그인 할 패스워드")
@@ -83,13 +84,13 @@ public class MemberControllerTest {
         given(memberService.login(any(LoginRequestDto.class)))
                 .willThrow(new UnAuthorizedException("일치하는 비밀번호를 입력해주세요."));
 
-        this.mockMvc.perform(post(loginUrl)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(loginRequestJson)
-                .accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(
+                post(loginUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginRequestJson))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("{\"message\":\"일치하는 비밀번호를 입력해주세요.\"}"))
-                .andDo(document("login_failed_mismatch_password",
+                .andDo(document("login/fail/mismatch_password",
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
                                 fieldWithPath("password").description("로그인 할 password")
@@ -103,18 +104,43 @@ public class MemberControllerTest {
         given(memberService.login(any(LoginRequestDto.class)))
                 .willThrow(new UnAuthorizedException("존재하는 Alias를 입력해주세요."));
 
-        this.mockMvc.perform(post(loginUrl)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(loginRequestJson)
-                .accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(
+                post(loginUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(loginRequestJson))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("{\"message\":\"존재하는 Alias를 입력해주세요.\"}"))
-                .andDo(document("login_fail_no_alias",
+                .andDo(document("login/fail/no_alias",
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
                                 fieldWithPath("password").description("로그인 할 password")
                         ), responseFields(
                                 fieldWithPath("message").description("예외 메세지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("사용자가 존재하지 않는다면 회원가입을 진행하고 201 상태를 response합니다.")
+    void create_member_response_success() throws Exception{
+        given(memberService.join(any(CreateMemberRequestDto.class)))
+                .willReturn(new LoginResponseDto(1L, "alias"));
+
+        this.mockMvc.perform(
+                post(joinUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(createRequestJson))
+                .andExpect(status().isCreated())
+                .andExpect(content().string("{\"memberId\":1,\"alias\":\"alias\"}"))
+                .andDo(document("join/success",
+                        requestFields(
+                                fieldWithPath("alias").description("회원 가입할 member의 alias"),
+                                fieldWithPath("password").description("회원 가입할 member의 password"),
+                                fieldWithPath("name").description("회원 가입할 member의 이름"),
+                                fieldWithPath("email").description("회원 가입할 member의 email"),
+                                fieldWithPath("phone").description("회원 가입할 member의 phone")
+                        ), responseFields(
+                                fieldWithPath("memberId").description("회원 가입한 member의 식별자"),
+                                fieldWithPath("alias").description("회원 가입한 member의 alias")
                         )));
     }
 }
