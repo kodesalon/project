@@ -1,7 +1,6 @@
 spring:
   profiles:
     active: local
-
 ---
 
 spring:
@@ -20,3 +19,15 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+  jpa:
+    show-sql: true
+    database-platform: H2
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        default_batch_size : 50
+        query:
+          in_cloud_memory_padding : true
+        format_sql: true
+    open-in-view: false
