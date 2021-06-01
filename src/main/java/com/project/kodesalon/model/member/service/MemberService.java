@@ -2,45 +2,28 @@ package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
-import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.exception.UnAuthorizedException;
 import com.project.kodesalon.model.member.repository.MemberRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
-    private static final String NO_MEMBER_ELEMENT_EXCEPTION_MESSAGE = "존재하는 Alias를 입력해주세요.";
-    private static final String PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE = "일치하는 비밀번호를 입력해주세요.";
-    private static final String ALREADY_EXIST_MEMBER_EXCEPTION_MESSAGE = "이미 존재하는 Alias 입니다.";
-
     private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
-    public ResponseEntity<LoginResponseDto> login(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Member member = memberRepository.findMemberByAlias(loginRequestDto.getAlias())
-                .orElseThrow(() -> new UnAuthorizedException(NO_MEMBER_ELEMENT_EXCEPTION_MESSAGE));
+                .orElseThrow(() -> new UnAuthorizedException("존재하는 아이디를 입력해주세요."));
 
         if (member.isIncorrectPassword(loginRequestDto.getPassword())) {
-            throw new UnAuthorizedException(PASSWORD_NOT_MATCH_EXCEPTION_MESSAGE);
+            throw new UnAuthorizedException("비밀 번호가 일치하지 않습니다.");
         }
 
-        return new ResponseEntity<>(new LoginResponseDto(member.getId(), member.getAlias()), HttpStatus.OK);
-    }
-
-    public ResponseEntity<LoginResponseDto> joinMember(CreateMemberRequestDto createMemberRequestDto) {
-        memberRepository.findMemberByAlias(new Alias(createMemberRequestDto.getAlias()))
-                .ifPresent(member -> new IllegalStateException(ALREADY_EXIST_MEMBER_EXCEPTION_MESSAGE));
-
-        Member savedMember = memberRepository.save(new Member(createMemberRequestDto.getAlias(), createMemberRequestDto.getPassword(),
-                createMemberRequestDto.getName(), createMemberRequestDto.getEmail(), createMemberRequestDto.getPhone()));
-
-        return new ResponseEntity<>(new LoginResponseDto(savedMember.getId(), savedMember.getAlias()), HttpStatus.CREATED);
+        return new LoginResponseDto(member.getId(), member.getAlias());
     }
 }
