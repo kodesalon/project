@@ -14,21 +14,18 @@ kodesalon;
 == Member
 === Login
 ==== Request
-- CURL:
-include::{snippets}/login/success/success/curl-request.adoc[]
-
 - Request Body
-include::{snippets}/login/success/success/request-fields.adoc[]
+include::{snippets}/login/success/request-fields.adoc[]
 
 - Request Body Example
-include::{snippets}/login/success/success/http-request.adoc[]
+include::{snippets}/login/success/http-request.adoc[]
 
 ==== Reponse
 - 로그인 성공 Response
-include::{snippets}/login/success/success/response-fields.adoc[]
+include::{snippets}/login/success/response-fields.adoc[]
 
 - 로그인 성공 Example
-include::{snippets}/login/success/success/http-response.adoc[]
+include::{snippets}/login/success/http-response.adoc[]
 
 - 로그인 실패 Response
 include::{snippets}/login/fail/no_alias/response-fields.adoc[]
@@ -41,27 +38,23 @@ include::{snippets}/login/fail/mismatch_password/http-response.adoc[]
 
 === Join
 ==== Request
-- CURL :
-include::{snippets}/join/success/success/curl-request.adoc[]
-
 - Request Body
-include::{snippets}/join/success/success/request-fields.adoc[]
+include::{snippets}/join/success/request-fields.adoc[]
 
 - Request Body Example
-include::{snippets}/join/success/success/http-response.adoc[]
-
+include::{snippets}/join/success/http-request.adoc[]
 ==== Response
 - 회원가입 성공 Response
-include::{snippets}/join/success/success/response-fields.adoc[]
+include::{snippets}/join/success/response-fields.adoc[]
 
 - 회원가입 성공 Example
-include::{snippets}/join/success/success/http-response.adoc[]
+include::{snippets}/join/success/http-response.adoc[]
 
 - 회원가입 실패 Response
-include::{snippets}/join/fail/existing_member/response-fields.adoc[]
+include::{snippets}/join/fail/existing_alias/response-fields.adoc[]
 
 - 회원가입 실패 Example (이미 존재하는 Alias일 경우)
-include::{snippets}/join/fail/existing_member/http-response.adoc[]
+include::{snippets}/join/fail/existing_alias/http-response.adoc[]
 
 - 회원가입 실패 Example (Alias 형식이 맞지 않을 경우)
 include::{snippets}/join/fail/invalid_alias/http-response.adoc[]

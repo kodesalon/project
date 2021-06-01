@@ -36,7 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MemberControllerTest {
     private final String loginRequestJson = "{\"alias\" : \"alias\", \"password\" : \"Password123!!\"}";
     private final String loginUrl = "/api/v1/members/login";
-    private final String createRequestJson = "{\"alias\" : \"alias\", \"password\" : \"Password123!!\", \"name\" : \"이름\", \"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}";
+    private final String createRequestJson = "{\"alias\" : \"alias\", \"password\" : \"Password123!!\", " +
+            "\"name\" : \"이름\", \"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}";
     private final String joinUrl = "/api/v1/members";
 
     private MockMvc mockMvc;
@@ -91,10 +92,7 @@ public class MemberControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("{\"message\":\"일치하는 비밀번호를 입력해주세요.\"}"))
                 .andDo(document("login/fail/mismatch_password",
-                        requestFields(
-                                fieldWithPath("alias").description("로그인 할 alias"),
-                                fieldWithPath("password").description("로그인 할 password")
-                        ), responseFields(
+                        responseFields(
                                 fieldWithPath("message").description("예외 메세지"))));
     }
 
@@ -111,10 +109,7 @@ public class MemberControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("{\"message\":\"존재하는 Alias를 입력해주세요.\"}"))
                 .andDo(document("login/fail/no_alias",
-                        requestFields(
-                                fieldWithPath("alias").description("로그인 할 alias"),
-                                fieldWithPath("password").description("로그인 할 password")
-                        ), responseFields(
+                        responseFields(
                                 fieldWithPath("message").description("예외 메세지")
                         )));
     }
@@ -141,6 +136,104 @@ public class MemberControllerTest {
                         ), responseFields(
                                 fieldWithPath("memberId").description("회원 가입한 member의 식별자"),
                                 fieldWithPath("alias").description("회원 가입한 member의 alias")
+                        )));
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 회원이면 409 상태를 response합니다.")
+    void existing_alias_response_fail() throws Exception {
+        given(memberService.join(any(CreateMemberRequestDto.class)))
+                .willThrow(new IllegalStateException("이미 존재하는 아이디입니다"));
+
+        this.mockMvc.perform(
+                post(joinUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(createRequestJson))
+                .andExpect(status().isConflict())
+                .andExpect(content().string("{\"message\":\"이미 존재하는 아이디입니다\"}"))
+                .andDo(document("join/fail/existing_alias",
+                        responseFields(
+                            fieldWithPath("message").description("이미 존재하는 회원 에러 메세지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("아이디가 형식에 맞지 않으면 403 상태를 response합니다.")
+    void invalid_alias_response_fail() throws Exception {
+        this.mockMvc.perform(
+                post(joinUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"alias\" : \"\", \"password\" : \"Password123!!\", \"name\" : \"이름\", " +
+                                "\"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}"))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string("{\"message\":\"아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다.\"}"))
+                .andDo(document("join/fail/invalid_alias",
+                        responseFields(
+                                fieldWithPath("message").description("유효하지 않은 Alias 에러 메세지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("비밀번호가 형식에 맞지 않으면 403 상태를 response합니다.")
+    void invalid_password_response_fail() throws Exception {
+        this.mockMvc.perform(
+                post(joinUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"alias\" : \"alias\", \"password\" : \"\", \"name\" : \"이름\", " +
+                                "\"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}"))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string("{\"message\":\"비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.\"}"))
+                .andDo(document("join/fail/invalid_password",
+                        responseFields(
+                                fieldWithPath("message").description("유효하지 않은 Password 에러 메세지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("이름이 형식에 맞지 않으면 403 상태를 response합니다.")
+    void invalid_name_response_fail() throws Exception {
+        this.mockMvc.perform(
+                post(joinUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"alias\" : \"alias\", \"password\" : \"Password123!!\", \"name\" : \"\", " +
+                                "\"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}"))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string("{\"message\":\"이름은 2자리 이상 17자리 이하의 한글이어야 합니다.\"}"))
+                .andDo(document("join/fail/invalid_name",
+                        responseFields(
+                                fieldWithPath("message").description("유효하지 않은 Name 에러 메세지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("이메일이 형식에 맞지 않으면 403 상태를 response합니다.")
+    void invalid_email_response_fail() throws Exception {
+        this.mockMvc.perform(
+                post(joinUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"alias\" : \"alias\", \"password\" : \"Password123!!\", \"name\" : \"이름\", " +
+                                "\"email\" : \"emailemail.com\", \"phone\" : \"010-1111-2222\"}"))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string("{\"message\":\"이메일은 이메일주소@회사.com 형식 이어야 합니다.\"}"))
+                .andDo(document("join/fail/invalid_email",
+                        responseFields(
+                                fieldWithPath("message").description("유효하지 않은 Eamil 에러 메세지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("핸드폰이 형식에 맞지 않으면 403 상태를 response합니다.")
+    void invalid_phone_response_fail() throws Exception {
+        this.mockMvc.perform(
+                post(joinUrl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"alias\" : \"alias\", \"password\" : \"Password123!!\", \"name\" : \"이름\", " +
+                                "\"email\" : \"email@email.com\", \"phone\" : \"01111-2222\"}"))
+                .andExpect(status().isForbidden())
+                .andExpect(content().string("{\"message\":\"핸드폰 번호는 [휴대폰 앞자리 번호]- 3자리 혹은 4자리 수 - 4자리수의 형식 이어야 합니다.\"}"))
+                .andDo(document("join/fail/invalid_phone",
+                        responseFields(
+                                fieldWithPath("message").description("유효하지 않은 phone 에러 메세지")
                         )));
     }
 }
