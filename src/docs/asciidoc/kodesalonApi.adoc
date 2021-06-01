@@ -1,0 +1,42 @@
+= Kodesalon API Document
+kodesalon;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 5
+:sectlinks:
+
+[[board]]
+== 게시판
+
+=== 1. 생성(save())
+
+==== 성공
+
+===== Request
+
+include::{snippets}/board/create/success/request-fields.adoc[]
+Request HTTP Example:
+include::{snippets}/board/create/success/http-request.adoc[]
+
+===== Responseㅏ
+
+Response HTTP Example:
+include::{snippets}/board/create/success/http-response.adoc[]
+
+==== 실패
+
+===== 제목이 빈 값일 경우
+
+====== Response
+
+Response HTTP Example:
+include::{snippets}/board/create/fail/invalid-title/http-response.adoc[]
+
+===== 내용이 빈 값일 경우
+
+====== Response
+
+Response HTTP Example:
+include::{snippets}/board/create/fail/invalid-content/http-response.adoc[]
