@@ -116,7 +116,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("사용자가 존재하지 않는다면 회원가입을 진행하고 201 상태를 response합니다.")
-    void create_member_response_success() throws Exception{
+    void create_member_response_success() throws Exception {
         given(memberService.join(any(CreateMemberRequestDto.class)))
                 .willReturn(new LoginResponseDto(1L, "alias"));
 
@@ -153,7 +153,7 @@ public class MemberControllerTest {
                 .andExpect(content().string("{\"message\":\"이미 존재하는 아이디입니다\"}"))
                 .andDo(document("join/fail/existing_alias",
                         responseFields(
-                            fieldWithPath("message").description("이미 존재하는 회원 에러 메세지")
+                                fieldWithPath("message").description("이미 존재하는 회원 에러 메세지")
                         )));
     }
 

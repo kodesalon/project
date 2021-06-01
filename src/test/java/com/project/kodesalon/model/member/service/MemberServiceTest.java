@@ -26,7 +26,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
     private final LoginRequestDto loginRequestDto = new LoginRequestDto("alias", "Password123!!");
-    private final CreateMemberRequestDto createMemberRequestDto  = new CreateMemberRequestDto("alias2", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+    private final CreateMemberRequestDto createMemberRequestDto = new CreateMemberRequestDto("alias2", "Password123!!", "이름", "email@email.com", "010-1111-2222");
 
     @InjectMocks
     private MemberService memberService;
@@ -99,9 +99,9 @@ public class MemberServiceTest {
     @Test
     @DisplayName("이미 존재하는 Alias면 예외를 발생시킵니다.")
     void exist_alias_throws_exception() {
-       when(memberRepository.findMemberByAlias(any(Alias.class))).thenReturn(Optional.of(member));
+        when(memberRepository.findMemberByAlias(any(Alias.class))).thenReturn(Optional.of(member));
 
-       assertThatIllegalStateException().isThrownBy(() -> memberService.join(createMemberRequestDto))
-               .withMessage("이미 존재하는 아이디입니다");
+        assertThatIllegalStateException().isThrownBy(() -> memberService.join(createMemberRequestDto))
+                .withMessage("이미 존재하는 아이디입니다");
     }
 }
