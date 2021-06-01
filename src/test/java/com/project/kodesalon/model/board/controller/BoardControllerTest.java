@@ -1,6 +1,8 @@
 package com.project.kodesalon.model.board.controller;
 
 import com.project.kodesalon.common.GlobalExceptionHandler;
+import com.project.kodesalon.model.board.domain.dto.BoardCreateRequestDto;
+import com.project.kodesalon.model.board.exception.ForbiddenException;
 import com.project.kodesalon.model.board.service.BoardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +19,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
+import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -60,5 +65,19 @@ public class BoardControllerTest {
                                 fieldWithPath("createdDateTime").type(JsonFieldType.STRING).description("게시물 작성 날짜")
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("제목이 존재하지 않을 경우 HTTP status 403과 예외 메세지를 반환한다.")
+    public void save_fail_invalid_title() throws Exception {
+        String requestBody = "{ \"memberId\": 1, \"title\": \"\", \"content\": \"게시물 내용\", \"createdDateTime\": \"2021-06-01T23:59:59.999999\"}";
+        doThrow(new ForbiddenException("제목에 공백 아닌 1자 이상의 문자를 입력해주세요.")).when(boardService).save(any(BoardCreateRequestDto.class));
+        mockMvc.perform(post("/api/v1/boards/")
+                .content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden())
+                .andDo(document("board/create/fail/invalid-title",
+                        getDocumentRequest(),
+                        getDocumentResponse()));
     }
 }
