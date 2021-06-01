@@ -1,6 +1,5 @@
 package com.project.kodesalon.model.member.controller;
 
-import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.service.MemberService;

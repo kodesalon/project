@@ -2,6 +2,7 @@ package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
+import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.exception.UnAuthorizedException;
@@ -78,5 +79,26 @@ public class MemberServiceTest {
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
                 .isInstanceOf(UnAuthorizedException.class)
                 .hasMessage("비밀 번호가 일치하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 아이디이면 회원가입을 진행합니다.")
+    void create_member_success() {
+        CreateMemberRequestDto createMemberRequestDto
+                = new CreateMemberRequestDto("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+
+        when(memberRepository.save(member))
+                .thenReturn(member);
+        when(member.getId())
+                .thenReturn(1L);
+        when(member.getAlias())
+                .thenReturn("alias");
+
+        LoginResponseDto loginResponseDto = memberService.join(createMemberRequestDto);
+
+        assertAll(
+                () -> then(loginResponseDto.getMemberId()).isEqualTo(1L),
+                () -> then(loginResponseDto.getAlias()).isEqualTo("alias")
+        );
     }
 }
