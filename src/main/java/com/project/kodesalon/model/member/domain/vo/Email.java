@@ -20,7 +20,7 @@ public class Email {
 
     public Email(final String email) {
         if (!EMAIL_PATTERN.matcher(email).matches()) {
-            throw new IllegalArgumentException("Email은 이메일주소@회사.com 형식 이어야 합니다.");
+            throw new IllegalArgumentException("이메일은 이메일주소@회사.com 형식 이어야 합니다.");
         }
 
         this.email = email;

@@ -2,6 +2,7 @@ package com.project.kodesalon.model.member.repository;
 
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
+import com.project.kodesalon.model.member.exception.UnAuthorizedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,7 +32,7 @@ class MemberRepositoryTest {
     @DisplayName("DB에 존재하는 member를 alias로 조회하면 member를 리턴합니다")
     void find_by_alias_present_member() {
         Member savedMember = memberRepository.findMemberByAlias(new Alias("alias"))
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 사용자입니다"));
+                .orElseThrow(() -> new UnAuthorizedException("존재하지 않는 사용자입니다"));
 
         assertAll(
                 () -> then(savedMember.getAlias()).isEqualTo(member.getAlias()),

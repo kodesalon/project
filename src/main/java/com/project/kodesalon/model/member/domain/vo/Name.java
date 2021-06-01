@@ -20,7 +20,7 @@ public class Name {
 
     public Name(final String name) {
         if (!NAME_PATTERN.matcher(name).matches()) {
-            throw new IllegalArgumentException("Name은 2자리 이상 17자리 이하의 한글이어야 합니다.");
+            throw new IllegalArgumentException("이름은 2자리 이상 17자리 이하의 한글이어야 합니다.");
         }
 
         this.name = name;

@@ -20,7 +20,7 @@ public class Password {
 
     public Password(final String password) {
         if (!PASSWORD_PATTERN.matcher(password).matches()) {
-            throw new IllegalArgumentException("Password는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.");
+            throw new IllegalArgumentException("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.");
         }
         this.password = password;
     }

@@ -20,7 +20,7 @@ public class Alias {
 
     public Alias(final String alias) {
         if (!ALIAS_PATTERN.matcher(alias).matches()) {
-            throw new IllegalArgumentException("Alias 는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다.");
+            throw new IllegalArgumentException("아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다.");
         }
 
         this.alias = alias;

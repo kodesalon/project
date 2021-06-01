@@ -18,10 +18,10 @@ public class MemberService {
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Member member = memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias()))
-                .orElseThrow(() -> new UnAuthorizedException("존재하는 Alias를 입력해주세요."));
+                .orElseThrow(() -> new UnAuthorizedException("존재하는 아이디를 입력해주세요."));
 
         if (member.isIncorrectPassword(loginRequestDto.getPassword())) {
-            throw new UnAuthorizedException("일치하는 비밀번호를 입력해주세요.");
+            throw new UnAuthorizedException("비밀 번호가 일치하지 않습니다.");
         }
 
         return new LoginResponseDto(member.getId(), member.getAlias());
