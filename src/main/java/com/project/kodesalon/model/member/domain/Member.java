@@ -48,23 +48,23 @@ public class Member {
     }
 
     public String getAlias() {
-        return alias.getValue();
+        return alias.value();
     }
 
     public String getPassword() {
-        return password.getValue();
+        return password.value();
     }
 
     public String getName() {
-        return name.getValue();
+        return name.value();
     }
 
     public String getEmail() {
-        return email.getValue();
+        return email.value();
     }
 
     public String getPhone() {
-        return phone.getValue();
+        return phone.value();
     }
 
     public boolean isIncorrectPassword(Password password) {

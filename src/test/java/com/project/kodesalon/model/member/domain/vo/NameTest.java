@@ -15,7 +15,7 @@ class NameTest {
     void validate_name_init_value(String validName) {
         Name name = new Name(validName);
 
-        then(name.getValue()).isEqualTo(validName);
+        then(name.value()).isEqualTo(validName);
     }
 
     @ParameterizedTest

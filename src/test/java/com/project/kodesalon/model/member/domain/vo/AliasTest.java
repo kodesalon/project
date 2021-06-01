@@ -15,7 +15,7 @@ class AliasTest {
     void value() {
         Alias alias = new Alias("alias");
 
-        then(alias.getValue()).isEqualTo("alias");
+        then(alias.value()).isEqualTo("alias");
     }
 
     @ParameterizedTest

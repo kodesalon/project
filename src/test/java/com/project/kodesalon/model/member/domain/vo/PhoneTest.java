@@ -14,7 +14,7 @@ class PhoneTest {
     void validate_phone_init_value(String validPhoneNumber) {
         Phone phone = new Phone(validPhoneNumber);
 
-        then(phone.getValue()).isEqualTo(validPhoneNumber);
+        then(phone.value()).isEqualTo(validPhoneNumber);
     }
 
     @ParameterizedTest

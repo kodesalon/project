@@ -14,7 +14,7 @@ class EmailTest {
     void get_value_return_value(String value) {
         Email email = new Email(value);
 
-        then(email.getValue()).isEqualTo(value);
+        then(email.value()).isEqualTo(value);
     }
 
     @ParameterizedTest

@@ -26,7 +26,7 @@ public class Name {
         this.name = name;
     }
 
-    public String getValue() {
+    public String value() {
         return name;
     }
 }

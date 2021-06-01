@@ -26,7 +26,7 @@ public class Alias {
         this.alias = alias;
     }
 
-    public String getValue() {
+    public String value() {
         return alias;
     }
 }

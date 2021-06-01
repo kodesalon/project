@@ -14,7 +14,7 @@ class PasswordTest {
     void valid_password_init_value(String validPassword) {
         Password password = new Password(validPassword);
 
-        then(password.getValue()).isEqualTo(validPassword);
+        then(password.value()).isEqualTo(validPassword);
     }
 
     @ParameterizedTest
