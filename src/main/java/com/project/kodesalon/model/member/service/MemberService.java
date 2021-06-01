@@ -17,7 +17,7 @@ public class MemberService {
     }
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        Member member = memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias()))
+        Member member = memberRepository.findMemberByAlias(loginRequestDto.getAlias())
                 .orElseThrow(() -> new UnAuthorizedException("존재하는 아이디를 입력해주세요."));
 
         if (member.isIncorrectPassword(loginRequestDto.getPassword())) {

@@ -37,7 +37,7 @@ public class MemberServiceTest {
         LoginRequestDto loginRequestDto =
                 new LoginRequestDto("alias", "Password123!!");
 
-        when(memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias())))
+        when(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
@@ -54,7 +54,7 @@ public class MemberServiceTest {
         when(member.getId()).thenReturn(1L);
         when(member.getAlias()).thenReturn("alias");
         when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(false);
-        when(memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias())))
+        when(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
                 .thenReturn(Optional.of(member));
 
         LoginResponseDto loginResponseDto = memberService.login(loginRequestDto);
@@ -72,7 +72,7 @@ public class MemberServiceTest {
                 = new LoginRequestDto("alias", "Password123!!!");
 
         when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(true);
-        when(memberRepository.findMemberByAlias(new Alias(loginRequestDto.getAlias())))
+        when(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
                 .thenReturn(Optional.of(member));
 
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
