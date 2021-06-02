@@ -1,4 +1,4 @@
-package com.project.kodesalon.common;
+package com.project.kodesalon.global;
 
 import com.project.kodesalon.model.board.exception.InvalidArgumentException;
 import lombok.extern.slf4j.Slf4j;

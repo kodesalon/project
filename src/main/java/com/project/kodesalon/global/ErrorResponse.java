@@ -1,4 +1,4 @@
-package com.project.kodesalon.common;
+package com.project.kodesalon.global;
 
 import lombok.AccessLevel;
 import lombok.Getter;
