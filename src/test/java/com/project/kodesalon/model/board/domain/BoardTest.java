@@ -11,25 +11,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class BoardTest {
-    public static final String TITLE = "title";
-    public static final String CONTENT = "content";
-    public static final String WRITER = "writer";
-    public static final LocalDateTime CREATED_DATE_TIME = LocalDateTime.parse("2021-06-01T23:59:59.999999");
-    public static final Board TEST_BOARD = Board.builder()
-            .title(new Title(TITLE))
-            .content(new Content(CONTENT))
-            .writer(WRITER)
-            .createdDateTime(CREATED_DATE_TIME)
+    private final String title = "게시물 제목";
+    private final String content = "게시물 내용";
+    private final String writer = "작성자";
+    private final LocalDateTime createdDateTime = LocalDateTime.now();
+    private final Board TEST_BOARD = Board.builder()
+            .title(new Title(title))
+            .content(new Content(content))
+            .writer(writer)
+            .createdDateTime(createdDateTime)
             .build();
 
     @Test
     @DisplayName("게시물의 제목, 내용, 작성자, 생성 시간, 삭제 여부를 반환한다.")
     public void getter() {
         assertAll(
-                () -> assertThat(TEST_BOARD.getTitle()).isEqualTo(TITLE),
-                () -> assertThat(TEST_BOARD.getContent()).isEqualTo(CONTENT),
-                () -> assertThat(TEST_BOARD.getWriter()).isEqualTo(WRITER),
-                () -> assertThat(TEST_BOARD.getCreatedDateTime()).isEqualTo(CREATED_DATE_TIME),
+                () -> assertThat(TEST_BOARD.getTitle()).isEqualTo(title),
+                () -> assertThat(TEST_BOARD.getContent()).isEqualTo(content),
+                () -> assertThat(TEST_BOARD.getWriter()).isEqualTo(writer),
+                () -> assertThat(TEST_BOARD.getCreatedDateTime()).isEqualTo(createdDateTime),
                 () -> assertThat(TEST_BOARD.isDeleted()).isFalse()
         );
     }
