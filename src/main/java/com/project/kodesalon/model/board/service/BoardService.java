@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 @Service
-@Transactional
 public class BoardService {
     private final BoardRepository boardRepository;
 
@@ -20,6 +19,7 @@ public class BoardService {
         this.boardRepository = boardRepository;
     }
 
+    @Transactional
     public void save(BoardCreateRequestDto boardCreateRequestDto) {
         Board board = boardEntityFrom(boardCreateRequestDto);
         boardRepository.save(board);
