@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import java.util.NoSuchElementException;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -33,7 +35,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -250,7 +251,9 @@ public class MemberControllerTest {
         given(memberService.selectMember(anyLong()))
                 .willReturn(new SelectMemberResponseDto("alias", "이름", "email@email.com", "010-1111-2222"));
 
-        this.mockMvc.perform(get(selectUrl, "1").contentType(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(
+                get(selectUrl, "1")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"alias\":\"alias\",\"name\":\"이름\",\"email\":\"email@email.com\",\"phone\":\"010-1111-2222\"}"))
                 .andDo(document("select/success",
@@ -262,6 +265,25 @@ public class MemberControllerTest {
                                 fieldWithPath("name").description("조회한 Name"),
                                 fieldWithPath("email").description("조회한 Email"),
                                 fieldWithPath("phone").description("조회한 Phone")
+                        )));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회원을 조회하면 404 상태를 responses 합니다")
+    void select_no_exist_member_response_fail() throws Exception{
+        given(memberService.selectMember(anyLong()))
+                .willThrow(new NoSuchElementException("찾으려는 회원이 없습니다"));
+
+        this.mockMvc.perform(
+                get(selectUrl, "1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(
+                        content()
+                                .string("{\"message\":\"\"찾으려는 회원이 없습니다\"\"}"))
+                .andDo(document("select/fail/no_member",
+                        responseFields(
+                            fieldWithPath("message").description("에러 메세지")
                         )));
     }
 }
