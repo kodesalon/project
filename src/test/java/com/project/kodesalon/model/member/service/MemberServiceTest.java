@@ -2,9 +2,13 @@ package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
+import com.project.kodesalon.model.member.domain.vo.Email;
+import com.project.kodesalon.model.member.domain.vo.Name;
+import com.project.kodesalon.model.member.domain.vo.Phone;
 import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
 import com.project.kodesalon.model.member.exception.UnAuthorizedException;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -114,5 +118,14 @@ public class MemberServiceTest {
         when(member.getEmail()).thenReturn("email@email.com");
         when(member.getPhone()).thenReturn("010-1111-2222");
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
+
+        SelectMemberResponseDto selectMemberResponseDto = memberService.selectMember(Long memberId);
+
+        assertAll(
+                () -> then(selectMemberResponseDto.getAlias()).isEqualTo(new Alias("alias")),
+                () -> then(selectMemberResponseDto.getName()).isEqualTo(new Name("이름")),
+                () -> then(selectMemberResponseDto.getEmail()).isEqualTo(new Email("email@email.com")),
+                () -> then(selectMemberResponseDto.getPhone()).isEqualTo(new Phone("010-1111-2222"))
+        );
     }
 }
