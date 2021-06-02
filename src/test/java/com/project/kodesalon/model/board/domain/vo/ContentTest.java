@@ -11,19 +11,19 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ContentTest {
-    private String boardContent;
+    private String contentValue;
     private Content content;
 
     @BeforeEach
     void setUp() {
-        boardContent = "test content";
-        content = new Content(boardContent);
+        contentValue = "게시물 내용";
+        content = new Content(contentValue);
     }
 
     @Test
     @DisplayName("문자열을 입력받아 내용 객체를 생성한다.")
     public void create() {
-        assertThat(content).isEqualTo(new Content(boardContent));
+        assertThat(content).isEqualTo(new Content(contentValue));
     }
 
     @ParameterizedTest
@@ -47,6 +47,6 @@ public class ContentTest {
     @DisplayName("내용의 문자열 값을 반환한다.")
     public void value() {
         String value = content.value();
-        assertThat(value).isEqualTo(boardContent);
+        assertThat(value).isEqualTo(contentValue);
     }
 }
