@@ -4,6 +4,7 @@ import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
 import com.project.kodesalon.model.member.exception.UnAuthorizedException;
 import com.project.kodesalon.model.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,9 +22,11 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -39,6 +42,7 @@ public class MemberControllerTest {
     private final String createRequestJson = "{\"alias\" : \"alias\", \"password\" : \"Password123!!\", " +
             "\"name\" : \"이름\", \"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}";
     private final String joinUrl = "/api/v1/members";
+    private final String selectUrl = "/api/v1/members/{memberId}";
 
     private MockMvc mockMvc;
 
@@ -234,6 +238,24 @@ public class MemberControllerTest {
                 .andDo(document("join/fail/invalid_phone",
                         responseFields(
                                 fieldWithPath("message").description("유효하지 않은 phone 에러 메세지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("존재하닌 회원을 조회하면 200 상태를 response 합니다.")
+    void select_exist_member_response_success() throws Exception {
+        given(memberService.selectMember(anyLong()))
+                .willReturn(new SelectMemberResponseDto("alias", "이름", "email@email.com", "010-1111-2222"));
+
+        this.mockMvc.perform(get(selectUrl, "1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().string(""))
+                .andDo(document("select/success",
+                        responseFields(
+                            fieldWithPath("alias").description("조회한 Alias"),
+                            fieldWithPath("name").description("조회한 Name"),
+                            fieldWithPath("email").description("조회한 Email"),
+                            fieldWithPath("phone").description("조회한 Phone")
                         )));
     }
 }
