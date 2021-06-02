@@ -1,4 +1,4 @@
-package com.project.kodesalon.model.board.domain.dto;
+package com.project.kodesalon.model.board.service.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;

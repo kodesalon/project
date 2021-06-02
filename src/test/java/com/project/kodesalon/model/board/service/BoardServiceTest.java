@@ -1,9 +1,9 @@
 package com.project.kodesalon.model.board.service;
 
 import com.project.kodesalon.model.board.domain.Board;
-import com.project.kodesalon.model.board.domain.dto.BoardCreateRequestDto;
 import com.project.kodesalon.model.board.exception.ForbiddenException;
 import com.project.kodesalon.model.board.repository.BoardRepository;
+import com.project.kodesalon.model.board.service.dto.BoardCreateRequestDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

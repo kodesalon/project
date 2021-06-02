@@ -1,8 +1,8 @@
 package com.project.kodesalon.model.board.controller;
 
-import com.project.kodesalon.model.board.domain.dto.BoardCreateRequest;
-import com.project.kodesalon.model.board.domain.dto.BoardCreateRequestDto;
+import com.project.kodesalon.model.board.controller.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.BoardService;
+import com.project.kodesalon.model.board.service.dto.BoardCreateRequestDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

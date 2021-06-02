@@ -1,4 +1,4 @@
-package com.project.kodesalon.model.board.domain.dto;
+package com.project.kodesalon.model.board.controller.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -19,3 +19,4 @@ public class BoardCreateRequest {
         this.createdDateTime = createdDateTime;
     }
 }
+

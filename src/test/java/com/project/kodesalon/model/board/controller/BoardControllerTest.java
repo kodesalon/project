@@ -1,9 +1,9 @@
 package com.project.kodesalon.model.board.controller;
 
 import com.project.kodesalon.common.GlobalExceptionHandler;
-import com.project.kodesalon.model.board.domain.dto.BoardCreateRequestDto;
 import com.project.kodesalon.model.board.exception.ForbiddenException;
 import com.project.kodesalon.model.board.service.BoardService;
+import com.project.kodesalon.model.board.service.dto.BoardCreateRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
