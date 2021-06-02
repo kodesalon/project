@@ -8,7 +8,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SelectMemberResponseDto {
     private Alias alias;
@@ -21,5 +20,21 @@ public class SelectMemberResponseDto {
         this.name = new Name(name);
         this.email = new Email(email);
         this.phone = new Phone(phone);
+    }
+
+    public String getAlias() {
+        return alias.value();
+    }
+
+    public String getName() {
+        return name.value();
+    }
+
+    public String getEmail() {
+        return email.value();
+    }
+
+    public String getPhone() {
+        return phone.value();
     }
 }

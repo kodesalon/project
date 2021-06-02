@@ -1,10 +1,6 @@
 package com.project.kodesalon.model.member.dto;
 
 
-import com.project.kodesalon.model.member.domain.vo.Alias;
-import com.project.kodesalon.model.member.domain.vo.Email;
-import com.project.kodesalon.model.member.domain.vo.Name;
-import com.project.kodesalon.model.member.domain.vo.Phone;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,10 +14,10 @@ public class SelectMemberResponseDtoTest {
         SelectMemberResponseDto selectMemberResponseDto = new SelectMemberResponseDto("alias", "이름", "email@email.com", "010-1111-2222");
 
         assertAll(
-                () -> then(selectMemberResponseDto.getAlias()).isEqualTo(new Alias("alias")),
-                () -> then(selectMemberResponseDto.getName()).isEqualTo(new Name("이름")),
-                () -> then(selectMemberResponseDto.getEmail()).isEqualTo(new Email("email@email.com")),
-                () -> then(selectMemberResponseDto.getPhone()).isEqualTo(new Phone("010-1111-2222"))
+                () -> then(selectMemberResponseDto.getAlias()).isEqualTo("alias"),
+                () -> then(selectMemberResponseDto.getName()).isEqualTo("이름"),
+                () -> then(selectMemberResponseDto.getEmail()).isEqualTo("email@email.com"),
+                () -> then(selectMemberResponseDto.getPhone()).isEqualTo("010-1111-2222")
         );
     }
 }

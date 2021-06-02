@@ -2,9 +2,6 @@ package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
-import com.project.kodesalon.model.member.domain.vo.Email;
-import com.project.kodesalon.model.member.domain.vo.Name;
-import com.project.kodesalon.model.member.domain.vo.Phone;
 import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
@@ -119,13 +116,13 @@ public class MemberServiceTest {
         when(member.getPhone()).thenReturn("010-1111-2222");
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
 
-        SelectMemberResponseDto selectMemberResponseDto = memberService.selectMember(Long memberId);
+        SelectMemberResponseDto selectMemberResponseDto = memberService.selectMember(1L);
 
         assertAll(
-                () -> then(selectMemberResponseDto.getAlias()).isEqualTo(new Alias("alias")),
-                () -> then(selectMemberResponseDto.getName()).isEqualTo(new Name("이름")),
-                () -> then(selectMemberResponseDto.getEmail()).isEqualTo(new Email("email@email.com")),
-                () -> then(selectMemberResponseDto.getPhone()).isEqualTo(new Phone("010-1111-2222"))
+                () -> then(selectMemberResponseDto.getAlias()).isEqualTo("alias"),
+                () -> then(selectMemberResponseDto.getName()).isEqualTo("이름"),
+                () -> then(selectMemberResponseDto.getEmail()).isEqualTo("email@email.com"),
+                () -> then(selectMemberResponseDto.getPhone()).isEqualTo("010-1111-2222")
         );
     }
 }

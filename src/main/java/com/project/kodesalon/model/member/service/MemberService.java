@@ -4,9 +4,12 @@ import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
 import com.project.kodesalon.model.member.exception.UnAuthorizedException;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.NoSuchElementException;
 
 @Service
 public class MemberService {
@@ -37,5 +40,12 @@ public class MemberService {
                 createMemberRequestDto.getName().value(), createMemberRequestDto.getEmail().value(), createMemberRequestDto.getPhone().value()));
 
         return new LoginResponseDto(savedMember.getId(), savedMember.getAlias());
+    }
+
+    public SelectMemberResponseDto selectMember(Long memberId) {
+        Member selectedMember = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("찾으려는 회원이 없습니다"));
+
+        return new SelectMemberResponseDto(selectedMember.getAlias(), selectedMember.getName(), selectedMember.getEmail(), selectedMember.getPhone());
     }
 }
