@@ -252,10 +252,10 @@ public class MemberControllerTest {
                 .andExpect(content().string("{\"alias\":\"alias\",\"name\":\"이름\",\"email\":\"email@email.com\",\"phone\":\"010-1111-2222\"}"))
                 .andDo(document("select/success",
                         responseFields(
-                            fieldWithPath("alias").description("조회한 Alias"),
-                            fieldWithPath("name").description("조회한 Name"),
-                            fieldWithPath("email").description("조회한 Email"),
-                            fieldWithPath("phone").description("조회한 Phone")
+                                fieldWithPath("alias").description("조회한 Alias"),
+                                fieldWithPath("name").description("조회한 Name"),
+                                fieldWithPath("email").description("조회한 Email"),
+                                fieldWithPath("phone").description("조회한 Phone")
                         )));
     }
 }

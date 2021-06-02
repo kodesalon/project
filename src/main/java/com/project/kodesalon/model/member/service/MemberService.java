@@ -8,6 +8,7 @@ import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
 import com.project.kodesalon.model.member.exception.UnAuthorizedException;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
@@ -19,6 +20,7 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional(readOnly = true)
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Member member = memberRepository.findMemberByAlias(loginRequestDto.getAlias())
                 .orElseThrow(() -> new UnAuthorizedException("존재하는 아이디를 입력해주세요."));
@@ -30,6 +32,7 @@ public class MemberService {
         return new LoginResponseDto(member.getId(), member.getAlias());
     }
 
+    @Transactional
     public LoginResponseDto join(CreateMemberRequestDto createMemberRequestDto) {
         memberRepository.findMemberByAlias(createMemberRequestDto.getAlias())
                 .ifPresent(member -> {
@@ -42,6 +45,7 @@ public class MemberService {
         return new LoginResponseDto(savedMember.getId(), savedMember.getAlias());
     }
 
+    @Transactional(readOnly = true)
     public SelectMemberResponseDto selectMember(Long memberId) {
         Member selectedMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("찾으려는 회원이 없습니다"));
