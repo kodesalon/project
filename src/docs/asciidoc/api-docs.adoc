@@ -28,7 +28,7 @@ include::{snippets}/login/success/response-fields.adoc[]
 include::{snippets}/login/success/http-response.adoc[]
 
 - 로그인 실패 Response
-include::{snippets}/login/fail/no_alias/response-fields.adoc[]
+include::{snippets}/login/fail/mismatch_password/response-fields.adoc[]
 
 - 로그인 실패 example (Alias가 없는 경우)
 include::{snippets}/login/fail/no_alias/http-response.adoc[]
