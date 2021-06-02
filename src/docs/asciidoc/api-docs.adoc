@@ -72,7 +72,7 @@ include::{snippets}/join/fail/invalid_email/http-response.adoc[]
 include::{snippets}/join/fail/invalid_phone/http-response.adoc[]
 
 === Select
-
+==== Request
 - 회원 정보 조회
 
 include::{snippets}/select/success/path-parameters.adoc[]
@@ -80,8 +80,13 @@ include::{snippets}/select/success/path-parameters.adoc[]
 - 회원 정보 조회 Example
 include::{snippets}/select/success/httpie-request.adoc[]
 
-- 회원 젇보 조회 Response
+- 회원 정보 조회 Response
 include::{snippets}/select/success/response-fields.adoc[]
+
+==== Response
 
 - 회원 정보 조회 성공 response example
 include::{snippets}/select/success/http-response.adoc[]
+
+- 회원 정보 조회 실패 example
+include::{snippets}/select/fail/no_member/http-response.adoc[]

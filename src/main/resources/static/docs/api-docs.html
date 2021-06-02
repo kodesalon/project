@@ -463,7 +463,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_response">Response</a></li>
 </ul>
 </li>
-<li><a href="#_select">Select</a></li>
+<li><a href="#_select">Select</a>
+<ul class="sectlevel3">
+<li><a href="#_request_3">Request</a></li>
+<li><a href="#_response_2">Response</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -894,6 +899,8 @@ Content-Length: 134
 </div>
 <div class="sect2">
 <h3 id="_select"><a class="link" href="#_select">Select</a></h3>
+<div class="sect3">
+<h4 id="_request_3"><a class="link" href="#_request_3">Request</a></h4>
 <div class="ulist">
 <ul>
 <li>
@@ -936,7 +943,7 @@ Content-Length: 134
 <div class="ulist">
 <ul>
 <li>
-<p>회원 젇보 조회 Response</p>
+<p>회원 정보 조회 Response</p>
 </li>
 </ul>
 </div>
@@ -976,6 +983,9 @@ Content-Length: 134
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect3">
+<h4 id="_response_2"><a class="link" href="#_response_2">Response</a></h4>
 <div class="ulist">
 <ul>
 <li>
@@ -992,6 +1002,23 @@ Content-Length: 83
 {"alias":"alias","name":"이름","email":"email@email.com","phone":"010-1111-2222"}</pre>
 </div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>회원 정보 조회 실패 example</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>HTTP/1.1 404 Not Found
+Content-Type: application/json;charset=UTF-8
+Content-Length: 49
+
+{"message":"찾으려는 회원이 없습니다"}</pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -999,7 +1026,7 @@ Content-Length: 83
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2021-06-02 15:15:52 +0900
+Last updated 2021-06-02 15:48:56 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
