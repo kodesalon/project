@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.NoSuchElementException;
+
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
@@ -26,5 +28,11 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
         log.info(e.getMessage());
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    protected ResponseEntity<ErrorResponse> handleNoSuchElementException(NoSuchElementException e) {
+        log.info(e.getMessage());
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 }

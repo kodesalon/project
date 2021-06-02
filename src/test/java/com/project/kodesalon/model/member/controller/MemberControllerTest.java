@@ -280,7 +280,7 @@ public class MemberControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(
                         content()
-                                .string("{\"message\":\"\"찾으려는 회원이 없습니다\"\"}"))
+                                .string("{\"message\":\"찾으려는 회원이 없습니다\"}"))
                 .andDo(document("select/fail/no_member",
                         responseFields(
                             fieldWithPath("message").description("에러 메세지")
