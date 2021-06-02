@@ -3,10 +3,10 @@ package com.project.kodesalon.model.board.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.FORBIDDEN)
-public class ForbiddenException extends RuntimeException {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class InvalidArgumentException extends RuntimeException {
 
-    public ForbiddenException(String message) {
+    public InvalidArgumentException(String message) {
         super(message);
     }
 }

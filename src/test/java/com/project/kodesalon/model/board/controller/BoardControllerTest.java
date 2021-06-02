@@ -3,7 +3,7 @@ package com.project.kodesalon.model.board.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.model.board.controller.dto.BoardCreateRequest;
-import com.project.kodesalon.model.board.exception.ForbiddenException;
+import com.project.kodesalon.model.board.exception.InvalidArgumentException;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequestDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,7 +76,7 @@ public class BoardControllerTest {
     @DisplayName("제목이 존재하지 않을 경우 HTTP status 403과 예외 메세지를 반환한다.")
     public void save_fail_invalid_title() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "", "게시물 내용", "2021-06-01T23:59:59.999999");
-        doThrow(new ForbiddenException("제목에 공백 아닌 1자 이상의 문자를 입력해주세요.")).when(boardService).save(any(BoardCreateRequestDto.class));
+        doThrow(new InvalidArgumentException("제목에 공백 아닌 1자 이상의 문자를 입력해주세요.")).when(boardService).save(any(BoardCreateRequestDto.class));
         mockMvc.perform(post("/api/v1/boards/")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -93,7 +93,7 @@ public class BoardControllerTest {
     @DisplayName("내용이 존재하지 않을 경우 HTTP status 403과 예외 메세지를 반환한다.")
     public void save_fail_invalid_content() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "", "2021-06-01T23:59:59.999999");
-        doThrow(new ForbiddenException("내용에 공백 아닌 1자 이상의 문자를 입력하였는지 확인해주세요.")).when(boardService).save(any(BoardCreateRequestDto.class));
+        doThrow(new InvalidArgumentException("내용에 공백 아닌 1자 이상의 문자를 입력하였는지 확인해주세요.")).when(boardService).save(any(BoardCreateRequestDto.class));
         mockMvc.perform(post("/api/v1/boards/")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
                 .contentType(MediaType.APPLICATION_JSON))

@@ -3,7 +3,7 @@ package com.project.kodesalon.model.board.service;
 import com.project.kodesalon.model.board.domain.Board;
 import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
-import com.project.kodesalon.model.board.exception.ForbiddenException;
+import com.project.kodesalon.model.board.exception.InvalidArgumentException;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequestDto;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class BoardService {
                     .createdDateTime(LocalDateTime.parse(boardCreateRequestDto.getCreatedDateTime()))
                     .build();
         } catch (Exception e) {
-            throw new ForbiddenException(e.getMessage());
+            throw new InvalidArgumentException(e.getMessage());
         }
     }
 }

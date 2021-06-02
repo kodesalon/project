@@ -1,7 +1,7 @@
 package com.project.kodesalon.model.board.service;
 
 import com.project.kodesalon.model.board.domain.Board;
-import com.project.kodesalon.model.board.exception.ForbiddenException;
+import com.project.kodesalon.model.board.exception.InvalidArgumentException;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequestDto;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +47,7 @@ public class BoardServiceTest {
     public void save_fail_invalid_dto(Long memberId, String title, String content, String createdDateTime) {
         BoardCreateRequestDto boardCreateRequestDto = new BoardCreateRequestDto(memberId, title, content, createdDateTime);
         assertThatThrownBy(() -> boardService.save(boardCreateRequestDto))
-                .isInstanceOf(ForbiddenException.class);
+                .isInstanceOf(InvalidArgumentException.class);
     }
 
     private static Stream<Arguments> provideArgumentsForInvalidDto() {
