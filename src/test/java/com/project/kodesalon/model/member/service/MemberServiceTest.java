@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
@@ -124,5 +125,14 @@ public class MemberServiceTest {
                 () -> then(selectMemberResponseDto.getEmail()).isEqualTo("email@email.com"),
                 () -> then(selectMemberResponseDto.getPhone()).isEqualTo("010-1111-2222")
         );
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회원을 조회하면 에외를 발생시킵니다.")
+    void select_not_exist_id_throws_exception() {
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> memberService.selectMember(1L)).isInstanceOf(NoSuchElementException.class)
+                .hasMessage("찾으려는 회원이 없습니다");
     }
 }
