@@ -23,6 +23,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.NoSuchElementException;
 
+import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
+import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -78,9 +80,11 @@ public class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"memberId\":1,\"alias\":\"alias\"}"))
                 .andDo(document("login/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
-                                fieldWithPath("password").description("로그인 할 패스워드")
+                                fieldWithPath("password").description("로그인 할 password")
                         ),
                         responseFields(
                                 fieldWithPath("memberId").description("Member 식별자"),
@@ -100,8 +104,8 @@ public class MemberControllerTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("{\"message\":\"일치하는 비밀번호를 입력해주세요.\"}"))
                 .andDo(document("login/fail/mismatch_password",
-                        responseFields(
-                                fieldWithPath("message").description("예외 메세지"))));
+                        getDocumentResponse(),
+                        responseFields(fieldWithPath("message").description("예외 메세지"))));
     }
 
     @Test
@@ -116,10 +120,7 @@ public class MemberControllerTest {
                         .content(loginRequestJson))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().string("{\"message\":\"존재하는 Alias를 입력해주세요.\"}"))
-                .andDo(document("login/fail/no_alias",
-                        responseFields(
-                                fieldWithPath("message").description("예외 메세지")
-                        )));
+                .andDo(document("login/fail/no_alias", getDocumentResponse()));
     }
 
     @Test
@@ -135,16 +136,17 @@ public class MemberControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(content().string("{\"memberId\":1,\"alias\":\"alias\"}"))
                 .andDo(document("join/success",
+                        getDocumentRequest(),
                         requestFields(
                                 fieldWithPath("alias").description("회원 가입할 member의 alias"),
                                 fieldWithPath("password").description("회원 가입할 member의 password"),
                                 fieldWithPath("name").description("회원 가입할 member의 이름"),
                                 fieldWithPath("email").description("회원 가입할 member의 email"),
                                 fieldWithPath("phone").description("회원 가입할 member의 phone")
-                        ), responseFields(
-                                fieldWithPath("memberId").description("회원 가입한 member의 식별자"),
-                                fieldWithPath("alias").description("회원 가입한 member의 alias")
-                        )));
+                        ),
+                        responseFields(
+                                fieldWithPath("memberId").description("Member 식별자"),
+                                fieldWithPath("alias").description("member alias"))));
     }
 
     @Test
@@ -160,9 +162,8 @@ public class MemberControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(content().string("{\"message\":\"이미 존재하는 아이디입니다\"}"))
                 .andDo(document("join/fail/existing_alias",
-                        responseFields(
-                                fieldWithPath("message").description("이미 존재하는 회원 에러 메세지")
-                        )));
+                        getDocumentResponse(),
+                        responseFields(fieldWithPath("message").description("예외 메세지"))));
     }
 
     @Test
@@ -175,10 +176,7 @@ public class MemberControllerTest {
                                 "\"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}"))
                 .andExpect(status().isForbidden())
                 .andExpect(content().string("{\"message\":\"아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다.\"}"))
-                .andDo(document("join/fail/invalid_alias",
-                        responseFields(
-                                fieldWithPath("message").description("유효하지 않은 Alias 에러 메세지")
-                        )));
+                .andDo(document("join/fail/invalid_alias", getDocumentResponse()));
     }
 
     @Test
@@ -191,10 +189,7 @@ public class MemberControllerTest {
                                 "\"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}"))
                 .andExpect(status().isForbidden())
                 .andExpect(content().string("{\"message\":\"비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.\"}"))
-                .andDo(document("join/fail/invalid_password",
-                        responseFields(
-                                fieldWithPath("message").description("유효하지 않은 Password 에러 메세지")
-                        )));
+                .andDo(document("join/fail/invalid_password", getDocumentResponse()));
     }
 
     @Test
@@ -207,10 +202,7 @@ public class MemberControllerTest {
                                 "\"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}"))
                 .andExpect(status().isForbidden())
                 .andExpect(content().string("{\"message\":\"이름은 2자리 이상 17자리 이하의 한글이어야 합니다.\"}"))
-                .andDo(document("join/fail/invalid_name",
-                        responseFields(
-                                fieldWithPath("message").description("유효하지 않은 Name 에러 메세지")
-                        )));
+                .andDo(document("join/fail/invalid_name", getDocumentResponse()));
     }
 
     @Test
@@ -223,10 +215,7 @@ public class MemberControllerTest {
                                 "\"email\" : \"emailemail.com\", \"phone\" : \"010-1111-2222\"}"))
                 .andExpect(status().isForbidden())
                 .andExpect(content().string("{\"message\":\"이메일은 이메일주소@회사.com 형식 이어야 합니다.\"}"))
-                .andDo(document("join/fail/invalid_email",
-                        responseFields(
-                                fieldWithPath("message").description("유효하지 않은 Eamil 에러 메세지")
-                        )));
+                .andDo(document("join/fail/invalid_email", getDocumentResponse()));
     }
 
     @Test
@@ -239,10 +228,7 @@ public class MemberControllerTest {
                                 "\"email\" : \"email@email.com\", \"phone\" : \"01111-2222\"}"))
                 .andExpect(status().isForbidden())
                 .andExpect(content().string("{\"message\":\"핸드폰 번호는 [휴대폰 앞자리 번호]- 3자리 혹은 4자리 수 - 4자리수의 형식 이어야 합니다.\"}"))
-                .andDo(document("join/fail/invalid_phone",
-                        responseFields(
-                                fieldWithPath("message").description("유효하지 않은 phone 에러 메세지")
-                        )));
+                .andDo(document("join/fail/invalid_phone", getDocumentResponse()));
     }
 
     @Test
@@ -257,8 +243,9 @@ public class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"alias\":\"alias\",\"name\":\"이름\",\"email\":\"email@email.com\",\"phone\":\"010-1111-2222\"}"))
                 .andDo(document("select/success",
+                        getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("memberId").description("조회할 멤버의 Id")
+                                parameterWithName("memberId").description("조회할 회원의 식별자")
                         ),
                         responseFields(
                                 fieldWithPath("alias").description("조회한 Alias"),
@@ -281,9 +268,6 @@ public class MemberControllerTest {
                 .andExpect(
                         content()
                                 .string("{\"message\":\"찾으려는 회원이 없습니다\"}"))
-                .andDo(document("select/fail/no_member",
-                        responseFields(
-                            fieldWithPath("message").description("에러 메세지")
-                        )));
+                .andDo(document("select/fail/no_member", getDocumentResponse()));
     }
 }
