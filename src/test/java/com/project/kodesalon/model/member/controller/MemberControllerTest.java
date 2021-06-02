@@ -31,6 +31,9 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -251,6 +254,9 @@ public class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"alias\":\"alias\",\"name\":\"이름\",\"email\":\"email@email.com\",\"phone\":\"010-1111-2222\"}"))
                 .andDo(document("select/success",
+                        pathParameters(
+                                parameterWithName("memberId").description("조회할 멤버의 Id")
+                        ),
                         responseFields(
                                 fieldWithPath("alias").description("조회한 Alias"),
                                 fieldWithPath("name").description("조회한 Name"),
