@@ -249,7 +249,7 @@ public class MemberControllerTest {
 
         this.mockMvc.perform(get(selectUrl, "1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string(""))
+                .andExpect(content().string("{\"alias\":\"alias\",\"name\":\"이름\",\"email\":\"email@email.com\",\"phone\":\"010-1111-2222\"}"))
                 .andDo(document("select/success",
                         responseFields(
                             fieldWithPath("alias").description("조회한 Alias"),
