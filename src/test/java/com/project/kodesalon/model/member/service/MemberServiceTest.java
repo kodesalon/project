@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -103,5 +104,15 @@ public class MemberServiceTest {
 
         assertThatIllegalStateException().isThrownBy(() -> memberService.join(createMemberRequestDto))
                 .withMessage("이미 존재하는 아이디입니다");
+    }
+
+    @Test
+    @DisplayName("존재하는 Alias면 회원 정보를 응답합니다.")
+    void exist_id_response_member() {
+        when(member.getAlias()).thenReturn("alias");
+        when(member.getName()).thenReturn("이름");
+        when(member.getEmail()).thenReturn("email@email.com");
+        when(member.getPhone()).thenReturn("010-1111-2222");
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
     }
 }
