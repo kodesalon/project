@@ -1,6 +1,5 @@
 package com.project.kodesalon.model.board.domain.vo;
 
-import com.project.kodesalon.model.board.exception.InvalidArgumentException;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -33,13 +32,13 @@ public class Content {
 
     private void checkNullOrBlank(String content) {
         if (content == null || content.isBlank()) {
-            throw new InvalidArgumentException(CHECK_CONTENT_IS_BLANK);
+            throw new IllegalArgumentException(CHECK_CONTENT_IS_BLANK);
         }
     }
 
     private void checkLength(String content) {
         if (content.length() > CONTENT_LENGTH_BOUND_MAX) {
-            throw new InvalidArgumentException(CHECK_CONTENT_LENGTH);
+            throw new IllegalArgumentException(CHECK_CONTENT_LENGTH);
         }
     }
 
