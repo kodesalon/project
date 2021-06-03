@@ -3,7 +3,6 @@ package com.project.kodesalon.model.board.domain;
 import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
@@ -35,7 +34,6 @@ public class Board {
 
     private boolean isDeleted;
 
-    @Builder
     public Board(Title title, Content content, String writer, LocalDateTime createdDateTime) {
         this.title = title;
         this.content = content;

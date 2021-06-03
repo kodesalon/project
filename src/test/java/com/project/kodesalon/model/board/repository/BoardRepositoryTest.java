@@ -22,13 +22,7 @@ public class BoardRepositoryTest {
     @Test
     @DisplayName("게시판 객체를 DB에 저장한다.")
     public void save() {
-        Board board = Board.builder()
-                .title(new Title("게시물 제목"))
-                .content(new Content("게시물 내용"))
-                .writer("작성자")
-                .createdDateTime(LocalDateTime.now())
-                .build();
-
+        Board board = new Board(new Title("게시물 제목"), new Content("게시물 내용"), "작성자", LocalDateTime.now());
         boardRepository.save(board);
         Optional<Board> possibleBoard = boardRepository.findById(board.getId());
         assertThat(possibleBoard).isNotEmpty();
