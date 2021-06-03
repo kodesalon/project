@@ -20,7 +20,7 @@ public class BoardCreateRequest2 {
         this.memberId = memberId;
         this.title = title;
         this.content = content;
-        this.createdDateTime = createdDatTime;
+        this.createdDateTime = createdDtTime;
     }
 }
 
