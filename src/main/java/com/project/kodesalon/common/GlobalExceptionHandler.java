@@ -1,4 +1,4 @@
-package com.project.kodesalon.global;
+package com.project.kodesalon.common;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

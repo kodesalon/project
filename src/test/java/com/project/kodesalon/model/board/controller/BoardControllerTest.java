@@ -1,7 +1,7 @@
 package com.project.kodesalon.model.board.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.kodesalon.global.GlobalExceptionHandler;
+import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.model.board.controller.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.BoardService;
 import org.junit.jupiter.api.BeforeEach;
