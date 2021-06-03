@@ -13,6 +13,7 @@ public class BoardCreateRequest2 {
     private Long memberId;
     private String title;
     private String content;
+    private String a;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdDateTime;
 
