@@ -26,4 +26,10 @@ public class BoardController {
         boardService.save(boardCreateRequestDto);
         return new ResponseEntity(HttpStatus.CREATED);
     }
+
+    @PostMapping(value = "/boardss")
+    public ResponseEntity<HttpStatus> save2(@RequestBody final BoardCreateRequest boardCreateRequest) {
+        System.out.println(boardCreateRequest.getCreatedDateTime());
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
 }
