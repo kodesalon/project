@@ -8,7 +8,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.BDDAssertions.then;
 
 class PasswordTest {
-    private static final String PASSWORD_EXCEPTION_MESSAGE = "잘못된 Password 형식입니다.";
+    private static final String PASSWORD_EXCEPTION_MESSAGE = "Password는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.";
     private static final String VALID_PASSWORD_LENGTH_EIGHT = "!!Pass12";
     private static final String VALID_PASSWORD_LENGTH_SIXTEEN = "!!Password123456";
     private static final String INVALID_PASSWORD_LENGTH_SEVEN = "!pass12";
@@ -26,8 +26,7 @@ class PasswordTest {
         //given
         Password password = new Password(validPassword);
 
-        //then
-        then(password.getValue()).isEqualTo(validPassword);
+        then(password.value()).isEqualTo(validPassword);
     }
 
     @ParameterizedTest
