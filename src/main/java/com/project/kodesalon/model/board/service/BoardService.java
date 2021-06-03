@@ -6,8 +6,6 @@ import com.project.kodesalon.model.board.service.dto.BoardCreateRequestDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-
 @Service
 public class BoardService {
     private final BoardRepository boardRepository;
@@ -21,7 +19,7 @@ public class BoardService {
         Board createdBoard = new Board(boardCreateRequestDto.getTitle()
                 , boardCreateRequestDto.getContent()
                 , "writer"
-                , LocalDateTime.parse(boardCreateRequestDto.getCreatedDateTime()));
+                , boardCreateRequestDto.getCreatedDateTime());
         boardRepository.save(createdBoard);
     }
 }

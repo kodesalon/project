@@ -28,7 +28,7 @@ public class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 게시판 생성 요청 Dto를 전달받아 게시판을 생성한다.")
     public void save() {
-        BoardCreateRequestDto boardCreateRequestDto = new BoardCreateRequestDto(1L, "게시물 제목", "게시물 작성", LocalDateTime.now().toString());
+        BoardCreateRequestDto boardCreateRequestDto = new BoardCreateRequestDto(1L, "게시물 제목", "게시물 작성", LocalDateTime.now());
         boardService.save(boardCreateRequestDto);
         verify(boardRepository, times(1)).save(any(Board.class));
     }

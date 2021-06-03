@@ -2,6 +2,7 @@ package com.project.kodesalon.model.board.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
+import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.model.board.controller.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.BoardService;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,11 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -30,7 +33,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith({RestDocumentationExtension.class, MockitoExtension.class})
+@Import(JacksonConfiguration.class)
+@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class BoardControllerTest {
 
     private MockMvc mockMvc;
@@ -41,7 +45,8 @@ public class BoardControllerTest {
     @Mock
     private BoardService boardService;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     public void setUp(RestDocumentationContextProvider restDocumentation) {
@@ -54,7 +59,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("회원 식별 번호, 제목, 내용, 생성 날짜를 json으로 전달받아 게시물을 생성하고 HTTP status 201을 반환한다.")
     public void save() throws Exception {
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "게시물 내용", LocalDateTime.now().toString());
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "게시물 내용", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards/")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -73,7 +78,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("제목이 존재하지 않을 경우 HTTP status 400과 예외 메세지를 반환한다.")
     public void save_fail_invalid_title() throws Exception {
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "", "게시물 내용", LocalDateTime.now().toString());
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "", "게시물 내용", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards/")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -89,7 +94,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("내용이 존재하지 않을 경우 HTTP status 400과 예외 메세지를 반환한다.")
     public void save_fail_invalid_content() throws Exception {
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "", LocalDateTime.now().toString());
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards/")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
                 .contentType(MediaType.APPLICATION_JSON))
