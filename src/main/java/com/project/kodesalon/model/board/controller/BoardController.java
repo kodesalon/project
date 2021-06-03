@@ -62,4 +62,10 @@ public class BoardController {
         MultiBoardSelectResponse boardSelectMultiResponse = boardService.selectBoards(lastBoardId, size);
         return ResponseEntity.ok().body(boardSelectMultiResponse);
     }
+
+    @PostMapping(value = "/boardss")
+    public ResponseEntity<HttpStatus> save2(@RequestBody final BoardCreateRequest boardCreateRequest) {
+        System.out.println(boardCreateRequest.getCreatedDateTime());
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
 }
