@@ -1,5 +1,7 @@
 package com.project.kodesalon.model.member.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
@@ -36,8 +38,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class MemberControllerTest {
-    private final String loginRequestJson = "{\"alias\" : \"alias\", \"password\" : \"Password123!!\"}";
     private final String loginUrl = "/api/v1/members/login";
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final LoginRequestDto loginRequestDto = new LoginRequestDto("alias", "Password123!!");
 
     private MockMvc mockMvc;
 
@@ -56,6 +60,12 @@ public class MemberControllerTest {
                 .build();
     }
 
+    void serializeLoginRequest() {
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(LoginRequestDto.class, new LoginRequestDtoSerializer());
+        objectMapper.registerModule(simpleModule);
+    }
+
     @Test
     @DisplayName("로그인이 성공하면 Alias, ID, Http Status 200를 Response 합니다.")
     void login_controller_return_success_response() throws Exception {
@@ -63,11 +73,12 @@ public class MemberControllerTest {
 
         given(memberService.login(any(LoginRequestDto.class)))
                 .willReturn(loginResponseDto);
+        serializeLoginRequest();
 
         this.mockMvc.perform(
                 post(loginUrl)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginRequestJson))
+                        .content(objectMapper.writeValueAsString(loginRequestDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(1))
                 .andExpect(jsonPath("$.alias").value("alias"))
@@ -95,10 +106,11 @@ public class MemberControllerTest {
         given(memberService.login(any(LoginRequestDto.class)))
                 .willThrow(HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED,
                         "", HttpHeaders.EMPTY, null, null));
+        serializeLoginRequest();
 
         this.mockMvc.perform(post(loginUrl)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(loginRequestJson)
+                .content(objectMapper.writeValueAsString(loginRequestDto))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value("비밀 번호가 일치하지 않습니다."))
@@ -122,10 +134,11 @@ public class MemberControllerTest {
         given(memberService.login(any(LoginRequestDto.class)))
                 .willThrow(HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.UNAUTHORIZED,
                         "", HttpHeaders.EMPTY, null, null));
+        serializeLoginRequest();
 
         this.mockMvc.perform(post(loginUrl)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(loginRequestJson)
+                .content(objectMapper.writeValueAsString(loginRequestDto))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value("존재하는 아이디를 입력해주세요."))
