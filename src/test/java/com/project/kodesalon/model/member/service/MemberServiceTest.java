@@ -46,7 +46,6 @@ public class MemberServiceTest {
                 .hasMessage("존재하는 아이디를 입력해주세요.");
     }
 
-    //TODO 상태코드 없는 부분 제거
     @Test
     @DisplayName("존재하는 Alias가 Alias와 Password가 일치하면 Id, Alias를 리턴합니다.")
     void exist_login_return_success2() {
