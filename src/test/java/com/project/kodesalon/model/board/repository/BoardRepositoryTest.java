@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,9 +22,7 @@ public class BoardRepositoryTest {
     @DisplayName("게시판 객체를 DB에 저장한다.")
     public void save() {
         Board board = new Board(new Title("게시물 제목"), new Content("게시물 내용"), "작성자", LocalDateTime.now());
-        boardRepository.save(board);
-        Optional<Board> possibleBoard = boardRepository.findById(board.getId());
-        assertThat(possibleBoard).isNotEmpty();
-        assertThat(possibleBoard.get().getId()).isEqualTo(1);
+        board = boardRepository.save(board);
+        assertThat(board.getId()).isNotNull();
     }
 }
