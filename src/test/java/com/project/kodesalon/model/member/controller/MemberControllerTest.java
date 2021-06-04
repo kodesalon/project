@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -75,12 +76,20 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.alias").value("alias"))
                 .andDo(document("login/success",
                         requestFields(
-                                fieldWithPath("alias").description("로그인 할 alias"),
-                                fieldWithPath("password").description("로그인 할 패스워드")
+                                fieldWithPath("alias")
+                                        .type(JsonFieldType.STRING)
+                                        .description("로그인 할 alias"),
+                                fieldWithPath("password")
+                                        .type(JsonFieldType.STRING)
+                                        .description("로그인 할 패스워드")
                         ),
                         responseFields(
-                                fieldWithPath("memberId").description("Member 식별자"),
-                                fieldWithPath("alias").description("member alias"))));
+                                fieldWithPath("memberId")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("Member 식별자"),
+                                fieldWithPath("alias")
+                                        .type(JsonFieldType.STRING)
+                                        .description("member alias"))));
     }
 
     @Test
@@ -98,10 +107,16 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.message").value("비밀 번호가 일치하지 않습니다."))
                 .andDo(document("login/fail/mismatch_password",
                         requestFields(
-                                fieldWithPath("alias").description("로그인 할 alias"),
-                                fieldWithPath("password").description("로그인 할 password")
+                                fieldWithPath("alias")
+                                        .type(JsonFieldType.STRING)
+                                        .description("로그인 할 alias"),
+                                fieldWithPath("password")
+                                        .type(JsonFieldType.STRING)
+                                        .description("로그인 할 password")
                         ), responseFields(
-                                fieldWithPath("message").description("예외 메세지"))));
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("예외 메세지"))));
     }
 
     @Test
@@ -119,10 +134,16 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.message").value("존재하는 아이디를 입력해주세요."))
                 .andDo(document("login/fail/no_alias",
                         requestFields(
-                                fieldWithPath("alias").description("로그인 할 alias"),
-                                fieldWithPath("password").description("로그인 할 password")
+                                fieldWithPath("alias")
+                                        .type(JsonFieldType.STRING)
+                                        .description("로그인 할 alias"),
+                                fieldWithPath("password")
+                                        .type(JsonFieldType.STRING)
+                                        .description("로그인 할 password")
                         ), responseFields(
-                                fieldWithPath("message").description("예외 메세지")
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("예외 메세지")
                         )));
     }
 }
