@@ -1,11 +1,19 @@
 spring:
   profiles:
-    active: "local"
+    active: local
 ---
+
+spring:
+  group:
+    prod:
+      - prod-db
+
+---
+
 spring:
   config:
     activate:
-      on-profile: "local"
+      on-profile: local
   datasource:
     url: jdbc:h2:mem:test_mem
     driver-class-name: org.h2.Driver
@@ -18,5 +26,8 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
+        default_batch_size : 50
+        query:
+          in_cloud_memory_padding : true
         format_sql: true
-
+    open-in-view: false
