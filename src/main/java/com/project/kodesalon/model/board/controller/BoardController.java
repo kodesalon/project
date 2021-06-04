@@ -21,9 +21,9 @@ public class BoardController {
     }
 
     @PostMapping(value = "/boards")
-    public ResponseEntity<HttpStatus> save(@RequestBody final BoardCreateRequest boardCreateRequest) {
+    public ResponseEntity<Void> save(@RequestBody final BoardCreateRequest boardCreateRequest) {
         BoardCreateRequestDto boardCreateRequestDto = new BoardCreateRequestDto(boardCreateRequest.getMemberId(), boardCreateRequest.getTitle(), boardCreateRequest.getContent(), boardCreateRequest.getCreatedDateTime());
         boardService.save(boardCreateRequestDto);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }
