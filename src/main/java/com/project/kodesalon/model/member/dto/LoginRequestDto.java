@@ -7,11 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class LoginRequestDto {
-    @Getter
     private Alias alias;
 
-    @Getter
     private Password password;
 
     public LoginRequestDto(String alias, String password) {

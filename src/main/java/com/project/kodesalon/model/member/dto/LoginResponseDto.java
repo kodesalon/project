@@ -1,9 +1,10 @@
 package com.project.kodesalon.model.member.dto;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class LoginResponseDto {
     private Long memberId;
