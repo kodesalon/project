@@ -4,6 +4,7 @@ import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.repository.MemberRepository;
+import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,10 +15,8 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.BDDAssertions.then;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.BDDAssertions.thenThrownBy;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -36,10 +35,10 @@ public class MemberServiceTest {
         LoginRequestDto loginRequestDto =
                 new LoginRequestDto("alias", "Password123!!");
 
-        when(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
-                .thenReturn(Optional.empty());
+        given(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
+                .willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> memberService.login(loginRequestDto))
+        thenThrownBy(() -> memberService.login(loginRequestDto))
                 .isInstanceOf(HttpClientErrorException.class)
                 .hasMessage("존재하는 아이디를 입력해주세요.");
     }
@@ -49,19 +48,20 @@ public class MemberServiceTest {
     void exist_login_return_success2() {
         LoginRequestDto loginRequestDto =
                 new LoginRequestDto("alias", "Password123!!");
+        BDDSoftAssertions softly = new BDDSoftAssertions();
 
-        when(member.getId()).thenReturn(1L);
-        when(member.getAlias()).thenReturn("alias");
-        when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(false);
-        when(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
-                .thenReturn(Optional.of(member));
+        given(member.getId()).willReturn(1L);
+        given(member.getAlias()).willReturn("alias");
+        given(member.isIncorrectPassword(loginRequestDto.getPassword())).willReturn(false);
+        given(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
+                .willReturn(Optional.of(member));
 
         LoginResponseDto loginResponseDto = memberService.login(loginRequestDto);
 
-        assertAll(
-                () -> then(loginResponseDto.getMemberId()).isEqualTo(1L),
-                () -> then(loginResponseDto.getAlias()).isEqualTo("alias")
-        );
+        softly.then(loginResponseDto.getMemberId()).isEqualTo(1L);
+        softly.then(loginResponseDto.getAlias()).isEqualTo("alias");
+
+        softly.assertAll();
     }
 
     @Test
@@ -70,11 +70,11 @@ public class MemberServiceTest {
         LoginRequestDto loginRequestDto
                 = new LoginRequestDto("alias", "Password123!!!");
 
-        when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(true);
-        when(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
-                .thenReturn(Optional.of(member));
+        given(member.isIncorrectPassword(loginRequestDto.getPassword())).willReturn(true);
+        given(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
+                .willReturn(Optional.of(member));
 
-        assertThatThrownBy(() -> memberService.login(loginRequestDto))
+        thenThrownBy(() -> memberService.login(loginRequestDto))
                 .isInstanceOf(HttpClientErrorException.class)
                 .hasMessage("비밀 번호가 일치하지 않습니다.");
     }

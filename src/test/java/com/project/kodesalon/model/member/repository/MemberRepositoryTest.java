@@ -2,17 +2,19 @@ package com.project.kodesalon.model.member.repository;
 
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
-import com.project.kodesalon.model.member.exception.UnAuthorizedException;
+import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.BDDAssertions.then;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DataJpaTest
 class MemberRepositoryTest {
@@ -31,15 +33,17 @@ class MemberRepositoryTest {
     @DisplayName("DB에 존재하는 member를 alias로 조회하면 member를 리턴합니다")
     void find_by_alias_present_member() {
         Member savedMember = memberRepository.findMemberByAlias(new Alias("alias"))
-                .orElseThrow(() -> new UnAuthorizedException("존재하지 않는 사용자입니다"));
+                .orElseThrow(() -> HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.UNAUTHORIZED,
+                        "", HttpHeaders.EMPTY, null, null));
+        BDDSoftAssertions softly = new BDDSoftAssertions();
 
-        assertAll(
-                () -> then(savedMember.getAlias()).isEqualTo(member.getAlias()),
-                () -> then(savedMember.getPassword()).isEqualTo(member.getPassword()),
-                () -> then(savedMember.getName()).isEqualTo(member.getName()),
-                () -> then(savedMember.getEmail()).isEqualTo(member.getEmail()),
-                () -> then(savedMember.getPhone()).isEqualTo(member.getPhone())
-        );
+        softly.then(savedMember.getAlias()).isEqualTo(member.getAlias());
+        softly.then(savedMember.getPassword()).isEqualTo(member.getPassword());
+        softly.then(savedMember.getName()).isEqualTo(member.getName());
+        softly.then(savedMember.getEmail()).isEqualTo(member.getEmail());
+        softly.then(savedMember.getPhone()).isEqualTo(member.getPhone());
+
+        softly.assertAll();
     }
 
     @Test
