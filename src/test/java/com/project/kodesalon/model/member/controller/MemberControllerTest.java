@@ -21,7 +21,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -30,6 +32,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -68,8 +71,9 @@ public class MemberControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginRequestJson))
                 .andExpect(status().isOk())
-                .andExpect(content().string("{\"memberId\":1,\"alias\":\"alias\"}"))
-                .andDo(document("login_success",
+                .andExpect(jsonPath("$.memberId").value(1))
+                .andExpect(jsonPath("$.alias").value("alias"))
+                .andDo(document("login/success",
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
                                 fieldWithPath("password").description("로그인 할 패스워드")
@@ -91,8 +95,8 @@ public class MemberControllerTest {
                 .content(loginRequestJson)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("{\"message\":\"비밀 번호가 일치하지 않습니다.\"}"))
-                .andDo(document("login_failed_mismatch_password",
+                .andExpect(jsonPath("$.message").value("비밀 번호가 일치하지 않습니다."))
+                .andDo(document("login/fail/mismatch_password",
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
                                 fieldWithPath("password").description("로그인 할 password")
@@ -112,8 +116,8 @@ public class MemberControllerTest {
                 .content(loginRequestJson)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("{\"message\":\"존재하는 아이디를 입력해주세요.\"}"))
-                .andDo(document("login_fail_no_alias",
+                .andExpect(jsonPath("$.message").value("존재하는 아이디를 입력해주세요."))
+                .andDo(document("login/fail/no_alias",
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
                                 fieldWithPath("password").description("로그인 할 password")
