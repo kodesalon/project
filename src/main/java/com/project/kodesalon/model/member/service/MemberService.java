@@ -12,6 +12,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 public class MemberService {
+    //TODO 예외 상황일 경우 구체적인 로그 남기기
     private final MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -37,6 +38,7 @@ public class MemberService {
                     throw new IllegalStateException("이미 존재하는 아이디입니다");
                 });
 
+        //TODO Member 밖으로 빼서 CreateMemberDto 내부 값을 모르게 하기
         Member savedMember = memberRepository.save(new Member(createMemberRequestDto.getAlias().value(), createMemberRequestDto.getPassword().value(),
                 createMemberRequestDto.getName().value(), createMemberRequestDto.getEmail().value(), createMemberRequestDto.getPhone().value()));
 

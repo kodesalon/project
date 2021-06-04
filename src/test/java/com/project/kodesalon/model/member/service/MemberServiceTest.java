@@ -17,12 +17,8 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.assertj.core.api.BDDAssertions.then;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,9 +38,6 @@ public class MemberServiceTest {
     @Test
     @DisplayName("존재하지 않는 Alias는 예외를 발생시킵니다.")
     void not_exist_member_login_throw_exception() {
-        LoginRequestDto loginRequestDto =
-                new LoginRequestDto("alias", "Password123!!");
-
         given(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
                 .willReturn(Optional.empty());
 
@@ -53,11 +46,10 @@ public class MemberServiceTest {
                 .hasMessage("존재하는 아이디를 입력해주세요.");
     }
 
+    //TODO 상태코드 없는 부분 제거
     @Test
     @DisplayName("존재하는 Alias가 Alias와 Password가 일치하면 200 status 코드, Id, Alias를 리턴합니다.")
     void exist_login_return_success2() {
-        LoginRequestDto loginRequestDto =
-                new LoginRequestDto("alias", "Password123!!");
         BDDSoftAssertions softly = new BDDSoftAssertions();
 
         given(member.getId()).willReturn(1L);
@@ -77,9 +69,6 @@ public class MemberServiceTest {
     @Test
     @DisplayName("존재하는 Alias가 Password가 일치하지 않는다면 예외 메세지를 발생시킵니다.")
     void exist_login_return_fail2() {
-        LoginRequestDto loginRequestDto
-                = new LoginRequestDto("alias", "Password123!!!");
-
         given(member.isIncorrectPassword(loginRequestDto.getPassword())).willReturn(true);
         given(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
                 .willReturn(Optional.of(member));
@@ -92,25 +81,25 @@ public class MemberServiceTest {
     @Test
     @DisplayName("존재하지 않는 아이디이면 회원가입을 진행합니다.")
     void create_member_success() {
-        when(memberRepository.findMemberByAlias(any(Alias.class))).thenReturn(Optional.empty());
-        when(memberRepository.save(any(Member.class))).thenReturn(member);
-        when(member.getId()).thenReturn(1L);
-        when(member.getAlias()).thenReturn("alias");
+        BDDSoftAssertions softly = new BDDSoftAssertions();
+
+        given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.empty());
+        given(memberRepository.save(any(Member.class))).willReturn(member);
+        given(member.getId()).willReturn(1L);
+        given(member.getAlias()).willReturn("alias");
 
         LoginResponseDto loginResponseDto = memberService.join(createMemberRequestDto);
 
-        assertAll(
-                () -> then(loginResponseDto.getMemberId()).isEqualTo(1L),
-                () -> then(loginResponseDto.getAlias()).isEqualTo("alias")
-        );
+        softly.then(loginResponseDto.getMemberId()).isEqualTo(1L);
+        softly.then(loginResponseDto.getAlias()).isEqualTo("alias");
     }
 
     @Test
     @DisplayName("이미 존재하는 Alias면 예외를 발생시킵니다.")
     void exist_alias_throws_exception() {
-        when(memberRepository.findMemberByAlias(any(Alias.class))).thenReturn(Optional.of(member));
+        given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.of(member));
 
-        assertThatIllegalStateException().isThrownBy(() -> memberService.join(createMemberRequestDto))
-                .withMessage("이미 존재하는 아이디입니다");
+        thenThrownBy(() -> memberService.join(createMemberRequestDto)).isInstanceOf(IllegalStateException.class)
+                .hasMessage("이미 존재하는 아이디입니다");
     }
 }

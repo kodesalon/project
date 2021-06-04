@@ -155,6 +155,7 @@ public class MemberControllerTest {
                                         .description("예외 메세지"))));
     }
 
+    //TODO Type 체크, ObjectMapper을 사용하여 content 구성하기
     @Test
     @DisplayName("사용자가 존재하지 않는다면 회원가입을 진행하고 201 상태를 response합니다.")
     void create_member_response_success() throws Exception {
