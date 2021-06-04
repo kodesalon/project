@@ -1,10 +1,7 @@
 package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
-<<<<<<< HEAD
 import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
-=======
->>>>>>> 48675be88ed6341dc354832a9326b06c018b6888
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.repository.MemberRepository;

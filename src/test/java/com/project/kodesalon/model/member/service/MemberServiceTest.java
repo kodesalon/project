@@ -1,11 +1,8 @@
 package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
-<<<<<<< HEAD
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
-=======
->>>>>>> 48675be88ed6341dc354832a9326b06c018b6888
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.repository.MemberRepository;
@@ -20,17 +17,13 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Optional;
 
-<<<<<<< HEAD
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-=======
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.BDDMockito.given;
->>>>>>> 48675be88ed6341dc354832a9326b06c018b6888
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -63,13 +56,6 @@ public class MemberServiceTest {
     @Test
     @DisplayName("존재하는 Alias가 Alias와 Password가 일치하면 200 status 코드, Id, Alias를 리턴합니다.")
     void exist_login_return_success2() {
-<<<<<<< HEAD
-        when(member.getId()).thenReturn(1L);
-        when(member.getAlias()).thenReturn("alias");
-        when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(false);
-        when(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
-                .thenReturn(Optional.of(member));
-=======
         LoginRequestDto loginRequestDto =
                 new LoginRequestDto("alias", "Password123!!");
         BDDSoftAssertions softly = new BDDSoftAssertions();
@@ -79,7 +65,6 @@ public class MemberServiceTest {
         given(member.isIncorrectPassword(loginRequestDto.getPassword())).willReturn(false);
         given(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
                 .willReturn(Optional.of(member));
->>>>>>> 48675be88ed6341dc354832a9326b06c018b6888
 
         LoginResponseDto loginResponseDto = memberService.login(loginRequestDto);
 
@@ -92,18 +77,12 @@ public class MemberServiceTest {
     @Test
     @DisplayName("존재하는 Alias가 Password가 일치하지 않는다면 예외 메세지를 발생시킵니다.")
     void exist_login_return_fail2() {
-<<<<<<< HEAD
-        when(member.isIncorrectPassword(loginRequestDto.getPassword())).thenReturn(true);
-        when(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
-                .thenReturn(Optional.of(member));
-=======
         LoginRequestDto loginRequestDto
                 = new LoginRequestDto("alias", "Password123!!!");
 
         given(member.isIncorrectPassword(loginRequestDto.getPassword())).willReturn(true);
         given(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
                 .willReturn(Optional.of(member));
->>>>>>> 48675be88ed6341dc354832a9326b06c018b6888
 
         thenThrownBy(() -> memberService.login(loginRequestDto))
                 .isInstanceOf(HttpClientErrorException.class)
