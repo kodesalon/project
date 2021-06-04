@@ -74,9 +74,7 @@ public class MemberControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("memberId").description("Member 식별자"),
-                                fieldWithPath("alias").description("member alias"))))
-                .andReturn()
-                .getResponse();
+                                fieldWithPath("alias").description("member alias"))));
     }
 
     @Test
