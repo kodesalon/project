@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.board.service.dto;
 
+import com.project.kodesalon.model.board.domain.Board;
 import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
 import lombok.AccessLevel;
@@ -21,5 +22,9 @@ public class BoardCreateRequestDto {
         this.title = new Title(title);
         this.content = new Content(content);
         this.createdDateTime = createdDateTime;
+    }
+
+    public Board toBoard(String writer) {
+        return new Board(title, content, writer, createdDateTime);
     }
 }

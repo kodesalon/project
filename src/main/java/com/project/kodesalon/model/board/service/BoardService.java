@@ -16,10 +16,7 @@ public class BoardService {
 
     @Transactional
     public void save(BoardCreateRequestDto boardCreateRequestDto) {
-        Board createdBoard = new Board(boardCreateRequestDto.getTitle()
-                , boardCreateRequestDto.getContent()
-                , "writer"
-                , boardCreateRequestDto.getCreatedDateTime());
+        Board createdBoard = boardCreateRequestDto.toBoard("writer");
         boardRepository.save(createdBoard);
     }
 }
