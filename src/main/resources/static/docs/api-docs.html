@@ -483,7 +483,25 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="ulist">
 <ul>
 <li>
+<<<<<<< HEAD
 <p>Request Body</p>
+=======
+<p>CURL:</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl 'http://localhost:8080/api/v1/members/login' -i -X POST \
+    -H 'Content-Type: application/json;charset=UTF-8' \
+    -d '{"alias" : "alias", "password" : "Password123!!"}'</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Response Body</p>
+>>>>>>> 48675be88ed6341dc354832a9326b06c018b6888
 </li>
 </ul>
 </div>
@@ -621,9 +639,13 @@ Content-Length: 30
 <div class="content">
 <pre>HTTP/1.1 401 Unauthorized
 Content-Type: application/json;charset=UTF-8
+<<<<<<< HEAD
 Content-Length: 55
+=======
+Content-Length: 59
+>>>>>>> 48675be88ed6341dc354832a9326b06c018b6888
 
-{"message":"존재하는 Alias를 입력해주세요."}</pre>
+{"message":"존재하는 아이디를 입력해주세요."}</pre>
 </div>
 </div>
 <div class="ulist">
@@ -802,6 +824,7 @@ Content-Length: 30
 </div>
 <div class="listingblock">
 <div class="content">
+<<<<<<< HEAD
 <pre>HTTP/1.1 409 Conflict
 Content-Type: application/json;charset=UTF-8
 Content-Length: 52
@@ -887,6 +910,13 @@ Content-Type: application/json;charset=UTF-8
 Content-Length: 134
 
 {"message":"핸드폰 번호는 [휴대폰 앞자리 번호]- 3자리 혹은 4자리 수 - 4자리수의 형식 이어야 합니다."}</pre>
+=======
+<pre>HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=UTF-8
+Content-Length: 57
+
+{"message":"비밀 번호가 일치하지 않습니다."}</pre>
+>>>>>>> 48675be88ed6341dc354832a9326b06c018b6888
 </div>
 </div>
 </div>
@@ -897,7 +927,11 @@ Content-Length: 134
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
+<<<<<<< HEAD
 Last updated 2021-06-01 22:32:55 +0900
+=======
+Last updated 2021-06-04 15:35:50 +0900
+>>>>>>> 48675be88ed6341dc354832a9326b06c018b6888
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
