@@ -24,8 +24,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
-        //TODO 상태 코드에 관한 부분 다시 생각해보기
         log.error(e.getMessage());
-        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }
