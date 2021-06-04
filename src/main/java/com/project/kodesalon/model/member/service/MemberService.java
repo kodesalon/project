@@ -1,12 +1,13 @@
 package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
-import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
-import com.project.kodesalon.model.member.exception.UnAuthorizedException;
 import com.project.kodesalon.model.member.repository.MemberRepository;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 public class MemberService {
@@ -18,10 +19,12 @@ public class MemberService {
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Member member = memberRepository.findMemberByAlias(loginRequestDto.getAlias())
-                .orElseThrow(() -> new UnAuthorizedException("존재하는 아이디를 입력해주세요."));
+                .orElseThrow(() -> HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.UNAUTHORIZED,
+                        "", HttpHeaders.EMPTY, null, null));
 
         if (member.isIncorrectPassword(loginRequestDto.getPassword())) {
-            throw new UnAuthorizedException("비밀 번호가 일치하지 않습니다.");
+            throw HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED,
+                    "", HttpHeaders.EMPTY, null, null);
         }
 
         return new LoginResponseDto(member.getId(), member.getAlias());

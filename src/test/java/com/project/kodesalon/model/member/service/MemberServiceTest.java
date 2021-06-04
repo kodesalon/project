@@ -1,10 +1,8 @@
 package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
-import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
-import com.project.kodesalon.model.member.exception.UnAuthorizedException;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Optional;
 
@@ -41,7 +40,7 @@ public class MemberServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
-                .isInstanceOf(UnAuthorizedException.class)
+                .isInstanceOf(HttpClientErrorException.class)
                 .hasMessage("존재하는 아이디를 입력해주세요.");
     }
 
@@ -76,7 +75,7 @@ public class MemberServiceTest {
                 .thenReturn(Optional.of(member));
 
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
-                .isInstanceOf(UnAuthorizedException.class)
+                .isInstanceOf(HttpClientErrorException.class)
                 .hasMessage("비밀 번호가 일치하지 않습니다.");
     }
 }

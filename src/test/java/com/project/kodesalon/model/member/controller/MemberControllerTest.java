@@ -3,7 +3,6 @@ package com.project.kodesalon.model.member.controller;
 import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
-import com.project.kodesalon.model.member.exception.UnAuthorizedException;
 import com.project.kodesalon.model.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,12 +10,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -81,14 +83,15 @@ public class MemberControllerTest {
     @DisplayName("비밀번호 실패시 401 Status와 예외 메세지를 Response합니다.")
     void login_failed_response_failed_message() throws Exception {
         given(memberService.login(any(LoginRequestDto.class)))
-                .willThrow(new UnAuthorizedException("일치하는 비밀번호를 입력해주세요."));
+                .willThrow(HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED,
+                        "", HttpHeaders.EMPTY, null, null));
 
         this.mockMvc.perform(post(loginUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(loginRequestJson)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("{\"message\":\"일치하는 비밀번호를 입력해주세요.\"}"))
+                .andExpect(content().string("{\"message\":\"비밀 번호가 일치하지 않습니다.\"}"))
                 .andDo(document("login_failed_mismatch_password",
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
@@ -99,16 +102,17 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("존재하지 않는 사용자는 401 Status와 에러 메세지를 Response 합니다.")
-    void not_exisit_alias_response_failed_message() throws Exception {
+    void not_exist_alias_response_failed_message() throws Exception {
         given(memberService.login(any(LoginRequestDto.class)))
-                .willThrow(new UnAuthorizedException("존재하는 Alias를 입력해주세요."));
+                .willThrow(HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.UNAUTHORIZED,
+                        "", HttpHeaders.EMPTY, null, null));
 
         this.mockMvc.perform(post(loginUrl)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(loginRequestJson)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("{\"message\":\"존재하는 Alias를 입력해주세요.\"}"))
+                .andExpect(content().string("{\"message\":\"존재하는 아이디를 입력해주세요.\"}"))
                 .andDo(document("login_fail_no_alias",
                         requestFields(
                                 fieldWithPath("alias").description("로그인 할 alias"),
