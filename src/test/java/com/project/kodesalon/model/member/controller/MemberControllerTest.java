@@ -13,12 +13,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.NoSuchElementException;
@@ -112,14 +114,15 @@ public class MemberControllerTest {
     @DisplayName("존재하지 않는 사용자는 401 Status와 에러 메세지를 Response 합니다.")
     void not_exisit_alias_response_failed_message() throws Exception {
         given(memberService.login(any(LoginRequestDto.class)))
-                .willThrow(new UnAuthorizedException("존재하는 Alias를 입력해주세요."));
+                .willThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "존재하는 아이디를 입력해주세요."));
+
 
         this.mockMvc.perform(
                 post(loginUrl)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(loginRequestJson))
                 .andExpect(status().isUnauthorized())
-                .andExpect(content().string("{\"message\":\"존재하는 Alias를 입력해주세요.\"}"))
+                .andExpect(content().string("{\"message\":\"존재하는 아이디를 입력해주세요.\"}"))
                 .andDo(document("login/fail/no_alias", getDocumentResponse()));
     }
 

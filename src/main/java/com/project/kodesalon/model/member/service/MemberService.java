@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.member.service;
 
+import antlr.StringUtils;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
@@ -7,10 +8,13 @@ import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
 import com.project.kodesalon.model.member.exception.UnAuthorizedException;
 import com.project.kodesalon.model.member.repository.MemberRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class MemberService {
@@ -23,10 +27,11 @@ public class MemberService {
     @Transactional(readOnly = true)
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Member member = memberRepository.findMemberByAlias(loginRequestDto.getAlias())
-                .orElseThrow(() -> new UnAuthorizedException("존재하는 아이디를 입력해주세요."));
+                .orElseThrow(() ->
+                        new HttpClientErrorException("존재하는 아이디를 입력해주세요.", HttpStatus.UNAUTHORIZED, "", null, null, null));
 
         if (member.isIncorrectPassword(loginRequestDto.getPassword())) {
-            throw new UnAuthorizedException("비밀 번호가 일치하지 않습니다.");
+            throw new HttpClientErrorException("비밀 번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED, "", null, null, null);
         }
 
         return new LoginResponseDto(member.getId(), member.getAlias());

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -50,12 +51,12 @@ public class MemberServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
-                .isInstanceOf(UnAuthorizedException.class)
+                .isInstanceOf(HttpClientErrorException.class)
                 .hasMessage("존재하는 아이디를 입력해주세요.");
     }
 
     @Test
-    @DisplayName("존재하는 Alias가 Alias와 Password가 일치하면 200 status 코드, Id, Alias를 리턴합니다.")
+    @DisplayName("존재하는 Alias가 Alias와 Password가 일치하면 Id, Alias를 리턴합니다.")
     void exist_login_return_success2() {
         when(member.getId()).thenReturn(1L);
         when(member.getAlias()).thenReturn("alias");
@@ -79,7 +80,7 @@ public class MemberServiceTest {
                 .thenReturn(Optional.of(member));
 
         assertThatThrownBy(() -> memberService.login(loginRequestDto))
-                .isInstanceOf(UnAuthorizedException.class)
+                .isInstanceOf(HttpClientErrorException.class)
                 .hasMessage("비밀 번호가 일치하지 않습니다.");
     }
 
