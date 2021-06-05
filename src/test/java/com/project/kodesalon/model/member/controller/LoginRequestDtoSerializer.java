@@ -8,9 +8,6 @@ import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import java.io.IOException;
 
 public class LoginRequestDtoSerializer extends StdSerializer<LoginRequestDto> {
-    public LoginRequestDtoSerializer() {
-        this(null);
-    }
 
     public LoginRequestDtoSerializer(Class<LoginRequestDto> t) {
         super(t);
