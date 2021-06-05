@@ -47,6 +47,8 @@ public class MemberControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final LoginRequestDto loginRequestDto = new LoginRequestDto("alias", "Password123!!");
+    private final CreateMemberRequestDto createMemberRequestDto = new CreateMemberRequestDto("alias",
+            "Password123!!", "이름", "email@eamil.com", "010-1111-2222");
 
     private MockMvc mockMvc;
 
@@ -171,14 +173,28 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.alias").value("alias"))
                 .andDo(document("join/success",
                         requestFields(
-                                fieldWithPath("alias").description("회원 가입할 member의 alias"),
-                                fieldWithPath("password").description("회원 가입할 member의 password"),
-                                fieldWithPath("name").description("회원 가입할 member의 이름"),
-                                fieldWithPath("email").description("회원 가입할 member의 email"),
-                                fieldWithPath("phone").description("회원 가입할 member의 phone")
+                                fieldWithPath("alias")
+                                        .type(JsonFieldType.STRING)
+                                        .description("회원 가입할 member의 alias"),
+                                fieldWithPath("password")
+                                        .type(JsonFieldType.STRING)
+                                        .description("회원 가입할 member의 password"),
+                                fieldWithPath("name")
+                                        .type(JsonFieldType.STRING)
+                                        .description("회원 가입할 member의 이름"),
+                                fieldWithPath("email")
+                                        .type(JsonFieldType.STRING)
+                                        .description("회원 가입할 member의 email"),
+                                fieldWithPath("phone")
+                                        .type(JsonFieldType.STRING)
+                                        .description("회원 가입할 member의 phone")
                         ), responseFields(
-                                fieldWithPath("memberId").description("회원 가입한 member의 식별자"),
-                                fieldWithPath("alias").description("회원 가입한 member의 alias"))));
+                                fieldWithPath("memberId")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("회원 가입한 member의 식별자"),
+                                fieldWithPath("alias")
+                                        .type(JsonFieldType.STRING)
+                                        .description("회원 가입한 member의 alias"))));
     }
 
     @Test
@@ -195,9 +211,12 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.message").value("이미 존재하는 아이디입니다"))
                 .andDo(document("join/fail/existing_alias",
                         responseFields(
-                                fieldWithPath("message").description("이미 존재하는 회원 에러 메세지"))));
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("이미 존재하는 회원 에러 메세지"))));
     }
 
+    //TODO 상태 코드 변경 (Conflict -> Unprocessable Entity)
     @Test
     @DisplayName("아이디가 형식에 맞지 않으면 403 상태를 response합니다.")
     void invalid_alias_response_fail() throws Exception {
@@ -210,7 +229,9 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.message").value("아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다."))
                 .andDo(document("join/fail/invalid_alias",
                         responseFields(
-                                fieldWithPath("message").description("유효하지 않은 Alias 에러 메세지"))));
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("유효하지 않은 Alias 에러 메세지"))));
     }
 
     @Test
@@ -225,7 +246,9 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.message").value("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."))
                 .andDo(document("join/fail/invalid_password",
                         responseFields(
-                                fieldWithPath("message").description("유효하지 않은 Password 에러 메세지"))));
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("유효하지 않은 Password 에러 메세지"))));
     }
 
     @Test
@@ -240,7 +263,9 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.message").value("이름은 2자리 이상 17자리 이하의 한글이어야 합니다."))
                 .andDo(document("join/fail/invalid_name",
                         responseFields(
-                                fieldWithPath("message").description("유효하지 않은 Name 에러 메세지"))));
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("유효하지 않은 Name 에러 메세지"))));
     }
 
     @Test
@@ -255,7 +280,9 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.message").value("이메일은 이메일주소@회사.com 형식 이어야 합니다."))
                 .andDo(document("join/fail/invalid_email",
                         responseFields(
-                                fieldWithPath("message").description("유효하지 않은 Eamil 에러 메세지"))));
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("유효하지 않은 Eamil 에러 메세지"))));
     }
 
     @Test
@@ -270,6 +297,8 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.message").value("핸드폰 번호는 [휴대폰 앞자리 번호]- 3자리 혹은 4자리 수 - 4자리수의 형식 이어야 합니다."))
                 .andDo(document("join/fail/invalid_phone",
                         responseFields(
-                                fieldWithPath("message").description("유효하지 않은 phone 에러 메세지"))));
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("유효하지 않은 phone 에러 메세지"))));
     }
 }
