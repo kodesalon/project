@@ -29,6 +29,11 @@ class BoardCreateRequestDtoTest {
     @DisplayName("작성자를 입력받아, 멤버 객체를 반환한다.")
     public void toBoard() {
         Board board = boardCreateRequestDto.toBoard("writer");
-        assertThat(board.getWriter()).isEqualTo("writer");
+        assertAll(
+                () -> assertThat(board.getTitle()).isEqualTo(new Title("게시물 제목")),
+                () -> assertThat(board.getContent()).isEqualTo(new Content("게시물 내용")),
+                () -> assertThat(board.getCreatedDateTime()).isEqualTo("2021-06-01T23:59:59.999999"),
+                () -> assertThat(board.getWriter()).isEqualTo("writer")
+        );
     }
 }
