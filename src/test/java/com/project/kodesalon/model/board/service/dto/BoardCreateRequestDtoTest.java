@@ -30,8 +30,8 @@ class BoardCreateRequestDtoTest {
     public void toBoard() {
         Board board = boardCreateRequestDto.toBoard("writer");
         assertAll(
-                () -> assertThat(board.getTitle()).isEqualTo(new Title("게시물 제목")),
-                () -> assertThat(board.getContent()).isEqualTo(new Content("게시물 내용")),
+                () -> assertThat(board.getTitle()).isEqualTo("게시물 제목"),
+                () -> assertThat(board.getContent()).isEqualTo("게시물 내용"),
                 () -> assertThat(board.getCreatedDateTime()).isEqualTo("2021-06-01T23:59:59.999999"),
                 () -> assertThat(board.getWriter()).isEqualTo("writer")
         );
