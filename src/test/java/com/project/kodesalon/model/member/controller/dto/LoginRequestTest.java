@@ -2,7 +2,7 @@ package com.project.kodesalon.model.member.controller.dto;
 
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Password;
-import com.project.kodesalon.model.member.dto.LoginRequestDto;
+import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

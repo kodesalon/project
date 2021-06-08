@@ -1,6 +1,6 @@
 package com.project.kodesalon.model.member.controller.dto;
 
-import com.project.kodesalon.model.member.dto.LoginRequestDto;
+import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
