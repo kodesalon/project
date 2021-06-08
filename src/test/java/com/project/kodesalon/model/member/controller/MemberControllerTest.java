@@ -40,14 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class MemberControllerTest {
-    private final String loginUrl = "/api/v1/members/login";
-    private final String joinUrl = "/api/v1/members";
-
-    private ObjectMapper objectMapper;
-    private final LoginRequestDto loginRequestDto = new LoginRequestDto("alias", "Password123!!");
-    private final CreateMemberRequestDto createMemberRequestDto = new CreateMemberRequestDto("alias",
-            "Password123!!", "이름", "email@email.com", "010-1111-2222");
-
+    private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
 
     private MockMvc mockMvc;
 
@@ -57,6 +50,8 @@ public class MemberControllerTest {
     @Mock
     private MemberService memberService;
 
+    ObjectMapper objectMapper = new ObjectMapper();
+
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.standaloneSetup(memberController)
@@ -64,20 +59,6 @@ public class MemberControllerTest {
                 .apply(documentationConfiguration(restDocumentation))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
-    }
-
-    void serializeLoginRequest() {
-        objectMapper = new ObjectMapper();
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addSerializer(LoginRequestDto.class, new LoginRequestDtoSerializer(LoginRequestDto.class));
-        objectMapper.registerModule(simpleModule);
-    }
-
-    void serializeCreateRequest() {
-        objectMapper = new ObjectMapper();
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addSerializer(CreateMemberRequestDto.class, new CreateMemberRequestDtoSerializer(CreateMemberRequestDto.class));
-        objectMapper.registerModule(simpleModule);
     }
 
     @Test
@@ -90,9 +71,9 @@ public class MemberControllerTest {
         serializeLoginRequest();
 
         this.mockMvc.perform(
-                post(loginUrl)
+                post("/api/v1/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequestDto)))
+                        .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(1))
                 .andExpect(jsonPath("$.alias").value("alias"))
@@ -115,18 +96,17 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("비밀번호 실패시 401 Status와 예외 메세지를 Response합니다.")
+    @DisplayName("비밀번호 실패시 400 Status와 예외 메세지를 Response합니다.")
     void login_failed_response_failed_message() throws Exception {
         given(memberService.login(any(LoginRequestDto.class)))
-                .willThrow(HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED,
+                .willThrow(HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST,
                         "", HttpHeaders.EMPTY, null, null));
-        serializeLoginRequest();
 
-        this.mockMvc.perform(
-                post(loginUrl)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequestDto)))
-                .andExpect(status().isUnauthorized())
+        this.mockMvc.perform(post("/api/v1/members/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("비밀 번호가 일치하지 않습니다."))
                 .andDo(document("login/fail/mismatch_password",
                         requestFields(
@@ -136,26 +116,24 @@ public class MemberControllerTest {
                                 fieldWithPath("password")
                                         .type(JsonFieldType.STRING)
                                         .description("로그인 할 password")
-                        ),
-                        responseFields(
+                        ), responseFields(
                                 fieldWithPath("message")
                                         .type(JsonFieldType.STRING)
                                         .description("예외 메세지"))));
     }
 
     @Test
-    @DisplayName("존재하지 않는 사용자는 401 Status와 에러 메세지를 Response 합니다.")
+    @DisplayName("존재하지 않는 사용자는 400 Status와 에러 메세지를 Response 합니다.")
     void not_exist_alias_response_failed_message() throws Exception {
         given(memberService.login(any(LoginRequestDto.class)))
-                .willThrow(HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.UNAUTHORIZED,
+                .willThrow(HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.BAD_REQUEST,
                         "", HttpHeaders.EMPTY, null, null));
-        serializeLoginRequest();
 
-        this.mockMvc.perform(
-                post(loginUrl)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequestDto)))
-                .andExpect(status().isUnauthorized())
+        this.mockMvc.perform(post("/api/v1/members/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("존재하는 아이디를 입력해주세요."))
                 .andDo(document("login/fail/no_alias",
                         responseFields(
