@@ -1,4 +1,4 @@
-package com.project.kodesalon.model.member.controller;
+package com.project.kodesalon.config.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

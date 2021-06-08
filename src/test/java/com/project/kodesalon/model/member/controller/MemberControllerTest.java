@@ -1,8 +1,8 @@
 package com.project.kodesalon.model.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.project.kodesalon.common.GlobalExceptionHandler;
+import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.service.MemberService;
@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,12 +37,9 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+@Import(JacksonConfiguration.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class MemberControllerTest {
-    private final String loginUrl = "/api/v1/members/login";
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
     private final LoginRequestDto loginRequestDto = new LoginRequestDto("alias", "Password123!!");
 
     private MockMvc mockMvc;
@@ -51,6 +50,9 @@ public class MemberControllerTest {
     @Mock
     private MemberService memberService;
 
+    @Autowired
+    ObjectMapper objectMapper;
+
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.standaloneSetup(memberController)
@@ -60,12 +62,6 @@ public class MemberControllerTest {
                 .build();
     }
 
-    void serializeLoginRequest() {
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addSerializer(LoginRequestDto.class, new LoginRequestDtoSerializer());
-        objectMapper.registerModule(simpleModule);
-    }
-
     @Test
     @DisplayName("로그인이 성공하면 Alias, ID, Http Status 200를 Response 합니다.")
     void login_controller_return_success_response() throws Exception {
@@ -73,10 +69,9 @@ public class MemberControllerTest {
 
         given(memberService.login(any(LoginRequestDto.class)))
                 .willReturn(loginResponseDto);
-        serializeLoginRequest();
 
         this.mockMvc.perform(
-                post(loginUrl)
+                post("/api/v1/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginRequestDto)))
                 .andExpect(status().isOk())
@@ -106,9 +101,8 @@ public class MemberControllerTest {
         given(memberService.login(any(LoginRequestDto.class)))
                 .willThrow(HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED,
                         "", HttpHeaders.EMPTY, null, null));
-        serializeLoginRequest();
 
-        this.mockMvc.perform(post(loginUrl)
+        this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequestDto))
                 .accept(MediaType.APPLICATION_JSON))
@@ -134,9 +128,8 @@ public class MemberControllerTest {
         given(memberService.login(any(LoginRequestDto.class)))
                 .willThrow(HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.UNAUTHORIZED,
                         "", HttpHeaders.EMPTY, null, null));
-        serializeLoginRequest();
 
-        this.mockMvc.perform(post(loginUrl)
+        this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequestDto))
                 .accept(MediaType.APPLICATION_JSON))
