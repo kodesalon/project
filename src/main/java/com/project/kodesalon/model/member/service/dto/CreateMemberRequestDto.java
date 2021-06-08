@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.member.service.dto;
 
+import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Email;
 import com.project.kodesalon.model.member.domain.vo.Name;
@@ -24,5 +25,9 @@ public class CreateMemberRequestDto {
         this.name = new Name(name);
         this.email = new Email(email);
         this.phone = new Phone(phone);
+    }
+
+    public Member toMember() {
+        return new Member(alias.value(), password.value(), name.value(), email.value(), phone.value());
     }
 }
