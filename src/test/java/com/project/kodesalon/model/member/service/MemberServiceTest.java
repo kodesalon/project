@@ -24,7 +24,7 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
     private final LoginRequestDto loginRequestDto = new LoginRequestDto("alias", "Password123!!");
-    private final CreateMemberRequestDto createMemberRequestDto = new CreateMemberRequestDto("alias2", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+    private final CreateMemberRequestDto createMemberRequestDto = new CreateMemberRequestDto("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
 
     @InjectMocks
     private MemberService memberService;
@@ -82,15 +82,17 @@ public class MemberServiceTest {
     void create_member_success() {
         BDDSoftAssertions softly = new BDDSoftAssertions();
 
-        given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.empty());
-        given(memberRepository.save(any(Member.class))).willReturn(member);
         given(member.getId()).willReturn(1L);
         given(member.getAlias()).willReturn("alias");
+        given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.empty());
+        given(memberRepository.save(any(Member.class))).willReturn(member);
 
         LoginResponseDto loginResponseDto = memberService.join(createMemberRequestDto);
 
         softly.then(loginResponseDto.getMemberId()).isEqualTo(1L);
         softly.then(loginResponseDto.getAlias()).isEqualTo("alias");
+
+        softly.assertAll();
     }
 
     @Test
