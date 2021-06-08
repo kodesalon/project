@@ -5,6 +5,7 @@ import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -294,11 +294,8 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("핸드폰 번호는 [휴대폰 앞자리 번호]- 3자리 혹은 4자리 수 - 4자리수의 형식 이어야 합니다."))
                 .andDo(document("join/fail/invalid_phone",
-                        .content("{\"alias\" : \"alias\", \"password\" : \"Password123!!\", \"name\" : \"이름\", " +
-                                "\"email\" : \"email@email.com\", \"phone\" : \"01111-2222\"}"))
-                .andExpect(status().isForbidden())
-                .andExpect(content().string("{\"message\":\"핸드폰 번호는 [휴대폰 앞자리 번호]- 3자리 혹은 4자리 수 - 4자리수의 형식 이어야 합니다.\"}"))
-                .andDo(document("join/fail/invalid_phone", getDocumentResponse()));
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 Phone 에러 메세지"))));
     }
 
     @Test
