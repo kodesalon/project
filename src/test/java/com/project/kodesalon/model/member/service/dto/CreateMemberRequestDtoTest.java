@@ -17,7 +17,7 @@ public class CreateMemberRequestDtoTest {
     @BeforeEach
     void setUp() {
         createMemberRequestDto = new CreateMemberRequestDto("alias",
-                "Password123!!", "이름", "eamil@email.com", "010-1111-2222");
+                "Password123!!", "이름", "email@email.com", "010-1111-2222");
     }
 
     @Test
@@ -28,7 +28,7 @@ public class CreateMemberRequestDtoTest {
         softly.then(createMemberRequestDto.getAlias()).isEqualTo(new Alias("alias"));
         softly.then(createMemberRequestDto.getPassword()).isEqualTo(new Password("Password123!!"));
         softly.then(createMemberRequestDto.getName()).isEqualTo(new Name("이름"));
-        softly.then(createMemberRequestDto.getEmail()).isEqualTo(new Email("eamil@email.com"));
+        softly.then(createMemberRequestDto.getEmail()).isEqualTo(new Email("email@email.com"));
         softly.then(createMemberRequestDto.getPhone()).isEqualTo(new Phone("010-1111-2222"));
 
         softly.assertAll();
