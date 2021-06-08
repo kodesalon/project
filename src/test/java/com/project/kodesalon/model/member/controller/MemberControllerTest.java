@@ -153,7 +153,7 @@ public class MemberControllerTest {
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createMemberRequest)))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(1))
                 .andExpect(jsonPath("$.alias").value("alias"))
                 .andDo(document("join/success",
@@ -192,7 +192,7 @@ public class MemberControllerTest {
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createMemberRequest)))
-                .andExpect(status().isConflict())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("이미 존재하는 아이디입니다"))
                 .andDo(document("join/fail/existing_alias",
                         responseFields(
@@ -210,7 +210,7 @@ public class MemberControllerTest {
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
-                .andExpect(status().isUnprocessableEntity())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다."))
                 .andDo(document("join/fail/invalid_alias",
                         responseFields(
@@ -228,7 +228,7 @@ public class MemberControllerTest {
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
-                .andExpect(status().isUnprocessableEntity())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."))
                 .andDo(document("join/fail/invalid_password",
                         responseFields(
@@ -246,7 +246,7 @@ public class MemberControllerTest {
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
-                .andExpect(status().isUnprocessableEntity())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("이름은 2자리 이상 17자리 이하의 한글이어야 합니다."))
                 .andDo(document("join/fail/invalid_name",
                         responseFields(
@@ -264,7 +264,7 @@ public class MemberControllerTest {
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
-                .andExpect(status().isUnprocessableEntity())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("이메일은 이메일주소@회사.com 형식 이어야 합니다."))
                 .andDo(document("join/fail/invalid_email",
                         responseFields(
@@ -282,7 +282,7 @@ public class MemberControllerTest {
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
-                .andExpect(status().isUnprocessableEntity())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("핸드폰 번호는 [휴대폰 앞자리 번호]- 3자리 혹은 4자리 수 - 4자리수의 형식 이어야 합니다."))
                 .andDo(document("join/fail/invalid_phone",
                         responseFields(
