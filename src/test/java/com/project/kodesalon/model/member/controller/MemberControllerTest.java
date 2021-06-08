@@ -355,7 +355,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 회원을 조회하면 404 상태를 responses 합니다")
+    @DisplayName("존재하지 않는 회원을 조회하면 400 상태를 responses 합니다")
     void select_no_exist_member_response_fail() throws Exception {
         given(memberService.selectMember(anyLong()))
                 .willThrow(new NoSuchElementException("찾으려는 회원이 없습니다"));
@@ -363,12 +363,13 @@ public class MemberControllerTest {
         this.mockMvc.perform(
                 get("/api/v1/members/{memberId}", "1")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("찾으려는 회원이 없습니다"))
                 .andDo(document("select/fail/no_member",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message")
-                                        .type(JsonFieldType.STRING).description("존재하는 회원이 없을 때의 예외 메세지"))));
+                                        .type(JsonFieldType.STRING)
+                                        .description("존재하는 회원이 없을 때의 예외 메세지"))));
     }
 }
