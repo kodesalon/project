@@ -1,6 +1,7 @@
 package com.project.kodesalon.model.member.controller;
 
 import com.project.kodesalon.model.member.controller.dto.LoginRequest;
+import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.service.MemberService;
 import org.springframework.http.HttpStatus;

@@ -1,12 +1,12 @@
 package com.project.kodesalon.model.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.project.kodesalon.common.GlobalExceptionHandler;
+import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
-import com.project.kodesalon.model.member.dto.LoginRequestDto;
-import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.service.MemberService;
+import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
+import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,6 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class MemberControllerTest {
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
+    private final CreateMemberRequestDto createMemberRequestDto =
+            new CreateMemberRequestDto("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
 
     private MockMvc mockMvc;
 
@@ -68,7 +70,6 @@ public class MemberControllerTest {
 
         given(memberService.login(any(LoginRequestDto.class)))
                 .willReturn(loginResponseDto);
-        serializeLoginRequest();
 
         this.mockMvc.perform(
                 post("/api/v1/members/login")
@@ -147,10 +148,9 @@ public class MemberControllerTest {
     void create_member_response_success() throws Exception {
         given(memberService.join(any(CreateMemberRequestDto.class)))
                 .willReturn(new LoginResponseDto(1L, "alias"));
-        serializeCreateRequest();
 
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createMemberRequestDto)))
                 .andExpect(status().isCreated())
@@ -187,10 +187,9 @@ public class MemberControllerTest {
     void existing_alias_response_fail() throws Exception {
         given(memberService.join(any(CreateMemberRequestDto.class)))
                 .willThrow(new IllegalStateException("이미 존재하는 아이디입니다"));
-        serializeCreateRequest();
 
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(createMemberRequestDto)))
                 .andExpect(status().isConflict())
@@ -213,7 +212,7 @@ public class MemberControllerTest {
         request.put("phone", "010-1111-2222");
 
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request.toString()))
                 .andExpect(status().isUnprocessableEntity())
@@ -236,7 +235,7 @@ public class MemberControllerTest {
         request.put("phone", "010-1111-2222");
 
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request.toString()))
                 .andExpect(status().isUnprocessableEntity())
@@ -259,7 +258,7 @@ public class MemberControllerTest {
         request.put("phone", "010-1111-2222");
 
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request.toString()))
                 .andExpect(status().isUnprocessableEntity())
@@ -282,7 +281,7 @@ public class MemberControllerTest {
         request.put("phone", "010-1111-2222");
 
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request.toString()))
                 .andExpect(status().isUnprocessableEntity())
@@ -305,7 +304,7 @@ public class MemberControllerTest {
         request.put("phone", "");
 
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request.toString()))
                 .andExpect(status().isUnprocessableEntity())
