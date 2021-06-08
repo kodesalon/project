@@ -1,4 +1,4 @@
-package com.project.kodesalon.model.member.dto;
+package com.project.kodesalon.model.member.service.dto;
 
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Password;

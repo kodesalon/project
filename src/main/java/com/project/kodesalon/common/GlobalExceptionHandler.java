@@ -12,26 +12,27 @@ import java.util.NoSuchElementException;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+    @ExceptionHandler(HttpClientErrorException.class)
+    protected ResponseEntity<ErrorResponse> handleHttpClientErrorException(HttpClientErrorException e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());
+    }
+
     @ExceptionHandler(IllegalStateException.class)
     protected ResponseEntity<ErrorResponse> handleIllegalStateException(IllegalStateException e) {
-        log.info(e.getMessage());
-        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.CONFLICT);
+        log.error(e.getMessage());
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
-        log.info(e.getMessage());
-        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.FORBIDDEN);
+        log.error(e.getMessage());
+        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
     protected ResponseEntity<ErrorResponse> handleNoSuchElementException(NoSuchElementException e) {
-        log.info(e.getMessage());
+        log.error(e.getMessage());
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(HttpClientErrorException.class)
-    protected ResponseEntity<ErrorResponse> handleClientErrorException(HttpClientErrorException e) {
-        return new ResponseEntity<>(new ErrorResponse(e.getStatusText()), e.getStatusCode());
     }
 }

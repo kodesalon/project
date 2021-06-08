@@ -1,11 +1,10 @@
 package com.project.kodesalon.model.member.controller;
 
-import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
-import com.project.kodesalon.model.member.dto.LoginRequestDto;
-import com.project.kodesalon.model.member.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
+import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
 import com.project.kodesalon.model.member.service.MemberService;
-import org.springframework.http.HttpStatus;
+import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,13 +23,15 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> logIn(@RequestBody LoginRequestDto loginRequestDto) {
-        return new ResponseEntity<>(memberService.login(loginRequestDto), HttpStatus.OK);
+    public ResponseEntity<LoginResponseDto> logIn(@RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok()
+                .body(memberService.login(loginRequest.toLoginRequestDto()));
     }
 
     @PostMapping
-    public ResponseEntity<LoginResponseDto> join(@RequestBody CreateMemberRequestDto createMemberRequestDto) {
-        return new ResponseEntity<>(memberService.join(createMemberRequestDto), HttpStatus.CREATED);
+    public ResponseEntity<LoginResponseDto> join(@RequestBody CreateMemberRequest createMemberRequest) {
+        return ResponseEntity.ok()
+                .body(memberService.join(createMemberRequest.toCreateMemberRequestDto()));
     }
 
     @GetMapping("/{memberId}")

@@ -1,22 +1,26 @@
 package com.project.kodesalon.model.member.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
-import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
-import com.project.kodesalon.model.member.dto.LoginRequestDto;
-import com.project.kodesalon.model.member.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
+import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
-import com.project.kodesalon.model.member.exception.UnAuthorizedException;
 import com.project.kodesalon.model.member.service.MemberService;
+import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
+import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
+import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -25,7 +29,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.NoSuchElementException;
 
-import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -40,17 +43,15 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class MemberControllerTest {
-    private final String loginRequestJson = "{\"alias\" : \"alias\", \"password\" : \"Password123!!\"}";
-    private final String loginUrl = "/api/v1/members/login";
-    private final String createRequestJson = "{\"alias\" : \"alias\", \"password\" : \"Password123!!\", " +
-            "\"name\" : \"이름\", \"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}";
-    private final String joinUrl = "/api/v1/members";
-    private final String selectUrl = "/api/v1/members/{memberId}";
+    private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
+    private final CreateMemberRequest createMemberRequest =
+            new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
 
     private MockMvc mockMvc;
 
@@ -59,6 +60,8 @@ public class MemberControllerTest {
 
     @Mock
     private MemberService memberService;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation) {
@@ -72,161 +75,225 @@ public class MemberControllerTest {
     @Test
     @DisplayName("로그인이 성공하면 Alias, ID, Http Status 200를 Response 합니다.")
     void login_controller_return_success_response() throws Exception {
+        LoginResponseDto loginResponseDto = new LoginResponseDto(1L, "alias");
+
         given(memberService.login(any(LoginRequestDto.class)))
-                .willReturn(new LoginResponseDto(1L, "alias"));
+                .willReturn(loginResponseDto);
 
         this.mockMvc.perform(
-                post(loginUrl)
+                post("/api/v1/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginRequestJson))
+                        .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
-                .andExpect(content().string("{\"memberId\":1,\"alias\":\"alias\"}"))
+                .andExpect(jsonPath("$.memberId").value(1))
+                .andExpect(jsonPath("$.alias").value("alias"))
                 .andDo(document("login/success",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("alias").description("로그인 할 alias"),
-                                fieldWithPath("password").description("로그인 할 password")
+                                fieldWithPath("alias")
+                                        .type(JsonFieldType.STRING)
+                                        .description("로그인 할 alias"),
+                                fieldWithPath("password")
+                                        .type(JsonFieldType.STRING)
+                                        .description("로그인 할 패스워드")
                         ),
                         responseFields(
-                                fieldWithPath("memberId").description("Member 식별자"),
-                                fieldWithPath("alias").description("member alias"))));
+                                fieldWithPath("memberId")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("Member 식별자"),
+                                fieldWithPath("alias")
+                                        .type(JsonFieldType.STRING)
+                                        .description("member alias"))));
     }
 
     @Test
-    @DisplayName("비밀번호 실패시 401 Status와 예외 메세지를 Response합니다.")
+    @DisplayName("비밀번호 실패시 400 Status와 예외 메세지를 Response합니다.")
     void login_failed_response_failed_message() throws Exception {
         given(memberService.login(any(LoginRequestDto.class)))
-                .willThrow(new UnAuthorizedException("일치하는 비밀번호를 입력해주세요."));
+                .willThrow(HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST,
+                        "", HttpHeaders.EMPTY, null, null));
 
-        this.mockMvc.perform(
-                post(loginUrl)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginRequestJson))
-                .andExpect(status().isUnauthorized())
-                .andExpect(content().string("{\"message\":\"일치하는 비밀번호를 입력해주세요.\"}"))
+        this.mockMvc.perform(post("/api/v1/members/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("비밀 번호가 일치하지 않습니다."))
                 .andDo(document("login/fail/mismatch_password",
-                        getDocumentResponse(),
-                        responseFields(fieldWithPath("message").description("예외 메세지"))));
+                        requestFields(
+                                fieldWithPath("alias")
+                                        .type(JsonFieldType.STRING)
+                                        .description("로그인 할 alias"),
+                                fieldWithPath("password")
+                                        .type(JsonFieldType.STRING)
+                                        .description("로그인 할 password")
+                        ), responseFields(
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("예외 메세지"))));
     }
 
     @Test
-    @DisplayName("존재하지 않는 사용자는 401 Status와 에러 메세지를 Response 합니다.")
-    void not_exisit_alias_response_failed_message() throws Exception {
+    @DisplayName("존재하지 않는 사용자는 400 Status와 에러 메세지를 Response 합니다.")
+    void not_exist_alias_response_failed_message() throws Exception {
         given(memberService.login(any(LoginRequestDto.class)))
-                .willThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "존재하는 아이디를 입력해주세요."));
+                .willThrow(HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.BAD_REQUEST,
+                        "", HttpHeaders.EMPTY, null, null));
 
-
-        this.mockMvc.perform(
-                post(loginUrl)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(loginRequestJson))
-                .andExpect(status().isUnauthorized())
-                .andExpect(content().string("{\"message\":\"존재하는 아이디를 입력해주세요.\"}"))
-                .andDo(document("login/fail/no_alias", getDocumentResponse()));
+        this.mockMvc.perform(post("/api/v1/members/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(loginRequest))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("존재하는 아이디를 입력해주세요."))
+                .andDo(document("login/fail/no_alias",
+                        responseFields(
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("예외 메세지"))));
     }
 
     @Test
-    @DisplayName("사용자가 존재하지 않는다면 회원가입을 진행하고 201 상태를 response합니다.")
+    @DisplayName("사용자가 존재하지 않는다면 회원가입을 진행하고 200 상태를 response합니다.")
     void create_member_response_success() throws Exception {
         given(memberService.join(any(CreateMemberRequestDto.class)))
                 .willReturn(new LoginResponseDto(1L, "alias"));
 
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(createRequestJson))
-                .andExpect(status().isCreated())
-                .andExpect(content().string("{\"memberId\":1,\"alias\":\"alias\"}"))
+                        .content(objectMapper.writeValueAsString(createMemberRequest)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.memberId").value(1))
+                .andExpect(jsonPath("$.alias").value("alias"))
                 .andDo(document("join/success",
-                        getDocumentRequest(),
                         requestFields(
-                                fieldWithPath("alias").description("회원 가입할 member의 alias"),
-                                fieldWithPath("password").description("회원 가입할 member의 password"),
-                                fieldWithPath("name").description("회원 가입할 member의 이름"),
-                                fieldWithPath("email").description("회원 가입할 member의 email"),
-                                fieldWithPath("phone").description("회원 가입할 member의 phone")
-                        ),
-                        responseFields(
-                                fieldWithPath("memberId").description("Member 식별자"),
-                                fieldWithPath("alias").description("member alias"))));
+                                fieldWithPath("alias")
+                                        .type(JsonFieldType.STRING)
+                                        .description("회원 가입할 member의 alias"),
+                                fieldWithPath("password")
+                                        .type(JsonFieldType.STRING)
+                                        .description("회원 가입할 member의 password"),
+                                fieldWithPath("name")
+                                        .type(JsonFieldType.STRING)
+                                        .description("회원 가입할 member의 이름"),
+                                fieldWithPath("email")
+                                        .type(JsonFieldType.STRING)
+                                        .description("회원 가입할 member의 email"),
+                                fieldWithPath("phone")
+                                        .type(JsonFieldType.STRING)
+                                        .description("회원 가입할 member의 phone")
+                        ), responseFields(
+                                fieldWithPath("memberId")
+                                        .type(JsonFieldType.NUMBER)
+                                        .description("회원 가입한 member의 식별자"),
+                                fieldWithPath("alias")
+                                        .type(JsonFieldType.STRING)
+                                        .description("회원 가입한 member의 alias"))));
     }
 
     @Test
-    @DisplayName("이미 존재하는 회원이면 409 상태를 response합니다.")
+    @DisplayName("이미 존재하는 회원이면 400 상태를 response합니다.")
     void existing_alias_response_fail() throws Exception {
         given(memberService.join(any(CreateMemberRequestDto.class)))
                 .willThrow(new IllegalStateException("이미 존재하는 아이디입니다"));
 
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(createRequestJson))
-                .andExpect(status().isConflict())
-                .andExpect(content().string("{\"message\":\"이미 존재하는 아이디입니다\"}"))
+                        .content(objectMapper.writeValueAsString(createMemberRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("이미 존재하는 아이디입니다"))
                 .andDo(document("join/fail/existing_alias",
-                        getDocumentResponse(),
-                        responseFields(fieldWithPath("message").description("예외 메세지"))));
+                        responseFields(
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("이미 존재하는 회원 에러 메세지"))));
     }
 
     @Test
-    @DisplayName("아이디가 형식에 맞지 않으면 403 상태를 response합니다.")
+    @DisplayName("아이디가 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_alias_response_fail() throws Exception {
+        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"alias\" : \"\", \"password\" : \"Password123!!\", \"name\" : \"이름\", " +
-                                "\"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}"))
-                .andExpect(status().isForbidden())
-                .andExpect(content().string("{\"message\":\"아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다.\"}"))
-                .andDo(document("join/fail/invalid_alias", getDocumentResponse()));
+                        .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다."))
+                .andDo(document("join/fail/invalid_alias",
+                        responseFields(
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("유효하지 않은 Alias 에러 메세지"))));
     }
 
     @Test
-    @DisplayName("비밀번호가 형식에 맞지 않으면 403 상태를 response합니다.")
+    @DisplayName("비밀번호가 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_password_response_fail() throws Exception {
+        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "", "이름", "email@email.com", "010-1111-2222");
+
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"alias\" : \"alias\", \"password\" : \"\", \"name\" : \"이름\", " +
-                                "\"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}"))
-                .andExpect(status().isForbidden())
-                .andExpect(content().string("{\"message\":\"비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.\"}"))
-                .andDo(document("join/fail/invalid_password", getDocumentResponse()));
+                        .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."))
+                .andDo(document("join/fail/invalid_password",
+                        responseFields(
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("유효하지 않은 Password 에러 메세지"))));
     }
 
     @Test
-    @DisplayName("이름이 형식에 맞지 않으면 403 상태를 response합니다.")
+    @DisplayName("이름이 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_name_response_fail() throws Exception {
+        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222");
+
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"alias\" : \"alias\", \"password\" : \"Password123!!\", \"name\" : \"\", " +
-                                "\"email\" : \"email@email.com\", \"phone\" : \"010-1111-2222\"}"))
-                .andExpect(status().isForbidden())
-                .andExpect(content().string("{\"message\":\"이름은 2자리 이상 17자리 이하의 한글이어야 합니다.\"}"))
-                .andDo(document("join/fail/invalid_name", getDocumentResponse()));
+                        .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("이름은 2자리 이상 17자리 이하의 한글이어야 합니다."))
+                .andDo(document("join/fail/invalid_name",
+                        responseFields(
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("유효하지 않은 Name 에러 메세지"))));
     }
 
     @Test
-    @DisplayName("이메일이 형식에 맞지 않으면 403 상태를 response합니다.")
+    @DisplayName("이메일이 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_email_response_fail() throws Exception {
+        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "", "010-1111-2222");
+
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"alias\" : \"alias\", \"password\" : \"Password123!!\", \"name\" : \"이름\", " +
-                                "\"email\" : \"emailemail.com\", \"phone\" : \"010-1111-2222\"}"))
-                .andExpect(status().isForbidden())
-                .andExpect(content().string("{\"message\":\"이메일은 이메일주소@회사.com 형식 이어야 합니다.\"}"))
-                .andDo(document("join/fail/invalid_email", getDocumentResponse()));
+                        .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("이메일은 이메일주소@회사.com 형식 이어야 합니다."))
+                .andDo(document("join/fail/invalid_email",
+                        responseFields(
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("유효하지 않은 Eamil 에러 메세지"))));
     }
 
     @Test
-    @DisplayName("핸드폰이 형식에 맞지 않으면 403 상태를 response합니다.")
+    @DisplayName("핸드폰이 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_phone_response_fail() throws Exception {
+        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "");
+
         this.mockMvc.perform(
-                post(joinUrl)
+                post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("핸드폰 번호는 [휴대폰 앞자리 번호]- 3자리 혹은 4자리 수 - 4자리수의 형식 이어야 합니다."))
+                .andDo(document("join/fail/invalid_phone",
                         .content("{\"alias\" : \"alias\", \"password\" : \"Password123!!\", \"name\" : \"이름\", " +
                                 "\"email\" : \"email@email.com\", \"phone\" : \"01111-2222\"}"))
                 .andExpect(status().isForbidden())
@@ -241,7 +308,7 @@ public class MemberControllerTest {
                 .willReturn(new SelectMemberResponseDto("alias", "이름", "email@email.com", "010-1111-2222"));
 
         this.mockMvc.perform(
-                get(selectUrl, "1")
+                get("/api/v1/members/{memberId}", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"alias\":\"alias\",\"name\":\"이름\",\"email\":\"email@email.com\",\"phone\":\"010-1111-2222\"}"))
@@ -260,12 +327,12 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("존재하지 않는 회원을 조회하면 404 상태를 responses 합니다")
-    void select_no_exist_member_response_fail() throws Exception{
+    void select_no_exist_member_response_fail() throws Exception {
         given(memberService.selectMember(anyLong()))
                 .willThrow(new NoSuchElementException("찾으려는 회원이 없습니다"));
 
         this.mockMvc.perform(
-                get(selectUrl, "1")
+                get("/api/v1/members/{memberId}", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(

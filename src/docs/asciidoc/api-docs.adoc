@@ -14,7 +14,7 @@ kodesalon;
 == Member
 === Login
 ==== Request
-- Request Body
+- Response Body
 include::{snippets}/login/success/request-fields.adoc[]
 
 - Request Body Example
