@@ -78,7 +78,7 @@ include::{snippets}/join/fail/invalid_phone/http-response.adoc[]
 include::{snippets}/select/success/path-parameters.adoc[]
 
 - 회원 정보 조회 Example
-include::{snippets}/select/success/httpie-request.adoc[]
+include::{snippets}/select/success/http-request.adoc[]
 
 - 회원 정보 조회 Response
 include::{snippets}/select/success/response-fields.adoc[]

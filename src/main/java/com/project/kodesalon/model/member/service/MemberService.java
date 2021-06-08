@@ -61,7 +61,10 @@ public class MemberService {
     @Transactional(readOnly = true)
     public SelectMemberResponseDto selectMember(Long memberId) {
         Member selectedMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("찾으려는 회원이 없습니다"));
+                .orElseThrow(() -> {
+                    log.error("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
+                    throw new NoSuchElementException("찾으려는 회원이 없습니다");
+                });
 
         return new SelectMemberResponseDto(selectedMember.getAlias(), selectedMember.getName(), selectedMember.getEmail(), selectedMember.getPhone());
     }

@@ -27,7 +27,8 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
     private final LoginRequestDto loginRequestDto = new LoginRequestDto("alias", "Password123!!");
-    private final CreateMemberRequestDto createMemberRequestDto = new CreateMemberRequestDto("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+    private final CreateMemberRequestDto createMemberRequestDto =
+            new CreateMemberRequestDto("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
 
     @InjectMocks
     private MemberService memberService;
