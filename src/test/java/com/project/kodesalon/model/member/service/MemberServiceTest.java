@@ -2,8 +2,8 @@ package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
-import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.repository.MemberRepository;
+import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import org.assertj.core.api.BDDSoftAssertions;
