@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.member.service.dto;
 
+import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Email;
 import com.project.kodesalon.model.member.domain.vo.Name;
@@ -29,5 +30,23 @@ public class CreateMemberRequestDtoTest {
         softly.then(createMemberRequestDto.getName()).isEqualTo(new Name("이름"));
         softly.then(createMemberRequestDto.getEmail()).isEqualTo(new Email("eamil@email.com"));
         softly.then(createMemberRequestDto.getPhone()).isEqualTo(new Phone("010-1111-2222"));
+
+        softly.assertAll();
+    }
+
+    @Test
+    @DisplayName("toMember을 호출하면 Member객체를 생성해서 리턴합니다")
+    void to_member_return_member() {
+        BDDSoftAssertions softly = new BDDSoftAssertions();
+
+        Member member = createMemberRequestDto.toMember();
+
+        softly.then(member.getAlias()).isEqualTo("alias");
+        softly.then(member.getPassword()).isEqualTo("Password123!!");
+        softly.then(member.getName()).isEqualTo("이름");
+        softly.then(member.getEmail()).isEqualTo("email@email.com");
+        softly.then(member.getPhone()).isEqualTo("010-1111-2222");
+
+        softly.assertAll();
     }
 }
