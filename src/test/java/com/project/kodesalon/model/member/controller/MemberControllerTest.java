@@ -92,17 +92,17 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("비밀번호 실패시 401 Status와 예외 메세지를 Response합니다.")
+    @DisplayName("비밀번호 실패시 400 Status와 예외 메세지를 Response합니다.")
     void login_failed_response_failed_message() throws Exception {
         given(memberService.login(any(LoginRequestDto.class)))
-                .willThrow(HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED,
+                .willThrow(HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST,
                         "", HttpHeaders.EMPTY, null, null));
 
         this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("비밀 번호가 일치하지 않습니다."))
                 .andDo(document("login/fail/mismatch_password",
                         requestFields(
@@ -119,17 +119,17 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 사용자는 401 Status와 에러 메세지를 Response 합니다.")
+    @DisplayName("존재하지 않는 사용자는 400 Status와 에러 메세지를 Response 합니다.")
     void not_exist_alias_response_failed_message() throws Exception {
         given(memberService.login(any(LoginRequestDto.class)))
-                .willThrow(HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.UNAUTHORIZED,
+                .willThrow(HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.BAD_REQUEST,
                         "", HttpHeaders.EMPTY, null, null));
 
         this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("존재하는 아이디를 입력해주세요."))
                 .andDo(document("login/fail/no_alias",
                         requestFields(
