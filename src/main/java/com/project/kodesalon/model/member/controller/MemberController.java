@@ -1,6 +1,6 @@
 package com.project.kodesalon.model.member.controller;
 
-import com.project.kodesalon.model.member.dto.LoginRequestDto;
+import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.service.MemberService;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,8 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> logIn(@RequestBody LoginRequestDto loginRequestDto) {
+    public ResponseEntity<LoginResponseDto> logIn(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok()
-                .body(memberService.login(loginRequestDto));
+                .body(memberService.login(loginRequest.toLoginRequestDto()));
     }
 }
