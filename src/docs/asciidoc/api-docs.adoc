@@ -14,9 +14,6 @@ kodesalon;
 == Member
 === Login API
 ==== Request
-- CURL:
-include::{snippets}/login_success/curl-request.adoc[]
-
 - Response Body
 include::{snippets}/login_success/request-fields.adoc[]
 
