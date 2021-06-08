@@ -1,4 +1,4 @@
-package com.project.kodesalon.model.member.controller;
+package com.project.kodesalon.model.member.controller.dto;
 
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Email;
@@ -16,7 +16,7 @@ public class CreateMemberRequestTest {
 
     @BeforeEach
     void setUp() {
-        createMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "example@example.com", "010-1111-2222");
+        createMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
     }
 
     @Test
