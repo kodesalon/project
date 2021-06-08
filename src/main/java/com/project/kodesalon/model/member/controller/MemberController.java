@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.member.controller;
 
+import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
@@ -27,8 +28,8 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<LoginResponseDto> join(@RequestBody CreateMemberRequestDto createMemberRequestDto) {
+    public ResponseEntity<LoginResponseDto> join(@RequestBody CreateMemberRequest createMemberRequest) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(memberService.join(createMemberRequestDto));
+                .body(memberService.join(createMemberRequest.toCreateMemberRequestDto()));
     }
 }
