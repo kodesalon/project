@@ -19,11 +19,11 @@ public class MemberService {
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         Member member = memberRepository.findMemberByAlias(loginRequestDto.getAlias())
-                .orElseThrow(() -> HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.UNAUTHORIZED,
+                .orElseThrow(() -> HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.BAD_REQUEST,
                         "", HttpHeaders.EMPTY, null, null));
 
         if (member.isIncorrectPassword(loginRequestDto.getPassword())) {
-            throw HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.UNAUTHORIZED,
+            throw HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST,
                     "", HttpHeaders.EMPTY, null, null);
         }
 
