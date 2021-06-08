@@ -2,12 +2,12 @@ package com.project.kodesalon.model.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
+import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
-import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,8 +41,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class MemberControllerTest {
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
-    private final CreateMemberRequestDto createMemberRequestDto =
-            new CreateMemberRequestDto("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+    private final CreateMemberRequest createMemberRequest =
+            new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
 
     private MockMvc mockMvc;
 
@@ -152,7 +152,7 @@ public class MemberControllerTest {
         this.mockMvc.perform(
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createMemberRequestDto)))
+                        .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.memberId").value(1))
                 .andExpect(jsonPath("$.alias").value("alias"))
@@ -191,7 +191,7 @@ public class MemberControllerTest {
         this.mockMvc.perform(
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(createMemberRequestDto)))
+                        .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("이미 존재하는 아이디입니다"))
                 .andDo(document("join/fail/existing_alias",
@@ -204,17 +204,12 @@ public class MemberControllerTest {
     @Test
     @DisplayName("아이디가 형식에 맞지 않으면 422 상태를 response합니다.")
     void invalid_alias_response_fail() throws Exception {
-        JSONObject request = new JSONObject();
-        request.put("alias", "");
-        request.put("password", "Password123!!");
-        request.put("name", "이름");
-        request.put("email", "email@email.com");
-        request.put("phone", "010-1111-2222");
+        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("", "Password123!!", "이름", "email@email.com", "010-1111-2222");
 
         this.mockMvc.perform(
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(request.toString()))
+                        .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message").value("아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다."))
                 .andDo(document("join/fail/invalid_alias",
@@ -227,17 +222,12 @@ public class MemberControllerTest {
     @Test
     @DisplayName("비밀번호가 형식에 맞지 않으면 422 상태를 response합니다.")
     void invalid_password_response_fail() throws Exception {
-        JSONObject request = new JSONObject();
-        request.put("alias", "alias");
-        request.put("password", "");
-        request.put("name", "이름");
-        request.put("email", "email@email.com");
-        request.put("phone", "010-1111-2222");
+        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "", "이름", "email@email.com", "010-1111-2222");
 
         this.mockMvc.perform(
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(request.toString()))
+                        .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message").value("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."))
                 .andDo(document("join/fail/invalid_password",
@@ -250,17 +240,12 @@ public class MemberControllerTest {
     @Test
     @DisplayName("이름이 형식에 맞지 않으면 422 상태를 response합니다.")
     void invalid_name_response_fail() throws Exception {
-        JSONObject request = new JSONObject();
-        request.put("alias", "alias");
-        request.put("password", "Password123!!");
-        request.put("name", "");
-        request.put("email", "email@email.com");
-        request.put("phone", "010-1111-2222");
+        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222");
 
         this.mockMvc.perform(
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(request.toString()))
+                        .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message").value("이름은 2자리 이상 17자리 이하의 한글이어야 합니다."))
                 .andDo(document("join/fail/invalid_name",
@@ -273,17 +258,12 @@ public class MemberControllerTest {
     @Test
     @DisplayName("이메일이 형식에 맞지 않으면 422 상태를 response합니다.")
     void invalid_email_response_fail() throws Exception {
-        JSONObject request = new JSONObject();
-        request.put("alias", "alias");
-        request.put("password", "Password123!!");
-        request.put("name", "이름");
-        request.put("email", "");
-        request.put("phone", "010-1111-2222");
+        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "", "010-1111-2222");
 
         this.mockMvc.perform(
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(request.toString()))
+                        .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message").value("이메일은 이메일주소@회사.com 형식 이어야 합니다."))
                 .andDo(document("join/fail/invalid_email",
@@ -296,17 +276,12 @@ public class MemberControllerTest {
     @Test
     @DisplayName("핸드폰이 형식에 맞지 않으면 422 상태를 response합니다.")
     void invalid_phone_response_fail() throws Exception {
-        JSONObject request = new JSONObject();
-        request.put("alias", "alias");
-        request.put("password", "Password123!!");
-        request.put("name", "이름");
-        request.put("email", "email@email.com");
-        request.put("phone", "");
+        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "");
 
         this.mockMvc.perform(
                 post("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(request.toString()))
+                        .content(objectMapper.writeValueAsString(invalidCreateMemberRequest)))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.message").value("핸드폰 번호는 [휴대폰 앞자리 번호]- 3자리 혹은 4자리 수 - 4자리수의 형식 이어야 합니다."))
                 .andDo(document("join/fail/invalid_phone",
