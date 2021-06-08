@@ -43,7 +43,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -222,7 +221,8 @@ public class MemberControllerTest {
     @Test
     @DisplayName("아이디가 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_alias_response_fail() throws Exception {
-        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+        CreateMemberRequest invalidCreateMemberRequest =
+                new CreateMemberRequest("", "Password123!!", "이름", "email@email.com", "010-1111-2222");
 
         this.mockMvc.perform(
                 post("/api/v1/members")
@@ -241,7 +241,8 @@ public class MemberControllerTest {
     @Test
     @DisplayName("비밀번호가 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_password_response_fail() throws Exception {
-        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "", "이름", "email@email.com", "010-1111-2222");
+        CreateMemberRequest invalidCreateMemberRequest =
+                new CreateMemberRequest("alias", "", "이름", "email@email.com", "010-1111-2222");
 
         this.mockMvc.perform(
                 post("/api/v1/members")
@@ -260,7 +261,8 @@ public class MemberControllerTest {
     @Test
     @DisplayName("이름이 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_name_response_fail() throws Exception {
-        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222");
+        CreateMemberRequest invalidCreateMemberRequest =
+                new CreateMemberRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222");
 
         this.mockMvc.perform(
                 post("/api/v1/members")
@@ -279,7 +281,8 @@ public class MemberControllerTest {
     @Test
     @DisplayName("이메일이 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_email_response_fail() throws Exception {
-        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "", "010-1111-2222");
+        CreateMemberRequest invalidCreateMemberRequest =
+                new CreateMemberRequest("alias", "Password123!!", "이름", "", "010-1111-2222");
 
         this.mockMvc.perform(
                 post("/api/v1/members")
@@ -298,7 +301,8 @@ public class MemberControllerTest {
     @Test
     @DisplayName("핸드폰이 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_phone_response_fail() throws Exception {
-        CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "");
+        CreateMemberRequest invalidCreateMemberRequest =
+                new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "");
 
         this.mockMvc.perform(
                 post("/api/v1/members")
@@ -309,7 +313,9 @@ public class MemberControllerTest {
                 .andDo(document("join/fail/invalid_phone",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 Phone 에러 메세지"))));
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING)
+                                        .description("유효하지 않은 Phone 에러 메세지"))));
     }
 
     @Test
@@ -322,17 +328,29 @@ public class MemberControllerTest {
                 get("/api/v1/members/{memberId}", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(content().string("{\"alias\":\"alias\",\"name\":\"이름\",\"email\":\"email@email.com\",\"phone\":\"010-1111-2222\"}"))
+                .andExpect(jsonPath("$.alias").value("alias"))
+                .andExpect(jsonPath("$.name").value("이름"))
+                .andExpect(jsonPath("$.email").value("email@email.com"))
+                .andExpect(jsonPath("$.phone").value("010-1111-2222"))
                 .andDo(document("select/success",
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("memberId").description("조회할 회원의 식별자")
+                                parameterWithName("memberId")
+                                        .description("조회할 회원의 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("alias").description("조회한 Alias"),
-                                fieldWithPath("name").description("조회한 Name"),
-                                fieldWithPath("email").description("조회한 Email"),
-                                fieldWithPath("phone").description("조회한 Phone")
+                                fieldWithPath("alias")
+                                        .type(JsonFieldType.STRING)
+                                        .description("조회한 Alias"),
+                                fieldWithPath("name")
+                                        .type(JsonFieldType.STRING)
+                                        .description("조회한 Name"),
+                                fieldWithPath("email")
+                                        .type(JsonFieldType.STRING)
+                                        .description("조회한 Email"),
+                                fieldWithPath("phone")
+                                        .type(JsonFieldType.STRING)
+                                        .description("조회한 Phone")
                         )));
     }
 
@@ -346,9 +364,11 @@ public class MemberControllerTest {
                 get("/api/v1/members/{memberId}", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(
-                        content()
-                                .string("{\"message\":\"찾으려는 회원이 없습니다\"}"))
-                .andDo(document("select/fail/no_member", getDocumentResponse()));
+                .andExpect(jsonPath("$.message").value("찾으려는 회원이 없습니다"))
+                .andDo(document("select/fail/no_member",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("message")
+                                        .type(JsonFieldType.STRING).description("존재하는 회원이 없을 때의 예외 메세지"))));
     }
 }
