@@ -144,7 +144,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("사용자가 존재하지 않는다면 회원가입을 진행하고 201 상태를 response합니다.")
+    @DisplayName("사용자가 존재하지 않는다면 회원가입을 진행하고 200 상태를 response합니다.")
     void create_member_response_success() throws Exception {
         given(memberService.join(any(CreateMemberRequestDto.class)))
                 .willReturn(new LoginResponseDto(1L, "alias"));
@@ -183,7 +183,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("이미 존재하는 회원이면 409 상태를 response합니다.")
+    @DisplayName("이미 존재하는 회원이면 400 상태를 response합니다.")
     void existing_alias_response_fail() throws Exception {
         given(memberService.join(any(CreateMemberRequestDto.class)))
                 .willThrow(new IllegalStateException("이미 존재하는 아이디입니다"));
@@ -202,7 +202,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("아이디가 형식에 맞지 않으면 422 상태를 response합니다.")
+    @DisplayName("아이디가 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_alias_response_fail() throws Exception {
         CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("", "Password123!!", "이름", "email@email.com", "010-1111-2222");
 
@@ -220,7 +220,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("비밀번호가 형식에 맞지 않으면 422 상태를 response합니다.")
+    @DisplayName("비밀번호가 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_password_response_fail() throws Exception {
         CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "", "이름", "email@email.com", "010-1111-2222");
 
@@ -238,7 +238,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("이름이 형식에 맞지 않으면 422 상태를 response합니다.")
+    @DisplayName("이름이 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_name_response_fail() throws Exception {
         CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222");
 
@@ -256,7 +256,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("이메일이 형식에 맞지 않으면 422 상태를 response합니다.")
+    @DisplayName("이메일이 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_email_response_fail() throws Exception {
         CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "", "010-1111-2222");
 
@@ -274,7 +274,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("핸드폰이 형식에 맞지 않으면 422 상태를 response합니다.")
+    @DisplayName("핸드폰이 형식에 맞지 않으면 400 상태를 response합니다.")
     void invalid_phone_response_fail() throws Exception {
         CreateMemberRequest invalidCreateMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "");
 

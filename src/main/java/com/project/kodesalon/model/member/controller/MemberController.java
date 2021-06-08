@@ -2,10 +2,8 @@ package com.project.kodesalon.model.member.controller;
 
 import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.controller.dto.LoginRequest;
-import com.project.kodesalon.model.member.dto.CreateMemberRequestDto;
-import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.service.MemberService;
-import org.springframework.http.HttpStatus;
+import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +27,7 @@ public class MemberController {
 
     @PostMapping
     public ResponseEntity<LoginResponseDto> join(@RequestBody CreateMemberRequest createMemberRequest) {
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.ok()
                 .body(memberService.join(createMemberRequest.toCreateMemberRequestDto()));
     }
 }
