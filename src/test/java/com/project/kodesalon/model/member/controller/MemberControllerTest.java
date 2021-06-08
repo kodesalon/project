@@ -29,6 +29,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.NoSuchElementException;
 
+import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -88,6 +89,8 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.memberId").value(1))
                 .andExpect(jsonPath("$.alias").value("alias"))
                 .andDo(document("login/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("alias")
                                         .type(JsonFieldType.STRING)
@@ -119,6 +122,8 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("비밀 번호가 일치하지 않습니다."))
                 .andDo(document("login/fail/mismatch_password",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("alias")
                                         .type(JsonFieldType.STRING)
@@ -146,6 +151,7 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("존재하는 아이디를 입력해주세요."))
                 .andDo(document("login/fail/no_alias",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message")
                                         .type(JsonFieldType.STRING)
@@ -166,6 +172,8 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.memberId").value(1))
                 .andExpect(jsonPath("$.alias").value("alias"))
                 .andDo(document("join/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("alias")
                                         .type(JsonFieldType.STRING)
@@ -204,6 +212,7 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("이미 존재하는 아이디입니다"))
                 .andDo(document("join/fail/existing_alias",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message")
                                         .type(JsonFieldType.STRING)
@@ -222,6 +231,7 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다."))
                 .andDo(document("join/fail/invalid_alias",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message")
                                         .type(JsonFieldType.STRING)
@@ -240,6 +250,7 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."))
                 .andDo(document("join/fail/invalid_password",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message")
                                         .type(JsonFieldType.STRING)
@@ -258,6 +269,7 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("이름은 2자리 이상 17자리 이하의 한글이어야 합니다."))
                 .andDo(document("join/fail/invalid_name",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message")
                                         .type(JsonFieldType.STRING)
@@ -276,6 +288,7 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("이메일은 이메일주소@회사.com 형식 이어야 합니다."))
                 .andDo(document("join/fail/invalid_email",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message")
                                         .type(JsonFieldType.STRING)
@@ -294,6 +307,7 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("핸드폰 번호는 [휴대폰 앞자리 번호]- 3자리 혹은 4자리 수 - 4자리수의 형식 이어야 합니다."))
                 .andDo(document("join/fail/invalid_phone",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 Phone 에러 메세지"))));
     }
