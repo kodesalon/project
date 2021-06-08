@@ -9,11 +9,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class LoginRequestTest {
-    private LoginRequset loginRequset;
+    private LoginRequest loginRequest;
 
     @BeforeEach
     void setUp() {
-        loginRequset = new LoginRequest("alias", "Password123!!");
+        loginRequest = new LoginRequest("alias", "Password123!!");
     }
 
     @Test
@@ -32,7 +32,7 @@ public class LoginRequestTest {
     void to_login_request_dto_return_login_request_dto() {
         BDDSoftAssertions softly = new BDDSoftAssertions();
 
-        LoginRequestDto loginRequestDto = loginRequset.toLoginRequestDto();
+        LoginRequestDto loginRequestDto = loginRequest.toLoginRequestDto();
 
         softly.then(loginRequestDto.getAlias()).isEqualTo(new Alias("alias"));
         softly.then(loginRequestDto.getPassword()).isEqualTo(new Password("Password123!!"));
