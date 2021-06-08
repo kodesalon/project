@@ -3,6 +3,7 @@ package com.project.kodesalon.model.member.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.config.JacksonConfiguration;
+import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
 import com.project.kodesalon.model.member.service.MemberService;
@@ -40,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(JacksonConfiguration.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class MemberControllerTest {
-    private final LoginRequestDto loginRequestDto = new LoginRequestDto("alias", "Password123!!");
+    private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
 
     private MockMvc mockMvc;
 
@@ -73,7 +74,7 @@ public class MemberControllerTest {
         this.mockMvc.perform(
                 post("/api/v1/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(loginRequestDto)))
+                        .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(1))
                 .andExpect(jsonPath("$.alias").value("alias"))
@@ -104,7 +105,7 @@ public class MemberControllerTest {
 
         this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequestDto))
+                .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value("비밀 번호가 일치하지 않습니다."))
@@ -131,7 +132,7 @@ public class MemberControllerTest {
 
         this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequestDto))
+                .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.message").value("존재하는 아이디를 입력해주세요."))
