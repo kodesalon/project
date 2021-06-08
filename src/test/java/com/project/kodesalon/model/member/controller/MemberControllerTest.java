@@ -319,7 +319,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("존재하닌 회원을 조회하면 200 상태를 response 합니다.")
+    @DisplayName("존재하는 회원을 조회하면 200 상태를 response 합니다.")
     void select_exist_member_response_success() throws Exception {
         given(memberService.selectMember(anyLong()))
                 .willReturn(new SelectMemberResponseDto("alias", "이름", "email@email.com", "010-1111-2222"));
