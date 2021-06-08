@@ -2,7 +2,6 @@ package com.project.kodesalon.model.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
-import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.dto.LoginResponseDto;
@@ -13,8 +12,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,7 +35,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(JacksonConfiguration.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class MemberControllerTest {
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
@@ -51,8 +47,7 @@ public class MemberControllerTest {
     @Mock
     private MemberService memberService;
 
-    @Autowired
-    ObjectMapper objectMapper;
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation) {
