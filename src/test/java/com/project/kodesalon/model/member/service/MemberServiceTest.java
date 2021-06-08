@@ -44,7 +44,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 Alias가 Alias와 Password가 일치하면 200 status 코드, Id, Alias를 리턴합니다.")
+    @DisplayName("존재하는 Alias가 Alias와 Password가 일치하면 Id, Alias를 리턴합니다.")
     void exist_login_return_success2() {
         LoginRequestDto loginRequestDto =
                 new LoginRequestDto("alias", "Password123!!");
