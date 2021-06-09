@@ -7,6 +7,7 @@ import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequestDto;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
+import com.project.kodesalon.model.member.service.dto.DeleteMemberResponseDto;
 import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import org.assertj.core.api.BDDSoftAssertions;
@@ -21,10 +22,13 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -160,5 +164,16 @@ public class MemberServiceTest {
         ChangePasswordRequestDto changePasswordRequestDto = new ChangePasswordRequestDto(1L, "ChangePassword1!");
         ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword2(changePasswordRequestDto);
         softly.then(changePasswordResponseDto.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
+    }
+
+    @Test
+    @DisplayName("회원을 탈퇴하고 성공 메세지를 담은 DTO를 반환합니다")
+    void deleteMember() {
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+
+        DeleteMemberResponseDto deleteMemberResponseDto = memberService.deleteMember(1L);
+
+        then(deleteMemberResponseDto.getMessage()).isEqualTo("회원이 성공적으로 삭제되었습니다");
+        verify(memberRepository, times(1)).delete(any(Member.class));
     }
 }
