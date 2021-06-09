@@ -6,6 +6,7 @@ import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequestDto;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
+import com.project.kodesalon.model.member.service.dto.DeleteMemberResponseDto;
 import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
@@ -92,5 +93,11 @@ public class MemberService {
                     log.error("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
                     throw new NoSuchElementException("찾으려는 회원이 없습니다");
                 });
+    }
+
+    public DeleteMemberResponseDto deleteMember(Long memberId) {
+        Member member = findById(memberId);
+        memberRepository.delete(member);
+        return new DeleteMemberResponseDto("회원이 성공적으로 삭제되었습니다");
     }
 }
