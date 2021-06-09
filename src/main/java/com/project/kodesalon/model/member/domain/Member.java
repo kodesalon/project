@@ -78,10 +78,10 @@ public class Member {
     }
 
     public void changePassword(String newPassword) {
-        if (isIncorrectPassword(new Password(newPassword))) {
-            this.password = new Password(newPassword);
+        if (!isIncorrectPassword(new Password(newPassword))) {
+            throw new IllegalArgumentException("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
         }
 
-        throw new IllegalArgumentException("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
+        this.password = new Password(newPassword);
     }
 }
