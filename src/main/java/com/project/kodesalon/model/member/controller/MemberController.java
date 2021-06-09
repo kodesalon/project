@@ -6,9 +6,11 @@ import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
+import com.project.kodesalon.model.member.service.dto.DeleteMemberResponseDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,5 +49,11 @@ public class MemberController {
     public ResponseEntity<ChangePasswordResponseDto> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
         ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword(changePasswordRequest.toChangePasswordRequestDto());
         return new ResponseEntity<>(changePasswordResponseDto, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<DeleteMemberResponseDto> deleteMember(@PathVariable Long memberId) {
+        return ResponseEntity.ok()
+                .body(new DeleteMemberResponseDto("회원이 성공적으로 삭제되었습니다"));
     }
 }
