@@ -165,4 +165,14 @@ public class MemberServiceTest {
         then(deleteMemberResponseDto.getMessage()).isEqualTo("회원이 성공적으로 삭제되었습니다");
         verify(memberRepository, times(1)).delete(any(Member.class));
     }
+
+
+    @Test
+    @DisplayName("회원을 탈퇴하고 성공 메세지를 담은 DTO를 반환합니다")
+    void deleteMember2() {
+        DeleteMemberResponseDto deleteMemberResponseDto = memberService.deleteMember2(anyLong());
+
+        then(deleteMemberResponseDto.getMessage()).isEqualTo("회원이 성공적으로 삭제되었습니다");
+        verify(memberRepository, times(1)).deleteById(anyLong());
+    }
 }
