@@ -1,15 +1,18 @@
 package com.project.kodesalon.model.member.controller;
 
+import com.project.kodesalon.model.member.controller.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
 import com.project.kodesalon.model.member.service.MemberService;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,5 +41,11 @@ public class MemberController {
     @GetMapping("/{memberId}")
     public ResponseEntity<SelectMemberResponseDto> selectMember(@PathVariable Long memberId) {
         return new ResponseEntity<>(memberService.selectMember(memberId), HttpStatus.OK);
+    }
+
+    @PutMapping
+    public ResponseEntity<ChangePasswordResponseDto> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
+        ChangePasswordResponseDto changePasswordResponseDto = new ChangePasswordResponseDto("message");
+        return new ResponseEntity<>(changePasswordResponseDto, HttpStatus.OK);
     }
 }
