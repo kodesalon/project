@@ -39,6 +39,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -398,6 +399,24 @@ public class MemberControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("비밀번호 변경 성공 메세지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("회원의 식별자를 전달받아 회원을 탈퇴하고 200 상태 + 성공 메세지를 반환합니다.")
+    void deleteMember() throws Exception {
+
+        this.mockMvc.perform(delete("/api/v1/members/{memberId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("회원이 성공적으로 삭제되었습니다"))
+                .andDo(document("delete/success",
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("memberId").description("삭제하려는 회원의 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("회원 탈퇴 성공 메세지")
                         )));
     }
 }
