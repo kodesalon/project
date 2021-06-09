@@ -15,7 +15,7 @@ public class Alias {
     private static final String ALIAS_REGEX = "^[a-zA-Z]{1}[a-zA-Z0-9]{4,15}$";
     private static final Pattern ALIAS_PATTERN = Pattern.compile(ALIAS_REGEX);
 
-    @Column(name = "alias", nullable = false, unique = true, length = 15)
+    @Column(name = "alias", nullable = false, length = 15)
     private String alias;
 
     public Alias(final String alias) {
