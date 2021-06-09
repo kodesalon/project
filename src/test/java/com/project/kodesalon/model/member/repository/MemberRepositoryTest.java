@@ -61,15 +61,6 @@ class MemberRepositoryTest {
     @Test
     @DisplayName("비밀번호를 변경한다.")
     public void updatePassword() {
-        memberRepository.updatePassword("ChangePassword1!", member.getId());
-        testEntityManager.clear();
-        Member foundMember = memberRepository.findById(member.getId()).get();
-        then(foundMember.getPassword()).isEqualTo("ChangePassword1!");
-    }
-
-    @Test
-    @DisplayName("비밀번호를 변경한다.")
-    public void updatePassword2() {
         member.changePassword("ChangePassword1!");
         testEntityManager.flush();
         testEntityManager.clear();

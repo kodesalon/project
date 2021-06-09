@@ -75,18 +75,6 @@ public class MemberService {
         return new ChangePasswordResponseDto("비밀번호 변경 성공하였습니다.");
     }
 
-    @Transactional
-    public ChangePasswordResponseDto changePassword2(ChangePasswordRequestDto changePasswordRequestDto) {
-        Long memberId = changePasswordRequestDto.getMemberId();
-
-        if (!memberRepository.existsById(memberId)) {
-            throw new NoSuchElementException("찾으려는 회원이 없습니다");
-        }
-
-        memberRepository.updatePassword(changePasswordRequestDto.getPassword(), memberId);
-        return new ChangePasswordResponseDto("비밀번호 변경 성공하였습니다.");
-    }
-
     private Member findById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> {
