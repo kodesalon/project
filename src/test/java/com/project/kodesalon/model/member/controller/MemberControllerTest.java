@@ -2,6 +2,7 @@ package com.project.kodesalon.model.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
+import com.project.kodesalon.model.member.controller.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
@@ -38,6 +39,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -371,5 +373,26 @@ public class MemberControllerTest {
                                 fieldWithPath("message")
                                         .type(JsonFieldType.STRING)
                                         .description("존재하는 회원이 없을 때의 예외 메세지"))));
+    }
+
+    @Test
+    @DisplayName("변경하려는 비밀번호, 회원 식별 번호를 전달받아 비밀번호를 변경하고 200 상태 + 성공 메세지를 반환합니다.")
+    public void changePassword() throws Exception {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(1L, "ChangePassword1!");
+
+        this.mockMvc.perform(put("/api/v1/members")
+                .content(objectMapper.writeValueAsString(changePasswordRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("changePassword/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 식별 번호"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("변경하려는 비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("비밀번호 변경 성공 메세지")
+                        )));
     }
 }
