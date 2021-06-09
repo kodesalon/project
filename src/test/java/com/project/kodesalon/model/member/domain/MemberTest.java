@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 
 class MemberTest {
     private Member member;
@@ -38,5 +39,27 @@ class MemberTest {
     @DisplayName("Member의 비밀번호가 일치하지 않으면 true, 일치하면 false를 리턴합니다.")
     void is_incorrect_password(String password, boolean expected) {
         then(member.isIncorrectPassword(new Password(password))).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("비밀번호를 변경한다.")
+    public void changePassword() {
+        //given
+        String newPassword = "ChangePassword1!";
+
+        //when
+        member.changePassword(newPassword);
+        String changedPassword = member.getPassword();
+
+        then(changedPassword).isEqualTo(newPassword);
+    }
+
+    @Test
+    @DisplayName("변경하려는 패스워드가 기존 패스워드가 중복일 경우 예외가 발생한다.")
+    public void changePassword_throw_error_with_exist_password() {
+        String password = member.getPassword();
+        thenIllegalArgumentException()
+                .isThrownBy(() -> member.changePassword(password))
+                .withMessageContaining("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
     }
 }
