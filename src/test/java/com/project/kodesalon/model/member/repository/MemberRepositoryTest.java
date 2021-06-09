@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
@@ -18,6 +19,9 @@ import static org.assertj.core.api.BDDAssertions.then;
 
 @DataJpaTest
 class MemberRepositoryTest {
+    @Autowired
+    private TestEntityManager testEntityManager;
+
     @Autowired
     private MemberRepository memberRepository;
 
@@ -54,4 +58,22 @@ class MemberRepositoryTest {
         then(notPresentMember).isEmpty();
     }
 
+    @Test
+    @DisplayName("비밀번호를 변경한다.")
+    public void updatePassword() {
+        memberRepository.updatePassword("ChangePassword1!", 1L);
+        testEntityManager.clear();
+        Member foundMember = memberRepository.findById(1L).get();
+        then(foundMember.getPassword()).isEqualTo("ChangePassword1!");
+    }
+
+    @Test
+    @DisplayName("비밀번호를 변경한다.")
+    public void updatePassword2() {
+        member.changePassword("ChangePassword1!");
+        testEntityManager.flush();
+        testEntityManager.clear();
+        Member foundMember = memberRepository.findById(1L).get();
+        then(foundMember.getPassword()).isEqualTo("ChangePassword1!");
+    }
 }

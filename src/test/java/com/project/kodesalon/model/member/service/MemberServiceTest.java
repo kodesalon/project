@@ -150,4 +150,15 @@ public class MemberServiceTest {
         ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword(changePasswordRequestDto);
         softly.then(changePasswordResponseDto.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
     }
+
+    @Test
+    @DisplayName("비밀번호를 변경하고 성공 메세지를 담은 DTO를 반환한다.")
+    public void changePassword2() {
+        BDDSoftAssertions softly = new BDDSoftAssertions();
+        given(memberRepository.existsById(anyLong())).willReturn(true);
+
+        ChangePasswordRequestDto changePasswordRequestDto = new ChangePasswordRequestDto(1L, "ChangePassword1!");
+        ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword2(changePasswordRequestDto);
+        softly.then(changePasswordResponseDto.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
+    }
 }
