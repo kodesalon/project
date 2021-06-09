@@ -45,7 +45,7 @@ public class MemberController {
 
     @PutMapping
     public ResponseEntity<ChangePasswordResponseDto> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
-        ChangePasswordResponseDto changePasswordResponseDto = new ChangePasswordResponseDto("message");
+        ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword(changePasswordRequest.toChangePasswordRequestDto());
         return new ResponseEntity<>(changePasswordResponseDto, HttpStatus.OK);
     }
 }

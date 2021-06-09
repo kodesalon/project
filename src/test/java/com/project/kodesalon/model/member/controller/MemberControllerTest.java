@@ -7,6 +7,8 @@ import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
 import com.project.kodesalon.model.member.service.MemberService;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordRequestDto;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
@@ -54,6 +56,7 @@ public class MemberControllerTest {
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final CreateMemberRequest createMemberRequest =
             new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+    private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(1L, "ChangePassword1!");
 
     private MockMvc mockMvc;
 
@@ -378,12 +381,14 @@ public class MemberControllerTest {
     @Test
     @DisplayName("변경하려는 비밀번호, 회원 식별 번호를 전달받아 비밀번호를 변경하고 200 상태 + 성공 메세지를 반환합니다.")
     public void changePassword() throws Exception {
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(1L, "ChangePassword1!");
+        given(memberService.changePassword(any(ChangePasswordRequestDto.class)))
+                .willReturn(new ChangePasswordResponseDto("비밀번호 변경 성공하였습니다."));
 
         this.mockMvc.perform(put("/api/v1/members")
                 .content(objectMapper.writeValueAsString(changePasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("비밀번호 변경 성공하였습니다."))
                 .andDo(document("changePassword/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
