@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class ChangePasswordRequestTest {
 
     @Test
-    @DisplayName("회원 식별 번호, ")
+    @DisplayName("회원 식별 번호, 변경하려는 비밀번호를 반환한다.")
     public void getter() {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(1L, "ChangePassword1!");
         BDDSoftAssertions softly = new BDDSoftAssertions();
