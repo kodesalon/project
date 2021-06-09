@@ -13,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.BDDAssertions.then;
@@ -66,5 +67,29 @@ class MemberRepositoryTest {
         testEntityManager.clear();
         Member foundMember = memberRepository.findById(member.getId()).get();
         then(foundMember.getPassword()).isEqualTo("ChangePassword1!");
+    }
+
+    @Test
+    @DisplayName("회원을 탈퇴합니다")
+    void delete_member() {
+        Member deleteMember = memberRepository.findById(member.getId())
+                .orElseThrow(() -> new NoSuchElementException("삭제하려는 회원이 없습니다"));
+
+        memberRepository.delete(deleteMember);
+        testEntityManager.flush();
+        testEntityManager.clear();
+
+        then(memberRepository.findById(deleteMember.getId())).isEqualTo(Optional.empty());
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴2")
+    void delete() {
+        memberRepository.deleteById(member.getId());
+
+        testEntityManager.flush();
+        testEntityManager.clear();
+
+        then(memberRepository.findById(member.getId())).isEmpty();
     }
 }
