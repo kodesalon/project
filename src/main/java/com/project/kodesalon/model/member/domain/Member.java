@@ -12,16 +12,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "member", uniqueConstraints = {
-        @UniqueConstraint(
-                name = "unique_alias_constraint",
-                columnNames = {"alias"}
-        )})
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,5 +65,9 @@ public class Member {
 
     public String getPhone() {
         return phone.value();
+    }
+
+    public boolean isIncorrectPassword(Password password) {
+        return !this.password.equals(password);
     }
 }
