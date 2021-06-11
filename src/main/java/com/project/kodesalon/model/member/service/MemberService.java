@@ -36,7 +36,7 @@ public class MemberService {
                         }
                 );
 
-        if (member.isIncorrectPassword(loginRequestDto.getPassword())) {
+        if (member.hasSamePassword(loginRequestDto.getPassword())) {
             log.error("{}의 Password가 일치하지 않음", loginRequestDto.getAlias());
             throw HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST,
                     "", HttpHeaders.EMPTY, null, null);

@@ -73,12 +73,12 @@ public class Member {
         return phone.value();
     }
 
-    public boolean isIncorrectPassword(Password password) {
-        return !this.password.equals(password);
+    public boolean hasSamePassword(Password password) {
+        return this.password.equals(password);
     }
 
     public void changePassword(String newPassword) {
-        if (!isIncorrectPassword(new Password(newPassword))) {
+        if (hasSamePassword(new Password(newPassword))) {
             throw new IllegalArgumentException("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
         }
 
