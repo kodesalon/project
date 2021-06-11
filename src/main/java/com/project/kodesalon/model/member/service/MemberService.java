@@ -62,7 +62,7 @@ public class MemberService {
     public SelectMemberResponseDto selectMember(Long memberId) {
         Member selectedMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> {
-                    log.error("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
+                    log.info("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
                     throw new NoSuchElementException("찾으려는 회원이 없습니다");
                 });
 
