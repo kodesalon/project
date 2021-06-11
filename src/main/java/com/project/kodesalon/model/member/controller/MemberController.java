@@ -54,6 +54,6 @@ public class MemberController {
     @DeleteMapping("/{memberId}")
     public ResponseEntity<DeleteMemberResponseDto> deleteMember(@PathVariable Long memberId) {
         return ResponseEntity.ok()
-                .body(new DeleteMemberResponseDto("회원이 성공적으로 삭제되었습니다"));
+                .body(memberService.deleteMember(memberId));
     }
 }

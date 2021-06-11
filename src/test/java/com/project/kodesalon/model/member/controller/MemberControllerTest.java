@@ -10,6 +10,7 @@ import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequestDto;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
+import com.project.kodesalon.model.member.service.dto.DeleteMemberResponseDto;
 import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -405,6 +406,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원의 식별자를 전달받아 회원을 탈퇴하고 200 상태 + 성공 메세지를 반환합니다.")
     void deleteMember() throws Exception {
+        given(memberService.deleteMember(anyLong())).willReturn(new DeleteMemberResponseDto("회원이 성공적으로 삭제되었습니다"));
 
         this.mockMvc.perform(delete("/api/v1/members/{memberId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON))
