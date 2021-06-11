@@ -6,7 +6,6 @@ import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -23,16 +22,13 @@ public class MemberService {
     public LoginResponseDto login(LoginRequestDto loginRequestDto) throws HttpClientErrorException {
         Member member = memberRepository.findMemberByAlias(loginRequestDto.getAlias())
                 .orElseThrow(() -> {
-                            log.info("{}인 Alias를 가진 사용자가 존재하지 않음", loginRequestDto.getAlias().value());
-                            throw HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.BAD_REQUEST,
-                                    "", HttpHeaders.EMPTY, null, null);
-                        }
-                );
+                    log.info("{}인 Alias를 가진 사용자가 존재하지 않음", loginRequestDto.getAlias().value());
+                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "존재하는 아이디를 입력해주세요.");
+                });
 
         if (member.isIncorrectPassword(loginRequestDto.getPassword())) {
             log.info("{}의 Password가 일치하지 않음", loginRequestDto.getAlias().value());
-            throw HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST,
-                    "", HttpHeaders.EMPTY, null, null);
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "비밀 번호가 일치하지 않습니다.");
         }
 
         log.info("ID : {} Alias : {} Member 로그인", member.getId(), member.getAlias());

@@ -10,6 +10,7 @@ import org.springframework.web.client.HttpClientErrorException;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(HttpClientErrorException.class)
     protected ResponseEntity<ErrorResponse> handleHttpClientErrorException(HttpClientErrorException e) {
         log.error(e.getMessage());
