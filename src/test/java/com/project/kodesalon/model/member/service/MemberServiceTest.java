@@ -26,6 +26,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
+    private final BDDSoftAssertions softly = new BDDSoftAssertions();
     private final LoginRequestDto loginRequestDto = new LoginRequestDto("alias", "Password123!!");
     private final CreateMemberRequestDto createMemberRequestDto =
             new CreateMemberRequestDto("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
@@ -53,8 +54,6 @@ public class MemberServiceTest {
     @Test
     @DisplayName("존재하는 Alias가 Alias와 Password가 일치하면 Id, Alias를 리턴합니다.")
     void exist_login_return_success() {
-        BDDSoftAssertions softly = new BDDSoftAssertions();
-
         given(member.getId()).willReturn(1L);
         given(member.getAlias()).willReturn("alias");
         given(member.isIncorrectPassword(loginRequestDto.getPassword())).willReturn(false);
@@ -84,8 +83,6 @@ public class MemberServiceTest {
     @Test
     @DisplayName("존재하지 않는 아이디이면 회원가입을 진행합니다.")
     void create_member_success() {
-        BDDSoftAssertions softly = new BDDSoftAssertions();
-
         given(member.getId()).willReturn(1L);
         given(member.getAlias()).willReturn("alias");
         given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.empty());
@@ -111,8 +108,6 @@ public class MemberServiceTest {
     @Test
     @DisplayName("존재하는 Alias면 회원 정보를 응답합니다.")
     void exist_id_response_member() {
-        BDDSoftAssertions softly = new BDDSoftAssertions();
-
         given(member.getAlias()).willReturn("alias");
         given(member.getName()).willReturn("이름");
         given(member.getEmail()).willReturn("email@email.com");

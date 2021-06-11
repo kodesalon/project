@@ -7,23 +7,16 @@ import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.domain.vo.Phone;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
 import org.assertj.core.api.BDDSoftAssertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class CreateMemberRequestTest {
-    private CreateMemberRequest createMemberRequest;
-
-    @BeforeEach
-    void setUp() {
-        createMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
-    }
+    private final CreateMemberRequest createMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+    private final BDDSoftAssertions softly = new BDDSoftAssertions();
 
     @Test
     @DisplayName("생성자를 호출하면 필드를 초기화합니다.")
     void create_init_field() {
-        BDDSoftAssertions softly = new BDDSoftAssertions();
-
         softly.then(createMemberRequest.getAlias()).isEqualTo("alias");
         softly.then(createMemberRequest.getPassword()).isEqualTo("Password123!!");
         softly.then(createMemberRequest.getName()).isEqualTo("이름");
@@ -36,8 +29,6 @@ public class CreateMemberRequestTest {
     @Test
     @DisplayName("toCreateMemberRequestDto를 호출하면 createMemberRequestDto를 반환합니다")
     void to_create_member_request_dto_return_create_member_request_dto() {
-        BDDSoftAssertions softly = new BDDSoftAssertions();
-
         CreateMemberRequestDto createMemberRequestDto = createMemberRequest.toCreateMemberRequestDto();
 
         softly.then(createMemberRequestDto.getAlias()).isEqualTo(new Alias("alias"));
