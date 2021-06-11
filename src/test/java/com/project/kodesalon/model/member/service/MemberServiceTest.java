@@ -146,8 +146,8 @@ public class MemberServiceTest {
         BDDSoftAssertions softly = new BDDSoftAssertions();
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
-        ChangePasswordRequestDto changePasswordRequestDto = new ChangePasswordRequestDto(1L, "ChangePassword1!");
-        ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword(changePasswordRequestDto);
+        ChangePasswordRequestDto changePasswordRequestDto = new ChangePasswordRequestDto("ChangePassword1!");
+        ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword(1L, changePasswordRequestDto);
         softly.then(changePasswordResponseDto.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
     }
 }

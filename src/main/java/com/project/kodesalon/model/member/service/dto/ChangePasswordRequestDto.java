@@ -8,11 +8,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ChangePasswordRequestDto {
-    private Long memberId;
     private Password password;
 
-    public ChangePasswordRequestDto(Long memberId, String password) {
-        this.memberId = memberId;
+    public ChangePasswordRequestDto(String password) {
         this.password = new Password(password);
     }
 

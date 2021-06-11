@@ -56,7 +56,7 @@ public class MemberControllerTest {
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final CreateMemberRequest createMemberRequest =
             new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
-    private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest(1L, "ChangePassword1!");
+    private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
 
     private MockMvc mockMvc;
 
@@ -381,10 +381,10 @@ public class MemberControllerTest {
     @Test
     @DisplayName("변경하려는 비밀번호, 회원 식별 번호를 전달받아 비밀번호를 변경하고 200 상태 + 성공 메세지를 반환합니다.")
     public void changePassword() throws Exception {
-        given(memberService.changePassword(any(ChangePasswordRequestDto.class)))
+        given(memberService.changePassword(anyLong(), any(ChangePasswordRequestDto.class)))
                 .willReturn(new ChangePasswordResponseDto("비밀번호 변경 성공하였습니다."));
 
-        this.mockMvc.perform(put("/api/v1/members")
+        this.mockMvc.perform(put("/api/v1/members/{memberId}", 1L)
                 .content(objectMapper.writeValueAsString(changePasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -392,8 +392,10 @@ public class MemberControllerTest {
                 .andDo(document("changePassword/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 식별 번호")
+                        ),
                         requestFields(
-                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 식별 번호"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("변경하려는 비밀번호")
                         ),
                         responseFields(

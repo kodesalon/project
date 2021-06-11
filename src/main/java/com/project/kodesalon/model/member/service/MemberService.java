@@ -67,8 +67,7 @@ public class MemberService {
     }
 
     @Transactional
-    public ChangePasswordResponseDto changePassword(ChangePasswordRequestDto changePasswordRequestDto) {
-        Long memberId = changePasswordRequestDto.getMemberId();
+    public ChangePasswordResponseDto changePassword(Long memberId, ChangePasswordRequestDto changePasswordRequestDto) {
         Member member = findById(memberId);
         member.changePassword(changePasswordRequestDto.getPassword());
         return new ChangePasswordResponseDto("비밀번호 변경 성공하였습니다.");
