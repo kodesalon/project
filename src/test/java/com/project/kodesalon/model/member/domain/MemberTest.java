@@ -44,14 +44,11 @@ class MemberTest {
     @Test
     @DisplayName("비밀번호를 변경한다.")
     public void changePassword() {
-        //given
         String newPassword = "ChangePassword1!";
 
-        //when
         member.changePassword(newPassword);
-        String changedPassword = member.getPassword();
 
-        then(changedPassword).isEqualTo(newPassword);
+        then(member.getPassword()).isEqualTo(newPassword);
     }
 
     @Test
