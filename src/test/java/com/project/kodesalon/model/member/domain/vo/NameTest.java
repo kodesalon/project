@@ -14,6 +14,7 @@ class NameTest {
     @ValueSource(strings = {"김씨", "박하늘별님구름햇님보다사랑스러우리"})
     @DisplayName("유효한 이름은 값을 초기화 합니다.")
     void validate_name_init_value(String validName) {
+        //given
         Name name = new Name(validName);
 
         then(name.value()).isEqualTo(validName);
