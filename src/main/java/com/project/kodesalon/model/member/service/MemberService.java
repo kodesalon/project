@@ -20,29 +20,29 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
+    public LoginResponseDto login(LoginRequestDto loginRequestDto) throws HttpClientErrorException {
         Member member = memberRepository.findMemberByAlias(loginRequestDto.getAlias())
                 .orElseThrow(() -> {
-                            log.error("{}인 Alias를 가진 사용자가 존재하지 않음", loginRequestDto.getAlias());
+                            log.info("{}인 Alias를 가진 사용자가 존재하지 않음", loginRequestDto.getAlias().value());
                             throw HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.BAD_REQUEST,
                                     "", HttpHeaders.EMPTY, null, null);
                         }
                 );
 
         if (member.isIncorrectPassword(loginRequestDto.getPassword())) {
-            log.error("{}의 Password가 일치하지 않음", loginRequestDto.getAlias());
+            log.info("{}의 Password가 일치하지 않음", loginRequestDto.getAlias().value());
             throw HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST,
                     "", HttpHeaders.EMPTY, null, null);
         }
 
-        log.info("ID : {} Alias : {} Member 로그안", member.getId(), member.getAlias());
+        log.info("ID : {} Alias : {} Member 로그인", member.getId(), member.getAlias());
         return new LoginResponseDto(member.getId(), member.getAlias());
     }
 
     public LoginResponseDto join(CreateMemberRequestDto createMemberRequestDto) {
         memberRepository.findMemberByAlias(createMemberRequestDto.getAlias())
                 .ifPresent(member -> {
-                    log.error("회원 가입 단계에서 {}는 이미 존재하는 Alias입니다.", createMemberRequestDto.getAlias());
+                    log.info("{}는 이미 존재하는 Alias입니다.", createMemberRequestDto.getAlias().value());
                     throw new IllegalStateException("이미 존재하는 아이디입니다");
                 });
 

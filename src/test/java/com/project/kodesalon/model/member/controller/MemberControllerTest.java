@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.controller.dto.LoginRequest;
-import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.service.MemberService;
+import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -270,7 +270,7 @@ public class MemberControllerTest {
                         responseFields(
                                 fieldWithPath("message")
                                         .type(JsonFieldType.STRING)
-                                        .description("유효하지 않은 Eamil 에러 메세지"))));
+                                        .description("유효하지 않은 Email 에러 메세지"))));
     }
 
     @Test
