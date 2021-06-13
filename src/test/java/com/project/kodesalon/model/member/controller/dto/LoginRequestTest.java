@@ -1,42 +1,81 @@
 package com.project.kodesalon.model.member.controller.dto;
 
-import com.project.kodesalon.model.member.domain.vo.Alias;
-import com.project.kodesalon.model.member.domain.vo.Password;
-import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
 import org.assertj.core.api.BDDSoftAssertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
-public class LoginRequestTest {
-    private LoginRequest loginRequest;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.util.Set;
 
-    @BeforeEach
-    void setUp() {
-        loginRequest = new LoginRequest("alias", "Password123!!");
-    }
+import static org.assertj.core.api.BDDAssertions.then;
+
+class LoginRequestTest {
+    private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    private final Validator validator = factory.getValidator();
 
     @Test
-    @DisplayName("생성자를 호출하면 필드가 초기화 됩니다")
-    void create_init_field() {
+    @DisplayName("Alias와 Password를 반환한다.")
+    void getter() {
+        LoginRequest loginRequest = new LoginRequest("alias", "Password1234!!");
         BDDSoftAssertions softly = new BDDSoftAssertions();
 
         softly.then(loginRequest.getAlias()).isEqualTo("alias");
-        softly.then(loginRequest.getPassword()).isEqualTo("Password123!!");
-
+        softly.then(loginRequest.getPassword()).isEqualTo("Password1234!!");
         softly.assertAll();
     }
 
-    @Test
-    @DisplayName("toLoginRequestDto를 호출하면 LoginRequestDto를 반환합니다")
-    void to_login_request_dto_return_login_request_dto() {
-        BDDSoftAssertions softly = new BDDSoftAssertions();
+    @ParameterizedTest
+    @ValueSource(strings = {"a12", "abcde12345abcde1", "alias 1234", "1234", "a_______", "한글Alias"})
+    @DisplayName("alias에 타당한 문자열 포맷이 아니면 예외가 발생합니다.")
+    void create_throw_exception_with_invalid_Alias(String invalidFormat) {
+        LoginRequest loginRequest = new LoginRequest(invalidFormat, "Password1!");
+        Set<ConstraintViolation<LoginRequest>> constraintViolations = validator.validate(loginRequest);
 
-        LoginRequestDto loginRequestDto = loginRequest.toLoginRequestDto();
+        then(constraintViolations)
+                .extracting(ConstraintViolation::getMessage)
+                .contains("아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다.");
+    }
 
-        softly.then(loginRequestDto.getAlias()).isEqualTo(new Alias("alias"));
-        softly.then(loginRequestDto.getPassword()).isEqualTo(new Password("Password123!!"));
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("null일 경우, 예외가 발생합니다.")
+    void create_throw_exception_with_null_alias(String nullArgument) {
+        LoginRequest loginRequestWithNullAlias = new LoginRequest(nullArgument, "Password1!");
+        Set<ConstraintViolation<LoginRequest>> constraintViolations = validator.validate(loginRequestWithNullAlias);
 
-        softly.assertAll();
+        then(constraintViolations)
+                .extracting(ConstraintViolation::getMessage)
+                .contains("null이 아닌 4자리 이상의 아이디를 입력해주세요.");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"!pass12", "!!Password1234567", "Password12",
+            "!!Password", "!!password12", "!!PASSWORD12", "!비밀!pass1234"})
+    @DisplayName("올바르지 않은 양식의 비밀번호일 경우, 예외가 발생합니다.")
+    void create_throw_exception_with_invalid_password(String invalidPassword) {
+        LoginRequest loginRequestWithInvalidPassword = new LoginRequest("alias", invalidPassword);
+        Set<ConstraintViolation<LoginRequest>> constraintViolations = validator.validate(loginRequestWithInvalidPassword);
+
+        then(constraintViolations)
+                .extracting(ConstraintViolation::getMessage)
+                .contains("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.");
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("null일 경우, 예외가 발생합니다.")
+    void create_throw_exception_with_null_password(String nullArgument) {
+        LoginRequest loginRequestWithNullPassword = new LoginRequest("alias", nullArgument);
+        Set<ConstraintViolation<LoginRequest>> constraintViolations = validator.validate(loginRequestWithNullPassword);
+
+        then(constraintViolations)
+                .extracting(ConstraintViolation::getMessage)
+                .contains("null이 아닌 8자리 이상의 비밀번호를 입력해주세요.");
     }
 }
