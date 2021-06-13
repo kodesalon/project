@@ -4,9 +4,9 @@ import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
+import com.project.kodesalon.model.member.service.dto.LoginRequest2;
 import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
-import com.project.kodesalon.model.member.repository.MemberRepository;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,7 +56,7 @@ public class MemberServiceTest {
 
         given(member.getId()).willReturn(1L);
         given(member.getAlias()).willReturn("alias");
-        given(member.isIncorrectPassword(loginRequestDto.getPassword())).willReturn(false);
+        given(member.hasSamePassword(loginRequestDto.getPassword())).willReturn(true);
         given(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
                 .willReturn(Optional.of(member));
 
@@ -74,7 +74,7 @@ public class MemberServiceTest {
         LoginRequestDto loginRequestDto
                 = new LoginRequestDto("alias", "Password123!!!");
 
-        given(member.isIncorrectPassword(loginRequestDto.getPassword())).willReturn(true);
+        given(member.hasSamePassword(loginRequestDto.getPassword())).willReturn(false);
         given(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
                 .willReturn(Optional.of(member));
 

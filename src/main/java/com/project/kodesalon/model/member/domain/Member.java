@@ -67,7 +67,7 @@ public class Member {
         return phone.value();
     }
 
-    public boolean isIncorrectPassword(Password password) {
-        return !this.password.equals(password);
+    public boolean hasSamePassword(Password password) {
+        return this.password.equals(password);
     }
 }

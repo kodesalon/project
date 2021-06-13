@@ -26,7 +26,7 @@ public class MemberService {
                     throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "존재하는 아이디를 입력해주세요.");
                 });
 
-        if (member.isIncorrectPassword(loginRequestDto.getPassword())) {
+        if (!member.hasSamePassword(loginRequestDto.getPassword())) {
             log.info("{}의 Password가 일치하지 않음", loginRequestDto.getAlias().value());
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "비밀 번호가 일치하지 않습니다.");
         }
