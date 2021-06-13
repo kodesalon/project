@@ -14,13 +14,14 @@ import java.util.regex.Pattern;
 public class Email {
     private static final String EMAIL_REGEX = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+    public static final String EMAIL_EXCEPTION_MESSAGE = "이메일은 id@domain.com과 같은 형식이어야 합니다.";
 
     @Column(name = "email", nullable = false)
     private String email;
 
     public Email(final String email) {
         if (email == null || !EMAIL_PATTERN.matcher(email).matches()) {
-            throw new IllegalArgumentException("이메일은 id@domain.com과 같은 형식이어야 합니다.");
+            throw new IllegalArgumentException(EMAIL_EXCEPTION_MESSAGE);
         }
 
         this.email = email;
