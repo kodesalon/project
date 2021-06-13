@@ -3,7 +3,7 @@ package com.project.kodesalon.model.member.controller;
 import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.MemberService;
-import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,13 +20,13 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> logIn(@RequestBody LoginRequest loginRequest) {
-        LoginResponseDto loginResponseDto = memberService.login(loginRequest);
-        return ResponseEntity.ok().body(loginResponseDto);
+    public ResponseEntity<LoginResponse> logIn(@RequestBody LoginRequest loginRequest) {
+        LoginResponse loginResponse = memberService.login(loginRequest);
+        return ResponseEntity.ok().body(loginResponse);
     }
 
     @PostMapping
-    public ResponseEntity<LoginResponseDto> join(@RequestBody CreateMemberRequest createMemberRequest) {
+    public ResponseEntity<LoginResponse> join(@RequestBody CreateMemberRequest createMemberRequest) {
         return ResponseEntity.ok()
                 .body(memberService.join(createMemberRequest.toCreateMemberRequestDto()));
     }

@@ -6,7 +6,7 @@ import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
-import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public LoginResponseDto login(LoginRequest loginRequest) throws HttpClientErrorException {
+    public LoginResponse login(LoginRequest loginRequest) throws HttpClientErrorException {
         String alias = loginRequest.getAlias();
         Member member = memberRepository.findMemberByAlias(new Alias(alias))
                 .orElseThrow(() -> {
@@ -36,10 +36,10 @@ public class MemberService {
         }
 
         log.info("ID : {}, Alias : {} Member 로그인", member.getId(), member.getAlias());
-        return new LoginResponseDto(member.getId(), member.getAlias());
+        return new LoginResponse(member.getId(), member.getAlias());
     }
 
-    public LoginResponseDto join(CreateMemberRequestDto createMemberRequestDto) {
+    public LoginResponse join(CreateMemberRequestDto createMemberRequestDto) {
         memberRepository.findMemberByAlias(createMemberRequestDto.getAlias())
                 .ifPresent(member -> {
                     log.info("{}는 이미 존재하는 Alias입니다.", createMemberRequestDto.getAlias().value());
@@ -49,6 +49,6 @@ public class MemberService {
         Member saveMember = memberRepository.save(createMemberRequestDto.toMember());
 
         log.info("ID : {}, Alias : {} Member가 회원 가입 성공", saveMember.getId(), saveMember.getAlias());
-        return new LoginResponseDto(saveMember.getId(), saveMember.getAlias());
+        return new LoginResponse(saveMember.getId(), saveMember.getAlias());
     }
 }

@@ -6,7 +6,7 @@ import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
-import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class MemberControllerTest {
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
-    private final LoginResponseDto loginResponse = new LoginResponseDto(1L, "alias");
+    private final LoginResponse loginResponse = new LoginResponse(1L, "alias");
     private final CreateMemberRequest createMemberRequest =
             new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
 

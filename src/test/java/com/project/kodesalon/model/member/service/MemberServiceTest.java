@@ -6,7 +6,7 @@ import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
-import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,10 +45,10 @@ public class MemberServiceTest {
         given(member.hasSamePassword(new Password(loginRequest.getPassword()))).willReturn(true);
         given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.of(member));
 
-        LoginResponseDto loginResponseDto = memberService.login(loginRequest);
+        LoginResponse loginResponse = memberService.login(loginRequest);
 
-        softly.then(loginResponseDto.getMemberId()).isEqualTo(1L);
-        softly.then(loginResponseDto.getAlias()).isEqualTo("alias");
+        softly.then(loginResponse.getMemberId()).isEqualTo(1L);
+        softly.then(loginResponse.getAlias()).isEqualTo("alias");
         softly.assertAll();
     }
 
@@ -81,10 +81,10 @@ public class MemberServiceTest {
         given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.empty());
         given(memberRepository.save(any(Member.class))).willReturn(member);
 
-        LoginResponseDto loginResponseDto = memberService.join(createMemberRequestDto);
+        LoginResponse loginResponse = memberService.join(createMemberRequestDto);
 
-        softly.then(loginResponseDto.getMemberId()).isEqualTo(1L);
-        softly.then(loginResponseDto.getAlias()).isEqualTo("alias");
+        softly.then(loginResponse.getMemberId()).isEqualTo(1L);
+        softly.then(loginResponse.getAlias()).isEqualTo("alias");
         softly.assertAll();
     }
 
