@@ -5,7 +5,6 @@ import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.MemberService;
-import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -124,7 +123,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원가입이 성공하면 회원가입한 회원 식별자, 별명을 담은 DTO를 Http 200으로 응답합니다.")
     void join_success() throws Exception {
-        given(memberService.join(any(CreateMemberRequestDto.class))).willReturn(loginResponse);
+        given(memberService.join(any(CreateMemberRequest.class))).willReturn(loginResponse);
 
         this.mockMvc.perform(post("/api/v1/members")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -132,7 +131,7 @@ public class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(1))
                 .andExpect(jsonPath("$.alias").value("alias"))
-                .andDo(document("join/success",
+                .andDo(document("join/success2",
                         requestFields(
                                 fieldWithPath("alias").type(JsonFieldType.STRING).description("회원 가입할 member의 alias"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("회원 가입할 member의 password"),
@@ -148,7 +147,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 이미 존재하는 아이디(Alias)일 경우, 예외 메세지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_already_exist() throws Exception {
-        given(memberService.join(any(CreateMemberRequestDto.class)))
+        given(memberService.join(any(CreateMemberRequest.class)))
                 .willThrow(new IllegalStateException("이미 존재하는 아이디입니다"));
 
         this.mockMvc.perform(post("/api/v1/members")
@@ -213,7 +212,7 @@ public class MemberControllerTest {
     @DisplayName("회원가입 시 유효하지 않은 이메일을 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_email() throws Exception {
         CreateMemberRequest createMemberRequestWithInvalidEmail
-                = new CreateMemberRequest("alias", "Password123!!", "이름", "", "010-1111-2222");
+                = new CreateMemberRequest("alias", "Password123!!", "이름", " ", "010-1111-2222");
 
         this.mockMvc.perform(post("/api/v1/members")
                 .contentType(MediaType.APPLICATION_JSON)

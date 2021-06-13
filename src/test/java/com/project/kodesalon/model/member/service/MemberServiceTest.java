@@ -1,11 +1,11 @@
 package com.project.kodesalon.model.member.service;
 
+import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.controller.dto.LoginRequest;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.repository.MemberRepository;
-import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -26,7 +26,7 @@ import static org.mockito.BDDMockito.given;
 public class MemberServiceTest {
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
-    private final CreateMemberRequestDto createMemberRequestDto = new CreateMemberRequestDto("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+    private final CreateMemberRequest createMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
 
     @InjectMocks
     private MemberService memberService;
@@ -81,7 +81,7 @@ public class MemberServiceTest {
         given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.empty());
         given(memberRepository.save(any(Member.class))).willReturn(member);
 
-        LoginResponse loginResponse = memberService.join(createMemberRequestDto);
+        LoginResponse loginResponse = memberService.join(createMemberRequest);
 
         softly.then(loginResponse.getMemberId()).isEqualTo(1L);
         softly.then(loginResponse.getAlias()).isEqualTo("alias");
@@ -93,7 +93,7 @@ public class MemberServiceTest {
     void join_throw_exception_with_already_exist() {
         given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.of(member));
 
-        thenThrownBy(() -> memberService.join(createMemberRequestDto))
+        thenThrownBy(() -> memberService.join(createMemberRequest))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("이미 존재하는 아이디입니다");
     }

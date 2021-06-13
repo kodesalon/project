@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/members")
 public class MemberController {
@@ -20,14 +22,14 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> logIn(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> logIn(@RequestBody @Valid LoginRequest loginRequest) {
         LoginResponse loginResponse = memberService.login(loginRequest);
         return ResponseEntity.ok().body(loginResponse);
     }
 
     @PostMapping
-    public ResponseEntity<LoginResponse> join(@RequestBody CreateMemberRequest createMemberRequest) {
-        return ResponseEntity.ok()
-                .body(memberService.join(createMemberRequest.toCreateMemberRequestDto()));
+    public ResponseEntity<LoginResponse> join(@RequestBody @Valid CreateMemberRequest createMemberRequest) {
+        LoginResponse loginResponse = memberService.join(createMemberRequest);
+        return ResponseEntity.ok().body(loginResponse);
     }
 }
