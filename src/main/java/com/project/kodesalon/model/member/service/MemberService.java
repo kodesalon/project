@@ -4,7 +4,7 @@ import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.repository.MemberRepository;
-import com.project.kodesalon.model.member.service.dto.ChangePasswordRequestDto;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
@@ -67,9 +67,9 @@ public class MemberService {
     }
 
     @Transactional
-    public ChangePasswordResponseDto changePassword(Long memberId, ChangePasswordRequestDto changePasswordRequestDto) {
+    public ChangePasswordResponseDto changePassword(Long memberId, ChangePasswordRequest changePasswordRequest) {
         Member member = findById(memberId);
-        member.changePassword(changePasswordRequestDto.getPassword());
+        member.changePassword(changePasswordRequest.getPassword());
         return new ChangePasswordResponseDto("비밀번호 변경 성공하였습니다.");
     }
 

@@ -1,7 +1,7 @@
 package com.project.kodesalon.model.member.controller;
 
-import com.project.kodesalon.model.member.controller.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.MemberService;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
@@ -47,7 +47,7 @@ public class MemberController {
 
     @PutMapping("/{memberId}")
     public ResponseEntity<ChangePasswordResponseDto> changePassword(@PathVariable Long memberId, @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
-        ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword(memberId, changePasswordRequest.toChangePasswordRequestDto());
+        ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword(memberId, changePasswordRequest);
         return new ResponseEntity<>(changePasswordResponseDto, HttpStatus.OK);
     }
 }

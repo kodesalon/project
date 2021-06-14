@@ -4,7 +4,7 @@ import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.repository.MemberRepository;
-import com.project.kodesalon.model.member.service.dto.ChangePasswordRequestDto;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
@@ -137,8 +137,8 @@ public class MemberServiceTest {
         BDDSoftAssertions softly = new BDDSoftAssertions();
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
-        ChangePasswordRequestDto changePasswordRequestDto = new ChangePasswordRequestDto("ChangePassword1!");
-        ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword(1L, changePasswordRequestDto);
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
+        ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword(1L, changePasswordRequest);
         softly.then(changePasswordResponseDto.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
     }
 }

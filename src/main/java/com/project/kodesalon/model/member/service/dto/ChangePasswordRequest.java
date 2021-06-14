@@ -1,6 +1,5 @@
-package com.project.kodesalon.model.member.controller.dto;
+package com.project.kodesalon.model.member.service.dto;
 
-import com.project.kodesalon.model.member.service.dto.ChangePasswordRequestDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,9 +20,5 @@ public class ChangePasswordRequest {
 
     public ChangePasswordRequest(String password) {
         this.password = password;
-    }
-
-    public ChangePasswordRequestDto toChangePasswordRequestDto() {
-        return new ChangePasswordRequestDto(password);
     }
 }
