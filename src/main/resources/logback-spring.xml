@@ -4,11 +4,12 @@
         <include resource="org/springframework/boot/logging/logback/base.xml"/>
     </springProfile>
 
-    <springProfile name="dev">
+    <springProfile name="prod">
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-            <file>./logback/log/app.log</file>
+            <file>/home/ec2-user/app/jenkins/logback/log/app.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <fileNamePattern>./logback/log/backup/app-%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+                <fileNamePattern>/home/ec2-user/app/jenkins/logback/log/backup/app-%d{yyyy-MM-dd}.log.zip
+                </fileNamePattern>
                 <maxHistory>2</maxHistory>
             </rollingPolicy>
             <encoder class="net.logstash.logback.encoder.LogstashEncoder">
