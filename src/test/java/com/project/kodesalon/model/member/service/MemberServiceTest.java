@@ -102,7 +102,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("존재하는 Alias면 회원 정보를 응답합니다.")
+    @DisplayName("회원정보 조회 성공 시, 회원 별명, 이름, 이메일, 전화 번호를 반환합니다.")
     void exist_id_response_member() {
         given(member.getAlias()).willReturn("alias");
         given(member.getName()).willReturn("이름");
@@ -120,7 +120,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 회원을 조회하면 에외를 발생시킵니다.")
+    @DisplayName("회원 정보 조회 시 찾으려는 회원이 없으면 예외를 반환합니다.")
     void select_not_exist_id_throws_exception() {
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 

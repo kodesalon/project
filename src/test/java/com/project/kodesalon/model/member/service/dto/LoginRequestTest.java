@@ -22,8 +22,9 @@ class LoginRequestTest {
     @Test
     @DisplayName("Alias와 Password를 반환한다.")
     void getter() {
-        LoginRequest loginRequest = new LoginRequest("alias", "Password1234!!");
         BDDSoftAssertions softly = new BDDSoftAssertions();
+
+        LoginRequest loginRequest = new LoginRequest("alias", "Password1234!!");
 
         softly.then(loginRequest.getAlias()).isEqualTo("alias");
         softly.then(loginRequest.getPassword()).isEqualTo("Password1234!!");
