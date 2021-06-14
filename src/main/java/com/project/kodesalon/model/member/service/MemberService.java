@@ -7,7 +7,7 @@ import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
-import com.project.kodesalon.model.member.service.dto.SelectMemberResponseDto;
+import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -59,13 +59,13 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public SelectMemberResponseDto selectMember(Long memberId) {
+    public SelectMemberResponse selectMember(Long memberId) {
         Member selectedMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> {
                     log.info("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
                     throw new NoSuchElementException("찾으려는 회원이 없습니다");
                 });
 
-        return new SelectMemberResponseDto(selectedMember.getAlias(), selectedMember.getName(), selectedMember.getEmail(), selectedMember.getPhone());
+        return new SelectMemberResponse(selectedMember.getAlias(), selectedMember.getName(), selectedMember.getEmail(), selectedMember.getPhone());
     }
 }

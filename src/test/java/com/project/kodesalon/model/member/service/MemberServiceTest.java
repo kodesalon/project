@@ -7,7 +7,7 @@ import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
-import com.project.kodesalon.model.member.service.dto.SelectMemberResponseDto;
+import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -110,12 +110,12 @@ public class MemberServiceTest {
         given(member.getPhone()).willReturn("010-1111-2222");
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
-        SelectMemberResponseDto selectMemberResponseDto = memberService.selectMember(1L);
+        SelectMemberResponse selectMemberResponse = memberService.selectMember(1L);
 
-        softly.then(selectMemberResponseDto.getAlias()).isEqualTo("alias");
-        softly.then(selectMemberResponseDto.getName()).isEqualTo("이름");
-        softly.then(selectMemberResponseDto.getEmail()).isEqualTo("email@email.com");
-        softly.then(selectMemberResponseDto.getPhone()).isEqualTo("010-1111-2222");
+        softly.then(selectMemberResponse.getAlias()).isEqualTo("alias");
+        softly.then(selectMemberResponse.getName()).isEqualTo("이름");
+        softly.then(selectMemberResponse.getEmail()).isEqualTo("email@email.com");
+        softly.then(selectMemberResponse.getPhone()).isEqualTo("010-1111-2222");
         softly.assertAll();
     }
 

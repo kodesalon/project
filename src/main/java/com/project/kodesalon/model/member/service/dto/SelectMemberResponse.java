@@ -8,13 +8,13 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SelectMemberResponseDto {
+public class SelectMemberResponse {
     private Alias alias;
     private Name name;
     private Email email;
     private Phone phone;
 
-    public SelectMemberResponseDto(String alias, String name, String email, String phone) {
+    public SelectMemberResponse(String alias, String name, String email, String phone) {
         this.alias = new Alias(alias);
         this.name = new Name(name);
         this.email = new Email(email);

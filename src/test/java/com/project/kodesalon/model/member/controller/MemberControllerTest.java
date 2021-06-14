@@ -6,7 +6,7 @@ import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
-import com.project.kodesalon.model.member.service.dto.SelectMemberResponseDto;
+import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -266,7 +266,7 @@ public class MemberControllerTest {
     @DisplayName("존재하는 회원을 조회하면 200 상태를 response 합니다.")
     void select_exist_member_response_success() throws Exception {
         given(memberService.selectMember(anyLong()))
-                .willReturn(new SelectMemberResponseDto("alias", "이름", "email@email.com", "010-1111-2222"));
+                .willReturn(new SelectMemberResponse("alias", "이름", "email@email.com", "010-1111-2222"));
 
         this.mockMvc.perform(get("/api/v1/members/{memberId}", "1")
                 .contentType(MediaType.APPLICATION_JSON))
