@@ -5,11 +5,11 @@ import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
-import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
-import com.project.kodesalon.model.member.service.dto.SelectMemberResponseDto;
+import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -61,16 +61,16 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public SelectMemberResponseDto selectMember(Long memberId) {
+    public SelectMemberResponse selectMember(Long memberId) {
         Member selectedMember = findById(memberId);
-        return new SelectMemberResponseDto(selectedMember.getAlias(), selectedMember.getName(), selectedMember.getEmail(), selectedMember.getPhone());
+        return new SelectMemberResponse(selectedMember.getAlias(), selectedMember.getName(), selectedMember.getEmail(), selectedMember.getPhone());
     }
 
     @Transactional
-    public ChangePasswordResponseDto changePassword(Long memberId, ChangePasswordRequest changePasswordRequest) {
+    public ChangePasswordResponse changePassword(Long memberId, ChangePasswordRequest changePasswordRequest) {
         Member member = findById(memberId);
         member.changePassword(changePasswordRequest.getPassword());
-        return new ChangePasswordResponseDto("비밀번호 변경 성공하였습니다.");
+        return new ChangePasswordResponse("비밀번호 변경 성공하였습니다.");
     }
 
     private Member findById(Long memberId) {

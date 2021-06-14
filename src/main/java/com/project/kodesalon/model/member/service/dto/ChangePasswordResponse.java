@@ -6,10 +6,10 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ChangePasswordResponseDto {
+public class ChangePasswordResponse {
     private String message;
 
-    public ChangePasswordResponseDto(String message) {
+    public ChangePasswordResponse(String message) {
         this.message = message;
     }
 }

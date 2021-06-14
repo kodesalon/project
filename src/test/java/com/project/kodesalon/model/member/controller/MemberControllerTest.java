@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
-import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
-import com.project.kodesalon.model.member.service.dto.SelectMemberResponseDto;
+import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -270,7 +270,7 @@ public class MemberControllerTest {
     @DisplayName("존재하는 회원을 조회하면 200 상태를 response 합니다.")
     void select_exist_member_response_success() throws Exception {
         given(memberService.selectMember(anyLong()))
-                .willReturn(new SelectMemberResponseDto("alias", "이름", "email@email.com", "010-1111-2222"));
+                .willReturn(new SelectMemberResponse("alias", "이름", "email@email.com", "010-1111-2222"));
 
         this.mockMvc.perform(get("/api/v1/members/{memberId}", "1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -311,7 +311,7 @@ public class MemberControllerTest {
     @DisplayName("비밀번호 변경시, 변경하려는 비밀번호, 회원 식별 번호를 전달받아 비밀번호를 변경하고 200 상태 + 성공 메세지를 반환합니다.")
     public void changePassword() throws Exception {
         given(memberService.changePassword(anyLong(), any(ChangePasswordRequest.class)))
-                .willReturn(new ChangePasswordResponseDto("비밀번호 변경 성공하였습니다."));
+                .willReturn(new ChangePasswordResponse("비밀번호 변경 성공하였습니다."));
 
         this.mockMvc.perform(put("/api/v1/members/{memberId}", 1L)
                 .content(objectMapper.writeValueAsString(changePasswordRequest))
