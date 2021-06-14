@@ -12,9 +12,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
 @NoArgsConstructor
+@Table(name = "member", uniqueConstraints = {@UniqueConstraint(columnNames = {"alias"})})
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,5 +72,13 @@ public class Member {
 
     public boolean hasSamePassword(Password password) {
         return this.password.equals(password);
+    }
+
+    public void changePassword(String newPassword) {
+        if (hasSamePassword(new Password(newPassword))) {
+            throw new IllegalArgumentException("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
+        }
+
+        this.password = new Password(newPassword);
     }
 }

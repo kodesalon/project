@@ -4,6 +4,8 @@ import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.repository.MemberRepository;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordRequestDto;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
@@ -60,12 +62,22 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public SelectMemberResponseDto selectMember(Long memberId) {
-        Member selectedMember = memberRepository.findById(memberId)
+        Member selectedMember = findById(memberId);
+        return new SelectMemberResponseDto(selectedMember.getAlias(), selectedMember.getName(), selectedMember.getEmail(), selectedMember.getPhone());
+    }
+
+    @Transactional
+    public ChangePasswordResponseDto changePassword(Long memberId, ChangePasswordRequestDto changePasswordRequestDto) {
+        Member member = findById(memberId);
+        member.changePassword(changePasswordRequestDto.getPassword());
+        return new ChangePasswordResponseDto("비밀번호 변경 성공하였습니다.");
+    }
+
+    private Member findById(Long memberId) {
+        return memberRepository.findById(memberId)
                 .orElseThrow(() -> {
                     log.info("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
                     throw new NoSuchElementException("찾으려는 회원이 없습니다");
                 });
-
-        return new SelectMemberResponseDto(selectedMember.getAlias(), selectedMember.getName(), selectedMember.getEmail(), selectedMember.getPhone());
     }
 }

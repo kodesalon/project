@@ -4,6 +4,8 @@ import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.repository.MemberRepository;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordRequestDto;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
@@ -127,5 +129,16 @@ public class MemberServiceTest {
         thenThrownBy(() -> memberService.selectMember(1L))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("찾으려는 회원이 없습니다");
+    }
+
+    @Test
+    @DisplayName("비밀번호를 변경하고 성공 메세지를 담은 DTO를 반환한다.")
+    public void changePassword() {
+        BDDSoftAssertions softly = new BDDSoftAssertions();
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+
+        ChangePasswordRequestDto changePasswordRequestDto = new ChangePasswordRequestDto("ChangePassword1!");
+        ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword(1L, changePasswordRequestDto);
+        softly.then(changePasswordResponseDto.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
     }
 }
