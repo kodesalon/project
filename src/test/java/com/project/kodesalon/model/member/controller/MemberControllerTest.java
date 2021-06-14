@@ -268,9 +268,8 @@ public class MemberControllerTest {
         given(memberService.selectMember(anyLong()))
                 .willReturn(new SelectMemberResponseDto("alias", "이름", "email@email.com", "010-1111-2222"));
 
-        this.mockMvc.perform(
-                get("/api/v1/members/{memberId}", "1")
-                        .contentType(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get("/api/v1/members/{memberId}", "1")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.alias").value("alias"))
                 .andExpect(jsonPath("$.name").value("이름"))
@@ -279,23 +278,13 @@ public class MemberControllerTest {
                 .andDo(document("select/success",
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("memberId")
-                                        .description("조회할 회원의 식별자")
+                                parameterWithName("memberId").description("조회할 회원의 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("alias")
-                                        .type(JsonFieldType.STRING)
-                                        .description("조회한 Alias"),
-                                fieldWithPath("name")
-                                        .type(JsonFieldType.STRING)
-                                        .description("조회한 Name"),
-                                fieldWithPath("email")
-                                        .type(JsonFieldType.STRING)
-                                        .description("조회한 Email"),
-                                fieldWithPath("phone")
-                                        .type(JsonFieldType.STRING)
-                                        .description("조회한 Phone")
-                        )));
+                                fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 Alias"),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("조회한 Name"),
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("조회한 Email"),
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 Phone"))));
     }
 
     @Test
@@ -304,16 +293,13 @@ public class MemberControllerTest {
         given(memberService.selectMember(anyLong()))
                 .willThrow(new NoSuchElementException("찾으려는 회원이 없습니다"));
 
-        this.mockMvc.perform(
-                get("/api/v1/members/{memberId}", "1")
-                        .contentType(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(get("/api/v1/members/{memberId}", "1")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("찾으려는 회원이 없습니다"))
                 .andDo(document("select/fail/no_member",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message")
-                                        .type(JsonFieldType.STRING)
-                                        .description("존재하는 회원이 없을 때의 예외 메세지"))));
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("존재하는 회원이 없을 때의 예외 메세지"))));
     }
 }

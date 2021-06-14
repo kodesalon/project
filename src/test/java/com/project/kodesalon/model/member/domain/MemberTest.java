@@ -29,7 +29,6 @@ class MemberTest {
         softly.then(member.getName()).isEqualTo("이름");
         softly.then(member.getEmail()).isEqualTo("email@email.com");
         softly.then(member.getPhone()).isEqualTo("010-1234-4444");
-
         softly.assertAll();
     }
 

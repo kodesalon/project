@@ -116,7 +116,6 @@ public class MemberServiceTest {
         softly.then(selectMemberResponseDto.getName()).isEqualTo("이름");
         softly.then(selectMemberResponseDto.getEmail()).isEqualTo("email@email.com");
         softly.then(selectMemberResponseDto.getPhone()).isEqualTo("010-1111-2222");
-
         softly.assertAll();
     }
 
@@ -125,7 +124,8 @@ public class MemberServiceTest {
     void select_not_exist_id_throws_exception() {
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        thenThrownBy(() -> memberService.selectMember(1L)).isInstanceOf(NoSuchElementException.class)
+        thenThrownBy(() -> memberService.selectMember(1L))
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("찾으려는 회원이 없습니다");
     }
 }

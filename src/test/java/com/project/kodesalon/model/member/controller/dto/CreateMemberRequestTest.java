@@ -32,7 +32,6 @@ class CreateMemberRequestTest {
         softly.then(createMemberRequest.getName()).isEqualTo("이름");
         softly.then(createMemberRequest.getEmail()).isEqualTo("email@email.com");
         softly.then(createMemberRequest.getPhone()).isEqualTo("010-1111-2222");
-
         softly.assertAll();
     }
 

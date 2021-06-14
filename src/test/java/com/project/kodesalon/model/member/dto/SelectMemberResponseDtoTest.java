@@ -16,7 +16,6 @@ public class SelectMemberResponseDtoTest {
         softly.then(selectMemberResponseDto.getName()).isEqualTo("이름");
         softly.then(selectMemberResponseDto.getEmail()).isEqualTo("email@email.com");
         softly.then(selectMemberResponseDto.getPhone()).isEqualTo("010-1111-2222");
-
         softly.assertAll();
     }
 }

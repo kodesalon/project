@@ -13,7 +13,6 @@ public class LoginResponseTest {
 
         softly.then(loginResponse.getMemberId()).isEqualTo(1L);
         softly.then(loginResponse.getAlias()).isEqualTo("alias");
-
         softly.assertAll();
     }
 }
