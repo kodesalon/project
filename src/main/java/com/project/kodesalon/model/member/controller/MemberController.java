@@ -46,7 +46,7 @@ public class MemberController {
     }
 
     @PutMapping("/{memberId}")
-    public ResponseEntity<ChangePasswordResponseDto> changePassword(@PathVariable Long memberId, @RequestBody ChangePasswordRequest changePasswordRequest) {
+    public ResponseEntity<ChangePasswordResponseDto> changePassword(@PathVariable Long memberId, @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
         ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword(memberId, changePasswordRequest.toChangePasswordRequestDto());
         return new ResponseEntity<>(changePasswordResponseDto, HttpStatus.OK);
     }
