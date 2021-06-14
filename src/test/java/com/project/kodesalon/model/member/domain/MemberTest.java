@@ -33,9 +33,9 @@ class MemberTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"Password!!1234,false", "Password!!123,true"})
+    @CsvSource({"Password!!123,true", "Password!!1234,false"})
     @DisplayName("Member의 비밀번호가 일치하면 true, 일치하지 않으면 false를 리턴합니다.")
-    void is_incorrect_password(String password, boolean expected) {
+    void has_same_password(String password, boolean expected) {
         then(member.hasSamePassword(new Password(password))).isEqualTo(expected);
     }
 }

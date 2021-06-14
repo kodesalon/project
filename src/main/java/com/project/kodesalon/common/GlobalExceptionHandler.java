@@ -14,7 +14,6 @@ import java.util.Objects;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(HttpClientErrorException.class)
     protected ResponseEntity<ErrorResponse> handleHttpClientErrorException(HttpClientErrorException e) {
         log.info(e.getMessage());
