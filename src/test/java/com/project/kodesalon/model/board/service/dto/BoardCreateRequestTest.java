@@ -15,6 +15,7 @@ import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 
 class BoardCreateRequestTest {
@@ -37,12 +38,12 @@ class BoardCreateRequestTest {
     @Test
     @DisplayName("작성자를 입력받아, 멤버 객체를 반환한다.")
     public void toBoard() {
-        Board board = boardCreateRequest.toBoard("writer");
+        Board board = boardCreateRequest.toBoard(TEST_MEMBER);
 
         softly.then(board.getTitle()).isEqualTo("게시물 제목");
         softly.then(board.getContent()).isEqualTo("게시물 내용");
         softly.then(board.getCreatedDateTime()).isEqualTo("2021-06-01T23:59:59.999999");
-        softly.then(board.getWriter()).isEqualTo("writer");
+        softly.then(board.getWriter()).isEqualTo("이름");
         softly.assertAll();
     }
 

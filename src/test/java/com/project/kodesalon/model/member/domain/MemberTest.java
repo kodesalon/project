@@ -1,6 +1,9 @@
 package com.project.kodesalon.model.member.domain;
 
 
+import com.project.kodesalon.model.board.domain.Board;
+import com.project.kodesalon.model.board.domain.vo.Content;
+import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,9 +12,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.time.LocalDateTime;
+
 import static org.assertj.core.api.BDDAssertions.then;
 
-class MemberTest {
+public class MemberTest {
+    public static final Member TEST_MEMBER
+            = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
+
     private Member member;
 
     @BeforeEach
@@ -37,5 +45,14 @@ class MemberTest {
     @DisplayName("Member의 비밀번호가 일치하면 true, 일치하지 않으면 false를 리턴합니다.")
     void has_same_password(String password, boolean expected) {
         then(member.hasSamePassword(new Password(password))).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("게시물을 추가한다.")
+    public void addBoard() {
+        Board board = new Board(new Title("게시물 제목"), new Content("게시물 내용"), TEST_MEMBER, LocalDateTime.now());
+        member.addBoard(board);
+
+        then(member.getBoards().size()).isEqualTo(1);
     }
 }
