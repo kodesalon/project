@@ -2,7 +2,7 @@ package com.project.kodesalon.model.board.service;
 
 import com.project.kodesalon.model.board.domain.Board;
 import com.project.kodesalon.model.board.repository.BoardRepository;
-import com.project.kodesalon.model.board.service.dto.BoardCreateRequestDto;
+import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +15,8 @@ public class BoardService {
     }
 
     @Transactional
-    public void save(BoardCreateRequestDto boardCreateRequestDto) {
-        Board createdBoard = boardCreateRequestDto.toBoard("writer");
+    public void save(BoardCreateRequest boardCreateRequest) {
+        Board createdBoard = boardCreateRequest.toBoard("writer");
         boardRepository.save(createdBoard);
     }
 }

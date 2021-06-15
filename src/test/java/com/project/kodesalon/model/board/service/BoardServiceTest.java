@@ -2,7 +2,7 @@ package com.project.kodesalon.model.board.service;
 
 import com.project.kodesalon.model.board.domain.Board;
 import com.project.kodesalon.model.board.repository.BoardRepository;
-import com.project.kodesalon.model.board.service.dto.BoardCreateRequestDto;
+import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,8 +28,8 @@ public class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 게시판 생성 요청 Dto를 전달받아 게시판을 생성한다.")
     public void save() {
-        BoardCreateRequestDto boardCreateRequestDto = new BoardCreateRequestDto(1L, "게시물 제목", "게시물 작성", LocalDateTime.now());
-        boardService.save(boardCreateRequestDto);
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "게시물 작성", LocalDateTime.now());
+        boardService.save(boardCreateRequest);
         verify(boardRepository, times(1)).save(any(Board.class));
     }
 }
