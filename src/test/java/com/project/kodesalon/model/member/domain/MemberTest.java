@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDateTime;
 
+import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 
@@ -74,7 +75,7 @@ public class MemberTest {
         String password = member.getPassword();
         thenIllegalArgumentException()
                 .isThrownBy(() -> member.changePassword(password))
-                .withMessageContaining("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
+                .withMessageContaining(PASSWORD_DUPLICATION);
     }
 
     @Test

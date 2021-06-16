@@ -22,6 +22,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
+import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER;
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -66,7 +70,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.login(loginRequest))
                 .isInstanceOf(HttpClientErrorException.class)
-                .hasMessageContaining("존재하는 아이디를 입력해주세요.");
+                .hasMessageContaining(NOT_EXIST_MEMBER_ALIAS);
     }
 
     @Test
@@ -77,7 +81,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.login(loginRequest))
                 .isInstanceOf(HttpClientErrorException.class)
-                .hasMessageContaining("비밀 번호가 일치하지 않습니다.");
+                .hasMessageContaining(INVALID_MEMBER_PASSWORD);
     }
 
     @Test
@@ -102,7 +106,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.join(createMemberRequest))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("이미 존재하는 아이디입니다");
+                .hasMessageContaining(ALREADY_EXIST_MEMBER_ALIAS);
     }
 
     @Test
@@ -130,7 +134,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.selectMember(1L))
                 .isInstanceOf(NoSuchElementException.class)
-                .hasMessage("찾으려는 회원이 없습니다");
+                .hasMessage(NOT_EXIST_MEMBER);
     }
 
     @Test
@@ -161,6 +165,6 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.deleteMember(member.getId()))
                 .isInstanceOf(NoSuchElementException.class)
-                .hasMessageContaining("찾으려는 회원이 없습니다");
+                .hasMessageContaining(NOT_EXIST_MEMBER);
     }
 }

@@ -13,6 +13,8 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ALIAS;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static org.assertj.core.api.BDDAssertions.then;
 
 class LoginRequestTest {
@@ -40,7 +42,7 @@ class LoginRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다.");
+                .contains(INVALID_MEMBER_ALIAS);
     }
 
     @ParameterizedTest
@@ -65,7 +67,7 @@ class LoginRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.");
+                .contains(INVALID_MEMBER_PASSWORD);
     }
 
     @ParameterizedTest

@@ -17,8 +17,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpClientErrorException.class)
     protected ResponseEntity<ErrorResponse> handleHttpClientErrorException(HttpClientErrorException e) {
-        log.info(e.getMessage());
-        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());
+        log.info(e.getStatusText());
+        return new ResponseEntity<>(new ErrorResponse(e.getStatusText()), e.getStatusCode());
     }
 
     @ExceptionHandler({IllegalArgumentException.class, NoSuchElementException.class, IllegalStateException.class})

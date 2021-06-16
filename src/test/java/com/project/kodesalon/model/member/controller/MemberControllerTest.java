@@ -28,6 +28,12 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.NoSuchElementException;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ALIAS;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_EMAIL;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_NAME;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PHONE;
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
@@ -103,14 +109,14 @@ public class MemberControllerTest {
     @DisplayName("로그인 시 비밀번호 틀렸을 경우, 예외 메세지를 담은 DTO을 Http 400으로 응답합니다.")
     void login_fail_with_invalid_password() throws Exception {
         given(memberService.login(any(LoginRequest.class)))
-                .willThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST, "비밀 번호가 일치하지 않습니다."));
+                .willThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST, INVALID_MEMBER_PASSWORD));
 
         this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value(HttpStatus.BAD_REQUEST.value() + " 비밀 번호가 일치하지 않습니다."))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PASSWORD))
                 .andDo(document("login/fail/mismatch_password",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -119,25 +125,25 @@ public class MemberControllerTest {
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("로그인 할 password")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("비밀번호 불일치 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("비밀번호 불일치 에러 메세지"))));
     }
 
     @Test
     @DisplayName("로그인 시 존재하지 않는 아이디(Alias)일 경우, 예외 메세지를 담은 DTO을 Http 400으로 응답합니다.")
     void login_fail_with_invalid_alias() throws Exception {
         given(memberService.login(any(LoginRequest.class)))
-                .willThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST, "존재하는 아이디를 입력해주세요."));
+                .willThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST, NOT_EXIST_MEMBER_ALIAS));
 
         this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value(HttpStatus.BAD_REQUEST.value() + " 존재하는 아이디를 입력해주세요."))
+                .andExpect(jsonPath("$.code").value(NOT_EXIST_MEMBER_ALIAS))
                 .andDo(document("login/fail/no_alias",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("존재하지 않는 아이디(Alias) 예러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 아이디(Alias) 예러 메세지"))));
     }
 
     @Test
@@ -176,11 +182,11 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("이미 존재하는 아이디입니다"))
+                .andExpect(jsonPath("$.code").value("이미 존재하는 아이디입니다"))
                 .andDo(document("join/fail/existing_alias",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("이미 존재하는 아이디(Alias) 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("이미 존재하는 아이디(Alias) 에러 메세지"))));
     }
 
     @Test
@@ -193,11 +199,11 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidAlias)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다."))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_ALIAS))
                 .andDo(document("join/fail/invalid_alias",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 아이디(Alias) 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 아이디(Alias) 에러 메세지"))));
     }
 
     @Test
@@ -210,11 +216,11 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidPassword)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PASSWORD))
                 .andDo(document("join/fail/invalid_password",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호(Password) 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호(Password) 에러 메세지"))));
     }
 
     @Test
@@ -227,11 +233,11 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidName)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("이름은 2자리 이상 17자리 이하의 한글이어야 합니다."))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_NAME))
                 .andDo(document("join/fail/invalid_name",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 이름(Name) 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 이름(Name) 에러 메세지"))));
     }
 
     @Test
@@ -244,11 +250,11 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidEmail)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("이메일은 id@domain.com과 같은 형식이어야 합니다."))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_EMAIL))
                 .andDo(document("join/fail/invalid_email",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 이메일(Email) 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 이메일(Email) 에러 메세지"))));
     }
 
     @Test
@@ -261,11 +267,11 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidPhone)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("휴대폰 번호는 [3자리 수] - [3 ~ 4자리 수] - [4자리 수]의 형식 이어야 합니다."))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PHONE))
                 .andDo(document("join/fail/invalid_phone",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 phone 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 phone 에러 메세지"))));
     }
 
     @Test
@@ -302,11 +308,11 @@ public class MemberControllerTest {
         this.mockMvc.perform(get("/api/v1/members/{memberId}", "1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("찾으려는 회원이 없습니다"))
+                .andExpect(jsonPath("$.code").value("찾으려는 회원이 없습니다"))
                 .andDo(document("select/fail/no_member",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("존재하는 회원이 없을 때의 예외 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("존재하는 회원이 없을 때의 예외 메세지"))));
     }
 
     @Test
@@ -342,11 +348,11 @@ public class MemberControllerTest {
         this.mockMvc.perform(put(("/api/v1/members/{memberId}"), 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(changePasswordRequestWithInvalidPassword)))
-                .andExpect(jsonPath("$.message").value("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PASSWORD))
                 .andDo(document("changePassword/fail/invalidPassword",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호에 대한 예외 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호에 대한 예외 메세지"))));
     }
 
     @Test
@@ -360,11 +366,11 @@ public class MemberControllerTest {
         this.mockMvc.perform(put("/api/v1/members/{memberId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(changePasswordRequest)))
-                .andExpect(jsonPath("$.message").value("찾으려는 회원이 없습니다"))
+                .andExpect(jsonPath("$.code").value("찾으려는 회원이 없습니다"))
                 .andDo(document("changePassword/fail/noMember",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("존재하지 않는 회원에 대한 예외 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 회원에 대한 예외 메세지"))));
     }
 
     @Test
@@ -389,10 +395,10 @@ public class MemberControllerTest {
         this.mockMvc.perform(delete("/api/v1/members/{memberId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("찾으려는 회원이 없습니다"))
+                .andExpect(jsonPath("$.code").value("찾으려는 회원이 없습니다"))
                 .andDo(document("delete/fail",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("존재하지 않는 사용자에 대한 예외 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 사용자에 대한 예외 메세지"))));
     }
 }

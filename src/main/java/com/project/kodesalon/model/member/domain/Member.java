@@ -23,6 +23,8 @@ import javax.persistence.UniqueConstraint;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
+
 @Entity
 @NoArgsConstructor
 @Table(name = "member", uniqueConstraints = {@UniqueConstraint(columnNames = {"alias"})})
@@ -97,7 +99,7 @@ public class Member {
         final Password newPassword = new Password(password);
 
         if (hasSamePassword(newPassword)) {
-            throw new IllegalArgumentException("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
+            throw new IllegalArgumentException(PASSWORD_DUPLICATION);
         }
 
         this.password = newPassword;

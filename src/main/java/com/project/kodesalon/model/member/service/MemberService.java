@@ -18,6 +18,11 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.NoSuchElementException;
 
+import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER;
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
+
 @Service
 @Slf4j
 public class MemberService {
@@ -33,13 +38,13 @@ public class MemberService {
         Member member = memberRepository.findMemberByAlias(new Alias(alias))
                 .orElseThrow(() -> {
                     log.info("{}인 Alias를 가진 사용자가 존재하지 않음", alias);
-                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "존재하는 아이디를 입력해주세요.");
+                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, NOT_EXIST_MEMBER_ALIAS);
                 });
 
         String password = loginRequest.getPassword();
         if (!member.hasSamePassword(new Password(password))) {
             log.info("{}의 Password가 일치하지 않음", alias);
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "비밀 번호가 일치하지 않습니다.");
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, INVALID_MEMBER_PASSWORD);
         }
 
         log.info("ID : {}, Alias : {} Member 로그인", member.getId(), member.getAlias());
@@ -52,7 +57,7 @@ public class MemberService {
         memberRepository.findMemberByAlias(new Alias(alias))
                 .ifPresent(member -> {
                     log.info("{}는 이미 존재하는 Alias입니다.", alias);
-                    throw new IllegalStateException("이미 존재하는 아이디입니다");
+                    throw new IllegalStateException(ALREADY_EXIST_MEMBER_ALIAS);
                 });
 
         Member saveMember = memberRepository.save(createMemberRequest.toMember());
@@ -77,7 +82,7 @@ public class MemberService {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> {
                     log.info("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
-                    throw new NoSuchElementException("찾으려는 회원이 없습니다");
+                    throw new NoSuchElementException(NOT_EXIST_MEMBER);
                 });
     }
 
