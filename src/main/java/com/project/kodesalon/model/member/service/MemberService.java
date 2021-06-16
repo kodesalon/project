@@ -4,6 +4,8 @@ import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.repository.MemberRepository;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
@@ -21,12 +23,12 @@ import java.util.NoSuchElementException;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(final MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
     @Transactional(readOnly = true)
-    public LoginResponse login(LoginRequest loginRequest) throws HttpClientErrorException {
+    public LoginResponse login(final LoginRequest loginRequest) {
         String alias = loginRequest.getAlias();
         Member member = memberRepository.findMemberByAlias(new Alias(alias))
                 .orElseThrow(() -> {
@@ -45,7 +47,7 @@ public class MemberService {
     }
 
     @Transactional
-    public LoginResponse join(CreateMemberRequest createMemberRequest) {
+    public LoginResponse join(final CreateMemberRequest createMemberRequest) {
         String alias = createMemberRequest.getAlias();
         memberRepository.findMemberByAlias(new Alias(alias))
                 .ifPresent(member -> {
@@ -59,13 +61,29 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public SelectMemberResponse selectMember(Long memberId) {
-        Member selectedMember = memberRepository.findById(memberId)
+    public SelectMemberResponse selectMember(final Long memberId) {
+        Member selectedMember = findById(memberId);
+        return new SelectMemberResponse(selectedMember.getAlias(), selectedMember.getName(), selectedMember.getEmail(), selectedMember.getPhone());
+    }
+
+    @Transactional
+    public ChangePasswordResponse changePassword(final Long memberId, final ChangePasswordRequest changePasswordRequest) {
+        Member member = findById(memberId);
+        member.changePassword(changePasswordRequest.getPassword());
+        return new ChangePasswordResponse("비밀번호 변경 성공하였습니다.");
+    }
+
+    private Member findById(final Long memberId) {
+        return memberRepository.findById(memberId)
                 .orElseThrow(() -> {
                     log.info("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
                     throw new NoSuchElementException("찾으려는 회원이 없습니다");
                 });
+    }
 
-        return new SelectMemberResponse(selectedMember.getAlias(), selectedMember.getName(), selectedMember.getEmail(), selectedMember.getPhone());
+    @Transactional
+    public void deleteMember(Long memberId) {
+        Member member = findById(memberId);
+        member.delete();
     }
 }

@@ -6,12 +6,10 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class LoginResponse {
-    private Long memberId;
-    private String alias;
+public class DeleteMemberResponseDto {
+    private String message;
 
-    public LoginResponse(final Long id, final String alias) {
-        this.memberId = id;
-        this.alias = alias;
+    public DeleteMemberResponseDto(String message) {
+        this.message = message;
     }
 }
