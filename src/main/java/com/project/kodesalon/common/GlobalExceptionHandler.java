@@ -14,27 +14,16 @@ import java.util.Objects;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(HttpClientErrorException.class)
     protected ResponseEntity<ErrorResponse> handleHttpClientErrorException(HttpClientErrorException e) {
         log.info(e.getMessage());
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), e.getStatusCode());
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    protected ResponseEntity<ErrorResponse> handleIllegalStateException(IllegalStateException e) {
+    @ExceptionHandler({IllegalArgumentException.class, NoSuchElementException.class, IllegalStateException.class})
+    protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(RuntimeException e) {
         log.info(e.getMessage());
-        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException e) {
-        log.info(e.getMessage());
-        return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(NoSuchElementException.class)
-    protected ResponseEntity<ErrorResponse> handleNoSuchElementException(NoSuchElementException e) {
-        log.error(e.getMessage());
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
