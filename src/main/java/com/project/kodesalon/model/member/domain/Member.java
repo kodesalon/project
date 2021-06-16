@@ -19,6 +19,7 @@ import javax.persistence.UniqueConstraint;
 @NoArgsConstructor
 @Table(name = "member", uniqueConstraints = {@UniqueConstraint(columnNames = {"alias"})})
 public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -70,15 +71,17 @@ public class Member {
         return phone.value();
     }
 
-    public boolean hasSamePassword(Password password) {
+    public boolean hasSamePassword(final Password password) {
         return this.password.equals(password);
     }
 
-    public void changePassword(String newPassword) {
-        if (hasSamePassword(new Password(newPassword))) {
+    public void changePassword(final String password) {
+        final Password newPassword = new Password(password);
+
+        if (hasSamePassword(newPassword)) {
             throw new IllegalArgumentException("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
         }
 
-        this.password = new Password(newPassword);
+        this.password = newPassword;
     }
 }
