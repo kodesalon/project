@@ -5,8 +5,11 @@ import com.project.kodesalon.model.member.domain.vo.Email;
 import com.project.kodesalon.model.member.domain.vo.Name;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.domain.vo.Phone;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,6 +21,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @NoArgsConstructor
 @Table(name = "member", uniqueConstraints = {@UniqueConstraint(columnNames = {"alias"})})
+@Where(clause = "deleted = 'false'")
 public class Member {
 
     @Id
@@ -38,6 +42,10 @@ public class Member {
 
     @Embedded
     private Name name;
+
+    @Column(name = "deleted")
+    @Getter
+    private boolean deleted;
 
     public Member(final String alias, final String password, final String name, final String email, final String phone) {
         this.alias = new Alias(alias);
@@ -83,5 +91,9 @@ public class Member {
         }
 
         this.password = newPassword;
+    }
+
+    public void delete() {
+        deleted = true;
     }
 }
