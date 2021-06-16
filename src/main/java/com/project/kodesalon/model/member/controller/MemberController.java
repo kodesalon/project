@@ -1,13 +1,13 @@
 package com.project.kodesalon.model.member.controller;
 
-import com.project.kodesalon.model.member.controller.dto.ChangePasswordRequest;
-import com.project.kodesalon.model.member.controller.dto.CreateMemberRequest;
-import com.project.kodesalon.model.member.controller.dto.LoginRequest;
-import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
 import com.project.kodesalon.model.member.service.MemberService;
-import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
+import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.DeleteMemberResponseDto;
-import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.service.dto.LoginRequest;
+import com.project.kodesalon.model.member.service.dto.LoginResponse;
+import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/v1/members")
 public class MemberController {
@@ -29,26 +31,26 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> logIn(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.ok()
-                .body(memberService.login(loginRequest.toLoginRequestDto()));
+    public ResponseEntity<LoginResponse> logIn(@RequestBody @Valid LoginRequest loginRequest) {
+        LoginResponse loginResponse = memberService.login(loginRequest);
+        return ResponseEntity.ok().body(loginResponse);
     }
 
     @PostMapping
-    public ResponseEntity<LoginResponseDto> join(@RequestBody CreateMemberRequest createMemberRequest) {
-        return ResponseEntity.ok()
-                .body(memberService.join(createMemberRequest.toCreateMemberRequestDto()));
+    public ResponseEntity<LoginResponse> join(@RequestBody @Valid CreateMemberRequest createMemberRequest) {
+        LoginResponse loginResponse = memberService.join(createMemberRequest);
+        return ResponseEntity.ok().body(loginResponse);
     }
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<SelectMemberResponseDto> selectMember(@PathVariable Long memberId) {
+    public ResponseEntity<SelectMemberResponse> selectMember(@PathVariable Long memberId) {
         return new ResponseEntity<>(memberService.selectMember(memberId), HttpStatus.OK);
     }
 
-    @PutMapping
-    public ResponseEntity<ChangePasswordResponseDto> changePassword(@RequestBody ChangePasswordRequest changePasswordRequest) {
-        ChangePasswordResponseDto changePasswordResponseDto = memberService.changePassword(changePasswordRequest.toChangePasswordRequestDto());
-        return new ResponseEntity<>(changePasswordResponseDto, HttpStatus.OK);
+    @PutMapping("/{memberId}")
+    public ResponseEntity<ChangePasswordResponse> changePassword(@PathVariable Long memberId, @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
+        ChangePasswordResponse changePasswordResponse = memberService.changePassword(memberId, changePasswordRequest);
+        return new ResponseEntity<>(changePasswordResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/{memberId}")

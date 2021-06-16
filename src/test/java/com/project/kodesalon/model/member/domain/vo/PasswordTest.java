@@ -1,18 +1,19 @@
 package com.project.kodesalon.model.member.domain.vo;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.BDDAssertions.then;
-import static org.assertj.core.api.BDDAssertions.thenThrownBy;
+import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 
 class PasswordTest {
     @ParameterizedTest
     @ValueSource(strings = {"!!Pass12", "!!Password123456"})
-    @DisplayName("유효한 비밀번호는 값을 초기화 합니다.")
-    void valid_password_init_value(String validPassword) {
+    @DisplayName("value 메서드를 호출하면 비밀번호를 리턴합니다.")
+    void value(String validPassword) {
         Password password = new Password(validPassword);
 
         then(password.value()).isEqualTo(validPassword);
@@ -21,19 +22,25 @@ class PasswordTest {
     @ParameterizedTest
     @ValueSource(strings = {"!pass12", "!!Password1234567", "Password12",
             "!!Password", "!!password12", "!!PASSWORD12", "!비밀!pass1234"})
-    @DisplayName("유효하지 않은 비밀번호는 예외를 발생시킵니다.")
-    void invalid_password_throw_exception(String invalidPassword) {
-        thenThrownBy(() -> new Password(invalidPassword)).isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.");
+    @DisplayName("올바르지 않은 양식의 비밀번호일 경우, 예외가 발생합니다.")
+    void password_throw_exception_with_invalid_format(String invalidPassword) {
+        thenIllegalArgumentException().isThrownBy(() -> new Password(invalidPassword))
+                .withMessageContaining("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.");
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"Password123!!,true", "Password1234!!,false"})
-    @DisplayName("동일한 Password 값이면 true를 리턴합니다")
-    void same_alias_value_return_true(String comparedPassword, boolean expect) {
+    @NullSource
+    @DisplayName("null일 경우, 예외가 발생합니다.")
+    void password_throw_exception_with_null(String invalidPassword) {
+        thenIllegalArgumentException().isThrownBy(() -> new Password(invalidPassword))
+                .withMessageContaining("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.");
+    }
+
+    @Test
+    @DisplayName("동일한 비밀번호 값을 가지는 객체를 비교할 경우, true를 리턴합니다")
+    void equals() {
         Password password = new Password("Password123!!");
 
-        then(password.equals(new Password(comparedPassword)))
-                .isEqualTo(expect);
+        then(password).isEqualTo(new Password("Password123!!"));
     }
 }

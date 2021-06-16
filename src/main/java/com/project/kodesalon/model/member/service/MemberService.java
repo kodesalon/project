@@ -1,16 +1,17 @@
 package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
-import com.project.kodesalon.model.member.dto.SelectMemberResponseDto;
+import com.project.kodesalon.model.member.domain.vo.Alias;
+import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.repository.MemberRepository;
-import com.project.kodesalon.model.member.service.dto.ChangePasswordRequestDto;
-import com.project.kodesalon.model.member.service.dto.ChangePasswordResponseDto;
-import com.project.kodesalon.model.member.service.dto.CreateMemberRequestDto;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
+import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.DeleteMemberResponseDto;
-import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
-import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.service.dto.LoginRequest;
+import com.project.kodesalon.model.member.service.dto.LoginResponse;
+import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,57 +29,55 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        Member member = memberRepository.findMemberByAlias(loginRequestDto.getAlias())
+    public LoginResponse login(LoginRequest loginRequest) throws HttpClientErrorException {
+        String alias = loginRequest.getAlias();
+        Member member = memberRepository.findMemberByAlias(new Alias(alias))
                 .orElseThrow(() -> {
-                            log.error("{}인 Alias를 가진 사용자가 존재하지 않음", loginRequestDto.getAlias());
-                            throw HttpClientErrorException.create("존재하는 아이디를 입력해주세요.", HttpStatus.BAD_REQUEST,
-                                    "", HttpHeaders.EMPTY, null, null);
-                        }
-                );
+                    log.info("{}인 Alias를 가진 사용자가 존재하지 않음", alias);
+                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "존재하는 아이디를 입력해주세요.");
+                });
 
-        if (member.isIncorrectPassword(loginRequestDto.getPassword())) {
-            log.error("{}의 Password가 일치하지 않음", loginRequestDto.getAlias());
-            throw HttpClientErrorException.create("비밀 번호가 일치하지 않습니다.", HttpStatus.BAD_REQUEST,
-                    "", HttpHeaders.EMPTY, null, null);
+        String password = loginRequest.getPassword();
+        if (!member.hasSamePassword(new Password(password))) {
+            log.info("{}의 Password가 일치하지 않음", alias);
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "비밀 번호가 일치하지 않습니다.");
         }
 
-        log.info("ID : {} Alias : {} Member 로그안", member.getId(), member.getAlias());
-        return new LoginResponseDto(member.getId(), member.getAlias());
+        log.info("ID : {}, Alias : {} Member 로그인", member.getId(), member.getAlias());
+        return new LoginResponse(member.getId(), member.getAlias());
     }
 
     @Transactional
-    public LoginResponseDto join(CreateMemberRequestDto createMemberRequestDto) {
-        memberRepository.findMemberByAlias(createMemberRequestDto.getAlias())
+    public LoginResponse join(CreateMemberRequest createMemberRequest) {
+        String alias = createMemberRequest.getAlias();
+        memberRepository.findMemberByAlias(new Alias(alias))
                 .ifPresent(member -> {
-                    log.error("회원 가입 단계에서 {}는 이미 존재하는 Alias입니다.", createMemberRequestDto.getAlias());
+                    log.info("{}는 이미 존재하는 Alias입니다.", alias);
                     throw new IllegalStateException("이미 존재하는 아이디입니다");
                 });
 
-        Member saveMember = memberRepository.save(createMemberRequestDto.toMember());
-
+        Member saveMember = memberRepository.save(createMemberRequest.toMember());
         log.info("ID : {}, Alias : {} Member가 회원 가입 성공", saveMember.getId(), saveMember.getAlias());
-        return new LoginResponseDto(saveMember.getId(), saveMember.getAlias());
+        return new LoginResponse(saveMember.getId(), saveMember.getAlias());
     }
 
     @Transactional(readOnly = true)
-    public SelectMemberResponseDto selectMember(Long memberId) {
+    public SelectMemberResponse selectMember(Long memberId) {
         Member selectedMember = findById(memberId);
-        return new SelectMemberResponseDto(selectedMember.getAlias(), selectedMember.getName(), selectedMember.getEmail(), selectedMember.getPhone());
+        return new SelectMemberResponse(selectedMember.getAlias(), selectedMember.getName(), selectedMember.getEmail(), selectedMember.getPhone());
     }
 
     @Transactional
-    public ChangePasswordResponseDto changePassword(ChangePasswordRequestDto changePasswordRequestDto) {
-        Long memberId = changePasswordRequestDto.getMemberId();
+    public ChangePasswordResponse changePassword(Long memberId, ChangePasswordRequest changePasswordRequest) {
         Member member = findById(memberId);
-        member.changePassword(changePasswordRequestDto.getPassword());
-        return new ChangePasswordResponseDto("비밀번호 변경 성공하였습니다.");
+        member.changePassword(changePasswordRequest.getPassword());
+        return new ChangePasswordResponse("비밀번호 변경 성공하였습니다.");
     }
 
     private Member findById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> {
-                    log.error("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
+                    log.info("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
                     throw new NoSuchElementException("찾으려는 회원이 없습니다");
                 });
     }

@@ -30,28 +30,24 @@ class MemberTest {
         softly.then(member.getName()).isEqualTo("이름");
         softly.then(member.getEmail()).isEqualTo("email@email.com");
         softly.then(member.getPhone()).isEqualTo("010-1234-4444");
-
         softly.assertAll();
     }
 
     @ParameterizedTest
-    @CsvSource({"Password!!1234,true", "Password!!123,false"})
-    @DisplayName("Member의 비밀번호가 일치하지 않으면 true, 일치하면 false를 리턴합니다.")
-    void is_incorrect_password(String password, boolean expected) {
-        then(member.isIncorrectPassword(new Password(password))).isEqualTo(expected);
+    @CsvSource({"Password!!123,true", "Password!!1234,false"})
+    @DisplayName("Member의 비밀번호가 일치하면 true, 일치하지 않으면 false를 리턴합니다.")
+    void has_same_password(String password, boolean expected) {
+        then(member.hasSamePassword(new Password(password))).isEqualTo(expected);
     }
 
     @Test
     @DisplayName("비밀번호를 변경한다.")
     public void changePassword() {
-        //given
         String newPassword = "ChangePassword1!";
 
-        //when
         member.changePassword(newPassword);
-        String changedPassword = member.getPassword();
 
-        then(changedPassword).isEqualTo(newPassword);
+        then(member.getPassword()).isEqualTo(newPassword);
     }
 
     @Test
