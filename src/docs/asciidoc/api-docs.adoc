@@ -90,3 +90,30 @@ include::{snippets}/select/success/http-response.adoc[]
 
 - 회원 정보 조회 실패 example
 include::{snippets}/select/fail/no_member/http-response.adoc[]
+
+=== Update Password
+
+==== Request
+
+- 회원 비밀번호 변경 path variable
+
+include::{snippets}/changePassword/success/path-parameters.adoc[]
+
+- 회원 비밀번호 변경 Request Body
+include::{snippets}/changePassword/success/response-fields.adoc[]
+
+- 회원 비밀번호 변경 Example include::{snippets}/changePassword/success/http-request.adoc[]
+
+==== Response
+
+- 회원 비밀번호 변경 Response
+include::{snippets}/changePassword/success/response-fields.adoc[]
+
+- 회원 비밀번호 변경 성공 response example
+include::{snippets}/changePassword/success/http-response.adoc[]
+
+- 회원 비밀번호 변경 실패 example(유효하지 않은 비밀번호)
+include::{snippets}/changePassword/fail/invalidPassword/http-response.adoc[]
+
+
+- 회원 비밀번호 변경 실패 example(존재하지 않는 회원 식별자) include::{snippets}/changePassword/fail/noMember/http-response.adoc[]
