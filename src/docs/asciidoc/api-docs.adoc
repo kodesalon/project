@@ -115,4 +115,6 @@ include::{snippets}/changePassword/success/http-response.adoc[]
 - 회원 비밀번호 변경 실패 example(유효하지 않은 비밀번호)
 include::{snippets}/changePassword/fail/invalidPassword/http-response.adoc[]
 
-- 회원 비밀번호 변경 실패 example(존재하지 않는 회원 식별자) include::{snippets}/changePassword/fail/noMember/http-response.adoc[]
+- 회원 비밀번호 변경 실패 example(존재하지 않는 회원 식별자)
+include::{snippets}/changePassword/fail/noMember/http-response.adoc[]
+
