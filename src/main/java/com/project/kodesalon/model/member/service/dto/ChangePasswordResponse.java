@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class ChangePasswordResponse {
     private String message;
 
-    public ChangePasswordResponse(String message) {
+    public ChangePasswordResponse(final String message) {
         this.message = message;
     }
 }

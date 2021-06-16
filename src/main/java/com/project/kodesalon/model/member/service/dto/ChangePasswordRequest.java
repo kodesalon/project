@@ -18,7 +18,7 @@ public class ChangePasswordRequest {
     @Pattern(regexp = PASSWORD_REGEX, message = PASSWORD_EXCEPTION_MESSAGE)
     private String password;
 
-    public ChangePasswordRequest(String password) {
+    public ChangePasswordRequest(final String password) {
         this.password = password;
     }
 }
