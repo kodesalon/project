@@ -4,7 +4,6 @@ import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
-import com.project.kodesalon.model.member.service.dto.DeleteMemberResponseDto;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
@@ -54,8 +53,8 @@ public class MemberController {
     }
 
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<DeleteMemberResponseDto> deleteMember(@PathVariable Long memberId) {
-        return ResponseEntity.ok()
-                .body(memberService.deleteMember(memberId));
+    public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
+        memberService.deleteMember(memberId);
+        return ResponseEntity.ok().build();
     }
 }

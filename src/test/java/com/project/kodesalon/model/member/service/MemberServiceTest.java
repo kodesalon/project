@@ -7,7 +7,6 @@ import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
-import com.project.kodesalon.model.member.service.dto.DeleteMemberResponseDto;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
@@ -23,7 +22,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -147,23 +145,22 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원을 탈퇴하고 성공 메세지를 담은 DTO를 반환합니다")
+    @DisplayName("회원 탈퇴에 성공한다.")
     void deleteMember() {
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
-        DeleteMemberResponseDto deleteMemberResponseDto = memberService.deleteMember(1L);
+        memberService.deleteMember(member.getId());
 
-        then(deleteMemberResponseDto.getMessage()).isEqualTo("회원이 성공적으로 삭제되었습니다");
-        verify(memberRepository, times(1)).delete(any(Member.class));
+        verify(member, times(1)).delete();
     }
 
-
     @Test
-    @DisplayName("회원을 탈퇴하고 성공 메세지를 담은 DTO를 반환합니다")
-    void deleteMember2() {
-        DeleteMemberResponseDto deleteMemberResponseDto = memberService.deleteMember2(anyLong());
+    @DisplayName("회원 탈퇴시, 존재하지 않는 회원 식별자면 예외를 발생시킨다.")
+    void deleteMember_throws_exception() {
+        given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        then(deleteMemberResponseDto.getMessage()).isEqualTo("회원이 성공적으로 삭제되었습니다");
-        verify(memberRepository, times(1)).deleteById(anyLong());
+        thenThrownBy(() -> memberService.deleteMember(member.getId()))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessageContaining("찾으려는 회원이 없습니다");
     }
 }

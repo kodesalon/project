@@ -7,7 +7,6 @@ import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
-import com.project.kodesalon.model.member.service.dto.DeleteMemberResponseDto;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
@@ -82,14 +81,9 @@ public class MemberService {
                 });
     }
 
-    public DeleteMemberResponseDto deleteMember(Long memberId) {
+    @Transactional
+    public void deleteMember(Long memberId) {
         Member member = findById(memberId);
-        memberRepository.delete(member);
-        return new DeleteMemberResponseDto("회원이 성공적으로 삭제되었습니다");
-    }
-
-    public DeleteMemberResponseDto deleteMember2(long memberId) {
-        memberRepository.deleteById(memberId);
-        return new DeleteMemberResponseDto("회원이 성공적으로 삭제되었습니다");
+        member.delete();
     }
 }

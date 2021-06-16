@@ -6,7 +6,6 @@ import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
-import com.project.kodesalon.model.member.service.dto.DeleteMemberResponseDto;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
@@ -34,6 +33,7 @@ import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
@@ -370,19 +370,29 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원의 식별자를 전달받아 회원을 탈퇴하고 200 상태 + 성공 메세지를 반환합니다.")
     void deleteMember() throws Exception {
-        given(memberService.deleteMember(anyLong())).willReturn(new DeleteMemberResponseDto("회원이 성공적으로 삭제되었습니다"));
-
         this.mockMvc.perform(delete("/api/v1/members/{memberId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("회원이 성공적으로 삭제되었습니다"))
                 .andDo(document("delete/success",
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("memberId").description("삭제하려는 회원의 식별자")
-                        ),
+                                parameterWithName("memberId").description("삭제하려는 회원의 식별자"))));
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴시, 존재하지 않는 회원 식별자는 400 상태 + 예외 메세지를 반환합니다.")
+    void deleteMember_throw_exception() throws Exception {
+        willThrow(new NoSuchElementException("찾으려는 회원이 없습니다"))
+                .given(memberService)
+                .deleteMember(anyLong());
+
+        this.mockMvc.perform(delete("/api/v1/members/{memberId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("찾으려는 회원이 없습니다"))
+                .andDo(document("delete/fail",
+                        getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("회원 탈퇴 성공 메세지")
-                        )));
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("존재하지 않는 사용자에 대한 예외 메세지"))));
     }
 }
