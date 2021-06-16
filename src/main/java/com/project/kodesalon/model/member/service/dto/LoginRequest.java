@@ -24,7 +24,7 @@ public class LoginRequest {
     @Pattern(regexp = PASSWORD_REGEX, message = PASSWORD_EXCEPTION_MESSAGE)
     private String password;
 
-    public LoginRequest(String alias, String password) {
+    public LoginRequest(final String alias, final String password) {
         this.alias = alias;
         this.password = password;
     }

@@ -39,7 +39,7 @@ public class Member {
     @Embedded
     private Name name;
 
-    public Member(String alias, String password, String name, String email, String phone) {
+    public Member(final String alias, final String password, final String name, final String email, final String phone) {
         this.alias = new Alias(alias);
         this.password = new Password(password);
         this.email = new Email(email);

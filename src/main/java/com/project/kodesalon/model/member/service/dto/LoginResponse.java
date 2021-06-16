@@ -10,7 +10,7 @@ public class LoginResponse {
     private Long memberId;
     private String alias;
 
-    public LoginResponse(Long id, String alias) {
+    public LoginResponse(final Long id, final String alias) {
         this.memberId = id;
         this.alias = alias;
     }

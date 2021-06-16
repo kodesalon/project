@@ -24,29 +24,29 @@ import javax.validation.Valid;
 public class MemberController {
     private final MemberService memberService;
 
-    public MemberController(MemberService memberService) {
+    public MemberController(final MemberService memberService) {
         this.memberService = memberService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> logIn(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> logIn(@RequestBody @Valid final LoginRequest loginRequest) {
         LoginResponse loginResponse = memberService.login(loginRequest);
         return ResponseEntity.ok().body(loginResponse);
     }
 
     @PostMapping
-    public ResponseEntity<LoginResponse> join(@RequestBody @Valid CreateMemberRequest createMemberRequest) {
+    public ResponseEntity<LoginResponse> join(@RequestBody @Valid final CreateMemberRequest createMemberRequest) {
         LoginResponse loginResponse = memberService.join(createMemberRequest);
         return ResponseEntity.ok().body(loginResponse);
     }
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<SelectMemberResponse> selectMember(@PathVariable Long memberId) {
+    public ResponseEntity<SelectMemberResponse> selectMember(@PathVariable final Long memberId) {
         return new ResponseEntity<>(memberService.selectMember(memberId), HttpStatus.OK);
     }
 
     @PutMapping("/{memberId}")
-    public ResponseEntity<ChangePasswordResponse> changePassword(@PathVariable Long memberId, @RequestBody @Valid ChangePasswordRequest changePasswordRequest) {
+    public ResponseEntity<ChangePasswordResponse> changePassword(@PathVariable final Long memberId, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
         ChangePasswordResponse changePasswordResponse = memberService.changePassword(memberId, changePasswordRequest);
         return new ResponseEntity<>(changePasswordResponse, HttpStatus.OK);
     }
