@@ -15,6 +15,8 @@ import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
+import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
 import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 
@@ -69,7 +71,7 @@ class BoardCreateRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("제목 글자 수가 30자를 초과하였는지 확인해주세요.");
+                .contains(INVALID_BOARD_TITLE);
     }
 
     @ParameterizedTest
@@ -82,7 +84,7 @@ class BoardCreateRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("제목에 공백 아닌 1자 이상의 문자를 입력하였는지 확인해주세요.");
+                .contains(INVALID_BOARD_TITLE);
     }
 
     @Test
@@ -94,7 +96,7 @@ class BoardCreateRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("내용이 500자를 초과하는지 확인해주세요.");
+                .contains(INVALID_BOARD_CONTENT);
     }
 
     @ParameterizedTest
@@ -107,6 +109,6 @@ class BoardCreateRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("내용에 공백 아닌 1자 이상의 문자를 입력하였는지 확인해주세요.");
+                .contains(INVALID_BOARD_CONTENT);
     }
 }

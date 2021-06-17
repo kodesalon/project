@@ -14,11 +14,9 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-import static com.project.kodesalon.model.board.domain.vo.Content.CHECK_CONTENT_IS_BLANK;
-import static com.project.kodesalon.model.board.domain.vo.Content.CHECK_CONTENT_LENGTH;
+import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
+import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
 import static com.project.kodesalon.model.board.domain.vo.Content.CONTENT_LENGTH_BOUND_MAX;
-import static com.project.kodesalon.model.board.domain.vo.Title.CHECK_TITLE_IS_BLANK;
-import static com.project.kodesalon.model.board.domain.vo.Title.CHECK_TITLE_LENGTH;
 import static com.project.kodesalon.model.board.domain.vo.Title.TITLE_LENGTH_MAX_BOUND;
 
 @Getter
@@ -28,12 +26,12 @@ public class BoardCreateRequest {
     @NotNull(message = "null이 아닌 회원 식별 번호를 입력해주세요.")
     private Long memberId;
 
-    @NotEmpty(message = CHECK_TITLE_IS_BLANK)
-    @Length(max = TITLE_LENGTH_MAX_BOUND, message = CHECK_TITLE_LENGTH)
+    @NotEmpty(message = INVALID_BOARD_TITLE)
+    @Length(max = TITLE_LENGTH_MAX_BOUND, message = INVALID_BOARD_TITLE)
     private String title;
 
-    @NotEmpty(message = CHECK_CONTENT_IS_BLANK)
-    @Length(max = CONTENT_LENGTH_BOUND_MAX, message = CHECK_CONTENT_LENGTH)
+    @NotEmpty(message = INVALID_BOARD_CONTENT)
+    @Length(max = CONTENT_LENGTH_BOUND_MAX, message = INVALID_BOARD_CONTENT)
     private String content;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")

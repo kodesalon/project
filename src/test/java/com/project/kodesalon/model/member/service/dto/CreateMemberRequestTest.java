@@ -76,7 +76,7 @@ class CreateMemberRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("null이 아닌 4자리 이상의 아이디를 입력해주세요.");
+                .contains(INVALID_MEMBER_ALIAS);
     }
 
     @ParameterizedTest
@@ -103,7 +103,7 @@ class CreateMemberRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("null이 아닌 8자리 이상의 비밀번호를 입력해주세요.");
+                .contains(INVALID_MEMBER_PASSWORD);
     }
 
     @ParameterizedTest
@@ -129,7 +129,7 @@ class CreateMemberRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("null이 아닌 2자리 이상의 이름을 입력해주세요.");
+                .contains(INVALID_MEMBER_NAME);
     }
 
     @ParameterizedTest
@@ -155,7 +155,7 @@ class CreateMemberRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("null 또는 빈 공백이 아닌 이메일 주소를 입력해주세요.");
+                .contains(INVALID_MEMBER_EMAIL);
     }
 
     @ParameterizedTest
@@ -182,7 +182,7 @@ class CreateMemberRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("null이 아닌 휴대폰 번호를 입력해주세요.");
+                .contains(INVALID_MEMBER_PHONE);
     }
 
     static class ChangePasswordRequestTest {
@@ -218,7 +218,7 @@ class CreateMemberRequestTest {
 
             then(constraintViolations)
                     .extracting(ConstraintViolation::getMessage)
-                    .contains("null이 아닌 8자리 이상의 비밀번호를 입력해주세요.");
+                    .contains(INVALID_MEMBER_PASSWORD);
         }
     }
 }

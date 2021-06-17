@@ -54,7 +54,7 @@ class LoginRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("null이 아닌 4자리 이상의 아이디를 입력해주세요.");
+                .contains(INVALID_MEMBER_ALIAS);
     }
 
     @ParameterizedTest
@@ -79,6 +79,6 @@ class LoginRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("null이 아닌 8자리 이상의 비밀번호를 입력해주세요.");
+                .contains(INVALID_MEMBER_PASSWORD);
     }
 }

@@ -24,23 +24,23 @@ import static com.project.kodesalon.model.member.domain.vo.Phone.PHONE_REGEX;
 @Getter
 public class CreateMemberRequest {
 
-    @NotNull(message = "null이 아닌 4자리 이상의 아이디를 입력해주세요.")
+    @NotNull(message = INVALID_MEMBER_ALIAS)
     @Pattern(regexp = ALIAS_REGEX, message = INVALID_MEMBER_ALIAS)
     private String alias;
 
-    @NotNull(message = "null이 아닌 8자리 이상의 비밀번호를 입력해주세요.")
+    @NotNull(message = INVALID_MEMBER_PASSWORD)
     @Pattern(regexp = PASSWORD_REGEX, message = INVALID_MEMBER_PASSWORD)
     private String password;
 
-    @NotNull(message = "null이 아닌 2자리 이상의 이름을 입력해주세요.")
+    @NotNull(message = INVALID_MEMBER_NAME)
     @Pattern(regexp = NAME_REGEX, message = INVALID_MEMBER_NAME)
     private String name;
 
-    @NotEmpty(message = "null 또는 빈 공백이 아닌 이메일 주소를 입력해주세요.")
+    @NotEmpty(message = INVALID_MEMBER_EMAIL)
     @Email(message = INVALID_MEMBER_EMAIL)
     private String email;
 
-    @NotNull(message = "null이 아닌 휴대폰 번호를 입력해주세요.")
+    @NotNull(message = INVALID_MEMBER_PHONE)
     @Pattern(regexp = PHONE_REGEX, message = INVALID_MEMBER_PHONE)
     private String phone;
 

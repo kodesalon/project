@@ -14,7 +14,7 @@ import static com.project.kodesalon.model.member.domain.vo.Password.PASSWORD_REG
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ChangePasswordRequest {
 
-    @NotNull(message = "null이 아닌 8자리 이상의 비밀번호를 입력해주세요.")
+    @NotNull(message = INVALID_MEMBER_PASSWORD)
     @Pattern(regexp = PASSWORD_REGEX, message = INVALID_MEMBER_PASSWORD)
     private String password;
 
