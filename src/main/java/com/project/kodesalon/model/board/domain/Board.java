@@ -27,11 +27,9 @@ public class Board {
     private Long id;
 
     @Embedded
-    @Column(nullable = false)
     private Title title;
 
     @Embedded
-    @Column(nullable = false)
     private Content content;
 
     @ManyToOne(fetch = FetchType.LAZY)
