@@ -8,20 +8,20 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({IllegalArgumentException.class, NoSuchElementException.class, IllegalStateException.class, DataIntegrityViolationException.class})
-    protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(RuntimeException e) {
+    @ExceptionHandler({IllegalArgumentException.class, EntityNotFoundException.class, IllegalStateException.class, DataIntegrityViolationException.class})
+    protected ResponseEntity<ErrorResponse> handleBusinessException(RuntimeException e) {
         log.info(e.getMessage());
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-     protected ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
+    protected ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
         log.info(e.getMessage());
         String errorMessage = e.getFieldError().getDefaultMessage();
         return new ResponseEntity<>(new ErrorResponse(errorMessage), HttpStatus.BAD_REQUEST);

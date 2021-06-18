@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
@@ -125,7 +125,7 @@ public class MemberControllerTest {
     @DisplayName("로그인 시 존재하지 않는 아이디(Alias)일 경우, 예외 메세지를 담은 DTO을 Http 400으로 응답합니다.")
     void login_fail_with_invalid_alias() throws Exception {
         given(memberService.login(any(LoginRequest.class)))
-                .willThrow(new NoSuchElementException("존재하는 아이디를 입력해주세요."));
+                .willThrow(new EntityNotFoundException("존재하는 아이디를 입력해주세요."));
 
         this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -312,7 +312,7 @@ public class MemberControllerTest {
     @DisplayName("존재하지 않는 회원을 조회하면 400 상태를 responses 합니다")
     void select_no_exist_member_response_fail() throws Exception {
         given(memberService.selectMember(anyLong()))
-                .willThrow(new NoSuchElementException("찾으려는 회원이 없습니다"));
+                .willThrow(new EntityNotFoundException("찾으려는 회원이 없습니다"));
 
         this.mockMvc.perform(get("/api/v1/members/{memberId}", "1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -370,7 +370,7 @@ public class MemberControllerTest {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!");
 
         given(memberService.changePassword(anyLong(), any(ChangePasswordRequest.class)))
-                .willThrow(new NoSuchElementException("찾으려는 회원이 없습니다"));
+                .willThrow(new EntityNotFoundException("찾으려는 회원이 없습니다"));
 
         this.mockMvc.perform(put("/api/v1/members/{memberId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -397,7 +397,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원 탈퇴시, 존재하지 않는 회원 식별자는 400 상태 + 예외 메세지를 반환합니다.")
     void deleteMember_throw_exception() throws Exception {
-        willThrow(new NoSuchElementException("찾으려는 회원이 없습니다"))
+        willThrow(new EntityNotFoundException("찾으려는 회원이 없습니다"))
                 .given(memberService)
                 .deleteMember(anyLong());
 

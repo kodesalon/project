@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
@@ -65,7 +65,7 @@ public class MemberServiceTest {
         given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.empty());
 
         thenThrownBy(() -> memberService.login(loginRequest))
-                .isInstanceOf(NoSuchElementException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("존재하는 아이디를 입력해주세요.");
     }
 
@@ -139,7 +139,7 @@ public class MemberServiceTest {
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
         thenThrownBy(() -> memberService.selectMember(1L))
-                .isInstanceOf(NoSuchElementException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("찾으려는 회원이 없습니다");
     }
 
@@ -170,7 +170,7 @@ public class MemberServiceTest {
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
         thenThrownBy(() -> memberService.deleteMember(member.getId()))
-                .isInstanceOf(NoSuchElementException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("찾으려는 회원이 없습니다");
     }
 }
