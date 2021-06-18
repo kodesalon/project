@@ -1,4 +1,4 @@
-package com.project.kodesalon.model.member.controller.dto;
+package com.project.kodesalon.model.member.service.dto;
 
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
