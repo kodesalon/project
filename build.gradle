@@ -24,8 +24,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.11'
-    implementation group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.1.5.Final'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -65,7 +65,7 @@ build {
 
 bootJar {
     dependsOn asciidoctor
-    from ("${asciidoctor.outputDir}") {
+    from("${asciidoctor.outputDir}") {
         into 'static/docs'
     }
 }

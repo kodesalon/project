@@ -2,7 +2,6 @@ package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
-import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
@@ -17,9 +16,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
@@ -29,7 +28,9 @@ import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -53,7 +54,6 @@ public class MemberServiceTest {
     void login() {
         given(member.getId()).willReturn(1L);
         given(member.getAlias()).willReturn("alias");
-        given(member.hasSamePassword(new Password(loginRequest.getPassword()))).willReturn(true);
         given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.of(member));
 
         LoginResponse loginResponse = memberService.login(loginRequest);
@@ -69,19 +69,19 @@ public class MemberServiceTest {
         given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.empty());
 
         thenThrownBy(() -> memberService.login(loginRequest))
-                .isInstanceOf(HttpClientErrorException.class)
-                .hasMessageContaining(NOT_EXIST_MEMBER_ALIAS);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage(NOT_EXIST_MEMBER_ALIAS);
     }
 
     @Test
     @DisplayName("로그인 시 비밀번호 틀렸을 경우, 예외 메세지를 반환합니다.")
     void login_throw_exception_with_invalid_password() {
-        given(member.hasSamePassword(new Password(loginRequest.getPassword()))).willReturn(false);
+        willThrow(new IllegalArgumentException(INVALID_MEMBER_PASSWORD)).given(member).login(anyString());
         given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.of(member));
 
         thenThrownBy(() -> memberService.login(loginRequest))
-                .isInstanceOf(HttpClientErrorException.class)
-                .hasMessageContaining(INVALID_MEMBER_PASSWORD);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(INVALID_MEMBER_PASSWORD);
     }
 
     @Test
@@ -106,7 +106,17 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.join(createMemberRequest))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining(ALREADY_EXIST_MEMBER_ALIAS);
+                .hasMessage(ALREADY_EXIST_MEMBER_ALIAS);
+    }
+
+    @Test
+    @DisplayName("회원 가입시 삭제한 회원이 다시 가입했을 경우에는 예외를 발생시킵니다")
+    void join_throw_exception_with_left_alias_after_delete() {
+        given(memberRepository.save(any(Member.class))).willThrow(new DataIntegrityViolationException("이미 삭제된 회원에 대한 Alias"));
+
+        thenThrownBy(() -> memberService.join(createMemberRequest))
+                .isInstanceOf(DataIntegrityViolationException.class)
+                .hasMessage("이미 삭제된 회원에 대한 Alias");
     }
 
     @Test
@@ -133,7 +143,7 @@ public class MemberServiceTest {
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
         thenThrownBy(() -> memberService.selectMember(1L))
-                .isInstanceOf(NoSuchElementException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(NOT_EXIST_MEMBER);
     }
 
@@ -164,7 +174,7 @@ public class MemberServiceTest {
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
         thenThrownBy(() -> memberService.deleteMember(member.getId()))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessageContaining(NOT_EXIST_MEMBER);
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage(NOT_EXIST_MEMBER);
     }
 }

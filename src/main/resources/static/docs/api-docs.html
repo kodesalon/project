@@ -936,6 +936,24 @@ Content-Length: 21
 {
   "code" : "M007"
 }</pre>
+    </div>
+  </div>
+  <div class="ulist">
+    <ul>
+      <li>
+        <p>회원가입 실패 Exaple (탈퇴한 회원의 Alias로 회원 가입)</p>
+      </li>
+    </ul>
+  </div>
+  <div class="listingblock">
+    <div class="content">
+<pre>HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+Content-Length: 52
+
+{
+  "message" : "이미 삭제된 회원의 alias"
+}</pre>
 </div>
 </div>
 </div>

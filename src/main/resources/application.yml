@@ -19,6 +19,8 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+    hikari:
+      auto-commit: false
   jpa:
     show-sql: true
     database-platform: H2

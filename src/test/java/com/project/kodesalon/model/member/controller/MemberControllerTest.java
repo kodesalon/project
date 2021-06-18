@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.http.HttpStatus;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -23,10 +23,9 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ALIAS;
@@ -111,7 +110,7 @@ public class MemberControllerTest {
     @DisplayName("로그인 시 비밀번호 틀렸을 경우, 예외 코드를 담은 DTO을 Http 400으로 응답합니다.")
     void login_fail_with_invalid_password() throws Exception {
         given(memberService.login(any(LoginRequest.class)))
-                .willThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST, INVALID_MEMBER_PASSWORD));
+                .willThrow(new IllegalArgumentException(INVALID_MEMBER_PASSWORD));
 
         this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -134,7 +133,7 @@ public class MemberControllerTest {
     @DisplayName("로그인 시 존재하지 않는 아이디(Alias)일 경우, 예외 코드를 담은 DTO을 Http 400으로 응답합니다.")
     void login_fail_with_invalid_alias() throws Exception {
         given(memberService.login(any(LoginRequest.class)))
-                .willThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST, NOT_EXIST_MEMBER_ALIAS));
+                .willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS));
 
         this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -277,6 +276,22 @@ public class MemberControllerTest {
     }
 
     @Test
+    @DisplayName("회원 가입시 삭제된 회원일 경우 400 상태와 예외 메세지를 반환합니다")
+    void join_fail_with_deleted_member_alias() throws Exception {
+        given(memberService.join(any(CreateMemberRequest.class))).willThrow(new DataIntegrityViolationException("이미 삭제된 회원의 alias"));
+
+        this.mockMvc.perform(post("/api/v1/members")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createMemberRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("이미 삭제된 회원의 alias"))
+                .andDo(document("join/fail/deleted_alias",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("이미 삭제된 회원의 alias에 대한 회원 가입 예외 메세지"))));
+    }
+
+    @Test
     @DisplayName("존재하는 회원을 조회하면 200 상태를 response 합니다.")
     void select_exist_member_response_success() throws Exception {
         given(memberService.selectMember(anyLong()))
@@ -305,7 +320,7 @@ public class MemberControllerTest {
     @DisplayName("존재하지 않는 회원을 조회하면 400 상태를 responses 합니다")
     void select_no_exist_member_response_fail() throws Exception {
         given(memberService.selectMember(anyLong()))
-                .willThrow(new NoSuchElementException(NOT_EXIST_MEMBER));
+                .willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER));
 
         this.mockMvc.perform(get("/api/v1/members/{memberId}", "1")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -363,7 +378,7 @@ public class MemberControllerTest {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!");
 
         given(memberService.changePassword(anyLong(), any(ChangePasswordRequest.class)))
-                .willThrow(new NoSuchElementException(NOT_EXIST_MEMBER));
+                .willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER));
 
         this.mockMvc.perform(put("/api/v1/members/{memberId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -390,7 +405,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원 탈퇴시, 존재하지 않는 회원 식별자는 400 상태 + 예외 코드를 반환합니다.")
     void deleteMember_throw_exception() throws Exception {
-        willThrow(new NoSuchElementException(NOT_EXIST_MEMBER))
+        willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER))
                 .given(memberService)
                 .deleteMember(anyLong());
 

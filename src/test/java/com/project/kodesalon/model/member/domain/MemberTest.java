@@ -4,7 +4,11 @@ package com.project.kodesalon.model.member.domain;
 import com.project.kodesalon.model.board.domain.Board;
 import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
+import com.project.kodesalon.model.member.domain.vo.Alias;
+import com.project.kodesalon.model.member.domain.vo.Email;
+import com.project.kodesalon.model.member.domain.vo.Name;
 import com.project.kodesalon.model.member.domain.vo.Password;
+import com.project.kodesalon.model.member.domain.vo.Phone;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,9 +18,11 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDateTime;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
+import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 public class MemberTest {
     public static final Member TEST_MEMBER
@@ -26,7 +32,7 @@ public class MemberTest {
 
     @BeforeEach
     void setup() {
-        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
+        member = new Member(new Alias("alias"), new Password("Password!!123"), new Name("이름"), new Email("email@email.com"), new Phone("010-1234-4444"));
     }
 
     @Test
@@ -60,6 +66,14 @@ public class MemberTest {
     }
 
     @Test
+    @DisplayName("로그인 시, 비밀번호가 다른 경우 로그인에 실패하면 예외를 발생시킵니다")
+    void login_throw_exception_with_different_password() {
+        thenThrownBy(() -> member.login("Password123!!!"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(INVALID_MEMBER_PASSWORD);
+    }
+
+    @Test
     @DisplayName("비밀번호를 변경한다.")
     public void changePassword() {
         String newPassword = "ChangePassword1!";
@@ -75,7 +89,7 @@ public class MemberTest {
         String password = member.getPassword();
         thenIllegalArgumentException()
                 .isThrownBy(() -> member.changePassword(password))
-                .withMessageContaining(PASSWORD_DUPLICATION);
+                .withMessage(PASSWORD_DUPLICATION);
     }
 
     @Test

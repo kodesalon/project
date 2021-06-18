@@ -71,6 +71,9 @@ include::{snippets}/join/fail/invalid_email/http-response.adoc[]
 - 회원가입 실패 Example (Phone이 핸드폰 형식이 아닌 경우)
 include::{snippets}/join/fail/invalid_phone/http-response.adoc[]
 
+- 회원가입 실패 Exaple (탈퇴한 회원의 Alias로 회원 가입)
+include::{snippets}/join/fail/deleted_alias/http-response.adoc[]
+
 === Select
 ==== Request
 - 회원 정보 조회
