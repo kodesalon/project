@@ -7,9 +7,10 @@ import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+
+import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -33,7 +34,7 @@ public class MemberService {
         return memberRepository.findMemberByAlias(new Alias(alias))
                 .orElseThrow(() -> {
                     log.info("{}인 Alias를 가진 사용자가 존재하지 않음", alias);
-                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "존재하는 아이디를 입력해주세요.");
+                    throw new NoSuchElementException("존재하는 아이디를 입력해주세요.");
                 });
     }
 
