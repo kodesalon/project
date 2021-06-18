@@ -8,6 +8,7 @@ import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
@@ -20,6 +21,7 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
+    @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest loginRequest) {
         String alias = loginRequest.getAlias();
         Member member = findMemberByAlias(alias);
@@ -37,6 +39,7 @@ public class MemberService {
                 });
     }
 
+    @Transactional
     public LoginResponse join(CreateMemberRequest createMemberRequest) {
         String alias = createMemberRequest.getAlias();
         validateDuplicationOf(alias);
