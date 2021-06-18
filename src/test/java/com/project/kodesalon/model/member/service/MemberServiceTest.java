@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -65,7 +66,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.login(loginRequest))
                 .isInstanceOf(NoSuchElementException.class)
-                .hasMessageContaining("존재하는 아이디를 입력해주세요.");
+                .hasMessage("존재하는 아이디를 입력해주세요.");
     }
 
     @Test
@@ -76,7 +77,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.login(loginRequest))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("비밀 번호가 일치하지 않습니다.");
+                .hasMessage("비밀 번호가 일치하지 않습니다.");
     }
 
     @Test
@@ -101,7 +102,17 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.join(createMemberRequest))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("이미 존재하는 아이디입니다");
+                .hasMessage("이미 존재하는 아이디입니다");
+    }
+
+    @Test
+    @DisplayName("회원 가입시 삭제한 회원이 다시 가입했을 경우에는 예외를 발생시킵니다")
+    void join_throw_exception_with_left_alias_after_delete() {
+        given(memberRepository.save(any(Member.class))).willThrow(new DataIntegrityViolationException("이미 삭제된 회원에 대한 Alias"));
+
+        thenThrownBy(() -> memberService.join(createMemberRequest))
+                .isInstanceOf(DataIntegrityViolationException.class)
+                .hasMessage("이미 삭제된 회원에 대한 Alias");
     }
 
     @Test
@@ -160,6 +171,6 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.deleteMember(member.getId()))
                 .isInstanceOf(NoSuchElementException.class)
-                .hasMessageContaining("찾으려는 회원이 없습니다");
+                .hasMessage("찾으려는 회원이 없습니다");
     }
 }
