@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -264,6 +265,22 @@ public class MemberControllerTest {
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 phone 에러 메세지"))));
+    }
+
+    @Test
+    @DisplayName("회원 가입시 삭제된 회원일 경우 400 상태와 예외 메세지를 반환합니다")
+    void join_fail_with_deleted_member_alias() throws Exception {
+        given(memberService.join(any(CreateMemberRequest.class))).willThrow(new DataIntegrityViolationException("이미 삭제된 회원의 alias"));
+
+        this.mockMvc.perform(post("/api/v1/members")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createMemberRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("이미 삭제된 회원의 alias"))
+                .andDo(document("join/fail/deleted_alias",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("이미 삭제된 회원의 alias에 대한 회원 가입 예외 메세지"))));
     }
 
     @Test

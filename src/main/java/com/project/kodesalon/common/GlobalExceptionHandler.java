@@ -1,6 +1,7 @@
 package com.project.kodesalon.common;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,7 +14,7 @@ import java.util.NoSuchElementException;
 @Slf4j
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({IllegalArgumentException.class, NoSuchElementException.class, IllegalStateException.class})
+    @ExceptionHandler({IllegalArgumentException.class, NoSuchElementException.class, IllegalStateException.class, DataIntegrityViolationException.class})
     protected ResponseEntity<ErrorResponse> handleIllegalArgumentException(RuntimeException e) {
         log.info(e.getMessage());
         return new ResponseEntity<>(new ErrorResponse(e.getMessage()), HttpStatus.BAD_REQUEST);
