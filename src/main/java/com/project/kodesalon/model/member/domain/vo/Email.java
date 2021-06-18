@@ -12,15 +12,16 @@ import java.util.regex.Pattern;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
 public class Email {
-    private static final String EMAIL_REGEX = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
+    private static final String EMAIL_REGEX = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$";
     private static final Pattern EMAIL_PATTERN = Pattern.compile(EMAIL_REGEX);
+    public static final String EMAIL_EXCEPTION_MESSAGE = "이메일은 id@domain.com과 같은 형식이어야 합니다.";
 
     @Column(name = "email", nullable = false)
     private String email;
 
     public Email(final String email) {
-        if (!EMAIL_PATTERN.matcher(email).matches()) {
-            throw new IllegalArgumentException("이메일은 이메일주소@회사.com 형식 이어야 합니다.");
+        if (email == null || !EMAIL_PATTERN.matcher(email).matches()) {
+            throw new IllegalArgumentException(EMAIL_EXCEPTION_MESSAGE);
         }
 
         this.email = email;

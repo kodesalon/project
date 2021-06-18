@@ -79,6 +79,7 @@ public class BoardControllerTest {
     @DisplayName("제목이 존재하지 않을 경우 HTTP status 400과 예외 메세지를 반환한다.")
     public void save_fail_invalid_title() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "", "게시물 내용", LocalDateTime.now());
+
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
                 .contentType(MediaType.APPLICATION_JSON))

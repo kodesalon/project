@@ -8,7 +8,8 @@
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>/home/ec2-user/app/jenkins/logback/log/app.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                <fileNamePattern>/home/ec2-user/app/jenkins/logback/log/backup/app-%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+                <fileNamePattern>/home/ec2-user/app/jenkins/logback/log/backup/app-%d{yyyy-MM-dd}.log.zip
+                </fileNamePattern>
                 <maxHistory>2</maxHistory>
             </rollingPolicy>
             <encoder class="net.logstash.logback.encoder.LogstashEncoder">

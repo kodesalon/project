@@ -10,6 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 class MemberTest {
     private Member member;
@@ -34,9 +35,17 @@ class MemberTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"Password!!1234,true", "Password!!123,false"})
-    @DisplayName("Member의 비밀번호가 일치하지 않으면 true, 일치하면 false를 리턴합니다.")
+    @CsvSource({"Password!!1234,false", "Password!!123,true"})
+    @DisplayName("Member의 비밀번호가 일치하면 true, 일치하지 않으면 false를 리턴합니다.")
     void is_incorrect_password(String password, boolean expected) {
-        then(member.isIncorrectPassword(new Password(password))).isEqualTo(expected);
+        then(member.hasSamePassword(new Password(password))).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("로그인 시, 비밀번호가 다른 경우 로그인에 실패하면 예외를 발생시킵니다")
+    void login_throw_exception_with_different_password() {
+        thenThrownBy(() -> member.login("Password123!!!"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("비밀 번호가 일치하지 않습니다.");
     }
 }
