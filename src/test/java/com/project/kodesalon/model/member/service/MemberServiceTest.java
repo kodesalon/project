@@ -2,7 +2,6 @@ package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
-import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -25,7 +23,9 @@ import java.util.Optional;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -49,7 +49,6 @@ public class MemberServiceTest {
     void login() {
         given(member.getId()).willReturn(1L);
         given(member.getAlias()).willReturn("alias");
-        given(member.hasSamePassword(new Password(loginRequest.getPassword()))).willReturn(true);
         given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.of(member));
 
         LoginResponse loginResponse = memberService.login(loginRequest);
@@ -65,18 +64,18 @@ public class MemberServiceTest {
         given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.empty());
 
         thenThrownBy(() -> memberService.login(loginRequest))
-                .isInstanceOf(HttpClientErrorException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessageContaining("존재하는 아이디를 입력해주세요.");
     }
 
     @Test
     @DisplayName("로그인 시 비밀번호 틀렸을 경우, 예외 메세지를 반환합니다.")
     void login_throw_exception_with_invalid_password() {
-        given(member.hasSamePassword(new Password(loginRequest.getPassword()))).willReturn(false);
+        willThrow(new IllegalArgumentException("비밀 번호가 일치하지 않습니다.")).given(member).login(anyString());
         given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.of(member));
 
         thenThrownBy(() -> memberService.login(loginRequest))
-                .isInstanceOf(HttpClientErrorException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("비밀 번호가 일치하지 않습니다.");
     }
 

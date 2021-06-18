@@ -7,6 +7,7 @@ import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.domain.vo.Phone;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
@@ -22,6 +23,7 @@ import javax.persistence.UniqueConstraint;
 @NoArgsConstructor
 @Table(name = "member", uniqueConstraints = {@UniqueConstraint(columnNames = {"alias"})})
 @Where(clause = "deleted = 'false'")
+@Slf4j
 public class Member {
 
     @Id
@@ -81,6 +83,15 @@ public class Member {
 
     public boolean hasSamePassword(final Password password) {
         return this.password.equals(password);
+    }
+
+    public void login(final String password) {
+        Password inputPassword = new Password(password);
+
+        if (!hasSamePassword(inputPassword)) {
+            log.info("{}의 Password가 일치하지 않음", getAlias());
+            throw new IllegalArgumentException("비밀 번호가 일치하지 않습니다.");
+        }
     }
 
     public void changePassword(final String password) {
