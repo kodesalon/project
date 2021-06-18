@@ -24,6 +24,7 @@ import javax.persistence.UniqueConstraint;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 
 @Entity
@@ -102,7 +103,7 @@ public class Member {
 
         if (!hasSamePassword(inputPassword)) {
             log.info("{}의 Password가 일치하지 않음", getAlias());
-            throw new IllegalArgumentException("비밀 번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException(INVALID_MEMBER_PASSWORD);
         }
     }
 

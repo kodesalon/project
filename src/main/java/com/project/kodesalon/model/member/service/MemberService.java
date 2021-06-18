@@ -17,6 +17,7 @@ import javax.persistence.EntityNotFoundException;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER;
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 
 @Service
 @Slf4j
@@ -41,7 +42,7 @@ public class MemberService {
         return memberRepository.findMemberByAlias(new Alias(alias))
                 .orElseThrow(() -> {
                     log.info("{}인 Alias를 가진 사용자가 존재하지 않음", alias);
-                    throw new EntityNotFoundException(ALREADY_EXIST_MEMBER_ALIAS);
+                    throw new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS);
                 });
     }
 

@@ -26,7 +26,7 @@ import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 public class MemberTest {
     public static final Member TEST_MEMBER
-            = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
+            = new Member(new Alias("alias"), new Password("Password!!123"), new Name("이름"), new Email("email@email.com"), new Phone("010-1234-4444"));
 
     private Member member;
 
