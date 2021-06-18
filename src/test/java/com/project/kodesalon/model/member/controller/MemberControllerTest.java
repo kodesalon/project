@@ -51,6 +51,7 @@ public class MemberControllerTest {
     private final LoginResponse loginResponse = new LoginResponse(1L, "alias");
     private final CreateMemberRequest createMemberRequest =
             new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+    private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
 
     private MockMvc mockMvc;
 
