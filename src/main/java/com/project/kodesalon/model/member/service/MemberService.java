@@ -39,14 +39,17 @@ public class MemberService {
 
     public LoginResponse join(CreateMemberRequest createMemberRequest) {
         String alias = createMemberRequest.getAlias();
+        validateDuplicationOf(alias);
+        Member saveMember = memberRepository.save(createMemberRequest.toMember());
+        log.info("ID : {}, Alias : {} Member가 회원 가입 성공", saveMember.getId(), saveMember.getAlias());
+        return new LoginResponse(saveMember.getId(), saveMember.getAlias());
+    }
+
+    private void validateDuplicationOf(String alias) {
         memberRepository.findMemberByAlias(new Alias(alias))
                 .ifPresent(member -> {
                     log.info("{}는 이미 존재하는 Alias입니다.", alias);
                     throw new IllegalStateException("이미 존재하는 아이디입니다");
                 });
-
-        Member saveMember = memberRepository.save(createMemberRequest.toMember());
-        log.info("ID : {}, Alias : {} Member가 회원 가입 성공", saveMember.getId(), saveMember.getAlias());
-        return new LoginResponse(saveMember.getId(), saveMember.getAlias());
     }
 }
