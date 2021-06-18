@@ -49,12 +49,12 @@ public class Member {
     @Getter
     private boolean deleted;
 
-    public Member(final String alias, final String password, final String name, final String email, final String phone) {
-        this.alias = new Alias(alias);
-        this.password = new Password(password);
-        this.email = new Email(email);
-        this.name = new Name(name);
-        this.phone = new Phone(phone);
+    public Member(final Alias alias, final Password password, final Name name, final Email email, final Phone phone) {
+        this.alias = alias;
+        this.password = password;
+        this.email = email;
+        this.name = name;
+        this.phone = phone;
     }
 
     public Long getId() {
