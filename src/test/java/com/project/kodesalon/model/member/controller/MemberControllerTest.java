@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -23,7 +22,6 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.NoSuchElementException;
@@ -53,7 +51,6 @@ public class MemberControllerTest {
     private final LoginResponse loginResponse = new LoginResponse(1L, "alias");
     private final CreateMemberRequest createMemberRequest =
             new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
-    private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
 
     private MockMvc mockMvc;
 
@@ -101,14 +98,14 @@ public class MemberControllerTest {
     @DisplayName("로그인 시 비밀번호 틀렸을 경우, 예외 메세지를 담은 DTO을 Http 400으로 응답합니다.")
     void login_fail_with_invalid_password() throws Exception {
         given(memberService.login(any(LoginRequest.class)))
-                .willThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST, "비밀 번호가 일치하지 않습니다."));
+                .willThrow(new IllegalArgumentException("비밀 번호가 일치하지 않습니다."));
 
         this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value(HttpStatus.BAD_REQUEST.value() + " 비밀 번호가 일치하지 않습니다."))
+                .andExpect(jsonPath("$.message").value("비밀 번호가 일치하지 않습니다."))
                 .andDo(document("login/fail/mismatch_password",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -124,14 +121,14 @@ public class MemberControllerTest {
     @DisplayName("로그인 시 존재하지 않는 아이디(Alias)일 경우, 예외 메세지를 담은 DTO을 Http 400으로 응답합니다.")
     void login_fail_with_invalid_alias() throws Exception {
         given(memberService.login(any(LoginRequest.class)))
-                .willThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST, "존재하는 아이디를 입력해주세요."));
+                .willThrow(new NoSuchElementException("존재하는 아이디를 입력해주세요."));
 
         this.mockMvc.perform(post("/api/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value(HttpStatus.BAD_REQUEST.value() + " 존재하는 아이디를 입력해주세요."))
+                .andExpect(jsonPath("$.message").value("존재하는 아이디를 입력해주세요."))
                 .andDo(document("login/fail/no_alias",
                         getDocumentResponse(),
                         responseFields(
