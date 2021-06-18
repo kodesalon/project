@@ -63,7 +63,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.login(loginRequest))
                 .isInstanceOf(NoSuchElementException.class)
-                .hasMessageContaining("존재하는 아이디를 입력해주세요.");
+                .hasMessage("존재하는 아이디를 입력해주세요.");
     }
 
     @Test
@@ -74,7 +74,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.login(loginRequest))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("비밀 번호가 일치하지 않습니다.");
+                .hasMessage("비밀 번호가 일치하지 않습니다.");
     }
 
     @Test
@@ -99,7 +99,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.join(createMemberRequest))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("이미 존재하는 아이디입니다");
+                .hasMessage("이미 존재하는 아이디입니다");
     }
 
     @Test
