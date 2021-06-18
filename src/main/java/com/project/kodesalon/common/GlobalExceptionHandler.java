@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @RestControllerAdvice
 @Slf4j
@@ -23,7 +22,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
         log.info(e.getMessage());
-        String errorMessage = Objects.requireNonNull(e.getFieldError()).getDefaultMessage();
+        String errorMessage = e.getFieldError().getDefaultMessage();
         return new ResponseEntity<>(new ErrorResponse(errorMessage), HttpStatus.BAD_REQUEST);
     }
 }
