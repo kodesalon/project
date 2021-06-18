@@ -42,7 +42,6 @@ public class MemberServiceTest {
     void login() {
         given(member.getId()).willReturn(1L);
         given(member.getAlias()).willReturn("alias");
-        given(member.hasSamePassword(new Password(loginRequest.getPassword()))).willReturn(true);
         given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.of(member));
 
         LoginResponse loginResponse = memberService.login(loginRequest);
