@@ -14,7 +14,7 @@ public class SelectMemberResponse {
     private Email email;
     private Phone phone;
 
-    public SelectMemberResponse(String alias, String name, String email, String phone) {
+    public SelectMemberResponse(final String alias, final String name, final String email, final String phone) {
         this.alias = new Alias(alias);
         this.name = new Name(name);
         this.email = new Email(email);

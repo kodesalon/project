@@ -3,6 +3,8 @@ package com.project.kodesalon.model.member.service;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
@@ -61,7 +63,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.login(loginRequest))
                 .isInstanceOf(NoSuchElementException.class)
-                .hasMessageContaining("존재하는 아이디를 입력해주세요.");
+                .hasMessage("존재하는 아이디를 입력해주세요.");
     }
 
     @Test
@@ -72,7 +74,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.login(loginRequest))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("비밀 번호가 일치하지 않습니다.");
+                .hasMessage("비밀 번호가 일치하지 않습니다.");
     }
 
     @Test
@@ -97,7 +99,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.join(createMemberRequest))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("이미 존재하는 아이디입니다");
+                .hasMessage("이미 존재하는 아이디입니다");
     }
 
     @Test
@@ -126,5 +128,16 @@ public class MemberServiceTest {
         thenThrownBy(() -> memberService.selectMember(1L))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("찾으려는 회원이 없습니다");
+    }
+
+    @Test
+    @DisplayName("비밀번호를 변경하고 성공 메세지를 담은 DTO를 반환한다.")
+    public void changePassword() {
+        BDDSoftAssertions softly = new BDDSoftAssertions();
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
+        ChangePasswordResponse changePasswordResponse = memberService.changePassword(1L, changePasswordRequest);
+        softly.then(changePasswordResponse.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
     }
 }

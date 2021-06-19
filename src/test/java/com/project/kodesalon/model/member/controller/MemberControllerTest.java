@@ -3,6 +3,8 @@ package com.project.kodesalon.model.member.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.model.member.service.MemberService;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
@@ -33,6 +35,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -48,6 +51,7 @@ public class MemberControllerTest {
     private final LoginResponse loginResponse = new LoginResponse(1L, "alias");
     private final CreateMemberRequest createMemberRequest =
             new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+    private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
 
     private MockMvc mockMvc;
 
@@ -299,5 +303,63 @@ public class MemberControllerTest {
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("존재하는 회원이 없을 때의 예외 메세지"))));
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경시, 변경하려는 비밀번호, 회원 식별 번호를 전달받아 비밀번호를 변경하고 200 상태 + 성공 메세지를 반환합니다.")
+    public void changePassword() throws Exception {
+        given(memberService.changePassword(anyLong(), any(ChangePasswordRequest.class)))
+                .willReturn(new ChangePasswordResponse("비밀번호 변경 성공하였습니다."));
+
+        this.mockMvc.perform(put("/api/v1/members/{memberId}", 1L)
+                .content(objectMapper.writeValueAsString(changePasswordRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("비밀번호 변경 성공하였습니다."))
+                .andDo(document("changePassword/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 식별 번호")
+                        ),
+                        requestFields(
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("변경하려는 비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("비밀번호 변경 성공 메세지")
+                        )));
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경시, 변경하려는 비밀변호가 유효하지 않은 경우 400 상태 + 예외 메세지를 반환합니다.")
+    void failed_change_password_with_invalid_password() throws Exception {
+        ChangePasswordRequest changePasswordRequestWithInvalidPassword = new ChangePasswordRequest("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.");
+
+        this.mockMvc.perform(put(("/api/v1/members/{memberId}"), 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(changePasswordRequestWithInvalidPassword)))
+                .andExpect(jsonPath("$.message").value("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."))
+                .andDo(document("changePassword/fail/invalidPassword",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호에 대한 예외 메세지"))));
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경시, 변경하려는 회원 식별자가 없는 경우 400 상태 + 예외 메세지를 반환합니다.")
+    void failed_change_password_with_member_id_not_exist() throws Exception {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!");
+
+        given(memberService.changePassword(anyLong(), any(ChangePasswordRequest.class)))
+                .willThrow(new NoSuchElementException("찾으려는 회원이 없습니다"));
+
+        this.mockMvc.perform(put("/api/v1/members/{memberId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(changePasswordRequest)))
+                .andExpect(jsonPath("$.message").value("찾으려는 회원이 없습니다"))
+                .andDo(document("changePassword/fail/noMember",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("존재하지 않는 회원에 대한 예외 메세지"))));
     }
 }

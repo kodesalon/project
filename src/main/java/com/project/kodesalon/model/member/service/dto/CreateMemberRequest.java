@@ -44,7 +44,7 @@ public class CreateMemberRequest {
     @Pattern(regexp = PHONE_REGEX, message = PHONE_EXCEPTION_MESSAGE)
     private String phone;
 
-    public CreateMemberRequest(String alias, String password, String name, String email, String phone) {
+    public CreateMemberRequest(final String alias, final String password, final String name, final String email, final String phone) {
         this.alias = alias;
         this.password = password;
         this.name = name;
