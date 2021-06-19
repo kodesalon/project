@@ -45,7 +45,7 @@ public class Board {
 
     private boolean deleted;
 
-    public Board(Title title, Content content, Member writer, LocalDateTime createdDateTime) {
+    public Board(final Title title, final Content content, final Member writer, final LocalDateTime createdDateTime) {
         this.title = title;
         this.content = content;
         this.writer = writer;
@@ -76,18 +76,18 @@ public class Board {
         return deleted;
     }
 
-    public void delete(Member member) {
+    public void delete(final Member member) {
         validateAuthorizationOf(member);
         deleted = true;
     }
 
-    private void validateAuthorizationOf(Member member) {
+    private void validateAuthorizationOf(final Member member) {
         if (!isWrittenBy(member)) {
             throw new IllegalArgumentException(NOT_AUTHORIZED_MEMBER);
         }
     }
 
-    private boolean isWrittenBy(Member member) {
+    private boolean isWrittenBy(final Member member) {
         return writer.equals(member);
     }
 }

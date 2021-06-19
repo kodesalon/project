@@ -21,26 +21,26 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final MemberRepository memberRepository;
 
-    public BoardService(BoardRepository boardRepository, MemberRepository memberRepository) {
+    public BoardService(final BoardRepository boardRepository, final MemberRepository memberRepository) {
         this.boardRepository = boardRepository;
         this.memberRepository = memberRepository;
     }
 
     @Transactional
-    public void save(BoardCreateRequest boardCreateRequest) {
+    public void save(final BoardCreateRequest boardCreateRequest) {
         Member member = findMemberById(boardCreateRequest.getMemberId());
         Board createdBoard = boardCreateRequest.toBoard(member);
         member.addBoard(createdBoard);
         boardRepository.save(createdBoard);
     }
 
-    public void delete(BoardDeleteRequest boardDeleteRequest) {
+    public void delete(final BoardDeleteRequest boardDeleteRequest) {
         Board board = findById(boardDeleteRequest.getBoardId());
         Member member = findMemberById(boardDeleteRequest.getMemberId());
         board.delete(member);
     }
 
-    private Member findMemberById(Long memberId) {
+    private Member findMemberById(final Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> {
                     log.info("게시물 저장 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
@@ -48,7 +48,7 @@ public class BoardService {
                 });
     }
 
-    private Board findById(Long boardId) {
+    private Board findById(final Long boardId) {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> {
                     log.info("존재하지 않는 게시물 식별자 boardId : {}", boardId);

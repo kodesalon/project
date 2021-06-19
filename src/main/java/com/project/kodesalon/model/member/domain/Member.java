@@ -121,7 +121,7 @@ public class Member {
         deleted = true;
     }
 
-    public void addBoard(Board newBoard) {
+    public void addBoard(final Board newBoard) {
         boards.add(newBoard);
     }
 }
