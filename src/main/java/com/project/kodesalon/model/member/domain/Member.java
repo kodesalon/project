@@ -5,7 +5,6 @@ import com.project.kodesalon.model.member.domain.vo.Email;
 import com.project.kodesalon.model.member.domain.vo.Name;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.domain.vo.Phone;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
@@ -46,8 +45,7 @@ public class Member {
     private Name name;
 
     @Column(name = "deleted")
-    @Getter
-    private boolean deleted;
+    private boolean deleted = false;
 
     public Member(final Alias alias, final Password password, final Name name, final Email email, final Phone phone) {
         this.alias = alias;
@@ -79,6 +77,10 @@ public class Member {
 
     public String getPhone() {
         return phone.value();
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 
     public boolean hasSamePassword(final Password password) {
