@@ -6,7 +6,7 @@ import com.project.kodesalon.model.member.domain.vo.Email;
 import com.project.kodesalon.model.member.domain.vo.Name;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.domain.vo.Phone;
-import lombok.Getter;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
@@ -23,20 +23,21 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 
 @Entity
-@NoArgsConstructor
-@Table(name = "member", uniqueConstraints = {@UniqueConstraint(columnNames = {"alias"})})
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "member", uniqueConstraints = {
+        @UniqueConstraint(name = "member_unique_constraint", columnNames = {"alias"})})
 @Where(clause = "deleted = 'false'")
 @Slf4j
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
     @Column(name = "member_id")
     private Long id;
 
@@ -59,8 +60,7 @@ public class Member {
     private List<Board> boards = new ArrayList<>();
 
     @Column(name = "deleted")
-    @Getter
-    private boolean deleted;
+    private boolean deleted = false;
 
     public Member(final Alias alias, final Password password, final Name name, final Email email, final Phone phone) {
         this.alias = alias;
@@ -68,6 +68,10 @@ public class Member {
         this.email = email;
         this.name = name;
         this.phone = phone;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getAlias() {
@@ -92,6 +96,10 @@ public class Member {
 
     public List<Board> getBoards() {
         return boards;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 
     public boolean hasSamePassword(final Password password) {
@@ -121,7 +129,20 @@ public class Member {
         deleted = true;
     }
 
-    public void addBoard(Board newBoard) {
+    public void addBoard(final Board newBoard) {
         boards.add(newBoard);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return alias.equals(member.alias);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(alias);
     }
 }

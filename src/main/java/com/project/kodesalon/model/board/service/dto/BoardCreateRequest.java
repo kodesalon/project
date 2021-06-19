@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ID;
 import static com.project.kodesalon.model.board.domain.vo.Content.CONTENT_LENGTH_BOUND_MAX;
 import static com.project.kodesalon.model.board.domain.vo.Title.TITLE_LENGTH_MAX_BOUND;
 
@@ -23,7 +24,7 @@ import static com.project.kodesalon.model.board.domain.vo.Title.TITLE_LENGTH_MAX
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BoardCreateRequest {
 
-    @NotNull(message = "null이 아닌 회원 식별 번호를 입력해주세요.")
+    @NotNull(message = INVALID_MEMBER_ID)
     private Long memberId;
 
     @NotEmpty(message = INVALID_BOARD_TITLE)
@@ -37,15 +38,17 @@ public class BoardCreateRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdDateTime;
 
-    public BoardCreateRequest(Long memberId, String title, String content, LocalDateTime createdDateTime) {
+    public BoardCreateRequest(final Long memberId, final String title, final String content, final LocalDateTime createdDateTime) {
         this.memberId = memberId;
         this.title = title;
         this.content = content;
         this.createdDateTime = createdDateTime;
     }
 
-    public Board toBoard(Member writer) {
-        return new Board(new Title(title), new Content(content), writer, createdDateTime);
+    public Board toBoard(final Member writer) {
+        Title title = new Title(this.title);
+        Content content = new Content(this.content);
+        return new Board(title, content, writer, createdDateTime);
     }
 }
 

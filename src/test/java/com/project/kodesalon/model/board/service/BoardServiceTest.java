@@ -5,7 +5,9 @@ import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
+import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.board.service.dto.BoardSelectSingleResponse;
+import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,13 +43,34 @@ public class BoardServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
+    @Mock
+    private Member member;
+
+    @Mock
+    private Board board;
+
     @Test
     @DisplayName("컨트롤러에서 게시판 생성 요청 Dto를 전달받아 게시판을 생성한다.")
-    public void save() {
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(TEST_MEMBER));
+    void save() {
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "게시물 작성", LocalDateTime.now());
+
         boardService.save(boardCreateRequest);
-        verify(boardRepository).save(any(Board.class));
+
+        verify(member, times(1)).addBoard(any(Board.class));
+        verify(boardRepository, times(1)).save(any(Board.class));
+    }
+
+    @Test
+    @DisplayName("컨트롤러에서 게시판 삭제 요청 Dto를 전달받아 게시물을 삭제한다.")
+    void delete() {
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(1L, 1L);
+
+        boardService.delete(boardDeleteRequest);
+
+        verify(board, times(1)).delete(member);
     }
 
     @Test
