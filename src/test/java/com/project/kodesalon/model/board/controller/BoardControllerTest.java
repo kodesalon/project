@@ -5,6 +5,7 @@ import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
+import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,6 +32,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -105,5 +109,26 @@ public class BoardControllerTest {
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 내용 예외 코드")
                         )));
+    }
+
+    @Test
+    @DisplayName("회원 식별 번호, 수정할 게시물의 제목과 내용을 요청받아 성공시 200을 응답합니다")
+    void update() throws Exception {
+        BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest(1L, "update title", "update content");
+
+        mockMvc.perform(RestDocumentationRequestBuilders.put("/api/v1/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                .andExpect(status().isOk())
+                .andDo(document("board/update/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("boardId").description("수정할 게시물 식별자")
+                        ),
+                        requestFields(
+                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("작성 회원의 식별자"),
+                                fieldWithPath("updatedTitle").type(JsonFieldType.STRING).description("수정할 제목"),
+                                fieldWithPath("updatedContent").type(JsonFieldType.STRING).description("수정할 내용"))));
     }
 }
