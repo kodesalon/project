@@ -23,7 +23,7 @@ public class BoardTest {
         softly.then(TEST_BOARD.getTitle()).isEqualTo(title);
         softly.then(TEST_BOARD.getContent()).isEqualTo(content);
         softly.then(TEST_BOARD.getWriter()).isEqualTo(TEST_MEMBER.getName());
-        softly.then(TEST_BOARD.getCreatedDateTime()).isEqualTo(createdDateTime);
+        softly.then(TEST_BOARD.getCreatedDateTime()).isEqualTo(createdDateTime.toString());
         softly.then(TEST_BOARD.isDeleted()).isFalse();
         softly.assertAll();
     }

@@ -32,7 +32,7 @@ public class BoardController {
 
     @GetMapping("/boards/{boardId}")
     public ResponseEntity<BoardSelectSingleResponse> selectBoard(@PathVariable final Long boardId) {
-        BoardSelectSingleResponse boardSelectSingleResponse = new BoardSelectSingleResponse("제목", "내용", "생성 시간", "작성자 별명");
+        BoardSelectSingleResponse boardSelectSingleResponse = boardService.selectBoard(boardId);
         return ResponseEntity.ok().body(boardSelectSingleResponse);
     }
 }

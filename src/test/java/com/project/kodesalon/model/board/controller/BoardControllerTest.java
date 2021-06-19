@@ -5,6 +5,7 @@ import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
+import com.project.kodesalon.model.board.service.dto.BoardSelectSingleResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,8 @@ import java.time.LocalDateTime;
 
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -113,10 +116,13 @@ public class BoardControllerTest {
     @Test
     @DisplayName("게시물 식별 번호를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoard() throws Exception {
+        BoardSelectSingleResponse boardSelectSingleResponse = new BoardSelectSingleResponse("게시물 제목", "게시물 내용", LocalDateTime.now().toString(), "게시물 작성자 별명");
+        given(boardService.selectBoard(anyLong())).willReturn(boardSelectSingleResponse);
+
         mockMvc.perform(get("/api/v1/boards/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("board/select/success",
+                .andDo(document("board/select-single/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(

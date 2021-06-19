@@ -64,8 +64,8 @@ public class Board {
         return writer.getName();
     }
 
-    public LocalDateTime getCreatedDateTime() {
-        return createdDateTime;
+    public String getCreatedDateTime() {
+        return createdDateTime.toString();
     }
 
     public boolean isDeleted() {
