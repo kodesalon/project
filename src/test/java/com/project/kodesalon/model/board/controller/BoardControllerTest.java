@@ -5,6 +5,7 @@ import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
+import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDateTime;
@@ -110,16 +112,16 @@ public class BoardControllerTest {
     @Test
     @DisplayName("내용이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
     void delete() throws Exception {
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "", LocalDateTime.now());
-        mockMvc.perform(post("/api/v1/boards")
-                .content(objectMapper.writeValueAsString(boardCreateRequest))
+        BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(1L, 1L);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/boards/")
+                .content(objectMapper.writeValueAsString(boardDeleteRequest))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andDo(document("board/create/fail/invalid-content",
+                .andExpect(status().isOk())
+                .andDo(document("board/delete/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 내용 예외 코드")
-                        )));
+                        requestFields(
+                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("게시물 삭제를 시도하는 회원 식별 번호"),
+                                fieldWithPath("boardId").type(JsonFieldType.NUMBER).description("삭제하려는 게시물 식별 번호"))));
     }
 }
