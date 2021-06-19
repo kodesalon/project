@@ -6,6 +6,7 @@ import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
+import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
@@ -96,5 +98,33 @@ public class MemberServiceTest {
         thenThrownBy(() -> memberService.join(createMemberRequest))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("이미 존재하는 아이디입니다");
+    }
+
+    @Test
+    @DisplayName("회원정보 조회 성공 시, 회원 별명, 이름, 이메일, 전화 번호를 반환합니다.")
+    void exist_id_response_member() {
+        given(member.getAlias()).willReturn("alias");
+        given(member.getName()).willReturn("이름");
+        given(member.getEmail()).willReturn("email@email.com");
+        given(member.getPhone()).willReturn("010-1111-2222");
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+
+        SelectMemberResponse selectMemberResponse = memberService.selectMember(1L);
+
+        softly.then(selectMemberResponse.getAlias()).isEqualTo("alias");
+        softly.then(selectMemberResponse.getName()).isEqualTo("이름");
+        softly.then(selectMemberResponse.getEmail()).isEqualTo("email@email.com");
+        softly.then(selectMemberResponse.getPhone()).isEqualTo("010-1111-2222");
+        softly.assertAll();
+    }
+
+    @Test
+    @DisplayName("회원 정보 조회 시 찾으려는 회원이 없으면 예외를 반환합니다.")
+    void select_not_exist_id_throws_exception() {
+        given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
+
+        thenThrownBy(() -> memberService.selectMember(1L))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("찾으려는 회원이 없습니다");
     }
 }

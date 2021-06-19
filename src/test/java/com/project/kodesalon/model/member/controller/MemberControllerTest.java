@@ -6,6 +6,7 @@ import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
+import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,14 +24,20 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.util.NoSuchElementException;
 
+import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
+import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -73,6 +80,8 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.memberId").value(1))
                 .andExpect(jsonPath("$.alias").value("alias"))
                 .andDo(document("login/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("alias").type(JsonFieldType.STRING).description("로그인 할 alias"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("로그인 할 패스워드")
@@ -95,6 +104,8 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("비밀 번호가 일치하지 않습니다."))
                 .andDo(document("login/fail/mismatch_password",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("alias").type(JsonFieldType.STRING).description("로그인 할 alias"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("로그인 할 password")
@@ -116,6 +127,7 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("존재하는 아이디를 입력해주세요."))
                 .andDo(document("login/fail/no_alias",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("존재하지 않는 아이디(Alias) 예러 메세지"))));
     }
@@ -131,7 +143,9 @@ public class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(1))
                 .andExpect(jsonPath("$.alias").value("alias"))
-                .andDo(document("join/success2",
+                .andDo(document("join/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("alias").type(JsonFieldType.STRING).description("회원 가입할 member의 alias"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("회원 가입할 member의 password"),
@@ -156,6 +170,7 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("이미 존재하는 아이디입니다"))
                 .andDo(document("join/fail/existing_alias",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("이미 존재하는 아이디(Alias) 에러 메세지"))));
     }
@@ -172,6 +187,7 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다."))
                 .andDo(document("join/fail/invalid_alias",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 아이디(Alias) 에러 메세지"))));
     }
@@ -188,6 +204,7 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."))
                 .andDo(document("join/fail/invalid_password",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호(Password) 에러 메세지"))));
     }
@@ -204,6 +221,7 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("이름은 2자리 이상 17자리 이하의 한글이어야 합니다."))
                 .andDo(document("join/fail/invalid_name",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 이름(Name) 에러 메세지"))));
     }
@@ -220,6 +238,7 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("이메일은 id@domain.com과 같은 형식이어야 합니다."))
                 .andDo(document("join/fail/invalid_email",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 이메일(Email) 에러 메세지"))));
     }
@@ -236,7 +255,49 @@ public class MemberControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("휴대폰 번호는 [3자리 수] - [3 ~ 4자리 수] - [4자리 수]의 형식 이어야 합니다."))
                 .andDo(document("join/fail/invalid_phone",
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 phone 에러 메세지"))));
+    }
+
+    @Test
+    @DisplayName("존재하는 회원을 조회하면 200 상태를 response 합니다.")
+    void select_exist_member_response_success() throws Exception {
+        given(memberService.selectMember(anyLong()))
+                .willReturn(new SelectMemberResponse("alias", "이름", "email@email.com", "010-1111-2222"));
+
+        this.mockMvc.perform(get("/api/v1/members/{memberId}", "1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.alias").value("alias"))
+                .andExpect(jsonPath("$.name").value("이름"))
+                .andExpect(jsonPath("$.email").value("email@email.com"))
+                .andExpect(jsonPath("$.phone").value("010-1111-2222"))
+                .andDo(document("select/success",
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("memberId").description("조회할 회원의 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 Alias"),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("조회한 Name"),
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("조회한 Email"),
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 Phone"))));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회원을 조회하면 400 상태를 responses 합니다")
+    void select_no_exist_member_response_fail() throws Exception {
+        given(memberService.selectMember(anyLong()))
+                .willThrow(new NoSuchElementException("찾으려는 회원이 없습니다"));
+
+        this.mockMvc.perform(get("/api/v1/members/{memberId}", "1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("찾으려는 회원이 없습니다"))
+                .andDo(document("select/fail/no_member",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("존재하는 회원이 없을 때의 예외 메세지"))));
     }
 }
