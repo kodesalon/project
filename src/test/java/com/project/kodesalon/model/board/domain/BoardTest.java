@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 
 import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
+import static org.assertj.core.api.BDDAssertions.then;
 
 public class BoardTest {
     private final String title = "게시물 제목";
@@ -27,5 +28,12 @@ public class BoardTest {
         softly.then(TEST_BOARD.isDeleted()).isFalse();
         softly.assertAll();
     }
-}
 
+    @Test
+    @DisplayName("게시물 삭제 여부를 참으로 변경한다.")
+    public void delete() {
+        Board board = new Board(new Title(title), new Content(content), TEST_MEMBER, createdDateTime);
+        board.delete();
+        then(board.isDeleted()).isTrue();
+    }
+}

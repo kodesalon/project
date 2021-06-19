@@ -5,6 +5,7 @@ import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "deleted = 'false'")
 public class Board {
 
     @Id
@@ -39,7 +41,7 @@ public class Board {
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
-    private boolean isDeleted;
+    private boolean deleted;
 
     public Board(Title title, Content content, Member writer, LocalDateTime createdDateTime) {
         this.title = title;
@@ -69,7 +71,11 @@ public class Board {
     }
 
     public boolean isDeleted() {
-        return isDeleted;
+        return deleted;
+    }
+
+    public void delete() {
+        deleted = true;
     }
 }
 
