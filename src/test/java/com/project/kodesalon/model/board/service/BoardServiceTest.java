@@ -5,7 +5,7 @@ import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.member.domain.Member;
-import com.project.kodesalon.model.member.repository.MemberRepository;
+import com.project.kodesalon.model.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,10 +29,10 @@ public class BoardServiceTest {
     private BoardService boardService;
 
     @Mock
-    private BoardRepository boardRepository;
+    private MemberService memberService;
 
     @Mock
-    private MemberRepository memberRepository;
+    private BoardRepository boardRepository;
 
     @Mock
     private Member member;
@@ -43,18 +43,18 @@ public class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 게시판 생성 요청 Dto를 전달받아 게시판을 생성한다.")
     void save() {
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+        given(memberService.findById(anyLong())).willReturn(member);
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "게시물 작성", LocalDateTime.now());
 
         boardService.save(boardCreateRequest);
 
-        verify(boardRepository).save(any(Board.class));
+        verify(boardRepository, times(1)).save(any(Board.class));
     }
 
     @Test
     @DisplayName("컨트롤러에서 게시판 삭제 요청 Dto를 전달받아 게시물을 삭제한다.")
     void delete() {
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+        given(memberService.findById(anyLong())).willReturn(member);
         given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
         BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(1L, 1L);
 

@@ -13,9 +13,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @DataJpaTest
@@ -37,7 +38,7 @@ class MemberRepositoryTest {
     void findMemberByAlias() {
         BDDSoftAssertions softly = new BDDSoftAssertions();
         Member savedMember = memberRepository.findMemberByAlias(new Alias("alias"))
-                .orElseThrow(() -> new NoSuchElementException("존재하는 아이디를 입력해주세요."));
+                .orElseThrow(() -> new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS));
 
         softly.then(savedMember.getAlias()).isEqualTo(member.getAlias());
         softly.then(savedMember.getPassword()).isEqualTo(member.getPassword());
