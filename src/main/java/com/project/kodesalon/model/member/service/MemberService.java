@@ -55,7 +55,7 @@ public class MemberService {
         return new LoginResponse(saveMember.getId(), saveMember.getAlias());
     }
 
-    private void validateDuplicationOf(String alias) {
+    private void validateDuplicationOf(final String alias) {
         memberRepository.findMemberByAlias(new Alias(alias))
                 .ifPresent(member -> {
                     log.info("{}는 이미 존재하는 Alias입니다.", alias);
