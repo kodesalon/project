@@ -17,6 +17,7 @@ import java.util.Set;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ID;
 import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 
@@ -59,7 +60,7 @@ class BoardCreateRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("null이 아닌 회원 식별 번호를 입력해주세요.");
+                .contains(INVALID_MEMBER_ID);
     }
 
     @Test
