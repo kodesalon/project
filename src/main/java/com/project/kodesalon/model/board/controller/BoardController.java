@@ -30,7 +30,7 @@ public class BoardController {
     }
 
     @DeleteMapping()
-    public ResponseEntity<Void> delete(@RequestBody final BoardDeleteRequest boardDeleteRequest) {
+    public ResponseEntity<Void> delete(@RequestBody @Valid final BoardDeleteRequest boardDeleteRequest) {
         boardService.delete(boardDeleteRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
