@@ -27,9 +27,12 @@ import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -104,6 +107,26 @@ public class BoardControllerTest {
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 내용 예외 코드")
+                        )));
+    }
+
+    @Test
+    @DisplayName("게시물 식별 번호를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
+    void selectBoard() throws Exception {
+        mockMvc.perform(get("/api/v1/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("board/select/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("boardId").description("게시물 식별 번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("게시물 내용"),
+                                fieldWithPath("createdDateTime").type(JsonFieldType.STRING).description("게시물 생성 시간"),
+                                fieldWithPath("writer").type(JsonFieldType.STRING).description("게시물 작성자 별명")
                         )));
     }
 }
