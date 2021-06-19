@@ -33,7 +33,7 @@ public class BoardTest {
     @DisplayName("게시물 삭제 여부를 참으로 변경한다.")
     void delete() {
         Board board = new Board(new Title(title), new Content(content), TEST_MEMBER, createdDateTime);
-        board.delete();
+        board.delete(TEST_MEMBER);
         then(board.isDeleted()).isTrue();
     }
 }

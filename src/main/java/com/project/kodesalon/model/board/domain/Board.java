@@ -18,6 +18,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
+import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "deleted = 'false'")
@@ -74,8 +76,19 @@ public class Board {
         return deleted;
     }
 
-    public void delete() {
+    public void delete(Member member) {
+        validateAuthorizationOf(member);
         deleted = true;
+    }
+
+    private void validateAuthorizationOf(Member member) {
+        if (!isWrittenBy(member)) {
+            throw new IllegalArgumentException(NOT_AUTHORIZED_MEMBER);
+        }
+    }
+
+    private boolean isWrittenBy(Member member) {
+        return writer.equals(member);
     }
 }
 
