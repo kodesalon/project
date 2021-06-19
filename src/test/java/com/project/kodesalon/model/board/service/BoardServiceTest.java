@@ -19,6 +19,8 @@ import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER;
 import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
@@ -67,7 +69,7 @@ public class BoardServiceTest {
 
         thenThrownBy(() -> boardService.updateBoard(1L, BOARD_UPDATE_REQUEST))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessage("찾으려는 회원이 없습니다");
+                .hasMessage(NOT_EXIST_MEMBER);
     }
 
     @Test
@@ -78,6 +80,6 @@ public class BoardServiceTest {
 
         thenThrownBy(() -> boardService.updateBoard(1L, BOARD_UPDATE_REQUEST))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessage("수정하려는 게시물이 없습니다");
+                .hasMessage(NOT_EXIST_BOARD);
     }
 }

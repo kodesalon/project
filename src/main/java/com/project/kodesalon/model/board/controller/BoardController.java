@@ -33,6 +33,7 @@ public class BoardController {
 
     @PutMapping(value = "/boards/{boardId}")
     public ResponseEntity<BoardUpdateResponse> updateBoard(@PathVariable final Long boardId, @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
-        return ResponseEntity.ok().body(new BoardUpdateResponse("게시물 정보가 변경되었습니다"));
+        return ResponseEntity.ok()
+                .body(boardService.updateBoard(boardId, boardUpdateRequest));
     }
 }

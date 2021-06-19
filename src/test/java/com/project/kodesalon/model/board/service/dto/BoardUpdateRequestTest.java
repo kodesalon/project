@@ -13,6 +13,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 
+import static com.project.kodesalon.common.ErrorCode.BOARD_WRITER_IS_NULL;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
 import static com.project.kodesalon.model.board.domain.vo.Content.CONTENT_LENGTH_BOUND_MAX;
@@ -44,7 +45,7 @@ public class BoardUpdateRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("null이 아닌 회원 식별 번호를 입력해주세요.");
+                .contains(BOARD_WRITER_IS_NULL);
     }
 
     @Test
