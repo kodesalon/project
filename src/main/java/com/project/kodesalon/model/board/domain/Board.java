@@ -71,5 +71,10 @@ public class Board {
     public boolean isDeleted() {
         return isDeleted;
     }
+
+    public void updateTitleAndContent(Title updateTitle, Content updateContent) {
+        this.title = updateTitle;
+        this.content = updateContent;
+    }
 }
 
