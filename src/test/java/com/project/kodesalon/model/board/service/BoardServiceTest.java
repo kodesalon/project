@@ -38,6 +38,6 @@ public class BoardServiceTest {
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(TEST_MEMBER));
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "게시물 작성", LocalDateTime.now());
         boardService.save(boardCreateRequest);
-        verify(boardRepository).save(any(Board.class));
+        verify(boardRepository, times(1)).save(any(Board.class));
     }
 }
