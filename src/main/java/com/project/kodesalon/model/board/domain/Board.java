@@ -18,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
+import static com.project.kodesalon.common.ErrorCode.ALREADY_DELETED_BOARD;
 import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
 
 @Entity
@@ -77,8 +78,15 @@ public class Board {
     }
 
     public void delete(final Member member) {
+        validateState();
         validateAuthorizationOf(member);
         deleted = true;
+    }
+
+    private void validateState() {
+        if (deleted) {
+            throw new IllegalStateException(ALREADY_DELETED_BOARD);
+        }
     }
 
     private void validateAuthorizationOf(final Member member) {

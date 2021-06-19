@@ -15,10 +15,12 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
+import static com.project.kodesalon.common.ErrorCode.ALREADY_DELETED_BOARD;
 import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
 import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
+import static org.assertj.core.api.BDDAssertions.thenIllegalStateException;
 
 public class BoardTest {
     private final String title = "게시물 제목";
@@ -59,5 +61,15 @@ public class BoardTest {
         thenIllegalArgumentException()
                 .isThrownBy(() -> board.delete(stranger))
                 .withMessage(NOT_AUTHORIZED_MEMBER);
+    }
+
+    @Test
+    @DisplayName("이미 삭제한 게시물을 다시 삭제 시도할 경우, 예외가 발생한다.")
+    void delete_throw_exception_with_already_deleted() {
+        board.delete(TEST_MEMBER);
+
+        thenIllegalStateException()
+                .isThrownBy(() -> board.delete(TEST_MEMBER))
+                .withMessage(ALREADY_DELETED_BOARD);
     }
 }
