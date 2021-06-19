@@ -278,7 +278,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원 가입시 삭제된 회원일 경우 400 상태와 예외 메세지를 반환합니다")
     void join_fail_with_deleted_member_alias() throws Exception {
-        given(memberService.join(any(CreateMemberRequest.class))).willThrow(new DataIntegrityViolationException(ALREADY_EXIST_MEMBER_ALIAS));
+        given(memberService.join(any(CreateMemberRequest.class))).willThrow(new IllegalArgumentException(ALREADY_EXIST_MEMBER_ALIAS));
 
         this.mockMvc.perform(post("/api/v1/members")
                 .contentType(MediaType.APPLICATION_JSON)

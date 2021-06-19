@@ -112,11 +112,11 @@ public class MemberServiceTest {
     @Test
     @DisplayName("회원 가입시 삭제한 회원이 다시 가입했을 경우에는 예외를 발생시킵니다")
     void join_throw_exception_with_left_alias_after_delete() {
-        given(memberRepository.save(any(Member.class))).willThrow(new DataIntegrityViolationException("이미 삭제된 회원에 대한 Alias"));
+        given(memberRepository.save(any(Member.class))).willThrow(new DataIntegrityViolationException(ALREADY_EXIST_MEMBER_ALIAS));
 
         thenThrownBy(() -> memberService.join(createMemberRequest))
-                .isInstanceOf(DataIntegrityViolationException.class)
-                .hasMessage("이미 삭제된 회원에 대한 Alias");
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ALREADY_EXIST_MEMBER_ALIAS);
     }
 
     @Test
