@@ -23,13 +23,13 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<Void> save(@RequestBody @Valid final BoardCreateRequest boardCreateRequest) {
         boardService.save(boardCreateRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     public ResponseEntity<Void> delete(@RequestBody @Valid final BoardDeleteRequest boardDeleteRequest) {
         boardService.delete(boardDeleteRequest);
         return new ResponseEntity<>(HttpStatus.OK);
