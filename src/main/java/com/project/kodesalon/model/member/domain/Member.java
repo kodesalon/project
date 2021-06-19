@@ -6,6 +6,7 @@ import com.project.kodesalon.model.member.domain.vo.Name;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.domain.vo.Phone;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -18,6 +19,7 @@ import javax.persistence.UniqueConstraint;
 @Entity
 @NoArgsConstructor
 @Table(name = "member", uniqueConstraints = {@UniqueConstraint(columnNames = {"alias"})})
+@Slf4j
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,5 +74,14 @@ public class Member {
 
     public boolean hasSamePassword(Password password) {
         return this.password.equals(password);
+    }
+
+    public void login(String password) {
+        Password inputPassword = new Password(password);
+
+        if (!hasSamePassword(inputPassword)) {
+            log.info("{}의 Password가 일치하지 않음", getAlias());
+            throw new IllegalArgumentException("비밀 번호가 일치하지 않습니다.");
+        }
     }
 }
