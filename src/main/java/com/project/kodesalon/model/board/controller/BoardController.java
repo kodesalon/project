@@ -3,6 +3,7 @@ package com.project.kodesalon.model.board.controller;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
+import com.project.kodesalon.model.board.service.dto.BoardSelectMultiResponse;
 import com.project.kodesalon.model.board.service.dto.BoardSelectSingleResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @RestController
 @RequestMapping(value = "/api/v1/boards")
@@ -42,5 +45,12 @@ public class BoardController {
     public ResponseEntity<BoardSelectSingleResponse> selectBoard(@PathVariable final Long boardId) {
         BoardSelectSingleResponse boardSelectSingleResponse = boardService.selectBoard(boardId);
         return ResponseEntity.ok().body(boardSelectSingleResponse);
+    }
+
+    @GetMapping("/page/{page}")
+    public ResponseEntity<BoardSelectMultiResponse> selectBoards(@PathVariable final Long page) {
+        BoardSelectSingleResponse boardSelectSingleResponse = new BoardSelectSingleResponse("제목", "내용", LocalDateTime.now().toString(), "작성자");
+        BoardSelectMultiResponse boardSelectMultiResponse = new BoardSelectMultiResponse(Arrays.asList(boardSelectSingleResponse));
+        return ResponseEntity.ok().body(boardSelectMultiResponse);
     }
 }
