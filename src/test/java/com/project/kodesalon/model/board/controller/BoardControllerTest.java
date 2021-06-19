@@ -35,6 +35,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Import(JacksonConfiguration.class)
@@ -120,6 +121,7 @@ public class BoardControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("게시물 정보가 변경되었습니다"))
                 .andDo(document("board/update/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -129,6 +131,8 @@ public class BoardControllerTest {
                         requestFields(
                                 fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("작성 회원의 식별자"),
                                 fieldWithPath("updatedTitle").type(JsonFieldType.STRING).description("수정할 제목"),
-                                fieldWithPath("updatedContent").type(JsonFieldType.STRING).description("수정할 내용"))));
+                                fieldWithPath("updatedContent").type(JsonFieldType.STRING).description("수정할 내용")),
+                        responseFields(
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("게시물 정보가 변경되었습니다"))));
     }
 }

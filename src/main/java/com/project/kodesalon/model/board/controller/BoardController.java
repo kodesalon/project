@@ -3,6 +3,7 @@ package com.project.kodesalon.model.board.controller;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
+import com.project.kodesalon.model.board.service.dto.BoardUpdateResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +32,7 @@ public class BoardController {
     }
 
     @PutMapping(value = "/boards/{boardId}")
-    public ResponseEntity<Void> updateBoard(@PathVariable final Long boardId, @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<BoardUpdateResponse> updateBoard(@PathVariable final Long boardId, @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
+        return ResponseEntity.ok().body(new BoardUpdateResponse("게시물 정보가 변경되었습니다"));
     }
 }
