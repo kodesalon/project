@@ -46,6 +46,7 @@ public class Board {
         this.content = content;
         this.writer = writer;
         this.createdDateTime = createdDateTime;
+        this.writer.addBoard(this);
     }
 
     public Long getId() {

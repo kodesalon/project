@@ -32,7 +32,6 @@ public class BoardService {
                 });
 
         Board createdBoard = boardCreateRequest.toBoard(member);
-        member.addBoard(createdBoard);
         boardRepository.save(createdBoard);
     }
 }
