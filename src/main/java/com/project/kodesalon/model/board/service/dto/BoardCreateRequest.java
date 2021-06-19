@@ -38,15 +38,17 @@ public class BoardCreateRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdDateTime;
 
-    public BoardCreateRequest(Long memberId, String title, String content, LocalDateTime createdDateTime) {
+    public BoardCreateRequest(final Long memberId, final String title, final String content, final LocalDateTime createdDateTime) {
         this.memberId = memberId;
         this.title = title;
         this.content = content;
         this.createdDateTime = createdDateTime;
     }
 
-    public Board toBoard(Member writer) {
-        return new Board(new Title(title), new Content(content), writer, createdDateTime);
+    public Board toBoard(final Member writer) {
+        Title title = new Title(this.title);
+        Content content = new Content(this.content);
+        return new Board(title, content, writer, createdDateTime);
     }
 }
 
