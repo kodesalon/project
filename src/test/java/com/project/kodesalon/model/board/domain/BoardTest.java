@@ -19,7 +19,7 @@ public class BoardTest {
 
     @Test
     @DisplayName("게시물의 제목, 내용, 작성자, 생성 시간, 삭제 여부를 반환한다.")
-    public void getter() {
+    void getter() {
         BDDSoftAssertions softly = new BDDSoftAssertions();
         softly.then(TEST_BOARD.getTitle()).isEqualTo(title);
         softly.then(TEST_BOARD.getContent()).isEqualTo(content);
@@ -31,7 +31,7 @@ public class BoardTest {
 
     @Test
     @DisplayName("게시물 삭제 여부를 참으로 변경한다.")
-    public void delete() {
+    void delete() {
         Board board = new Board(new Title(title), new Content(content), TEST_MEMBER, createdDateTime);
         board.delete();
         then(board.isDeleted()).isTrue();

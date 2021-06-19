@@ -49,7 +49,7 @@ public class BoardControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    public void setUp(RestDocumentationContextProvider restDocumentation) {
+    void setUp(RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.standaloneSetup(boardController)
                 .apply(documentationConfiguration(restDocumentation))
                 .setControllerAdvice(new GlobalExceptionHandler())
@@ -58,7 +58,7 @@ public class BoardControllerTest {
 
     @Test
     @DisplayName("회원 식별 번호, 제목, 내용, 생성 날짜를 json으로 전달받아 게시물을 생성하고 HTTP 200을 반환한다.")
-    public void save() throws Exception {
+    void save() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "게시물 내용", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
@@ -77,7 +77,7 @@ public class BoardControllerTest {
 
     @Test
     @DisplayName("제목이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
-    public void save_fail_with_invalid_title() throws Exception {
+    void save_fail_with_invalid_title() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "", "게시물 내용", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
@@ -93,7 +93,23 @@ public class BoardControllerTest {
 
     @Test
     @DisplayName("내용이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
-    public void save_fail_with_invalid_content() throws Exception {
+    void save_fail_with_invalid_content() throws Exception {
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "", LocalDateTime.now());
+        mockMvc.perform(post("/api/v1/boards")
+                .content(objectMapper.writeValueAsString(boardCreateRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(document("board/create/fail/invalid-content",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 내용 예외 코드")
+                        )));
+    }
+
+    @Test
+    @DisplayName("내용이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
+    void delete() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))

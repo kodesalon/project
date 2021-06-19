@@ -191,7 +191,7 @@ class CreateMemberRequestTest {
 
         @Test
         @DisplayName("변경하려는 비밀번호를 반환한다.")
-        public void getter() {
+        void getter() {
             ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
             then(changePasswordRequest.getPassword()).isEqualTo("ChangePassword1!");
         }
