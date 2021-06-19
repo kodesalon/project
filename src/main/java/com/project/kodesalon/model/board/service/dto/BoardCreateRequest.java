@@ -46,7 +46,9 @@ public class BoardCreateRequest {
     }
 
     public Board toBoard(Member writer) {
-        return new Board(new Title(title), new Content(content), writer, createdDateTime);
+        Title title = new Title(this.title);
+        Content content = new Content(this.content);
+        return new Board(title, content, writer, createdDateTime);
     }
 }
 
