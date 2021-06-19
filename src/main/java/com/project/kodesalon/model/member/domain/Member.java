@@ -20,7 +20,8 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "member", uniqueConstraints = {@UniqueConstraint(columnNames = {"alias"})})
+@Table(name = "member", uniqueConstraints = {
+        @UniqueConstraint(name = "member_unique_constraint", columnNames = {"alias"})})
 @Where(clause = "deleted = 'false'")
 @Slf4j
 public class Member {
