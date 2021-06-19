@@ -23,6 +23,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
@@ -123,5 +124,18 @@ public class Member {
 
     public void addBoard(final Board newBoard) {
         boards.add(newBoard);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return alias.equals(member.alias);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(alias);
     }
 }
