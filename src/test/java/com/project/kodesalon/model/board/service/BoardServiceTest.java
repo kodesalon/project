@@ -31,6 +31,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardServiceTest {
+    private static final int TEST_BOARDS_SIZE = 11;
 
     private final List<Board> boards = createBoards();
 
@@ -86,12 +87,9 @@ public class BoardServiceTest {
 
     private List<Board> createBoards() {
         List<Board> boards = new ArrayList<>();
-        String title = "게시물 제목";
-        String content = "게시물 내용";
-        LocalDateTime createdDateTime = LocalDateTime.now();
 
-        for (int i = 0; i < 11; i++) {
-            boards.add(new Board(new Title(title), new Content(content), TEST_MEMBER, createdDateTime));
+        for (int i = 0; i < TEST_BOARDS_SIZE; i++) {
+            boards.add(new Board(new Title("게시물 제목"), new Content("게시물 내용"), TEST_MEMBER, LocalDateTime.now()));
         }
 
         return boards;
