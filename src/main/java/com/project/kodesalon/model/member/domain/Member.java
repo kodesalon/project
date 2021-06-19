@@ -6,7 +6,7 @@ import com.project.kodesalon.model.member.domain.vo.Email;
 import com.project.kodesalon.model.member.domain.vo.Name;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.domain.vo.Phone;
-import lombok.Getter;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
@@ -29,15 +29,15 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 
 @Entity
-@NoArgsConstructor
-@Table(name = "member", uniqueConstraints = {@UniqueConstraint(columnNames = {"alias"})})
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "member", uniqueConstraints = {
+        @UniqueConstraint(name = "member_unique_constraint", columnNames = {"alias"})})
 @Where(clause = "deleted = 'false'")
 @Slf4j
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
     @Column(name = "member_id")
     private Long id;
 
@@ -60,8 +60,7 @@ public class Member {
     private List<Board> boards = new ArrayList<>();
 
     @Column(name = "deleted")
-    @Getter
-    private boolean deleted;
+    private boolean deleted = false;
 
     public Member(final Alias alias, final Password password, final Name name, final Email email, final Phone phone) {
         this.alias = alias;
@@ -69,6 +68,10 @@ public class Member {
         this.email = email;
         this.name = name;
         this.phone = phone;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getAlias() {
@@ -93,6 +96,10 @@ public class Member {
 
     public List<Board> getBoards() {
         return boards;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
     }
 
     public boolean hasSamePassword(final Password password) {
