@@ -16,4 +16,6 @@ public class ErrorCode {
     // Board
     public static final String INVALID_BOARD_TITLE = "B001";
     public static final String INVALID_BOARD_CONTENT = "B002";
+    public static final String NOT_EXIST_BOARD = "B003";
+    public static final String NOT_AUTHORIZED_MEMBER = "B004";
 }
