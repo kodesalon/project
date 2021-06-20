@@ -4,10 +4,12 @@ import com.project.kodesalon.model.board.domain.Board;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
-import com.project.kodesalon.model.board.service.dto.BoardSelectSingleResponse;
+import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,9 +41,9 @@ public class BoardService {
         board.delete(member);
     }
 
-    public BoardSelectSingleResponse selectBoard(final Long boardId) {
+    public BoardSelectResponse selectBoard(final Long boardId) {
         Board board = findById(boardId);
-        return new BoardSelectSingleResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter());
+        return new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter());
     }
 
     private Board findById(final Long boardId) {
@@ -50,5 +52,11 @@ public class BoardService {
                     log.info("존재하지 않는 게시물 식별자 boardId : {}", boardId);
                     throw new EntityNotFoundException(NOT_EXIST_BOARD);
                 });
+    }
+
+    public Page<BoardSelectResponse> selectBoards(Pageable pageable) {
+        Page<Board> boards = boardRepository.findAll(pageable);
+        return boards.map(board ->
+                new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter()));
     }
 }

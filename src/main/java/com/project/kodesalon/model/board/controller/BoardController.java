@@ -3,8 +3,8 @@ package com.project.kodesalon.model.board.controller;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
-import com.project.kodesalon.model.board.service.dto.BoardSelectMultiResponse;
-import com.project.kodesalon.model.board.service.dto.BoardSelectSingleResponse;
+import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
-import java.util.Arrays;
 
 @RestController
 @RequestMapping(value = "/api/v1/boards")
@@ -45,15 +43,14 @@ public class BoardController {
     }
 
     @GetMapping("/{boardId}")
-    public ResponseEntity<BoardSelectSingleResponse> selectBoard(@PathVariable final Long boardId) {
-        BoardSelectSingleResponse boardSelectSingleResponse = boardService.selectBoard(boardId);
-        return ResponseEntity.ok().body(boardSelectSingleResponse);
+    public ResponseEntity<BoardSelectResponse> selectBoard(@PathVariable final Long boardId) {
+        BoardSelectResponse boardSelectResponse = boardService.selectBoard(boardId);
+        return ResponseEntity.ok().body(boardSelectResponse);
     }
 
     @GetMapping
-    public ResponseEntity<BoardSelectMultiResponse> selectBoards(@PageableDefault(sort = "board_id", direction = Sort.Direction.DESC) final Pageable pageable) {
-        BoardSelectSingleResponse boardSelectSingleResponse = new BoardSelectSingleResponse("제목", "내용", LocalDateTime.now().toString(), "작성자");
-        BoardSelectMultiResponse boardSelectMultiResponse = new BoardSelectMultiResponse(Arrays.asList(boardSelectSingleResponse));
+    public ResponseEntity<Page<BoardSelectResponse>> selectBoards(@PageableDefault(sort = "board_id", direction = Sort.Direction.DESC) final Pageable pageable) {
+        Page<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(pageable);
         return ResponseEntity.ok().body(boardSelectMultiResponse);
     }
 }
