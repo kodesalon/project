@@ -20,23 +20,23 @@ public class Content {
     @Column(nullable = false, length = CONTENT_LENGTH_BOUND_MAX)
     private String content;
 
-    public Content(String content) {
+    public Content(final String content) {
         validate(content);
         this.content = content;
     }
 
-    private void validate(String content) {
+    private void validate(final String content) {
         checkNullOrBlank(content);
         checkLength(content);
     }
 
-    private void checkNullOrBlank(String content) {
+    private void checkNullOrBlank(final String content) {
         if (content == null || content.isBlank()) {
             throw new IllegalArgumentException(CHECK_CONTENT_IS_BLANK);
         }
     }
 
-    private void checkLength(String content) {
+    private void checkLength(final String content) {
         if (content.length() > CONTENT_LENGTH_BOUND_MAX) {
             throw new IllegalArgumentException(CHECK_CONTENT_LENGTH);
         }

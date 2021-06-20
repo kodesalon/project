@@ -17,6 +17,7 @@ import java.util.Set;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ID;
 import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 
@@ -29,7 +30,7 @@ class BoardCreateRequestTest {
 
     @Test
     @DisplayName("게시물의 제목, 내용, 작성자, 생성 시간, 삭제 여부를 반환한다.")
-    public void getter() {
+    void getter() {
         softly.then(boardCreateRequest.getMemberId()).isEqualTo(1L);
         softly.then(boardCreateRequest.getTitle()).isEqualTo("게시물 제목");
         softly.then(boardCreateRequest.getContent()).isEqualTo("게시물 내용");
@@ -39,7 +40,7 @@ class BoardCreateRequestTest {
 
     @Test
     @DisplayName("작성자를 입력받아, 멤버 객체를 반환한다.")
-    public void toBoard() {
+    void toBoard() {
         Board board = boardCreateRequest.toBoard(TEST_MEMBER);
 
         softly.then(board.getTitle()).isEqualTo("게시물 제목");
@@ -59,7 +60,7 @@ class BoardCreateRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains("null이 아닌 회원 식별 번호를 입력해주세요.");
+                .contains(INVALID_MEMBER_ID);
     }
 
     @Test

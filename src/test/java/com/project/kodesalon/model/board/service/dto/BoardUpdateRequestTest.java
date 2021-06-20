@@ -13,9 +13,9 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 
-import static com.project.kodesalon.common.ErrorCode.BOARD_WRITER_IS_NULL;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ID;
 import static com.project.kodesalon.model.board.domain.vo.Content.CONTENT_LENGTH_BOUND_MAX;
 import static com.project.kodesalon.model.board.domain.vo.Title.TITLE_LENGTH_MAX_BOUND;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -45,7 +45,7 @@ public class BoardUpdateRequestTest {
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
-                .contains(BOARD_WRITER_IS_NULL);
+                .contains(INVALID_MEMBER_ID);
     }
 
     @Test

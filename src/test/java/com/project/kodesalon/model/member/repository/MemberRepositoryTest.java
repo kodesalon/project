@@ -12,11 +12,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @DataJpaTest
@@ -38,7 +38,7 @@ class MemberRepositoryTest {
     void findMemberByAlias() {
         BDDSoftAssertions softly = new BDDSoftAssertions();
         Member savedMember = memberRepository.findMemberByAlias(new Alias("alias"))
-                .orElseThrow(() -> new HttpClientErrorException(HttpStatus.UNAUTHORIZED, "존재하는 아이디를 입력해주세요."));
+                .orElseThrow(() -> new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS));
 
         softly.then(savedMember.getAlias()).isEqualTo(member.getAlias());
         softly.then(savedMember.getPassword()).isEqualTo(member.getPassword());

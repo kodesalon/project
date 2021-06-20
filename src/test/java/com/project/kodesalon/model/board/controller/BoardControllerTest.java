@@ -5,6 +5,7 @@ import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
+import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,14 +25,15 @@ import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
-import static com.project.kodesalon.common.ErrorCode.BOARD_WRITER_IS_NULL;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ID;
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
@@ -69,7 +71,7 @@ public class BoardControllerTest {
     private ObjectMapper objectMapper;
 
     @BeforeEach
-    public void setUp(RestDocumentationContextProvider restDocumentation) {
+    void setUp(RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.standaloneSetup(boardController)
                 .apply(documentationConfiguration(restDocumentation))
                 .setControllerAdvice(new GlobalExceptionHandler())
@@ -78,7 +80,7 @@ public class BoardControllerTest {
 
     @Test
     @DisplayName("회원 식별 번호, 제목, 내용, 생성 날짜를 json으로 전달받아 게시물을 생성하고 HTTP 200을 반환한다.")
-    public void save() throws Exception {
+    void save() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "게시물 내용", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
@@ -97,7 +99,7 @@ public class BoardControllerTest {
 
     @Test
     @DisplayName("제목이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
-    public void save_fail_with_invalid_title() throws Exception {
+    void save_fail_with_invalid_title() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "", "게시물 내용", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
@@ -113,7 +115,7 @@ public class BoardControllerTest {
 
     @Test
     @DisplayName("내용이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
-    public void save_fail_with_invalid_content() throws Exception {
+    void save_fail_with_invalid_content() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
@@ -160,10 +162,10 @@ public class BoardControllerTest {
                 = new BoardUpdateRequest(nullMemberId, "update title", "update content");
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(BOARD_WRITER_IS_NULL))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_ID))
                 .andDo(document("board/update/fail/null-writer",
                         getDocumentResponse(),
                         responseFields(
@@ -196,8 +198,8 @@ public class BoardControllerTest {
                 = new BoardUpdateRequest(1L, "update content", nullAndEmptyContent);
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
-        .contentType(MediaType.APPLICATION_JSON)
-        .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_BOARD_CONTENT))
                 .andDo(document("board/update/fail/invalid-content",
@@ -205,6 +207,7 @@ public class BoardControllerTest {
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("게시물 수정 시 유효하지 않은 내용에 대한 예외 코드"))));
     }
+
     @Test
     @DisplayName("게시물 수정시 존재하지 않는 작성자는 400 상태와 에러 코드를 응답합니다")
     void update_throw_exception_with_not_exist_member_id() throws Exception {
@@ -238,4 +241,21 @@ public class BoardControllerTest {
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 게시물에 대한 예외 메세지"))));
     }
+
+    @Test
+    @DisplayName("내용이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
+    void delete() throws Exception {
+        BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(1L, 1L);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/boards/")
+                .content(objectMapper.writeValueAsString(boardDeleteRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("board/delete/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("게시물 삭제를 시도하는 회원 식별 번호"),
+                                fieldWithPath("boardId").type(JsonFieldType.NUMBER).description("삭제하려는 게시물 식별 번호"))));
+    }
+
 }

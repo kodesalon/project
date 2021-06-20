@@ -8,9 +8,9 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import static com.project.kodesalon.common.ErrorCode.BOARD_WRITER_IS_NULL;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ID;
 import static com.project.kodesalon.model.board.domain.vo.Content.CONTENT_LENGTH_BOUND_MAX;
 import static com.project.kodesalon.model.board.domain.vo.Title.TITLE_LENGTH_MAX_BOUND;
 
@@ -18,7 +18,7 @@ import static com.project.kodesalon.model.board.domain.vo.Title.TITLE_LENGTH_MAX
 @Getter
 public class BoardUpdateRequest {
 
-    @NotNull(message = BOARD_WRITER_IS_NULL)
+    @NotNull(message = INVALID_MEMBER_ID)
     private Long memberId;
 
     @NotEmpty(message = INVALID_BOARD_TITLE)

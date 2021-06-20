@@ -23,18 +23,18 @@ public class Title {
         this.title = title;
     }
 
-    private void validate(String title) {
+    private void validate(final String title) {
         checkNullOrBlank(title);
         checkLength(title);
     }
 
-    private void checkNullOrBlank(String title) {
+    private void checkNullOrBlank(final String title) {
         if (title == null || title.isBlank()) {
             throw new IllegalArgumentException(CHECK_TITLE_IS_BLANK);
         }
     }
 
-    private void checkLength(String title) {
+    private void checkLength(final String title) {
         if (title.length() > TITLE_LENGTH_MAX_BOUND) {
             throw new IllegalArgumentException(CHECK_TITLE_LENGTH);
         }
