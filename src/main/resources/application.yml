@@ -19,6 +19,8 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
+    hikari:
+      auto-commit: false
   jpa:
     show-sql: true
     database-platform: H2
@@ -26,8 +28,8 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
-        default_batch_size : 50
+        default_batch_fetch_size: 50
         query:
-          in_cloud_memory_padding : true
+          in_clause_parameter_padding: true
         format_sql: true
     open-in-view: false

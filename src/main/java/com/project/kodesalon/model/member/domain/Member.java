@@ -6,16 +6,22 @@ import com.project.kodesalon.model.member.domain.vo.Name;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.domain.vo.Phone;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
 @NoArgsConstructor
+@Table(name = "member", uniqueConstraints = {@UniqueConstraint(columnNames = {"alias"})})
+@Slf4j
 public class Member {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,7 +41,7 @@ public class Member {
     @Embedded
     private Name name;
 
-    public Member(String alias, String password, String name, String email, String phone) {
+    public Member(final String alias, final String password, final String name, final String email, final String phone) {
         this.alias = new Alias(alias);
         this.password = new Password(password);
         this.email = new Email(email);
@@ -67,7 +73,26 @@ public class Member {
         return phone.value();
     }
 
-    public boolean isIncorrectPassword(Password password) {
-        return !this.password.equals(password);
+    public boolean hasSamePassword(final Password password) {
+        return this.password.equals(password);
+    }
+
+    public void changePassword(final String password) {
+        final Password newPassword = new Password(password);
+
+        if (hasSamePassword(newPassword)) {
+            throw new IllegalArgumentException("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
+        }
+
+        this.password = newPassword;
+    }
+
+    public void login(final String password) {
+        Password inputPassword = new Password(password);
+
+        if (!hasSamePassword(inputPassword)) {
+            log.info("{}의 Password가 일치하지 않음", getAlias());
+            throw new IllegalArgumentException("비밀 번호가 일치하지 않습니다.");
+        }
     }
 }

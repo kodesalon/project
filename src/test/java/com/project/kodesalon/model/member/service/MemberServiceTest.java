@@ -1,9 +1,14 @@
 package com.project.kodesalon.model.member.service;
 
 import com.project.kodesalon.model.member.domain.Member;
-import com.project.kodesalon.model.member.service.dto.LoginRequestDto;
-import com.project.kodesalon.model.member.service.dto.LoginResponseDto;
+import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
+import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
+import com.project.kodesalon.model.member.service.dto.LoginRequest;
+import com.project.kodesalon.model.member.service.dto.LoginResponse;
+import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,15 +16,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
+    private final BDDSoftAssertions softly = new BDDSoftAssertions();
+    private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
+    private final CreateMemberRequest createMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+
     @InjectMocks
     private MemberService memberService;
 
@@ -30,52 +43,101 @@ public class MemberServiceTest {
     private Member member;
 
     @Test
-    @DisplayName("존재하지 않는 Alias는 예외를 발생시킵니다.")
-    void not_exist_member_login_throw_exception() {
-        LoginRequestDto loginRequestDto =
-                new LoginRequestDto("alias", "Password123!!");
-
-        given(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
-                .willReturn(Optional.empty());
-
-        thenThrownBy(() -> memberService.login(loginRequestDto))
-                .isInstanceOf(HttpClientErrorException.class)
-                .hasMessage("존재하는 아이디를 입력해주세요.");
-    }
-
-    @Test
-    @DisplayName("존재하는 Alias가 Alias와 Password가 일치하면 Id, Alias를 리턴합니다.")
-    void exist_login_return_success2() {
-        LoginRequestDto loginRequestDto =
-                new LoginRequestDto("alias", "Password123!!");
-        BDDSoftAssertions softly = new BDDSoftAssertions();
-
+    @DisplayName("로그인 성공하면 회원 식별자, 별명을 담은 DTO를 반환합니다.")
+    void login() {
         given(member.getId()).willReturn(1L);
         given(member.getAlias()).willReturn("alias");
-        given(member.isIncorrectPassword(loginRequestDto.getPassword())).willReturn(false);
-        given(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
-                .willReturn(Optional.of(member));
+        given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.of(member));
 
-        LoginResponseDto loginResponseDto = memberService.login(loginRequestDto);
+        LoginResponse loginResponse = memberService.login(loginRequest);
 
-        softly.then(loginResponseDto.getMemberId()).isEqualTo(1L);
-        softly.then(loginResponseDto.getAlias()).isEqualTo("alias");
-
+        softly.then(loginResponse.getMemberId()).isEqualTo(1L);
+        softly.then(loginResponse.getAlias()).isEqualTo("alias");
         softly.assertAll();
     }
 
     @Test
-    @DisplayName("존재하는 Alias가 Password가 일치하지 않는다면 예외 메세지를 발생시킵니다.")
-    void exist_login_return_fail2() {
-        LoginRequestDto loginRequestDto
-                = new LoginRequestDto("alias", "Password123!!!");
+    @DisplayName("로그인 시 존재하지 않는 아이디(Alias)일 경우, 예외가 발생합니다.")
+    void login_throw_exception_with_invalid_alias() {
+        given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.empty());
 
-        given(member.isIncorrectPassword(loginRequestDto.getPassword())).willReturn(true);
-        given(memberRepository.findMemberByAlias(loginRequestDto.getAlias()))
-                .willReturn(Optional.of(member));
+        thenThrownBy(() -> memberService.login(loginRequest))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("존재하는 아이디를 입력해주세요.");
+    }
 
-        thenThrownBy(() -> memberService.login(loginRequestDto))
-                .isInstanceOf(HttpClientErrorException.class)
+    @Test
+    @DisplayName("로그인 시 비밀번호 틀렸을 경우, 예외 메세지를 반환합니다.")
+    void login_throw_exception_with_invalid_password() {
+        willThrow(new IllegalArgumentException("비밀 번호가 일치하지 않습니다.")).given(member).login(anyString());
+        given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.of(member));
+
+        thenThrownBy(() -> memberService.login(loginRequest))
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("비밀 번호가 일치하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("회원가입이 성공하면 회원가입한 회원 식별자, 별명을 담은 DTO를 반환합니다.")
+    void join() {
+        given(member.getId()).willReturn(1L);
+        given(member.getAlias()).willReturn("alias");
+        given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.empty());
+        given(memberRepository.save(any(Member.class))).willReturn(member);
+
+        LoginResponse loginResponse = memberService.join(createMemberRequest);
+
+        softly.then(loginResponse.getMemberId()).isEqualTo(1L);
+        softly.then(loginResponse.getAlias()).isEqualTo("alias");
+        softly.assertAll();
+    }
+
+    @Test
+    @DisplayName("회원가입 시 이미 존재하는 아이디(Alias)일 경우, 예외 메세지를 반환합니다.")
+    void join_throw_exception_with_already_exist() {
+        given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.of(member));
+
+        thenThrownBy(() -> memberService.join(createMemberRequest))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("이미 존재하는 아이디입니다");
+    }
+
+    @Test
+    @DisplayName("회원정보 조회 성공 시, 회원 별명, 이름, 이메일, 전화 번호를 반환합니다.")
+    void exist_id_response_member() {
+        given(member.getAlias()).willReturn("alias");
+        given(member.getName()).willReturn("이름");
+        given(member.getEmail()).willReturn("email@email.com");
+        given(member.getPhone()).willReturn("010-1111-2222");
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+
+        SelectMemberResponse selectMemberResponse = memberService.selectMember(1L);
+
+        softly.then(selectMemberResponse.getAlias()).isEqualTo("alias");
+        softly.then(selectMemberResponse.getName()).isEqualTo("이름");
+        softly.then(selectMemberResponse.getEmail()).isEqualTo("email@email.com");
+        softly.then(selectMemberResponse.getPhone()).isEqualTo("010-1111-2222");
+        softly.assertAll();
+    }
+
+    @Test
+    @DisplayName("회원 정보 조회 시 찾으려는 회원이 없으면 예외를 반환합니다.")
+    void select_not_exist_id_throws_exception() {
+        given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
+
+        thenThrownBy(() -> memberService.selectMember(1L))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage("찾으려는 회원이 없습니다");
+    }
+
+    @Test
+    @DisplayName("비밀번호를 변경하고 성공 메세지를 담은 DTO를 반환한다.")
+    public void changePassword() {
+        BDDSoftAssertions softly = new BDDSoftAssertions();
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
+        ChangePasswordResponse changePasswordResponse = memberService.changePassword(1L, changePasswordRequest);
+        softly.then(changePasswordResponse.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
     }
 }

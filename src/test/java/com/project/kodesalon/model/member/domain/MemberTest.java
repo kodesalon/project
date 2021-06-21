@@ -10,6 +10,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
+import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 class MemberTest {
     private Member member;
@@ -29,14 +31,40 @@ class MemberTest {
         softly.then(member.getName()).isEqualTo("이름");
         softly.then(member.getEmail()).isEqualTo("email@email.com");
         softly.then(member.getPhone()).isEqualTo("010-1234-4444");
-
         softly.assertAll();
     }
 
     @ParameterizedTest
-    @CsvSource({"Password!!1234,true", "Password!!123,false"})
-    @DisplayName("Member의 비밀번호가 일치하지 않으면 true, 일치하면 false를 리턴합니다.")
-    void is_incorrect_password(String password, boolean expected) {
-        then(member.isIncorrectPassword(new Password(password))).isEqualTo(expected);
+    @CsvSource({"Password!!123,true", "Password!!1234,false"})
+    @DisplayName("Member의 비밀번호가 일치하면 true, 일치하지 않으면 false를 리턴합니다.")
+    void has_same_password(String password, boolean expected) {
+        then(member.hasSamePassword(new Password(password))).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("로그인 시, 비밀번호가 다른 경우 로그인에 실패하면 예외를 발생시킵니다")
+    void login_throw_exception_with_different_password() {
+        thenThrownBy(() -> member.login("Password123!!!"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("비밀 번호가 일치하지 않습니다.");
+    }
+
+    @Test
+    @DisplayName("비밀번호를 변경한다.")
+    public void changePassword() {
+        String newPassword = "ChangePassword1!";
+
+        member.changePassword(newPassword);
+
+        then(member.getPassword()).isEqualTo(newPassword);
+    }
+
+    @Test
+    @DisplayName("변경하려는 패스워드가 기존 패스워드가 중복일 경우 예외가 발생한다.")
+    public void changePassword_throw_error_with_exist_password() {
+        String password = member.getPassword();
+        thenIllegalArgumentException()
+                .isThrownBy(() -> member.changePassword(password))
+                .withMessageContaining("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
     }
 }
