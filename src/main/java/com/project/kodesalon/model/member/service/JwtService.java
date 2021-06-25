@@ -17,8 +17,8 @@ public class JwtService {
     private final ObjectMapper objectMapper;
     private final JwtIssueService jwtIssueService;
 
-    @Value("${test.key}")
-    private String secretKey = "12345678901234567890123456789000";
+    @Value("${jwt.secretKey}")
+    private String secretKey;
 
     public JwtService(final ObjectMapper objectMapper, final JwtIssueService jwtIssueService) {
         this.objectMapper = objectMapper;
