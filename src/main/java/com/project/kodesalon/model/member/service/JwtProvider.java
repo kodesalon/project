@@ -22,6 +22,9 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_TOKEN;
 @Component
 public class JwtProvider {
 
+    private static final long ACCESS_TOKEN_VALID_TIME = 30 * 60 * 1_000L;
+    private static final long REFRESH_TOKEN_VALID_TIME = 60 * 60 * 24 * 30 * 1_000L;
+
     private final ObjectMapper objectMapper;
 
     @Value("${jwt.secretKey}")
@@ -51,14 +54,17 @@ public class JwtProvider {
         }
     }
 
+    private boolean isExpired(Claims claims) {
+        return !claims.getExpiration()
+                .before(new Date());
+    }
+
     private String issueAccessToken(LoginResponse loginResponse) throws JsonProcessingException {
-        Long accessTokenValidTime = 30 * 60 * 1_000L;
-        return issueToken(loginResponse, accessTokenValidTime);
+        return issueToken(loginResponse, ACCESS_TOKEN_VALID_TIME);
     }
 
     private String issueRefreshToken(LoginResponse loginResponse) throws JsonProcessingException {
-        Long refreshTokenValidTIme = 60 * 60 * 24 * 30 * 1_000L;
-        return issueToken(loginResponse, refreshTokenValidTIme);
+        return issueToken(loginResponse, REFRESH_TOKEN_VALID_TIME);
     }
 
     private String issueToken(LoginResponse loginResponse, Long validTime) throws JsonProcessingException {
