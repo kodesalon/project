@@ -72,7 +72,7 @@ public class MemberService {
         return new ChangePasswordResponse("비밀번호 변경 성공하였습니다.");
     }
 
-    private Member findById(final Long memberId) {
+    public Member findById(final Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> {
                     log.info("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
