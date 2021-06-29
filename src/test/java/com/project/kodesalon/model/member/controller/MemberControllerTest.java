@@ -139,7 +139,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("회원가입이 성공하면 회원가입한 회원 식별자, 별명을 담은 DTO를 Http 200으로 응답합니다.")
+    @DisplayName("회원가입이 성공하면 회원가입한 jwt 토큰 (access, refresh), 회원 식별자, 별명을 담은 DTO를 Http 200으로 응답합니다.")
     void join_success() throws Exception {
         given(memberService.join(any(CreateMemberRequest.class))).willReturn(jwtResponse);
 
