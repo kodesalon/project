@@ -1,6 +1,5 @@
 package com.project.kodesalon.common;
 
-import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -24,23 +23,29 @@ public class JwtUtils {
     private String secretKey;
 
     @Value("${spring.jwtExpirationMs}")
-    private int jwtExpirationMs;
+    private long accessExpirationMs;
 
-    public String generateJwtToken(LoginResponse loginResponse) {
-        return generateTokenFromMemberId(loginResponse.getMemberId());
+    @Value("${spring.jwtRefreshExpirationMs}")
+    private long refreshExpirationMs;
+
+    public String generateAccessToken(Long memberId) {
+        return generateJwtToken(memberId, accessExpirationMs);
     }
 
-    private String generateTokenFromMemberId(Long memberId) {
+    public String generateRefreshToken(Long memberId) {
+        return generateJwtToken(memberId, refreshExpirationMs);
+    }
+
+    private String generateJwtToken(Long memberId, long expirationMs) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         byte[] secretKeyBytes = secretKey.getBytes();
         Key signKey = new SecretKeySpec(secretKeyBytes, signatureAlgorithm.getJcaName());
         Date issueTime = new Date();
-
         return Jwts.builder()
                 .setHeaderParam("typ", Header.JWT_TYPE)
                 .claim("memberId", memberId)
                 .setIssuedAt(issueTime)
-                .setExpiration(new Date(issueTime.getTime() + jwtExpirationMs))
+                .setExpiration(new Date(issueTime.getTime() + expirationMs))
                 .signWith(signatureAlgorithm, signKey)
                 .compact();
     }
