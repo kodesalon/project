@@ -7,6 +7,7 @@ import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
+import com.project.kodesalon.model.refreshToken.dto.JwtResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,9 +36,9 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<LoginResponse> join(@RequestBody @Valid final CreateMemberRequest createMemberRequest) {
-        LoginResponse loginResponse = memberService.join(createMemberRequest);
-        return ResponseEntity.ok().body(loginResponse);
+    public ResponseEntity<JwtResponse> join(@RequestBody @Valid final CreateMemberRequest createMemberRequest) {
+        JwtResponse jwtResponse = memberService.join(createMemberRequest);
+        return ResponseEntity.ok().body(jwtResponse);
     }
 
     @GetMapping("/{memberId}")

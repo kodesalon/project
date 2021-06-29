@@ -13,7 +13,7 @@ class JwtUtilsTest {
     private static final BDDSoftAssertions softly = new BDDSoftAssertions();
     private static final String JWT_SECERT_KEY = "bG9jYWxUZXN0S2V5";
     private static final Long MEMBER_ID = 1L;
-    private static final int EXPIRATION_MS = 1000;
+    private static final int EXPIRATION_MS = 2000;
 
     private final JwtUtils jwtUtils = new JwtUtils();
 
@@ -56,11 +56,9 @@ class JwtUtilsTest {
         String refreshToken = jwtUtils.generateRefreshToken(MEMBER_ID);
 
         softly.then(jwtUtils.validateToken(accessToken)).isTrue();
-        Thread.sleep(EXPIRATION_MS);
-        softly.then(jwtUtils.validateToken(accessToken)).isFalse();
-
         softly.then(jwtUtils.validateToken(refreshToken)).isTrue();
         Thread.sleep(EXPIRATION_MS);
+        softly.then(jwtUtils.validateToken(accessToken)).isFalse();
         softly.then(jwtUtils.validateToken(refreshToken)).isFalse();
         softly.assertAll();
     }

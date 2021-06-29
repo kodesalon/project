@@ -9,6 +9,7 @@ import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
+import com.project.kodesalon.model.refreshToken.dto.JwtResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,6 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MemberControllerTest {
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final LoginResponse loginResponse = new LoginResponse(1L, "alias");
+    private final JwtResponse jwtResponse = new JwtResponse("access token", "refresh token", 1L, "alias");
     private final CreateMemberRequest createMemberRequest =
             new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
     private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
@@ -139,7 +141,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원가입이 성공하면 회원가입한 회원 식별자, 별명을 담은 DTO를 Http 200으로 응답합니다.")
     void join_success() throws Exception {
-        given(memberService.join(any(CreateMemberRequest.class))).willReturn(loginResponse);
+        given(memberService.join(any(CreateMemberRequest.class))).willReturn(jwtResponse);
 
         this.mockMvc.perform(post("/api/v1/members")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -158,6 +160,8 @@ public class MemberControllerTest {
                                 fieldWithPath("phone").type(JsonFieldType.STRING).description("회원 가입할 member의 phone")
                         ),
                         responseFields(
+                                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("회원 가입한 member의 Access Token"),
+                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("회원 가입한 member의 Refresh Token"),
                                 fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 가입한 member의 식별자"),
                                 fieldWithPath("alias").type(JsonFieldType.STRING).description("회원 가입한 member의 alias"))));
     }
