@@ -1,6 +1,5 @@
 package com.project.kodesalon.model.member.service;
 
-import com.project.kodesalon.common.JwtUtils;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
@@ -10,7 +9,6 @@ import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
-import com.project.kodesalon.model.refreshToken.dto.JwtResponse;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +26,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -40,9 +40,6 @@ public class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
-
-    @Mock
-    private JwtUtils jwtUtils;
 
     @Mock
     private Member member;
@@ -83,19 +80,16 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원가입이 성공하면 회원가입한 회원 식별자, 별명을 담은 DTO를 반환합니다.")
+    @DisplayName("회원가입이 성공하면 repository에 회원 객체를 저장합니다.")
     void join() {
         given(member.getId()).willReturn(1L);
-        given(jwtUtils.generateJwtToken(anyLong())).willReturn("access token");
         given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.empty());
         given(memberRepository.save(any(Member.class))).willReturn(member);
 
-        JwtResponse jwtResponse = memberService.join(createMemberRequest);
+        memberService.join(createMemberRequest);
 
-        softly.then(jwtResponse.getAccessToken()).isEqualTo("access token");
-        softly.then(jwtResponse.getMemberId()).isEqualTo(1L);
-        softly.then(jwtResponse.getAlias()).isEqualTo("alias");
-        softly.assertAll();
+        verify(memberRepository, times(1)).findMemberByAlias(any(Alias.class));
+        verify(memberRepository, times(1)).save(any(Member.class));
     }
 
     @Test

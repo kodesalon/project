@@ -32,6 +32,7 @@ import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -139,16 +140,12 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("회원가입이 성공하면 회원가입한 jwt 토큰 (access, refresh), 회원 식별자, 별명을 담은 DTO를 Http 200으로 응답합니다.")
+    @DisplayName("회원가입이 성공하면 Http 200으로 응답합니다.")
     void join_success() throws Exception {
-        given(memberService.join(any(CreateMemberRequest.class))).willReturn(jwtResponse);
-
-        this.mockMvc.perform(post("/api/v1/members")
+        this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.memberId").value(1))
-                .andExpect(jsonPath("$.alias").value("alias"))
                 .andDo(document("join/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -158,21 +155,18 @@ public class MemberControllerTest {
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("회원 가입할 member의 이름"),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("회원 가입할 member의 email"),
                                 fieldWithPath("phone").type(JsonFieldType.STRING).description("회원 가입할 member의 phone")
-                        ),
-                        responseFields(
-                                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("회원 가입한 member의 Access Token"),
-                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("회원 가입한 member의 Refresh Token"),
-                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 가입한 member의 식별자"),
-                                fieldWithPath("alias").type(JsonFieldType.STRING).description("회원 가입한 member의 alias"))));
+
+                        )));
     }
 
     @Test
     @DisplayName("회원가입 시 이미 존재하는 아이디(Alias)일 경우, 예외 메세지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_already_exist() throws Exception {
-        given(memberService.join(any(CreateMemberRequest.class)))
-                .willThrow(new IllegalStateException("이미 존재하는 아이디입니다"));
+        willThrow(new IllegalArgumentException("이미 존재하는 아이디입니다"))
+                .given(memberService)
+                .join(any(CreateMemberRequest.class));
 
-        this.mockMvc.perform(post("/api/v1/members")
+        this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isBadRequest())
@@ -189,7 +183,7 @@ public class MemberControllerTest {
         CreateMemberRequest createMemberRequestWithInvalidAlias
                 = new CreateMemberRequest("", "Password123!!", "이름", "email@email.com", "010-1111-2222");
 
-        this.mockMvc.perform(post("/api/v1/members")
+        this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidAlias)))
                 .andExpect(status().isBadRequest())
@@ -206,7 +200,7 @@ public class MemberControllerTest {
         CreateMemberRequest createMemberRequestWithInvalidPassword
                 = new CreateMemberRequest("alias", "", "이름", "email@email.com", "010-1111-2222");
 
-        this.mockMvc.perform(post("/api/v1/members")
+        this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidPassword)))
                 .andExpect(status().isBadRequest())
@@ -223,7 +217,7 @@ public class MemberControllerTest {
         CreateMemberRequest createMemberRequestWithInvalidName
                 = new CreateMemberRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222");
 
-        this.mockMvc.perform(post("/api/v1/members")
+        this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidName)))
                 .andExpect(status().isBadRequest())
@@ -240,7 +234,7 @@ public class MemberControllerTest {
         CreateMemberRequest createMemberRequestWithInvalidEmail
                 = new CreateMemberRequest("alias", "Password123!!", "이름", " ", "010-1111-2222");
 
-        this.mockMvc.perform(post("/api/v1/members")
+        this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidEmail)))
                 .andExpect(status().isBadRequest())
@@ -257,7 +251,7 @@ public class MemberControllerTest {
         CreateMemberRequest createMemberRequestWithInvalidPhone
                 = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "");
 
-        this.mockMvc.perform(post("/api/v1/members")
+        this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidPhone)))
                 .andExpect(status().isBadRequest())

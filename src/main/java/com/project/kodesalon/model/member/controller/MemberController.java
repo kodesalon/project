@@ -7,8 +7,6 @@ import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
-import com.project.kodesalon.model.refreshToken.dto.JwtResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,20 +33,22 @@ public class MemberController {
         return ResponseEntity.ok().body(loginResponse);
     }
 
-    @PostMapping
-    public ResponseEntity<JwtResponse> join(@RequestBody @Valid final CreateMemberRequest createMemberRequest) {
-        JwtResponse jwtResponse = memberService.join(createMemberRequest);
-        return ResponseEntity.ok().body(jwtResponse);
+    @PostMapping("/join")
+    public ResponseEntity<Void> join(@RequestBody @Valid final CreateMemberRequest createMemberRequest) {
+        memberService.join(createMemberRequest);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{memberId}")
     public ResponseEntity<SelectMemberResponse> selectMember(@PathVariable final Long memberId) {
-        return new ResponseEntity<>(memberService.selectMember(memberId), HttpStatus.OK);
+        SelectMemberResponse selectMemberResponse = memberService.selectMember(memberId);
+        return ResponseEntity.ok().body(selectMemberResponse);
     }
 
     @PutMapping("/{memberId}")
     public ResponseEntity<ChangePasswordResponse> changePassword(@PathVariable final Long memberId, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
         ChangePasswordResponse changePasswordResponse = memberService.changePassword(memberId, changePasswordRequest);
-        return new ResponseEntity<>(changePasswordResponse, HttpStatus.OK);
+        return ResponseEntity.ok().body(changePasswordResponse);
     }
+
 }

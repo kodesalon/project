@@ -1,6 +1,5 @@
 package com.project.kodesalon.model.member.service;
 
-import com.project.kodesalon.common.JwtUtils;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
@@ -10,7 +9,6 @@ import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
-import com.project.kodesalon.model.refreshToken.dto.JwtResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,11 +19,9 @@ import java.util.NoSuchElementException;
 @Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final JwtUtils jwtUtils;
 
-    public MemberService(MemberRepository memberRepository, JwtUtils jwtUtils) {
+    public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-        this.jwtUtils = jwtUtils;
     }
 
     @Transactional(readOnly = true)
@@ -47,14 +43,11 @@ public class MemberService {
     }
 
     @Transactional
-    public JwtResponse join(final CreateMemberRequest createMemberRequest) {
+    public void join(final CreateMemberRequest createMemberRequest) {
         String alias = createMemberRequest.getAlias();
         validateDuplicationOf(alias);
         Member saveMember = memberRepository.save(createMemberRequest.toMember());
-        Long memberId = saveMember.getId();
-        String accessToken = jwtUtils.generateJwtToken(memberId);
-        log.info("ID : {}, Alias : {} Member가 회원 가입 성공", memberId, alias);
-        return new JwtResponse(accessToken, "refreshToken", memberId, alias);
+        log.info("ID : {}, Alias : {} Member가 회원 가입 성공", saveMember.getId(), alias);
     }
 
     private void validateDuplicationOf(final String alias) {
