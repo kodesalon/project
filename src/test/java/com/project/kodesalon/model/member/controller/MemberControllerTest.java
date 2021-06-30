@@ -6,10 +6,7 @@ import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
-import com.project.kodesalon.model.member.service.dto.LoginRequest;
-import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
-import com.project.kodesalon.model.refreshToken.dto.JwtResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -49,9 +46,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class MemberControllerTest {
-    private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
-    private final LoginResponse loginResponse = new LoginResponse(1L, "alias");
-    private final JwtResponse jwtResponse = new JwtResponse("access token", "refresh token", 1L, "alias");
     private final CreateMemberRequest createMemberRequest =
             new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
     private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
@@ -73,70 +67,6 @@ public class MemberControllerTest {
                 .apply(documentationConfiguration(restDocumentation))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
-    }
-
-    @Test
-    @DisplayName("로그인 성공하면 회원 식별자, 별명을 담은 DTO을 Http 200으로 응답합니다.")
-    void login_success() throws Exception {
-        given(memberService.login(any(LoginRequest.class))).willReturn(loginResponse);
-
-        this.mockMvc.perform(post("/api/v1/members/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.memberId").value(1))
-                .andExpect(jsonPath("$.alias").value("alias"))
-                .andDo(document("login/success",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestFields(
-                                fieldWithPath("alias").type(JsonFieldType.STRING).description("로그인 할 alias"),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("로그인 할 패스워드")
-                        ),
-                        responseFields(
-                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("member 식별자"),
-                                fieldWithPath("alias").type(JsonFieldType.STRING).description("member alias"))));
-    }
-
-    @Test
-    @DisplayName("로그인 시 비밀번호 틀렸을 경우, 예외 메세지를 담은 DTO을 Http 400으로 응답합니다.")
-    void login_fail_with_invalid_password() throws Exception {
-        given(memberService.login(any(LoginRequest.class)))
-                .willThrow(new IllegalArgumentException("비밀 번호가 일치하지 않습니다."));
-
-        this.mockMvc.perform(post("/api/v1/members/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest))
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("비밀 번호가 일치하지 않습니다."))
-                .andDo(document("login/fail/mismatch_password",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestFields(
-                                fieldWithPath("alias").type(JsonFieldType.STRING).description("로그인 할 alias"),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("로그인 할 password")
-                        ),
-                        responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("비밀번호 불일치 에러 메세지"))));
-    }
-
-    @Test
-    @DisplayName("로그인 시 존재하지 않는 아이디(Alias)일 경우, 예외 메세지를 담은 DTO을 Http 400으로 응답합니다.")
-    void login_fail_with_invalid_alias() throws Exception {
-        given(memberService.login(any(LoginRequest.class)))
-                .willThrow(new NoSuchElementException("존재하는 아이디를 입력해주세요."));
-
-        this.mockMvc.perform(post("/api/v1/members/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest))
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("존재하는 아이디를 입력해주세요."))
-                .andDo(document("login/fail/no_alias",
-                        getDocumentResponse(),
-                        responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("존재하지 않는 아이디(Alias) 예러 메세지"))));
     }
 
     @Test

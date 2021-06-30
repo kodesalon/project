@@ -1,4 +1,4 @@
-package com.project.kodesalon.model.refreshToken.dto;
+package com.project.kodesalon.model.authentication.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,14 +9,10 @@ import lombok.NoArgsConstructor;
 public class JwtResponse {
     private String accessToken;
     private String refreshToken;
-    private Long memberId;
-    private String alias;
 
-    public JwtResponse(String accessToken, String refreshToken, Long memberId, String alias) {
+    public JwtResponse(String accessToken, String refreshToken) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        this.memberId = memberId;
-        this.alias = alias;
     }
 }
 

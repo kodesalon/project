@@ -22,7 +22,7 @@ public class JwtUtils {
     @Value("${spring.jwt.secret}")
     private String secretKey;
 
-    @Value("${spring.jwtExpirationMs}")
+    @Value("${spring.jwt.accessExpirationMs}")
     private long accessExpirationMs;
 
     public String generateJwtToken(Long memberId) {

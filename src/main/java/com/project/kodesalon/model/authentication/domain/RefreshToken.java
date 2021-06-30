@@ -1,4 +1,4 @@
-package com.project.kodesalon.model.refreshToken.domain;
+package com.project.kodesalon.model.authentication.domain;
 
 import com.project.kodesalon.model.member.domain.Member;
 import lombok.AccessLevel;
@@ -39,5 +39,9 @@ public class RefreshToken {
         this.member = member;
         this.token = token;
         this.expiryDate = expiryDate;
+    }
+
+    public void replace(String token) {
+        this.token = token;
     }
 }

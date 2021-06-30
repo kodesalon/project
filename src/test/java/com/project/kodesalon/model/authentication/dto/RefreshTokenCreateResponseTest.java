@@ -1,4 +1,4 @@
-package com.project.kodesalon.model.refreshToken.dto;
+package com.project.kodesalon.model.authentication.dto;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

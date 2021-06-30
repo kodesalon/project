@@ -6,8 +6,6 @@ import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
-import com.project.kodesalon.model.member.service.dto.LoginRequest;
-import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -23,16 +21,13 @@ import java.util.Optional;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
-    private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final CreateMemberRequest createMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
 
     @InjectMocks
@@ -43,41 +38,6 @@ public class MemberServiceTest {
 
     @Mock
     private Member member;
-
-    @Test
-    @DisplayName("로그인 성공하면 회원 식별자, 별명을 담은 DTO를 반환합니다.")
-    void login() {
-        given(member.getId()).willReturn(1L);
-        given(member.getAlias()).willReturn("alias");
-        given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.of(member));
-
-        LoginResponse loginResponse = memberService.login(loginRequest);
-
-        softly.then(loginResponse.getMemberId()).isEqualTo(1L);
-        softly.then(loginResponse.getAlias()).isEqualTo("alias");
-        softly.assertAll();
-    }
-
-    @Test
-    @DisplayName("로그인 시 존재하지 않는 아이디(Alias)일 경우, 예외가 발생합니다.")
-    void login_throw_exception_with_invalid_alias() {
-        given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.empty());
-
-        thenThrownBy(() -> memberService.login(loginRequest))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage("존재하는 아이디를 입력해주세요.");
-    }
-
-    @Test
-    @DisplayName("로그인 시 비밀번호 틀렸을 경우, 예외 메세지를 반환합니다.")
-    void login_throw_exception_with_invalid_password() {
-        willThrow(new IllegalArgumentException("비밀 번호가 일치하지 않습니다.")).given(member).login(anyString());
-        given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.of(member));
-
-        thenThrownBy(() -> memberService.login(loginRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("비밀 번호가 일치하지 않습니다.");
-    }
 
     @Test
     @DisplayName("회원가입이 성공하면 repository에 회원 객체를 저장합니다.")

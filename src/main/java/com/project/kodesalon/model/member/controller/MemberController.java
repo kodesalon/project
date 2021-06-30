@@ -4,8 +4,6 @@ import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
-import com.project.kodesalon.model.member.service.dto.LoginRequest;
-import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,12 +23,6 @@ public class MemberController {
 
     public MemberController(final MemberService memberService) {
         this.memberService = memberService;
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> logIn(@RequestBody @Valid final LoginRequest loginRequest) {
-        LoginResponse loginResponse = memberService.login(loginRequest);
-        return ResponseEntity.ok().body(loginResponse);
     }
 
     @PostMapping("/join")

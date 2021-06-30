@@ -6,8 +6,6 @@ import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
-import com.project.kodesalon.model.member.service.dto.LoginRequest;
-import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,17 +22,7 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    @Transactional(readOnly = true)
-    public LoginResponse login(final LoginRequest loginRequest) {
-        String alias = loginRequest.getAlias();
-        Member member = findMemberByAlias(alias);
-        String password = loginRequest.getPassword();
-        member.login(password);
-        log.info("ID : {}, Alias : {} Member 로그인", member.getId(), member.getAlias());
-        return new LoginResponse(member.getId(), member.getAlias());
-    }
-
-    private Member findMemberByAlias(final String alias) {
+    public Member findMemberByAlias(final String alias) {
         return memberRepository.findMemberByAlias(new Alias(alias))
                 .orElseThrow(() -> {
                     log.info("{}인 Alias를 가진 사용자가 존재하지 않음", alias);

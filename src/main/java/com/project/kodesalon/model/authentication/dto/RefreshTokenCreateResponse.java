@@ -1,4 +1,4 @@
-package com.project.kodesalon.model.refreshToken.dto;
+package com.project.kodesalon.model.authentication.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;
