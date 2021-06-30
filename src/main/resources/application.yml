@@ -36,4 +36,4 @@ spring:
   jwt:
     secret: bG9jYWxUZXN0S2V5
     accessExpirationMs: 60000
-    refreshExpirationMs: 120000
+    refreshExpirationWeeks: 2

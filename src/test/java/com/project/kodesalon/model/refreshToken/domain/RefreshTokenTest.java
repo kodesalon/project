@@ -6,8 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 
 public class RefreshTokenTest {
 
@@ -16,13 +14,12 @@ public class RefreshTokenTest {
     void getter() {
         BDDSoftAssertions softly = new BDDSoftAssertions();
         Member member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
-        Date expiryDate = new Date();
-        LocalDateTime expiryLocalDateTime = expiryDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+        LocalDateTime expiryDate = LocalDateTime.now();
 
         RefreshToken refreshToken = new RefreshToken(member, "token", expiryDate);
 
         softly.then(refreshToken.getToken()).isEqualTo("token");
-        softly.then(refreshToken.getExpiryDate()).isEqualTo(expiryLocalDateTime);
+        softly.then(refreshToken.getExpiryDate()).isEqualTo(expiryDate);
         softly.assertAll();
     }
 }

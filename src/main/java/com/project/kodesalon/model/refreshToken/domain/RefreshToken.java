@@ -14,8 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -37,11 +35,9 @@ public class RefreshToken {
     @Column(nullable = false)
     private LocalDateTime expiryDate;
 
-    public RefreshToken(Member member, String token, Date expiryDate) {
+    public RefreshToken(Member member, String token, LocalDateTime expiryDate) {
         this.member = member;
         this.token = token;
-        this.expiryDate = expiryDate.toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
+        this.expiryDate = expiryDate;
     }
 }
