@@ -13,7 +13,7 @@ class JwtUtilsTest {
     private static final BDDSoftAssertions softly = new BDDSoftAssertions();
     private static final String JWT_SECERT_KEY = "bG9jYWxUZXN0S2V5";
     private static final Long MEMBER_ID = 1L;
-    private static final int EXPIRATION_MS = 2000;
+    private static final int EXPIRATION_MS = 1000;
 
     private final JwtUtils jwtUtils = new JwtUtils();
 
@@ -21,45 +21,31 @@ class JwtUtilsTest {
     void setUp() {
         ReflectionTestUtils.setField(jwtUtils, "secretKey", JWT_SECERT_KEY);
         ReflectionTestUtils.setField(jwtUtils, "accessExpirationMs", EXPIRATION_MS);
-        ReflectionTestUtils.setField(jwtUtils, "refreshExpirationMs", EXPIRATION_MS);
     }
 
     @Test
-    @DisplayName("Access token 토큰을 생성한다")
-    void generateAccessToken() {
-        String accessToken = jwtUtils.generateAccessToken(MEMBER_ID);
-        then(accessToken).isNotEmpty();
-    }
-
-    @Test
-    @DisplayName("Refresh token 토큰을 생성한다")
-    void generateRefreshToken() {
-        String refreshToken = jwtUtils.generateRefreshToken(MEMBER_ID);
-        then(refreshToken).isNotEmpty();
+    @DisplayName("jwt token 토큰을 생성한다")
+    void generateJwtToken() {
+        String jwtToken = jwtUtils.generateJwtToken(MEMBER_ID);
+        then(jwtToken).isNotEmpty();
     }
 
     @Test
     @DisplayName("토큰에 저장된 memberId를 반환한다.")
     void getMemberIdFrom() {
-        String accessToken = jwtUtils.generateAccessToken(MEMBER_ID);
-        String refreshToken = jwtUtils.generateRefreshToken(MEMBER_ID);
+        String jwtToken = jwtUtils.generateJwtToken(MEMBER_ID);
 
-        softly.then(jwtUtils.getMemberIdFrom(accessToken)).isEqualTo(MEMBER_ID);
-        softly.then(jwtUtils.getMemberIdFrom(refreshToken)).isEqualTo(MEMBER_ID);
-        softly.assertAll();
+        then(jwtUtils.getMemberIdFrom(jwtToken)).isEqualTo(MEMBER_ID);
     }
 
     @Test
     @DisplayName("토큰이 유효할 경우, 참을 반환한다.")
     void validateToken() throws InterruptedException {
-        String accessToken = jwtUtils.generateAccessToken(MEMBER_ID);
-        String refreshToken = jwtUtils.generateRefreshToken(MEMBER_ID);
+        String jwtToken = jwtUtils.generateJwtToken(MEMBER_ID);
 
-        softly.then(jwtUtils.validateToken(accessToken)).isTrue();
-        softly.then(jwtUtils.validateToken(refreshToken)).isTrue();
+        softly.then(jwtUtils.validateToken(jwtToken)).isTrue();
         Thread.sleep(EXPIRATION_MS);
-        softly.then(jwtUtils.validateToken(accessToken)).isFalse();
-        softly.then(jwtUtils.validateToken(refreshToken)).isFalse();
+        softly.then(jwtUtils.validateToken(jwtToken)).isFalse();
         softly.assertAll();
     }
 }

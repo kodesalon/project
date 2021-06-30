@@ -25,18 +25,7 @@ public class JwtUtils {
     @Value("${spring.jwtExpirationMs}")
     private long accessExpirationMs;
 
-    @Value("${spring.jwtRefreshExpirationMs}")
-    private long refreshExpirationMs;
-
-    public String generateAccessToken(Long memberId) {
-        return generateJwtToken(memberId, accessExpirationMs);
-    }
-
-    public String generateRefreshToken(Long memberId) {
-        return generateJwtToken(memberId, refreshExpirationMs);
-    }
-
-    private String generateJwtToken(Long memberId, long expirationMs) {
+    public String generateJwtToken(Long memberId) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         byte[] secretKeyBytes = secretKey.getBytes();
         Key signKey = new SecretKeySpec(secretKeyBytes, signatureAlgorithm.getJcaName());
@@ -45,7 +34,7 @@ public class JwtUtils {
                 .setHeaderParam("typ", Header.JWT_TYPE)
                 .claim("memberId", memberId)
                 .setIssuedAt(issueTime)
-                .setExpiration(new Date(issueTime.getTime() + expirationMs))
+                .setExpiration(new Date(issueTime.getTime() + accessExpirationMs))
                 .signWith(signatureAlgorithm, signKey)
                 .compact();
     }

@@ -86,15 +86,13 @@ public class MemberServiceTest {
     @DisplayName("회원가입이 성공하면 회원가입한 회원 식별자, 별명을 담은 DTO를 반환합니다.")
     void join() {
         given(member.getId()).willReturn(1L);
-        given(jwtUtils.generateAccessToken(anyLong())).willReturn("access token");
-        given(jwtUtils.generateRefreshToken(anyLong())).willReturn("refresh token");
+        given(jwtUtils.generateJwtToken(anyLong())).willReturn("access token");
         given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.empty());
         given(memberRepository.save(any(Member.class))).willReturn(member);
 
         JwtResponse jwtResponse = memberService.join(createMemberRequest);
 
         softly.then(jwtResponse.getAccessToken()).isEqualTo("access token");
-        softly.then(jwtResponse.getRefreshToken()).isEqualTo("refresh token");
         softly.then(jwtResponse.getMemberId()).isEqualTo(1L);
         softly.then(jwtResponse.getAlias()).isEqualTo("alias");
         softly.assertAll();

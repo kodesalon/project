@@ -52,10 +52,9 @@ public class MemberService {
         validateDuplicationOf(alias);
         Member saveMember = memberRepository.save(createMemberRequest.toMember());
         Long memberId = saveMember.getId();
-        String accessToken = jwtUtils.generateAccessToken(memberId);
-        String refreshToken = jwtUtils.generateRefreshToken(memberId);
+        String accessToken = jwtUtils.generateJwtToken(memberId);
         log.info("ID : {}, Alias : {} Member가 회원 가입 성공", memberId, alias);
-        return new JwtResponse(accessToken, refreshToken, memberId, alias);
+        return new JwtResponse(accessToken, "refreshToken", memberId, alias);
     }
 
     private void validateDuplicationOf(final String alias) {
