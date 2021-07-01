@@ -44,4 +44,8 @@ public class RefreshToken {
     public void replace(String token) {
         this.token = token;
     }
+
+    public boolean isAfter(LocalDateTime now) {
+        return expiryDate.isAfter(now);
+    }
 }
