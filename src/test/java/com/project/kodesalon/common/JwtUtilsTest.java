@@ -1,11 +1,13 @@
 package com.project.kodesalon.common;
 
+import io.jsonwebtoken.JwtException;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import static com.project.kodesalon.common.ErrorCode.EXPIRED_JWT_TOKEN;
 import static org.assertj.core.api.BDDAssertions.then;
 
 class JwtUtilsTest {
@@ -45,7 +47,9 @@ class JwtUtilsTest {
 
         softly.then(jwtUtils.validateToken(jwtToken)).isTrue();
         Thread.sleep(EXPIRATION_MS);
-        softly.then(jwtUtils.validateToken(jwtToken)).isFalse();
+        softly.thenThrownBy(() -> jwtUtils.validateToken(jwtToken))
+                .isInstanceOf(JwtException.class)
+                .withFailMessage(EXPIRED_JWT_TOKEN);
         softly.assertAll();
     }
 }
