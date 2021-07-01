@@ -13,14 +13,28 @@ kodesalon;
 [[sample]]
 == AuthenticationToken
 === Login
+
 ==== Request
+
 - Response Body
 include::{snippets}/login/success/request-fields.adoc[]
 
 - Request Body Example
 include::{snippets}/login/success/http-request.adoc[]
 
+=== Refresh Token
+
+==== Request
+
+include::{snippets}/refreshtoken/success/request-fields.adoc[]
+
+- Request Body Example
+include::{snippets}/refreshtoken/success/http-request.adoc[]
+
+- Response Body Example include::{snippets}/refreshtoken/success/http-response.adoc[]
+
 ==== Reponse
+
 - 로그인 성공 Response
 include::{snippets}/login/success/response-fields.adoc[]
 

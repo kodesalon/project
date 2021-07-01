@@ -2,8 +2,9 @@ package com.project.kodesalon.model.authentication.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
-import com.project.kodesalon.model.authentication.dto.JwtResponse;
 import com.project.kodesalon.model.authentication.service.AuthenticationTokenService;
+import com.project.kodesalon.model.authentication.service.dto.JwtResponse;
+import com.project.kodesalon.model.authentication.service.dto.TokenRefreshRequest;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AuthenticationTokenControllerTest {
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final LoginResponse loginResponse = new LoginResponse("access token", "refresh token", 1L, "alias");
+    private final TokenRefreshRequest tokenRefreshRequest = new TokenRefreshRequest("refresh token");
     private final JwtResponse jwtResponse = new JwtResponse("access token", "refresh token");
 
     private MockMvc mockMvc;
@@ -125,5 +127,26 @@ public class AuthenticationTokenControllerTest {
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("존재하지 않는 아이디(Alias) 예러 메세지"))));
+    }
+
+    @Test
+    @DisplayName("유효한 refresh token일 경우, 새로 발급받은 access token, refresh token을 DTO에 당마 Http 200으로 응답한다.")
+    void refresh_success() throws Exception {
+        this.mockMvc.perform(post("/api/v1/auth/refreshtoken")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(tokenRefreshRequest))
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").value("accessToken"))
+                .andExpect(jsonPath("$.refreshToken").value("refreshToken"))
+                .andDo(document("refreshtoken/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("유효한 jwt refresh token")
+                        ),
+                        responseFields(
+                                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("새로 발급받은 jwt access token"),
+                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("새로 발급받은 jwt refresh token"))));
     }
 }
