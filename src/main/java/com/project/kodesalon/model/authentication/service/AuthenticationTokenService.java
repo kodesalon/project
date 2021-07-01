@@ -2,8 +2,8 @@ package com.project.kodesalon.model.authentication.service;
 
 import com.project.kodesalon.common.JwtUtils;
 import com.project.kodesalon.model.authentication.domain.RefreshToken;
-import com.project.kodesalon.model.authentication.dto.JwtResponse;
 import com.project.kodesalon.model.authentication.repository.RefreshTokenRepository;
+import com.project.kodesalon.model.authentication.service.dto.JwtResponse;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
