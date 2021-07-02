@@ -17,10 +17,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -28,6 +31,7 @@ import static org.mockito.Mockito.verify;
 public class MemberServiceTest {
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
     private final CreateMemberRequest createMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+    private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
 
     @InjectMocks
     private MemberService memberService;
@@ -82,11 +86,29 @@ public class MemberServiceTest {
     @Test
     @DisplayName("비밀번호를 변경하고 성공 메세지를 담은 DTO를 반환한다.")
     public void changePassword() {
-        BDDSoftAssertions softly = new BDDSoftAssertions();
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+        ChangePasswordResponse changePasswordResponse = memberService.changePassword(member, changePasswordRequest);
+        then(changePasswordResponse.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
+    }
 
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
-        ChangePasswordResponse changePasswordResponse = memberService.changePassword(1L, changePasswordRequest);
-        softly.then(changePasswordResponse.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
+    @Test
+    @DisplayName("변경하려는 비밀번호가 기존의 비밀번호와 일치하면 예외를 발생시킨다.")
+    void changePassword_throw_exception_with_same_previous_password() {
+        willThrow(new IllegalArgumentException("변경하려는 패스워드가 기존 패스워드와 일치합니다."))
+                .given(member)
+                .changePassword(anyString());
+
+        thenIllegalArgumentException().isThrownBy(() -> memberService.changePassword(member, changePasswordRequest))
+                .withMessage("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
+    }
+
+    @Test
+    @DisplayName("변경하려는 비밀번호가 유효하지 않은 비밀번호면 예외를 발생시킨다.")
+    void changePassword_throw_exception_with_invalid_password() {
+        willThrow(new IllegalArgumentException("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."))
+                .given(member)
+                .changePassword(anyString());
+
+        thenIllegalArgumentException().isThrownBy(() -> memberService.changePassword(member, changePasswordRequest))
+                .withMessage("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.");
     }
 }
