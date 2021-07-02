@@ -2,6 +2,7 @@ package com.project.kodesalon.model.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
+import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
@@ -195,10 +196,10 @@ public class MemberControllerTest {
     @Test
     @DisplayName("존재하는 회원을 조회하면 200 상태를 response 합니다.")
     void select_exist_member_response_success() throws Exception {
-        given(memberService.selectMember(anyLong()))
+        given(memberService.selectMember(any(Member.class)))
                 .willReturn(new SelectMemberResponse("alias", "이름", "email@email.com", "010-1111-2222"));
 
-        this.mockMvc.perform(get("/api/v1/members/{memberId}", "1")
+        this.mockMvc.perform(get("/api/v1/members")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.alias").value("alias"))
@@ -207,9 +208,6 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.phone").value("010-1111-2222"))
                 .andDo(document("select/success",
                         getDocumentResponse(),
-                        pathParameters(
-                                parameterWithName("memberId").description("조회할 회원의 식별자")
-                        ),
                         responseFields(
                                 fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 Alias"),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("조회한 Name"),
@@ -220,10 +218,10 @@ public class MemberControllerTest {
     @Test
     @DisplayName("존재하지 않는 회원을 조회하면 400 상태를 responses 합니다")
     void select_no_exist_member_response_fail() throws Exception {
-        given(memberService.selectMember(anyLong()))
+        given(memberService.selectMember(any(Member.class)))
                 .willThrow(new NoSuchElementException("찾으려는 회원이 없습니다"));
 
-        this.mockMvc.perform(get("/api/v1/members/{memberId}", "1")
+        this.mockMvc.perform(get("/api/v1/members")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("찾으려는 회원이 없습니다"))

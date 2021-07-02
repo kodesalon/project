@@ -33,9 +33,9 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{memberId}")
-    public ResponseEntity<SelectMemberResponse> selectMember(@PathVariable final Long memberId) {
-        SelectMemberResponse selectMemberResponse = memberService.selectMember(memberId);
+    @GetMapping
+    public ResponseEntity<SelectMemberResponse> selectMember(@Login final Member currentMember) {
+        SelectMemberResponse selectMemberResponse = memberService.selectMember(currentMember);
         return ResponseEntity.ok().body(selectMemberResponse);
     }
 

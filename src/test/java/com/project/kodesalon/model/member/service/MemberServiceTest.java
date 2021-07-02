@@ -15,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
@@ -71,23 +70,13 @@ public class MemberServiceTest {
         given(member.getPhone()).willReturn("010-1111-2222");
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
-        SelectMemberResponse selectMemberResponse = memberService.selectMember(1L);
+        SelectMemberResponse selectMemberResponse = memberService.selectMember(member);
 
         softly.then(selectMemberResponse.getAlias()).isEqualTo("alias");
         softly.then(selectMemberResponse.getName()).isEqualTo("이름");
         softly.then(selectMemberResponse.getEmail()).isEqualTo("email@email.com");
         softly.then(selectMemberResponse.getPhone()).isEqualTo("010-1111-2222");
         softly.assertAll();
-    }
-
-    @Test
-    @DisplayName("회원 정보 조회 시 찾으려는 회원이 없으면 예외를 반환합니다.")
-    void select_not_exist_id_throws_exception() {
-        given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
-
-        thenThrownBy(() -> memberService.selectMember(1L))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessage("찾으려는 회원이 없습니다");
     }
 
     @Test
