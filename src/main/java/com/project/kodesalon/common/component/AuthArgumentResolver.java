@@ -1,6 +1,6 @@
 package com.project.kodesalon.common.component;
 
-import com.project.kodesalon.common.annotation.LoginUser;
+import com.project.kodesalon.common.annotation.Login;
 import com.project.kodesalon.model.member.service.MemberService;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -22,7 +22,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(LoginUser.class);
+        return parameter.hasParameterAnnotation(Login.class);
     }
 
     @Override
