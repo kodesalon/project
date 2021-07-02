@@ -69,7 +69,7 @@ public class AuthenticationTokenService {
     }
 
     @Transactional
-    public JwtResponse refreshToken(TokenRefreshRequest tokenRefreshRequest, Member member) {
+    public JwtResponse refreshToken(TokenRefreshRequest tokenRefreshRequest) {
         String refreshTokenFromRequest = tokenRefreshRequest.getRefreshToken();
         RefreshToken refreshToken = findByToken(refreshTokenFromRequest);
         validateExpiration(refreshToken);
