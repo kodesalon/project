@@ -2,6 +2,7 @@ package com.project.kodesalon.common;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Component;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Date;
+
+import static com.project.kodesalon.common.ErrorCode.EXPIRED_JWT_TOKEN;
+import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 
 @Slf4j
 @Component
@@ -56,17 +60,20 @@ public class JwtUtils {
             return true;
         } catch (SignatureException e) {
             log.info("Invalid JWT signature: {}", e.getMessage());
+            throw new JwtException(INVALID_JWT_TOKEN);
         } catch (MalformedJwtException e) {
             log.info("Invalid JWT token: {}", e.getMessage());
+            throw new JwtException(INVALID_JWT_TOKEN);
         } catch (ExpiredJwtException e) {
             log.info("JWT token is expired: {}", e.getMessage());
+            throw new JwtException(EXPIRED_JWT_TOKEN);
         } catch (UnsupportedJwtException e) {
             log.info("JWT token is unsupported: {}", e.getMessage());
+            throw new JwtException(INVALID_JWT_TOKEN);
         } catch (IllegalArgumentException e) {
             log.info("JWT claims string is empty: {}", e.getMessage());
+            throw new JwtException(INVALID_JWT_TOKEN);
         }
-
-        return false;
     }
 }
 
