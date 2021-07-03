@@ -17,9 +17,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -81,11 +81,8 @@ public class MemberServiceTest {
     @Test
     @DisplayName("비밀번호를 변경하고 성공 메세지를 담은 DTO를 반환한다.")
     public void changePassword() {
-        BDDSoftAssertions softly = new BDDSoftAssertions();
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
-
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
-        ChangePasswordResponse changePasswordResponse = memberService.changePassword(1L, changePasswordRequest);
-        softly.then(changePasswordResponse.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
+        ChangePasswordResponse changePasswordResponse = memberService.changePassword(member, changePasswordRequest);
+        then(changePasswordResponse.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
     }
 }

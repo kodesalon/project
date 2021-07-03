@@ -9,7 +9,6 @@ import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,9 +38,9 @@ public class MemberController {
         return ResponseEntity.ok().body(selectMemberResponse);
     }
 
-    @PutMapping("/{memberId}")
-    public ResponseEntity<ChangePasswordResponse> changePassword(@PathVariable final Long memberId, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
-        ChangePasswordResponse changePasswordResponse = memberService.changePassword(memberId, changePasswordRequest);
+    @PutMapping("/password")
+    public ResponseEntity<ChangePasswordResponse> changePassword(@Login Member currentMember, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
+        ChangePasswordResponse changePasswordResponse = memberService.changePassword(currentMember, changePasswordRequest);
         return ResponseEntity.ok().body(changePasswordResponse);
     }
 }

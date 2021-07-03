@@ -52,9 +52,8 @@ public class MemberService {
     }
 
     @Transactional
-    public ChangePasswordResponse changePassword(final Long memberId, final ChangePasswordRequest changePasswordRequest) {
-        Member member = findById(memberId);
-        member.changePassword(changePasswordRequest.getPassword());
+    public ChangePasswordResponse changePassword(final Member currentMember, final ChangePasswordRequest changePasswordRequest) {
+        currentMember.changePassword(changePasswordRequest.getPassword());
         return new ChangePasswordResponse("비밀번호 변경 성공하였습니다.");
     }
 
