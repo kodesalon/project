@@ -14,6 +14,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static com.project.kodesalon.common.interceptor.LoginInterceptor.LOGIN_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -37,13 +38,16 @@ class LoginInterceptorTest {
     private MemberService memberService;
 
     @Mock
-    private Member member;
+    Member member;
 
     @Spy
     private MockHttpServletRequest request;
 
     @Spy
     private MockHttpServletResponse response;
+
+    @Spy
+    private MockMvcResultHandlers handler;
 
     @BeforeEach
     void setUp() {
@@ -57,26 +61,28 @@ class LoginInterceptorTest {
         given(jwtUtils.getMemberIdFrom(anyString())).willReturn(1L);
         given(memberService.findById(anyLong())).willReturn(member);
 
-        boolean status = loginInterceptor.preHandle(request, response, null);
+        boolean expect = loginInterceptor.preHandle(request, response, handler);
 
-        then(status).isTrue();
         then(request.getAttribute(LOGIN_MEMBER)).isNotNull();
+        then(expect).isTrue();
     }
 
     @Test
     @DisplayName("유효한 access token이 아닌 경우 예외를 발생시킨다.")
-    void preHandle_throw_exception_with_expired_jwt_token() throws Exception {
-        given(jwtUtils.validateToken(anyString())).willThrow(new JwtException("invalid access token"));
+    void preHandle_throws_exception_with_invalid_jwt_token() throws Exception {
+        given(jwtUtils.validateToken(anyString())).willThrow(new JwtException("invalid jwt token"));
 
-        thenThrownBy(() -> loginInterceptor.preHandle(request, response, null))
+        thenThrownBy(() -> loginInterceptor.preHandle(request, response, handler))
                 .isInstanceOf(JwtException.class)
-                .hasMessage("invalid access token");
+                .hasMessage("invalid jwt token");
     }
 
     @Test
-    @DisplayName("Http 요청이 끝난 후에 로그 정보를 확인한다.")
-    void afterCompletion() throws Exception {
-        loginInterceptor.afterCompletion(request, response, null, null);
+    @DisplayName("Http 요청이 끝난 후에 url, 로그 정보를 확인한다.")
+    public void afterCompletion() throws Exception {
+        loginInterceptor.afterCompletion(request, response, handler, null);
+
+        verify(request, times(1)).getRequestURI();
         verify(request, times(1)).getAttribute(anyString());
     }
 }

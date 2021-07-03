@@ -73,7 +73,7 @@ public class AuthenticationTokenService {
         String refreshTokenFromRequest = tokenRefreshRequest.getRefreshToken();
         RefreshToken refreshToken = findByToken(refreshTokenFromRequest);
         validateExpiration(refreshToken);
-        return updateToken(member.getId(), refreshToken);
+        return updateToken(refreshToken.getMember().getId(), refreshToken);
     }
 
     private RefreshToken findByToken(String token) {

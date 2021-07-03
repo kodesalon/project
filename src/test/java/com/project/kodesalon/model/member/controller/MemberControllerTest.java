@@ -23,8 +23,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.util.NoSuchElementException;
-
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
@@ -213,22 +211,6 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 회원을 조회하면 400 상태를 responses 합니다")
-    void select_no_exist_member_response_fail() throws Exception {
-        given(memberService.selectMember(any(Member.class)))
-                .willThrow(new NoSuchElementException("찾으려는 회원이 없습니다"));
-
-        this.mockMvc.perform(get("/api/v1/members")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("찾으려는 회원이 없습니다"))
-                .andDo(document("select/fail/no_member",
-                        getDocumentResponse(),
-                        responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("존재하는 회원이 없을 때의 예외 메세지"))));
-    }
-
-    @Test
     @DisplayName("비밀번호 변경시, 변경하려는 비밀번호, 회원 식별 번호를 전달받아 비밀번호를 변경하고 200 상태 + 성공 메세지를 반환합니다.")
     public void changePassword() throws Exception {
         given(memberService.changePassword(any(Member.class), any(ChangePasswordRequest.class)))
@@ -263,23 +245,5 @@ public class MemberControllerTest {
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호에 대한 예외 메세지"))));
-    }
-
-    @Test
-    @DisplayName("비밀번호 변경시, 변경하려는 회원 식별자가 없는 경우 400 상태 + 예외 메세지를 반환합니다.")
-    void failed_change_password_with_member_id_not_exist() throws Exception {
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!");
-
-        given(memberService.changePassword(any(Member.class), any(ChangePasswordRequest.class)))
-                .willThrow(new NoSuchElementException("찾으려는 회원이 없습니다"));
-
-        this.mockMvc.perform(put("/api/v1/members/password")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(changePasswordRequest)))
-                .andExpect(jsonPath("$.message").value("찾으려는 회원이 없습니다"))
-                .andDo(document("changePassword/fail/noMember",
-                        getDocumentResponse(),
-                        responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("존재하지 않는 회원에 대한 예외 메세지"))));
     }
 }

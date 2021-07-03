@@ -33,26 +33,14 @@ public class MemberController {
     }
 
     @GetMapping
-    public ResponseEntity<SelectMemberResponse> selectMember(@Login final Member currentMember) {
+    public ResponseEntity<SelectMemberResponse> selectMember(@Login Member currentMember) {
         SelectMemberResponse selectMemberResponse = memberService.selectMember(currentMember);
         return ResponseEntity.ok().body(selectMemberResponse);
     }
 
     @PutMapping("/password")
-    public ResponseEntity<ChangePasswordResponse> changePassword(@Login final Member currentMember, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
+    public ResponseEntity<ChangePasswordResponse> changePassword(@Login Member currentMember, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
         ChangePasswordResponse changePasswordResponse = memberService.changePassword(currentMember, changePasswordRequest);
         return ResponseEntity.ok().body(changePasswordResponse);
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<SelectMemberResponse> selectMember(@Login Member member) {
-        System.out.println(member.getAlias());
-        System.out.println(member.getId());
-        System.out.println(member.getName());
-        System.out.println(member.getEmail());
-        System.out.println(member.getPassword());
-        System.out.println(member.getPhone());
-        return ResponseEntity.ok().build();
-    }
-
 }

@@ -30,22 +30,19 @@ public class JwtUtils {
     private long accessExpirationMs;
 
     public String generateJwtToken(Long memberId) {
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-        byte[] secretKeyBytes = secretKey.getBytes();
-        Key signKey = new SecretKeySpec(secretKeyBytes, signatureAlgorithm.getJcaName());
         Date issueTime = new Date();
         return Jwts.builder()
                 .setHeaderParam("typ", Header.JWT_TYPE)
                 .claim("memberId", memberId)
                 .setIssuedAt(issueTime)
                 .setExpiration(new Date(issueTime.getTime() + accessExpirationMs))
-                .signWith(signatureAlgorithm, signKey)
+                .signWith(SignatureAlgorithm.HS256, getSignKey())
                 .compact();
     }
 
     public Long getMemberIdFrom(String token) {
         return Jwts.parser()
-                .setSigningKey(secretKey.getBytes())
+                .setSigningKey(getSignKey())
                 .parseClaimsJws(token)
                 .getBody()
                 .get("memberId", Long.class);
@@ -54,7 +51,7 @@ public class JwtUtils {
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
-                    .setSigningKey(secretKey.getBytes())
+                    .setSigningKey(getSignKey())
                     .parseClaimsJws(token);
 
             return true;
@@ -74,6 +71,12 @@ public class JwtUtils {
             log.info("JWT claims string is empty: {}", e.getMessage());
             throw new JwtException(INVALID_JWT_TOKEN);
         }
+    }
+
+    private Key getSignKey() {
+        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+        byte[] secretKeyBytes = secretKey.getBytes();
+        return new SecretKeySpec(secretKeyBytes, signatureAlgorithm.getJcaName());
     }
 }
 
