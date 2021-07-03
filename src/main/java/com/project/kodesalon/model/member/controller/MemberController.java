@@ -33,9 +33,9 @@ public class MemberController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{memberId}")
-    public ResponseEntity<SelectMemberResponse> selectMember(@PathVariable final Long memberId) {
-        SelectMemberResponse selectMemberResponse = memberService.selectMember(memberId);
+    @GetMapping
+    public ResponseEntity<SelectMemberResponse> selectMember(@Login Member currentMember) {
+        SelectMemberResponse selectMemberResponse = memberService.selectMember(currentMember);
         return ResponseEntity.ok().body(selectMemberResponse);
     }
 
@@ -44,16 +44,4 @@ public class MemberController {
         ChangePasswordResponse changePasswordResponse = memberService.changePassword(memberId, changePasswordRequest);
         return ResponseEntity.ok().body(changePasswordResponse);
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<SelectMemberResponse> selectMember(@Login Member member) {
-        System.out.println(member.getAlias());
-        System.out.println(member.getId());
-        System.out.println(member.getName());
-        System.out.println(member.getEmail());
-        System.out.println(member.getPassword());
-        System.out.println(member.getPhone());
-        return ResponseEntity.ok().build();
-    }
-
 }
