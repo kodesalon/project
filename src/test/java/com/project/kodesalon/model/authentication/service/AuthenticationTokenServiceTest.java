@@ -55,7 +55,7 @@ class AuthenticationTokenServiceTest {
     private RefreshToken refreshToken;
 
     @Test
-    @DisplayName("회원 별명, 비밀번호를 전달받아 Access, Refresh 토큰을 생성하고 회원 id, alias를 DTO에 담아 반환한다.")
+    @DisplayName("회원 별명, 비밀번호를 전달받고, refresh 토큰이 존재하지 않는다면 Access, Refresh 토큰을 생성하고 회원 id, alias를 DTO에 담아 반환한다.")
     void login() {
         given(memberService.findMemberByAlias(anyString())).willReturn(member);
         given(jwtUtils.generateJwtToken(anyLong())).willReturn("access Token");
@@ -65,6 +65,20 @@ class AuthenticationTokenServiceTest {
         then(loginResponse.getRefreshToken()).isNotEmpty();
         verify(memberService, times(1)).findMemberByAlias(anyString());
         verify(refreshTokenRepository, times(1)).save(any(RefreshToken.class));
+    }
+
+    @Test
+    @DisplayName("회원 별명, 비밀번호를 전달받고, refresh 토큰이 존재한다면 Access, Refresh 토큰을 생성하여 교체하고 회원 id, alias를 DTO에 담아 반환한다.")
+    void login_with_existing_refresh_token() {
+        given(memberService.findMemberByAlias(anyString())).willReturn(member);
+        given(jwtUtils.generateJwtToken(anyLong())).willReturn("access Token");
+        given(refreshTokenRepository.findByMember(any(Member.class))).willReturn(Optional.of(refreshToken));
+        LoginResponse loginResponse = authenticationTokenService.login(new LoginRequest("alias", "Password123!"));
+
+        then(loginResponse.getAccessToken()).isNotEmpty();
+        then(loginResponse.getRefreshToken()).isNotEmpty();
+        verify(memberService, times(1)).findMemberByAlias(anyString());
+        verify(refreshToken, times(1)).replace(anyString());
     }
 
     @Test
