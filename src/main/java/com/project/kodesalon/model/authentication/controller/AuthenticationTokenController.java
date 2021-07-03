@@ -33,7 +33,7 @@ public class AuthenticationTokenController {
 
     @PostMapping("/refreshtoken")
     public ResponseEntity<JwtResponse> refreshToken(@RequestBody @Valid final TokenRefreshRequest tokenRefreshRequest, @Login Member member) {
-        JwtResponse jwtResponse = authenticationTokenService.refreshToken(tokenRefreshRequest, member);
+        JwtResponse jwtResponse = authenticationTokenService.refreshToken(tokenRefreshRequest);
         return ResponseEntity.ok().body(jwtResponse);
     }
 }

@@ -91,7 +91,9 @@ class AuthenticationTokenServiceTest {
     @DisplayName("유효한 Refresh token 값을 전달받아, Access + Refresh 토큰 모두 재발급 후 DTO에 담아 반환한다.")
     void refreshToken() {
         given(refreshTokenRepository.findByToken(anyString())).willReturn(Optional.of(refreshToken));
-        JwtResponse jwtResponse = authenticationTokenService.refreshToken(tokenRefreshRequest, member);
+        given(refreshToken.getMember()).willReturn(member);
+
+        JwtResponse jwtResponse = authenticationTokenService.refreshToken(tokenRefreshRequest);
 
         then(jwtResponse).isNotNull();
         verify(refreshTokenRepository, times(1)).findByToken(anyString());
@@ -100,7 +102,7 @@ class AuthenticationTokenServiceTest {
     @Test
     @DisplayName("인자로 받은 Refresh token이 DB에 저장되어있지 않을 경우, 예외가 발생한다.")
     void refreshToken_throw_exception_with_not_in_DB() {
-        thenThrownBy(() -> authenticationTokenService.refreshToken(tokenRefreshRequest, member))
+        thenThrownBy(() -> authenticationTokenService.refreshToken(tokenRefreshRequest))
                 .isInstanceOf(JwtException.class)
                 .withFailMessage(INVALID_JWT_TOKEN);
     }
@@ -111,7 +113,7 @@ class AuthenticationTokenServiceTest {
         given(refreshTokenRepository.findByToken(anyString())).willReturn(Optional.of(refreshToken));
         given(refreshToken.isAfter(any(LocalDateTime.class))).willReturn(true);
 
-        thenThrownBy(() -> authenticationTokenService.refreshToken(tokenRefreshRequest, member))
+        thenThrownBy(() -> authenticationTokenService.refreshToken(tokenRefreshRequest))
                 .isInstanceOf(JwtException.class)
                 .withFailMessage(INVALID_JWT_TOKEN);
     }
