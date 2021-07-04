@@ -47,13 +47,15 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public SelectMemberResponse selectMember(final Member currentMember) {
-        return new SelectMemberResponse(currentMember.getAlias(), currentMember.getName(), currentMember.getEmail(), currentMember.getPhone());
+    public SelectMemberResponse selectMember(final Long memberId) {
+        Member member = findById(memberId);
+        return new SelectMemberResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone());
     }
 
     @Transactional
-    public ChangePasswordResponse changePassword(final Member currentMember, final ChangePasswordRequest changePasswordRequest) {
-        currentMember.changePassword(changePasswordRequest.getPassword());
+    public ChangePasswordResponse changePassword(final Long memberId, final ChangePasswordRequest changePasswordRequest) {
+        Member member = findById(memberId);
+        member.changePassword(changePasswordRequest.getPassword());
         return new ChangePasswordResponse("비밀번호 변경 성공하였습니다.");
     }
 

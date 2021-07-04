@@ -1,11 +1,11 @@
 package com.project.kodesalon.common.argumentresolver;
 
 import com.project.kodesalon.common.annotation.Login;
-import com.project.kodesalon.model.member.domain.Member;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.MethodParameter;
@@ -33,14 +33,12 @@ class LoginMemberArgumentResolverTest {
     private MockHttpServletRequest request;
 
     @Mock
-    private Member member;
-
-    @Mock
     private ModelAndViewContainer mavContainer;
 
     @Mock
     private WebDataBinderFactory binderFactory;
 
+    @InjectMocks
     private LoginMemberArgumentResolver loginMemberArgumentResolver;
 
     @BeforeEach
@@ -52,7 +50,7 @@ class LoginMemberArgumentResolverTest {
     @DisplayName("parameter가 Login annotation을 가지고 있고 Member 타입이면 true를 반환한다.")
     void supportsParameter() {
         given(parameter.hasParameterAnnotation(Login.class)).willReturn(true);
-        willReturn(Member.class).given(parameter).getParameterType();
+        willReturn(Long.class).given(parameter).getParameterType();
 
         boolean expect = loginMemberArgumentResolver.supportsParameter(parameter);
 
@@ -60,10 +58,10 @@ class LoginMemberArgumentResolverTest {
     }
 
     @Test
-    @DisplayName("parameter가 Login annotation을 가지고 있지 않으면 Member 타입이면 false를 반환한다.")
+    @DisplayName("parameter가 Login annotation을 가지고 있지 않으면 Long 타입이면 false를 반환한다.")
     void supportsParameter_return_false_with_not_has_login_parameter() {
         given(parameter.hasParameterAnnotation(Login.class)).willReturn(false);
-        willReturn(Member.class).given(parameter).getParameterType();
+        willReturn(Long.class).given(parameter).getParameterType();
 
         boolean expect = loginMemberArgumentResolver.supportsParameter(parameter);
 
@@ -71,7 +69,7 @@ class LoginMemberArgumentResolverTest {
     }
 
     @Test
-    @DisplayName("parameter가 Member 타입이 아니면 false를 반환한다.")
+    @DisplayName("parameter가 Long 타입이 아니면 false를 반환한다.")
     void supportsParameter_return_false_with_not_member_type_class() {
         given(parameter.hasParameterAnnotation(Login.class)).willReturn(true);
         willReturn(Object.class).given(parameter).getParameterType();
@@ -82,14 +80,14 @@ class LoginMemberArgumentResolverTest {
     }
 
     @Test
-    @DisplayName("NativeWebRequest을 HttpServletRequest으로 변환 후 속성으로 받아온 Member 객체를 반환한다.")
+    @DisplayName("NativeWebRequest을 HttpServletRequest으로 변환 후 속성으로 받아온 회원 식별 번호를 반환한다.")
     void resolveArgument() throws Exception {
         given(webRequest.getNativeRequest()).willReturn(request);
-        given(request.getAttribute(anyString())).willReturn(member);
+        given(request.getAttribute(anyString())).willReturn(1L);
 
         loginMemberArgumentResolver.resolveArgument(parameter, mavContainer, webRequest, binderFactory);
-        Member attributedMember = (Member) request.getAttribute(LOGIN_MEMBER);
+        Long attributedMemberId = (Long) request.getAttribute(LOGIN_MEMBER);
 
-        then(attributedMember).isEqualTo(member);
+        then(attributedMemberId).isEqualTo(1L);
     }
 }

@@ -1,8 +1,6 @@
 package com.project.kodesalon.common.interceptor;
 
 import com.project.kodesalon.common.JwtUtils;
-import com.project.kodesalon.model.member.domain.Member;
-import com.project.kodesalon.model.member.service.MemberService;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +17,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import static com.project.kodesalon.common.interceptor.LoginInterceptor.LOGIN_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -33,12 +30,6 @@ class LoginInterceptorTest {
 
     @Mock
     private JwtUtils jwtUtils;
-
-    @Mock
-    private MemberService memberService;
-
-    @Mock
-    Member member;
 
     @Spy
     private MockHttpServletRequest request;
@@ -55,11 +46,10 @@ class LoginInterceptorTest {
     }
 
     @Test
-    @DisplayName("request header에 jwt 토큰을 입력받아 Login할 멤버를 attribute에 등록하고 true를 반환한다.")
+    @DisplayName("request header에 jwt 토큰을 입력받아 회원 식별 번호를 attribute에 등록하고 true를 반환한다.")
     void preHandle() throws Exception {
         given(jwtUtils.validateToken(anyString())).willReturn(true);
         given(jwtUtils.getMemberIdFrom(anyString())).willReturn(1L);
-        given(memberService.findById(anyLong())).willReturn(member);
 
         boolean expect = loginInterceptor.preHandle(request, response, handler);
 

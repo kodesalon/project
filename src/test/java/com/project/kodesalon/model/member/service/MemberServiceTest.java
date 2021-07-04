@@ -20,6 +20,7 @@ import java.util.Optional;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -64,12 +65,13 @@ public class MemberServiceTest {
     @Test
     @DisplayName("회원정보 조회 성공 시, 회원 별명, 이름, 이메일, 전화 번호를 반환합니다.")
     void exist_id_response_member() {
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
         given(member.getAlias()).willReturn("alias");
         given(member.getName()).willReturn("이름");
         given(member.getEmail()).willReturn("email@email.com");
         given(member.getPhone()).willReturn("010-1111-2222");
 
-        SelectMemberResponse selectMemberResponse = memberService.selectMember(member);
+        SelectMemberResponse selectMemberResponse = memberService.selectMember(anyLong());
 
         softly.then(selectMemberResponse.getAlias()).isEqualTo("alias");
         softly.then(selectMemberResponse.getName()).isEqualTo("이름");
@@ -81,8 +83,10 @@ public class MemberServiceTest {
     @Test
     @DisplayName("비밀번호를 변경하고 성공 메세지를 담은 DTO를 반환한다.")
     public void changePassword() {
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
-        ChangePasswordResponse changePasswordResponse = memberService.changePassword(member, changePasswordRequest);
+        ChangePasswordResponse changePasswordResponse = memberService.changePassword(anyLong(), changePasswordRequest);
         then(changePasswordResponse.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
     }
 }

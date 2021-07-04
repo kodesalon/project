@@ -1,7 +1,6 @@
 package com.project.kodesalon.common.argumentresolver;
 
 import com.project.kodesalon.common.annotation.Login;
-import com.project.kodesalon.model.member.domain.Member;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -21,8 +20,8 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         boolean hasLoginAnnotation = parameter.hasParameterAnnotation(Login.class);
-        boolean hasMemberType = Member.class.isAssignableFrom(parameter.getParameterType());
-        return hasLoginAnnotation && hasMemberType;
+        boolean hasMemberIdType = Long.class.isAssignableFrom(parameter.getParameterType());
+        return hasLoginAnnotation && hasMemberIdType;
     }
 
     @Override

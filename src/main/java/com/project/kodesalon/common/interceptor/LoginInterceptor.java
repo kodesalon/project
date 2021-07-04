@@ -1,8 +1,6 @@
 package com.project.kodesalon.common.interceptor;
 
 import com.project.kodesalon.common.JwtUtils;
-import com.project.kodesalon.model.member.domain.Member;
-import com.project.kodesalon.model.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,11 +17,9 @@ public class LoginInterceptor implements HandlerInterceptor {
     private static final String LOG_ID = "logId";
 
     private final JwtUtils jwtUtils;
-    private final MemberService memberService;
 
-    public LoginInterceptor(JwtUtils jwtUtils, MemberService memberService) {
+    public LoginInterceptor(JwtUtils jwtUtils) {
         this.jwtUtils = jwtUtils;
-        this.memberService = memberService;
     }
 
     @Override
@@ -38,8 +34,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         jwtUtils.validateToken(token);
 
         Long memberId = jwtUtils.getMemberIdFrom(token);
-        Member member = memberService.findById(memberId);
-        request.setAttribute(LOGIN_MEMBER, member);
+        request.setAttribute(LOGIN_MEMBER, memberId);
         return true;
     }
 
