@@ -39,8 +39,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -291,12 +289,10 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원의 식별자를 전달받아 회원을 탈퇴하고 200 상태 + 성공 메세지를 반환합니다.")
     void deleteMember() throws Exception {
-        this.mockMvc.perform(delete("/api/v1/members/{memberId}", 1L)
+        this.mockMvc.perform(delete("/api/v1/members")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("delete/success",
-                        getDocumentResponse(),
-                        pathParameters(
-                                parameterWithName("memberId").description("삭제하려는 회원의 식별자"))));
+                        getDocumentRequest()));
     }
 }

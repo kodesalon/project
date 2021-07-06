@@ -550,7 +550,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>POST /api/v1/auth/login HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/auth/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 55
 Host: localhost:8080
@@ -558,7 +558,7 @@ Host: localhost:8080
 {
   "alias" : "alias",
   "password" : "Password123!!"
-}</pre>
+}</code></pre>
 </div>
 </div>
 </div>
@@ -616,7 +616,7 @@ Host: localhost:8080
     </div>
     <div class="listingblock">
       <div class="content">
-<pre>HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 Content-Length: 111
 
@@ -625,7 +625,7 @@ Content-Length: 111
   "refreshToken" : "refresh token",
   "memberId" : 1,
   "alias" : "alias"
-}</pre>
+}</code></pre>
       </div>
 </div>
 <div class="ulist">
@@ -665,13 +665,13 @@ Content-Length: 111
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>HTTP/1.1 400 Bad Request
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
 Content-Length: 65
 
 {
   "message" : "존재하는 아이디를 입력해주세요."
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -683,13 +683,13 @@ Content-Length: 65
 </div>
 <div class="listingblock">
   <div class="content">
-<pre>HTTP/1.1 400 Bad Request
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
 Content-Length: 63
 
 {
   "message" : "비밀 번호가 일치하지 않습니다."
-}</pre>
+}</code></pre>
   </div>
 </div>
   </div>
@@ -1309,25 +1309,10 @@ Content-Length: 145
               </li>
             </ul>
           </div>
-          <table class="tableblock frame-all grid-all stretch">
-            <caption class="title">Table 1. /api/v1/members/{memberId}</caption>
-            <colgroup>
-              <col style="width: 50%;">
-              <col style="width: 50%;">
-            </colgroup>
-            <thead>
-            <tr>
-              <th class="tableblock halign-left valign-top">Parameter</th>
-              <th class="tableblock halign-left valign-top">Description</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock">삭제하려는 회원의 식별자</p></td>
-            </tr>
-            </tbody>
-          </table>
+          <div class="paragraph">
+            <p>Unresolved directive in api-docs.adoc -
+              include::/Users/mac/Desktop/Spring/kodesalon/build/generated-snippets/delete/success/path-parameters.adoc[]</p>
+          </div>
           <div class="ulist">
             <ul>
               <li>
@@ -1337,7 +1322,7 @@ Content-Length: 145
           </div>
           <div class="listingblock">
             <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/members/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/members HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080</code></pre>
             </div>
@@ -1365,7 +1350,7 @@ Host: localhost:8080</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-  Last updated 2021-07-06 13:22:56 +0900
+  Last updated 2021-07-06 13:23:58 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

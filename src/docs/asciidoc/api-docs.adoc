@@ -165,10 +165,6 @@ include::{snippets}/changePassword/fail/invalidPassword/http-response.adoc[]
 === Delete
 ==== Request
 
-- 회원 탈퇴 path variable
-
-include::{snippets}/delete/success/path-parameters.adoc[]
-
 - 회원 탈퇴 Example
 
 include::{snippets}/delete/success/http-request.adoc[]
