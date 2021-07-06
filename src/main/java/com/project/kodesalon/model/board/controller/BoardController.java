@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/api/v1")
+@RequestMapping(value = "/api/v1/boards")
 public class BoardController {
 
     private final BoardService boardService;
@@ -22,7 +22,7 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    @PostMapping(value = "/boards")
+    @PostMapping
     public ResponseEntity<Void> save(@Login Long memberId, @RequestBody @Valid final BoardCreateRequest boardCreateRequest) {
         boardService.save(memberId, boardCreateRequest);
         return new ResponseEntity<>(HttpStatus.OK);
