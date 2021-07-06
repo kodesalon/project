@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
@@ -28,13 +27,11 @@ class JwtUtilsTest {
     private static final Long MEMBER_ID = 1L;
     private static final int EXPIRATION_MS = 10000;
     private static final Date ISSUE_TIME = new Date();
-
-    private final JwtUtils jwtUtils = new JwtUtils();
+    private JwtUtils jwtUtils;
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(jwtUtils, "secretKey", JWT_SECRET_KEY);
-        ReflectionTestUtils.setField(jwtUtils, "accessExpirationMs", EXPIRATION_MS);
+        jwtUtils = new JwtUtils(JWT_SECRET_KEY, EXPIRATION_MS);
     }
 
     @Test

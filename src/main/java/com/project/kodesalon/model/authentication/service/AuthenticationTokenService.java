@@ -27,14 +27,13 @@ public class AuthenticationTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberService memberService;
     private final JwtUtils jwtUtils;
+    private final int refreshExpirationWeeks;
 
-    @Value("${spring.jwt.refreshExpirationWeeks}")
-    private int refreshExpirationWeeks;
-
-    public AuthenticationTokenService(RefreshTokenRepository refreshTokenRepository, MemberService memberService, JwtUtils jwtUtils) {
+    public AuthenticationTokenService(RefreshTokenRepository refreshTokenRepository, MemberService memberService, JwtUtils jwtUtils, @Value("${spring.jwt.refreshExpirationWeeks}") int refreshExpirationWeeks) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.memberService = memberService;
         this.jwtUtils = jwtUtils;
+        this.refreshExpirationWeeks = refreshExpirationWeeks;
     }
 
     @Transactional

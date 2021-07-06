@@ -23,11 +23,13 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 @Component
 public class JwtUtils {
 
-    @Value("${spring.jwt.secret}")
     private String secretKey;
-
-    @Value("${spring.jwt.accessExpirationMs}")
     private long accessExpirationMs;
+
+    public JwtUtils(@Value("${spring.jwt.secret}") String secretKey, @Value("${spring.jwt.accessExpirationMs}") long accessExpirationMs) {
+        this.secretKey = secretKey;
+        this.accessExpirationMs = accessExpirationMs;
+    }
 
     public String generateJwtToken(Long memberId) {
         Date issueTime = new Date();

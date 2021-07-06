@@ -10,10 +10,10 @@ import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.LoginRequest;
 import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import io.jsonwebtoken.JwtException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -36,7 +36,6 @@ class AuthenticationTokenServiceTest {
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final TokenRefreshRequest tokenRefreshRequest = new TokenRefreshRequest("refreshToken");
 
-    @InjectMocks
     private AuthenticationTokenService authenticationTokenService;
 
     @Mock
@@ -53,6 +52,12 @@ class AuthenticationTokenServiceTest {
 
     @Mock
     private RefreshToken refreshToken;
+
+
+    @BeforeEach
+    void setUp() {
+        authenticationTokenService = new AuthenticationTokenService(refreshTokenRepository, memberService, jwtUtils, 2);
+    }
 
     @Test
     @DisplayName("회원 별명, 비밀번호를 전달받고, refresh 토큰이 존재하지 않는다면 Access, Refresh 토큰을 생성하고 회원 id, alias를 DTO에 담아 반환한다.")
