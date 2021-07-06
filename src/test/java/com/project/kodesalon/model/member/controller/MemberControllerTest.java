@@ -283,7 +283,7 @@ public class MemberControllerTest {
     @DisplayName("비밀번호 변경시, 변경하려는 회원 식별자가 없는 경우 400 상태 + 예외 코드를 반환합니다.")
     void failed_change_password_with_member_id_not_exist() throws Exception {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!");
-        willThrow(new EntityNotFoundException("찾으려는 회원이 없습니다"))
+        willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER))
                 .given(memberService)
                 .changePassword(any(), any(ChangePasswordRequest.class));
 
@@ -325,7 +325,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("토큰이 유효하지 않을 경우 400 상태 + 에러 코드를 반환한다.")
-    void invalid_access_token() throwㅊs Exception {
+    void invalid_access_token() throws Exception {
         given(loginInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any()))
                 .willThrow(new JwtException(INVALID_JWT_TOKEN));
 
