@@ -67,9 +67,9 @@ public class BoardControllerTest {
                 .andDo(document("board/create/success",
                         getDocumentRequest(),
                         requestFields(
-                                fieldWithPath("title").type(JsonFieldType.STRING).description("게시물 제목"),
-                                fieldWithPath("content").type(JsonFieldType.STRING).description("게시물 내용"),
-                                fieldWithPath("createdDateTime").type(JsonFieldType.STRING).description("게시물 작성 날짜")
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("생성할 게시물 제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("생성할 게시물 내용"),
+                                fieldWithPath("createdDateTime").type(JsonFieldType.STRING).description("생성할 게시물 작성 날짜")
                         ))
                 );
     }
@@ -86,7 +86,7 @@ public class BoardControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 제목 예외 코드")
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 제목에 대한 예외 코드")
                         )));
     }
 
@@ -102,7 +102,7 @@ public class BoardControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 내용 예외 코드")
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 내용에 대한 예외 코드")
                         )));
     }
 }

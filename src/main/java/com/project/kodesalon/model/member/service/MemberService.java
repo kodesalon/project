@@ -25,14 +25,6 @@ public class MemberService {
         this.memberRepository = memberRepository;
     }
 
-    public Member findMemberByAlias(final String alias) {
-        return memberRepository.findMemberByAlias(new Alias(alias))
-                .orElseThrow(() -> {
-                    log.info("{}인 Alias를 가진 사용자가 존재하지 않음", alias);
-                    throw new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS);
-                });
-    }
-
     @Transactional
     public void join(final CreateMemberRequest createMemberRequest) {
         String alias = createMemberRequest.getAlias();
@@ -62,7 +54,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void deleteMember(Long memberId) {
+    public void deleteMember(final Long memberId) {
         Member member = findById(memberId);
         member.delete();
     }
@@ -72,6 +64,14 @@ public class MemberService {
                 .orElseThrow(() -> {
                     log.info("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
                     throw new EntityNotFoundException(NOT_EXIST_MEMBER);
+                });
+    }
+
+    public Member findMemberByAlias(final String alias) {
+        return memberRepository.findMemberByAlias(new Alias(alias))
+                .orElseThrow(() -> {
+                    log.info("{}인 Alias를 가진 사용자가 존재하지 않음", alias);
+                    throw new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS);
                 });
     }
 }

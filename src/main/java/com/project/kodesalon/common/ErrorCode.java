@@ -12,6 +12,7 @@ public class ErrorCode {
     public static final String INVALID_MEMBER_PHONE = "M007";
     public static final String NOT_EXIST_MEMBER = "M008";
     public static final String PASSWORD_DUPLICATION = "M009";
+    public static final String PASSWORD_NOT_CORRECT = "M010";
 
     // Board
     public static final String INVALID_BOARD_TITLE = "B001";

@@ -98,11 +98,11 @@ public class MemberControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("alias").type(JsonFieldType.STRING).description("회원 가입할 member의 alias"),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("회원 가입할 member의 password"),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("회원 가입할 member의 이름"),
-                                fieldWithPath("email").type(JsonFieldType.STRING).description("회원 가입할 member의 email"),
-                                fieldWithPath("phone").type(JsonFieldType.STRING).description("회원 가입할 member의 phone")
+                                fieldWithPath("alias").type(JsonFieldType.STRING).description("회원 가입할 아이디"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("회원 가입할 비밀번호"),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("회원 가입할 이름"),
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("회원 가입할 이메일"),
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("회원 가입할 핸드폰 번호")
                         )));
     }
 
@@ -121,7 +121,7 @@ public class MemberControllerTest {
                 .andDo(document("join/fail/existing_alias",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("이미 존재하는 아이디(Alias) 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("이미 존재하는 아이디에 대한 예외 코드"))));
     }
 
     @Test
@@ -138,7 +138,7 @@ public class MemberControllerTest {
                 .andDo(document("join/fail/invalid_alias",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 아이디(Alias) 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 아이디에 대한 예외 코드"))));
     }
 
     @Test
@@ -155,7 +155,7 @@ public class MemberControllerTest {
                 .andDo(document("join/fail/invalid_password",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호(Password) 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호에 대한 예외 코드"))));
     }
 
     @Test
@@ -172,7 +172,7 @@ public class MemberControllerTest {
                 .andDo(document("join/fail/invalid_name",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 이름(Name) 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 이름에 대한 예외 코드"))));
     }
 
     @Test
@@ -189,7 +189,7 @@ public class MemberControllerTest {
                 .andDo(document("join/fail/invalid_email",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 이메일(Email) 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 이메일에 대한 예외 코드"))));
     }
 
     @Test
@@ -206,7 +206,7 @@ public class MemberControllerTest {
                 .andDo(document("join/fail/invalid_phone",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 phone 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 핸드폰 번호에 대한 예외 코드"))));
     }
 
     @Test
@@ -224,7 +224,7 @@ public class MemberControllerTest {
                 .andDo(document("join/fail/deleted_alias",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("이미 삭제된 회원의 alias에 대한 회원 가입 예외 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("이미 삭제된 회원 어아다에 대한 회원 가입 예외 코드"))));
     }
 
     @Test
@@ -243,10 +243,10 @@ public class MemberControllerTest {
                 .andDo(document("select/success",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 Alias"),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("조회한 Name"),
-                                fieldWithPath("email").type(JsonFieldType.STRING).description("조회한 Email"),
-                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 Phone"))));
+                                fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 회원의 아이디"),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("조회한 회원의 이름"),
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("조회한 회원의 이메일"),
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 회원의 핸드폰 번호"))));
     }
 
     @Test
@@ -320,7 +320,7 @@ public class MemberControllerTest {
                 .andDo(document("jwt/expired",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").description("만료 JWT token 예외 코드"))));
+                                fieldWithPath("code").description("만료 JWT 토큰에 대한 예외 코드"))));
     }
 
     @Test
@@ -336,6 +336,6 @@ public class MemberControllerTest {
                 .andDo(document("jwt/invalid",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").description("유효하지 않은 JWT token 예외 코드"))));
+                                fieldWithPath("code").description("유효하지 않은 JWT 토큰에 대한 예외 코드"))));
     }
 }
