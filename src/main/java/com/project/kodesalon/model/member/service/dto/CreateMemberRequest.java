@@ -1,11 +1,15 @@
 package com.project.kodesalon.model.member.service.dto;
 
 import com.project.kodesalon.model.member.domain.Member;
+import com.project.kodesalon.model.member.domain.vo.Alias;
+import com.project.kodesalon.model.member.domain.vo.Email;
+import com.project.kodesalon.model.member.domain.vo.Name;
+import com.project.kodesalon.model.member.domain.vo.Password;
+import com.project.kodesalon.model.member.domain.vo.Phone;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -37,7 +41,7 @@ public class CreateMemberRequest {
     private String name;
 
     @NotEmpty(message = "null 또는 빈 공백이 아닌 이메일 주소를 입력해주세요.")
-    @Email(message = EMAIL_EXCEPTION_MESSAGE)
+    @javax.validation.constraints.Email(message = EMAIL_EXCEPTION_MESSAGE)
     private String email;
 
     @NotNull(message = "null이 아닌 휴대폰 번호를 입력해주세요.")
@@ -53,6 +57,11 @@ public class CreateMemberRequest {
     }
 
     public Member toMember() {
-        return new Member(alias, password, name, email, phone);
+        Alias validAlias = new Alias(alias);
+        Password validPassword = new Password(password);
+        Name validName = new Name(name);
+        Email validEmail = new Email(email);
+        Phone validPhone = new Phone(phone);
+        return new Member(validAlias, validPassword, validName, validEmail, validPhone);
     }
 }

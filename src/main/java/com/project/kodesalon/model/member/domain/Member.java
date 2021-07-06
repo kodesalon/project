@@ -5,9 +5,12 @@ import com.project.kodesalon.model.member.domain.vo.Email;
 import com.project.kodesalon.model.member.domain.vo.Name;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.domain.vo.Phone;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.Where;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -17,8 +20,10 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@NoArgsConstructor
-@Table(name = "member", uniqueConstraints = {@UniqueConstraint(columnNames = {"alias"})})
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "member", uniqueConstraints = {
+        @UniqueConstraint(name = "member_unique_constraint", columnNames = {"alias"})})
+@Where(clause = "deleted = 'false'")
 @Slf4j
 public class Member {
 
@@ -40,6 +45,9 @@ public class Member {
 
     @Embedded
     private Name name;
+
+    @Column(name = "deleted")
+    private boolean deleted = false;
 
     public Member(final String alias, final String password, final String name, final String email, final String phone) {
         this.alias = new Alias(alias);
@@ -73,8 +81,21 @@ public class Member {
         return phone.value();
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
     public boolean hasSamePassword(final Password password) {
         return this.password.equals(password);
+    }
+
+    public void login(final String password) {
+        Password inputPassword = new Password(password);
+
+        if (!hasSamePassword(inputPassword)) {
+            log.info("{}의 Password가 일치하지 않음", getAlias());
+            throw new IllegalArgumentException("비밀 번호가 일치하지 않습니다.");
+        }
     }
 
     public void changePassword(final String password) {
@@ -87,12 +108,7 @@ public class Member {
         this.password = newPassword;
     }
 
-    public void login(final String password) {
-        Password inputPassword = new Password(password);
-
-        if (!hasSamePassword(inputPassword)) {
-            log.info("{}의 Password가 일치하지 않음", getAlias());
-            throw new IllegalArgumentException("비밀 번호가 일치하지 않습니다.");
-        }
+    public void delete() {
+        deleted = true;
     }
 }

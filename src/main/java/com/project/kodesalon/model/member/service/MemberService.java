@@ -13,14 +13,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 
 @Service
 @Slf4j
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
+    public MemberService(final MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
@@ -38,7 +38,7 @@ public class MemberService {
         return memberRepository.findMemberByAlias(new Alias(alias))
                 .orElseThrow(() -> {
                     log.info("{}인 Alias를 가진 사용자가 존재하지 않음", alias);
-                    throw new NoSuchElementException("존재하는 아이디를 입력해주세요.");
+                    throw new EntityNotFoundException("존재하는 아이디를 입력해주세요.");
                 });
     }
 
@@ -76,7 +76,13 @@ public class MemberService {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> {
                     log.info("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
-                    throw new NoSuchElementException("찾으려는 회원이 없습니다");
+                    throw new EntityNotFoundException("찾으려는 회원이 없습니다");
                 });
+    }
+
+    @Transactional
+    public void deleteMember(Long memberId) {
+        Member member = findById(memberId);
+        member.delete();
     }
 }

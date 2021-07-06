@@ -16,8 +16,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
@@ -26,6 +27,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
@@ -62,7 +65,7 @@ public class MemberServiceTest {
         given(memberRepository.findMemberByAlias(new Alias(loginRequest.getAlias()))).willReturn(Optional.empty());
 
         thenThrownBy(() -> memberService.login(loginRequest))
-                .isInstanceOf(NoSuchElementException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("존재하는 아이디를 입력해주세요.");
     }
 
@@ -103,6 +106,16 @@ public class MemberServiceTest {
     }
 
     @Test
+    @DisplayName("회원 가입시 삭제한 회원이 다시 가입했을 경우에는 예외를 발생시킵니다")
+    void join_throw_exception_with_left_alias_after_delete() {
+        given(memberRepository.save(any(Member.class))).willThrow(new DataIntegrityViolationException("이미 삭제된 회원에 대한 Alias"));
+
+        thenThrownBy(() -> memberService.join(createMemberRequest))
+                .isInstanceOf(DataIntegrityViolationException.class)
+                .hasMessage("이미 삭제된 회원에 대한 Alias");
+    }
+
+    @Test
     @DisplayName("회원정보 조회 성공 시, 회원 별명, 이름, 이메일, 전화 번호를 반환합니다.")
     void exist_id_response_member() {
         given(member.getAlias()).willReturn("alias");
@@ -126,7 +139,7 @@ public class MemberServiceTest {
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
         thenThrownBy(() -> memberService.selectMember(1L))
-                .isInstanceOf(NoSuchElementException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage("찾으려는 회원이 없습니다");
     }
 
@@ -139,5 +152,25 @@ public class MemberServiceTest {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
         ChangePasswordResponse changePasswordResponse = memberService.changePassword(1L, changePasswordRequest);
         softly.then(changePasswordResponse.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴에 성공한다.")
+    void deleteMember() {
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+
+        memberService.deleteMember(member.getId());
+
+        verify(member, times(1)).delete();
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴시, 존재하지 않는 회원 식별자면 예외를 발생시킨다.")
+    void deleteMember_throws_exception() {
+        given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
+
+        thenThrownBy(() -> memberService.deleteMember(member.getId()))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("찾으려는 회원이 없습니다");
     }
 }
