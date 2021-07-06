@@ -28,8 +28,15 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.common.ErrorCode.EXPIRED_JWT_TOKEN;
 import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ALIAS;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_EMAIL;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_NAME;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PHONE;
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
@@ -96,14 +103,13 @@ public class MemberControllerTest {
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("회원 가입할 member의 이름"),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("회원 가입할 member의 email"),
                                 fieldWithPath("phone").type(JsonFieldType.STRING).description("회원 가입할 member의 phone")
-
                         )));
     }
 
     @Test
-    @DisplayName("회원가입 시 이미 존재하는 아이디(Alias)일 경우, 예외 메세지를 다음 DTO를 Http 400으로 응답합니다.")
+    @DisplayName("회원가입 시 이미 존재하는 아이디(Alias)일 경우, 예외 코드를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_already_exist() throws Exception {
-        willThrow(new IllegalArgumentException("이미 존재하는 아이디입니다"))
+        willThrow(new IllegalStateException(ALREADY_EXIST_MEMBER_ALIAS))
                 .given(memberService)
                 .join(any(CreateMemberRequest.class));
 
@@ -111,7 +117,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("이미 존재하는 아이디입니다"))
+                .andExpect(jsonPath("$.code").value(ALREADY_EXIST_MEMBER_ALIAS))
                 .andDo(document("join/fail/existing_alias",
                         getDocumentResponse(),
                         responseFields(
@@ -128,7 +134,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidAlias)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다."))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_ALIAS))
                 .andDo(document("join/fail/invalid_alias",
                         getDocumentResponse(),
                         responseFields(
@@ -145,7 +151,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidPassword)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PASSWORD))
                 .andDo(document("join/fail/invalid_password",
                         getDocumentResponse(),
                         responseFields(
@@ -162,7 +168,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidName)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("이름은 2자리 이상 17자리 이하의 한글이어야 합니다."))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_NAME))
                 .andDo(document("join/fail/invalid_name",
                         getDocumentResponse(),
                         responseFields(
@@ -179,7 +185,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidEmail)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("이메일은 id@domain.com과 같은 형식이어야 합니다."))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_EMAIL))
                 .andDo(document("join/fail/invalid_email",
                         getDocumentResponse(),
                         responseFields(
@@ -196,7 +202,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidPhone)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("휴대폰 번호는 [3자리 수] - [3 ~ 4자리 수] - [4자리 수]의 형식 이어야 합니다."))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PHONE))
                 .andDo(document("join/fail/invalid_phone",
                         getDocumentResponse(),
                         responseFields(
@@ -206,7 +212,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원 가입시 삭제된 회원일 경우 400 상태와 예외 메세지를 반환합니다")
     void join_fail_with_deleted_member_alias() throws Exception {
-        willThrow(new DataIntegrityViolationException("이미 삭제된 회원의 alias"))
+        willThrow(new DataIntegrityViolationException(ALREADY_EXIST_MEMBER_ALIAS))
                 .given(memberService)
                 .join(any(CreateMemberRequest.class));
 
@@ -214,7 +220,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("이미 삭제된 회원의 alias"))
+                .andExpect(jsonPath("$.code").value(ALREADY_EXIST_MEMBER_ALIAS))
                 .andDo(document("join/fail/deleted_alias",
                         getDocumentResponse(),
                         responseFields(
@@ -259,34 +265,36 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("비밀번호 변경시, 변경하려는 비밀변호가 유효하지 않은 경우 400 상태 + 예외 메세지를 반환합니다.")
+    @DisplayName("비밀번호 변경시, 변경하려는 비밀변호가 유효하지 않은 경우 400 상태 + 예외 코드를 반환합니다.")
     void failed_change_password_with_invalid_password() throws Exception {
         ChangePasswordRequest changePasswordRequestWithInvalidPassword = new ChangePasswordRequest("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.");
 
         this.mockMvc.perform(put("/api/v1/members/password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(changePasswordRequestWithInvalidPassword)))
-                .andExpect(jsonPath("$.code").value("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."))
+                .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PASSWORD))
                 .andDo(document("changePassword/fail/invalidPassword",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호에 대한 예외 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호에 대한 예외 코드"))));
     }
 
     @Test
-    @DisplayName("비밀번호 변경시, 변경하려는 회원 식별자가 없는 경우 400 상태 + 예외 메세지를 반환합니다.")
+    @DisplayName("비밀번호 변경시, 변경하려는 회원 식별자가 없는 경우 400 상태 + 예외 코드를 반환합니다.")
     void failed_change_password_with_member_id_not_exist() throws Exception {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!");
-        willThrow(new EntityNotFoundException("찾으려는 회원이 없습니다")).given(memberService).changePassword(any(), any(ChangePasswordRequest.class));
+        willThrow(new EntityNotFoundException("찾으려는 회원이 없습니다"))
+                .given(memberService)
+                .changePassword(any(), any(ChangePasswordRequest.class));
 
         this.mockMvc.perform(put("/api/v1/members/password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(changePasswordRequest)))
-                .andExpect(jsonPath("$.code").value("찾으려는 회원이 없습니다"))
+                .andExpect(jsonPath("$.code").value(NOT_EXIST_MEMBER))
                 .andDo(document("changePassword/fail/noMember",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 회원에 대한 예외 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 회원에 대한 예외 코드"))));
     }
 
     @Test
@@ -317,7 +325,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("토큰이 유효하지 않을 경우 400 상태 + 에러 코드를 반환한다.")
-    void invalid_access_token() throws Exception {
+    void invalid_access_token() throwㅊs Exception {
         given(loginInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any()))
                 .willThrow(new JwtException(INVALID_JWT_TOKEN));
 

@@ -12,9 +12,9 @@ import javax.persistence.Lob;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
 public class Content {
-    private static final String CHECK_CONTENT_IS_BLANK = "내용에 공백 아닌 1자 이상의 문자를 입력하였는지 확인해주세요.";
-    private static final String CHECK_CONTENT_LENGTH = "내용이 500자를 초과하는지 확인해주세요.";
-    private static final int CONTENT_LENGTH_BOUND_MAX = 500;
+    public static final String CHECK_CONTENT_IS_BLANK = "내용에 공백 아닌 1자 이상의 문자를 입력하였는지 확인해주세요.";
+    public static final String CHECK_CONTENT_LENGTH = "내용이 500자를 초과하는지 확인해주세요.";
+    public static final int CONTENT_LENGTH_BOUND_MAX = 500;
 
     @Lob
     @Column(nullable = false, length = CONTENT_LENGTH_BOUND_MAX)

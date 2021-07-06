@@ -57,13 +57,13 @@ public class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("회원 식별 번호, 제목, 내용, 생성 날짜를 json으로 전달받아 게시물을 생성하고 HTTP status 201을 반환한다.")
+    @DisplayName("회원 식별 번호, 제목, 내용, 생성 날짜를 json으로 전달받아 게시물을 생성하고 HTTP 200을 반환한다.")
     public void save() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "게시물 내용", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andDo(document("board/create/success",
                         getDocumentRequest(),
                         requestFields(
@@ -76,10 +76,9 @@ public class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("제목이 존재하지 않을 경우 HTTP status 400과 예외 메세지를 반환한다.")
-    public void save_fail_invalid_title() throws Exception {
+    @DisplayName("제목이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
+    public void save_fail_with_invalid_title() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "", "게시물 내용", LocalDateTime.now());
-
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -88,13 +87,13 @@ public class BoardControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("예외 메세지")
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 제목 예외 코드")
                         )));
     }
 
     @Test
-    @DisplayName("내용이 존재하지 않을 경우 HTTP status 400과 예외 메세지를 반환한다.")
-    public void save_fail_invalid_content() throws Exception {
+    @DisplayName("내용이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
+    public void save_fail_with_invalid_content() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
@@ -102,6 +101,9 @@ public class BoardControllerTest {
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/create/fail/invalid-content",
                         getDocumentRequest(),
-                        getDocumentResponse()));
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 내용 예외 코드")
+                        )));
     }
 }
