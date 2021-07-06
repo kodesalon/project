@@ -88,7 +88,7 @@ public class BoardControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("예외 메세지")
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("예외 메세지")
                         )));
     }
 

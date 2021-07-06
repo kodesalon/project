@@ -12,7 +12,18 @@ kodesalon;
 
 [[sample]]
 == AuthenticationToken
+
+=== JWT Token ERROR
+
+==== Response
+
+include::{snippets}/jwt/expired/response-fields.adoc[]
+include::{snippets}/jwt/expired/http-response.adoc[]
+include::{snippets}/jwt/invalid/response-fields.adoc[]
+include::{snippets}/jwt/invalid/http-response.adoc[]
+
 === Login
+
 ==== Request
 
 - Response Body
@@ -142,17 +153,13 @@ include::{snippets}/select/success/http-response.adoc[]
 
 - 회원 비밀번호 변경 Request Body
 
-include::{snippets}/changePassword/success/response-fields.adoc[]
+include::{snippets}/changePassword/success/request-fields.adoc[]
 
 - 회원 비밀번호 변경 Example
 
 include::{snippets}/changePassword/success/http-request.adoc[]
 
 ==== Response
-
-- 회원 비밀번호 변경 Response
-
-include::{snippets}/changePassword/success/response-fields.adoc[]
 
 - 회원 비밀번호 변경 성공 response example
 
@@ -174,5 +181,3 @@ include::{snippets}/delete/success/http-request.adoc[]
 - 회원 탈퇴 성공 response
 
 include::{snippets}/delete/success/http-response.adoc[]
-
-

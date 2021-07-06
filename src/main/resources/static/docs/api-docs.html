@@ -650,7 +650,7 @@ Content-Length: 111
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
   <td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호 불일치 에러 메세지</p></td>
 </tr>
@@ -667,10 +667,10 @@ Content-Length: 111
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 65
+Content-Length: 62
 
 {
-  "message" : "존재하는 아이디를 입력해주세요."
+  "code" : "존재하는 아이디를 입력해주세요."
 }</code></pre>
 </div>
 </div>
@@ -685,10 +685,10 @@ Content-Length: 65
   <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 63
+Content-Length: 60
 
 {
-  "message" : "비밀 번호가 일치하지 않습니다."
+  "code" : "비밀 번호가 일치하지 않습니다."
 }</code></pre>
   </div>
 </div>
@@ -823,7 +823,7 @@ Content-Length: 70
         </thead>
         <tbody>
         <tr>
-          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
           <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
           <td class="tableblock halign-left valign-top"><p class="tableblock">유효하지 않은 refresh token 에러 코드</p></td>
         </tr>
@@ -840,10 +840,10 @@ Content-Length: 70
         <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 24
+Content-Length: 21
 
 {
-  "message" : "J002"
+  "code" : "J002"
 }</code></pre>
         </div>
       </div>
@@ -967,7 +967,7 @@ Host: localhost:8080
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+  <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
   <td class="tableblock halign-left valign-top"><p class="tableblock">이미 존재하는 아이디(Alias) 에러 메세지</p></td>
 </tr>
@@ -984,10 +984,10 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 58
+Content-Length: 55
 
 {
-  "message" : "이미 존재하는 아이디입니다"
+  "code" : "이미 존재하는 아이디입니다"
 }</code></pre>
 </div>
 </div>
@@ -1002,10 +1002,10 @@ Content-Length: 58
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 150
+Content-Length: 147
 
 {
-  "message" : "아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다."
+  "code" : "아이디는 영문으로 시작해야 하며 4자리 이상 15자리 이하의 영문 혹은 숫자가 포함되어야 합니다."
 }</code></pre>
 </div>
 </div>
@@ -1020,10 +1020,10 @@ Content-Length: 150
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 145
+Content-Length: 142
 
 {
-  "message" : "비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."
+  "code" : "비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."
 }</code></pre>
 </div>
 </div>
@@ -1038,10 +1038,10 @@ Content-Length: 145
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 90
+Content-Length: 87
 
 {
-  "message" : "이름은 2자리 이상 17자리 이하의 한글이어야 합니다."
+  "code" : "이름은 2자리 이상 17자리 이하의 한글이어야 합니다."
 }</code></pre>
 </div>
 </div>
@@ -1056,10 +1056,10 @@ Content-Length: 90
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 83
+Content-Length: 80
 
 {
-  "message" : "이메일은 id@domain.com과 같은 형식이어야 합니다."
+  "code" : "이메일은 id@domain.com과 같은 형식이어야 합니다."
 }</code></pre>
 </div>
 </div>
@@ -1074,10 +1074,10 @@ Content-Length: 83
     <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 120
+Content-Length: 117
 
 {
-  "message" : "휴대폰 번호는 [3자리 수] - [3 ~ 4자리 수] - [4자리 수]의 형식 이어야 합니다."
+  "code" : "휴대폰 번호는 [3자리 수] - [3 ~ 4자리 수] - [4자리 수]의 형식 이어야 합니다."
 }</code></pre>
     </div>
   </div>
@@ -1189,27 +1189,10 @@ Content-Length: 104
               </li>
             </ul>
           </div>
-          <table class="tableblock frame-all grid-all stretch">
-            <colgroup>
-              <col style="width: 33.3333%;">
-              <col style="width: 33.3333%;">
-              <col style="width: 33.3334%;">
-            </colgroup>
-            <thead>
-            <tr>
-              <th class="tableblock halign-left valign-top">Path</th>
-              <th class="tableblock halign-left valign-top">Type</th>
-              <th class="tableblock halign-left valign-top">Description</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호 변경 성공 메세지</p></td>
-            </tr>
-            </tbody>
-          </table>
+          <div class="paragraph">
+            <p>Unresolved directive in api-docs.adoc -
+              include::/Users/mac/Desktop/Spring/kodesalon/build/generated-snippets/changePassword/success/response-fields.adoc[]</p>
+          </div>
           <div class="ulist">
             <ul>
               <li>
@@ -1239,27 +1222,10 @@ Host: localhost:8080
               </li>
             </ul>
           </div>
-          <table class="tableblock frame-all grid-all stretch">
-            <colgroup>
-              <col style="width: 33.3333%;">
-              <col style="width: 33.3333%;">
-              <col style="width: 33.3334%;">
-            </colgroup>
-            <thead>
-            <tr>
-              <th class="tableblock halign-left valign-top">Path</th>
-              <th class="tableblock halign-left valign-top">Type</th>
-              <th class="tableblock halign-left valign-top">Description</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호 변경 성공 메세지</p></td>
-            </tr>
-            </tbody>
-          </table>
+          <div class="paragraph">
+            <p>Unresolved directive in api-docs.adoc -
+              include::/Users/mac/Desktop/Spring/kodesalon/build/generated-snippets/changePassword/success/response-fields.adoc[]</p>
+          </div>
           <div class="ulist">
             <ul>
               <li>
@@ -1269,13 +1235,7 @@ Host: localhost:8080
           </div>
           <div class="listingblock">
             <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 62
-
-{
-  "message" : "비밀번호 변경 성공하였습니다."
-}</code></pre>
+              <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK</code></pre>
             </div>
           </div>
           <div class="ulist">
@@ -1289,10 +1249,10 @@ Content-Length: 62
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
-Content-Length: 145
+Content-Length: 142
 
 {
-  "message" : "비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."
+  "code" : "비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다."
 }</code></pre>
             </div>
           </div>
@@ -1302,17 +1262,6 @@ Content-Length: 145
         <h3 id="_delete"><a class="link" href="#_delete">Delete</a></h3>
         <div class="sect3">
           <h4 id="_request_6"><a class="link" href="#_request_6">Request</a></h4>
-          <div class="ulist">
-            <ul>
-              <li>
-                <p>회원 탈퇴 path variable</p>
-              </li>
-            </ul>
-          </div>
-          <div class="paragraph">
-            <p>Unresolved directive in api-docs.adoc -
-              include::/Users/mac/Desktop/Spring/kodesalon/build/generated-snippets/delete/success/path-parameters.adoc[]</p>
-          </div>
           <div class="ulist">
             <ul>
               <li>
@@ -1350,7 +1299,7 @@ Host: localhost:8080</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-  Last updated 2021-07-06 13:23:58 +0900
+  Last updated 2021-07-06 13:30:30 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

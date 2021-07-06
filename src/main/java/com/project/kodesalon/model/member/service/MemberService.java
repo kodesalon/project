@@ -4,7 +4,6 @@ import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
-import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -49,15 +48,13 @@ public class MemberService {
     @Transactional(readOnly = true)
     public SelectMemberResponse selectMember(final Long memberId) {
         Member member = findById(memberId);
-        log.info("test22 {}", member.getId(), member.getAlias());
         return new SelectMemberResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone());
     }
 
     @Transactional
-    public ChangePasswordResponse changePassword(final Long memberId, final ChangePasswordRequest changePasswordRequest) {
+    public void changePassword(final Long memberId, final ChangePasswordRequest changePasswordRequest) {
         Member member = findById(memberId);
         member.changePassword(changePasswordRequest.getPassword());
-        return new ChangePasswordResponse("비밀번호 변경 성공하였습니다.");
     }
 
     @Transactional

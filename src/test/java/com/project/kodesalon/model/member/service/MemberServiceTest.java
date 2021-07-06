@@ -4,7 +4,6 @@ import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
-import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.assertj.core.api.BDDSoftAssertions;
@@ -19,10 +18,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
-import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -103,13 +102,13 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("비밀번호를 변경하고 성공 메세지를 담은 DTO를 반환한다.")
+    @DisplayName("비밀번호를 변경한다.")
     public void changePassword() {
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
-        ChangePasswordResponse changePasswordResponse = memberService.changePassword(anyLong(), changePasswordRequest);
-        then(changePasswordResponse.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
+        memberService.changePassword(anyLong(), changePasswordRequest);
+        verify(member, times(1)).changePassword(anyString());
     }
 
     @Test

@@ -3,7 +3,6 @@ package com.project.kodesalon.model.member.controller;
 import com.project.kodesalon.common.annotation.Login;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
-import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.springframework.http.ResponseEntity;
@@ -39,9 +38,9 @@ public class MemberController {
     }
 
     @PutMapping("/password")
-    public ResponseEntity<ChangePasswordResponse> changePassword(@Login Long memberId, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
-        ChangePasswordResponse changePasswordResponse = memberService.changePassword(memberId, changePasswordRequest);
-        return ResponseEntity.ok().body(changePasswordResponse);
+    public ResponseEntity<Void> changePassword(@Login Long memberId, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
+        memberService.changePassword(memberId, changePasswordRequest);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping

@@ -101,7 +101,7 @@ public class AuthenticationTokenControllerTest {
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("비밀 번호가 일치하지 않습니다."))
+                .andExpect(jsonPath("$.code").value("비밀 번호가 일치하지 않습니다."))
                 .andDo(document("login/fail/mismatch_password",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -110,7 +110,7 @@ public class AuthenticationTokenControllerTest {
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("로그인 할 password")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("비밀번호 불일치 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("비밀번호 불일치 에러 메세지"))));
     }
 
     @Test
@@ -124,11 +124,11 @@ public class AuthenticationTokenControllerTest {
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("존재하는 아이디를 입력해주세요."))
+                .andExpect(jsonPath("$.code").value("존재하는 아이디를 입력해주세요."))
                 .andDo(document("login/fail/no_alias",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("존재하지 않는 아이디(Alias) 예러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 아이디(Alias) 예러 메세지"))));
     }
 
     @Test
@@ -171,6 +171,6 @@ public class AuthenticationTokenControllerTest {
                                 fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("유효하지 않거나 만료된 jwt refresh token")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 refresh token 에러 코드"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 refresh token 에러 코드"))));
     }
 }
