@@ -24,6 +24,7 @@ public class BoardService {
     public void save(final BoardCreateRequest boardCreateRequest) {
         Member member = memberService.findById(boardCreateRequest.getMemberId());
         Board createdBoard = boardCreateRequest.toBoard(member);
+        log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
         boardRepository.save(createdBoard);
     }
 }
