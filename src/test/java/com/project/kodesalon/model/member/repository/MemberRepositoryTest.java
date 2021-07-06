@@ -2,10 +2,6 @@ package com.project.kodesalon.model.member.repository;
 
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
-import com.project.kodesalon.model.member.domain.vo.Email;
-import com.project.kodesalon.model.member.domain.vo.Name;
-import com.project.kodesalon.model.member.domain.vo.Password;
-import com.project.kodesalon.model.member.domain.vo.Phone;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +24,7 @@ class MemberRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        member = new Member(new Alias("alias"), new Password("Password!!123"), new Name("이름"), new Email("email@email.com"), new Phone("010-1234-4444"));
+        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
         memberRepository.save(member);
     }
 

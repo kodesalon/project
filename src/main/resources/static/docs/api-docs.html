@@ -454,21 +454,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_login">Login</a>
 <ul class="sectlevel3">
 <li><a href="#_request">Request</a></li>
-<li><a href="#_reponse">Reponse</a></li>
+  <li><a href="#_reponse">Reponse</a></li>
 </ul>
 </li>
-<li><a href="#_join">Join</a>
-<ul class="sectlevel3">
-<li><a href="#_request_2">Request</a></li>
-<li><a href="#_response">Response</a></li>
-</ul>
-</li>
-<li><a href="#_select">Select</a>
-<ul class="sectlevel3">
-<li><a href="#_request_3">Request</a></li>
-  <li><a href="#_response_2">Response</a></li>
-</ul>
-</li>
+  <li><a href="#_join">Join</a>
+    <ul class="sectlevel3">
+      <li><a href="#_request_2">Request</a></li>
+      <li><a href="#_response">Response</a></li>
+    </ul>
+  </li>
+  <li><a href="#_select">Select</a>
+    <ul class="sectlevel3">
+      <li><a href="#_request_3">Request</a></li>
+      <li><a href="#_response_2">Response</a></li>
+    </ul>
+  </li>
   <li><a href="#_update_password">Update Password</a>
     <ul class="sectlevel3">
       <li><a href="#_request_4">Request</a></li>
@@ -910,7 +910,7 @@ Content-Length: 90
 </ul>
 </div>
 <div class="listingblock">
-<div class="content">
+  <div class="content">
 <pre>HTTP/1.1 400 Bad Request
 Content-Type: application/json;charset=UTF-8
 Content-Length: 83
@@ -918,7 +918,7 @@ Content-Length: 83
 {
   "message" : "이메일은 id@domain.com과 같은 형식이어야 합니다."
 }</pre>
-</div>
+  </div>
 </div>
   <div class="ulist">
     <ul>
@@ -941,20 +941,10 @@ Content-Length: 120
   <div class="ulist">
     <ul>
       <li>
-        <p>회원가입 실패 Exaple (탈퇴한 회원의 Alias로 회원 가입)</p>
+        <p>회원가입 실패 Example (탈퇴한 회원의 Alias로 회원 가입)
+          include::/Users/mac/Desktop/Spring/kodesalon/build/generated-snippets/join/fail/deleted_alias/http-response.adoc[]</p>
       </li>
     </ul>
-  </div>
-  <div class="listingblock">
-    <div class="content">
-<pre>HTTP/1.1 400 Bad Request
-Content-Type: application/json;charset=UTF-8
-Content-Length: 52
-
-{
-  "message" : "이미 삭제된 회원의 alias"
-}</pre>
-    </div>
   </div>
 </div>
 </div>
@@ -1150,10 +1140,21 @@ Content-Length: 55
       <div class="ulist">
         <ul>
           <li>
-            <p>회원 비밀번호 변경 Example
-              include::/Users/heesang/dev/dev_spring/project/build/generated-snippets/changePassword/success/http-request.adoc[]</p>
+            <p>회원 비밀번호 변경 Example</p>
           </li>
         </ul>
+      </div>
+      <div class="listingblock">
+        <div class="content">
+<pre>PUT /api/v1/members/1 HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Content-Length: 37
+Host: localhost:8080
+
+{
+  "password" : "ChangePassword1!"
+}</pre>
+        </div>
       </div>
     </div>
     <div class="sect3">
@@ -1327,7 +1328,7 @@ Content-Length: 55
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-  Last updated 2021-06-18 18:22:41 +0900
+  Last updated 2021-07-06 12:48:06 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

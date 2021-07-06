@@ -4,12 +4,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class DeleteMemberResponseDto {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class DeleteMemberResponse {
     private String message;
 
-    public DeleteMemberResponseDto(String message) {
+    public DeleteMemberResponse(String message) {
         this.message = message;
     }
 }
