@@ -1,7 +1,6 @@
 package com.project.kodesalon.model.member.controller;
 
 import com.project.kodesalon.common.annotation.Login;
-import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
@@ -33,14 +32,14 @@ public class MemberController {
     }
 
     @GetMapping
-    public ResponseEntity<SelectMemberResponse> selectMember(@Login Member currentMember) {
-        SelectMemberResponse selectMemberResponse = memberService.selectMember(currentMember);
+    public ResponseEntity<SelectMemberResponse> selectMember(@Login Long memberId) {
+        SelectMemberResponse selectMemberResponse = memberService.selectMember(memberId);
         return ResponseEntity.ok().body(selectMemberResponse);
     }
 
     @PutMapping("/password")
-    public ResponseEntity<ChangePasswordResponse> changePassword(@Login Member currentMember, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
-        ChangePasswordResponse changePasswordResponse = memberService.changePassword(currentMember, changePasswordRequest);
+    public ResponseEntity<ChangePasswordResponse> changePassword(@Login Long memberId, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
+        ChangePasswordResponse changePasswordResponse = memberService.changePassword(memberId, changePasswordRequest);
         return ResponseEntity.ok().body(changePasswordResponse);
     }
 }

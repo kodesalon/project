@@ -2,7 +2,6 @@ package com.project.kodesalon.model.member.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
-import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
@@ -191,7 +190,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("존재하는 회원을 조회하면 200 상태를 response 합니다.")
     void select_exist_member_response_success() throws Exception {
-        given(memberService.selectMember(any(Member.class)))
+        given(memberService.selectMember(any()))
                 .willReturn(new SelectMemberResponse("alias", "이름", "email@email.com", "010-1111-2222"));
 
         this.mockMvc.perform(get("/api/v1/members")
@@ -213,7 +212,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("비밀번호 변경시, 변경하려는 비밀번호, 회원 식별 번호를 전달받아 비밀번호를 변경하고 200 상태 + 성공 메세지를 반환합니다.")
     public void changePassword() throws Exception {
-        given(memberService.changePassword(any(Member.class), any(ChangePasswordRequest.class)))
+        given(memberService.changePassword(any(), any(ChangePasswordRequest.class)))
                 .willReturn(new ChangePasswordResponse("비밀번호 변경 성공하였습니다."));
 
         this.mockMvc.perform(put("/api/v1/members/password")
