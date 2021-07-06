@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
@@ -117,7 +117,7 @@ public class AuthenticationTokenControllerTest {
     @DisplayName("로그인 시 존재하지 않는 아이디(Alias)일 경우, 예외 메세지를 담은 DTO을 Http 400으로 응답합니다.")
     void login_fail_with_invalid_alias() throws Exception {
         given(authenticationTokenService.login(any(LoginRequest.class)))
-                .willThrow(new NoSuchElementException("존재하는 아이디를 입력해주세요."));
+                .willThrow(new EntityNotFoundException("존재하는 아이디를 입력해주세요."));
 
         this.mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)

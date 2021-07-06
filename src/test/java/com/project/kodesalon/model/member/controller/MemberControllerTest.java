@@ -28,7 +28,6 @@ import javax.persistence.EntityNotFoundException;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -197,9 +196,11 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원 가입시 삭제된 회원일 경우 400 상태와 예외 메세지를 반환합니다")
     void join_fail_with_deleted_member_alias() throws Exception {
-        given(memberService.join(any(CreateMemberRequest.class))).willThrow(new DataIntegrityViolationException("이미 삭제된 회원의 alias"));
+        willThrow(new DataIntegrityViolationException("이미 삭제된 회원의 alias"))
+                .given(memberService)
+                .join(any(CreateMemberRequest.class));
 
-        this.mockMvc.perform(post("/api/v1/members")
+        this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isBadRequest())
@@ -274,10 +275,10 @@ public class MemberControllerTest {
     void failed_change_password_with_member_id_not_exist() throws Exception {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!");
 
-        given(memberService.changePassword(anyLong(), any(ChangePasswordRequest.class)))
+        given(memberService.changePassword(any(), any(ChangePasswordRequest.class)))
                 .willThrow(new EntityNotFoundException("찾으려는 회원이 없습니다"));
 
-        this.mockMvc.perform(put("/api/v1/members/{memberId}", 1L)
+        this.mockMvc.perform(put("/api/v1/members/password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(changePasswordRequest)))
                 .andExpect(jsonPath("$.message").value("찾으려는 회원이 없습니다"))

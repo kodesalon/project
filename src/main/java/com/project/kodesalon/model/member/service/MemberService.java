@@ -60,17 +60,17 @@ public class MemberService {
         return new ChangePasswordResponse("비밀번호 변경 성공하였습니다.");
     }
 
+    @Transactional
+    public void deleteMember(Long memberId) {
+        Member member = findById(memberId);
+        member.delete();
+    }
+
     public Member findById(final Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> {
                     log.info("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
                     throw new EntityNotFoundException("찾으려는 회원이 없습니다");
                 });
-    }
-
-    @Transactional
-    public void deleteMember(Long memberId) {
-        Member member = findById(memberId);
-        member.delete();
     }
 }

@@ -16,7 +16,6 @@ kodesalon;
 ==== Request
 
 - Response Body
-
 include::{snippets}/login/success/request-fields.adoc[]
 
 - Request Body Example
@@ -180,7 +179,4 @@ include::{snippets}/delete/success/http-request.adoc[]
 
 include::{snippets}/delete/success/http-response.adoc[]
 
-- 회원 탈퇴 실패 (존재하지 않는 사용자)
-
-include::{snippets}/delete/fail/http-response.adoc[]
 
