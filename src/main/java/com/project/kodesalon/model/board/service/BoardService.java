@@ -21,8 +21,8 @@ public class BoardService {
     }
 
     @Transactional
-    public void save(final BoardCreateRequest boardCreateRequest) {
-        Member member = memberService.findById(boardCreateRequest.getMemberId());
+    public void save(final Long memberId, final BoardCreateRequest boardCreateRequest) {
+        Member member = memberService.findById(memberId);
         Board createdBoard = boardCreateRequest.toBoard(member);
         log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
         boardRepository.save(createdBoard);

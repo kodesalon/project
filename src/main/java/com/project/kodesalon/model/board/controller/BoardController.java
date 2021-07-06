@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.board.controller;
 
+import com.project.kodesalon.common.annotation.Login;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,8 @@ public class BoardController {
     }
 
     @PostMapping(value = "/boards")
-    public ResponseEntity<Void> save(@RequestBody @Valid final BoardCreateRequest boardCreateRequest) {
-        boardService.save(boardCreateRequest);
+    public ResponseEntity<Void> save(@Login Long memberId, @RequestBody @Valid final BoardCreateRequest boardCreateRequest) {
+        boardService.save(memberId, boardCreateRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

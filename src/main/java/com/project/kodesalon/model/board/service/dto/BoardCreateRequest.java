@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
@@ -22,9 +21,6 @@ import static com.project.kodesalon.model.board.domain.vo.Title.TITLE_LENGTH_MAX
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BoardCreateRequest {
-
-    @NotNull(message = "null이 아닌 회원 식별 번호를 입력해주세요.")
-    private Long memberId;
 
     @NotEmpty(message = INVALID_BOARD_TITLE)
     @Length(max = TITLE_LENGTH_MAX_BOUND, message = INVALID_BOARD_TITLE)
@@ -37,8 +33,7 @@ public class BoardCreateRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdDateTime;
 
-    public BoardCreateRequest(Long memberId, String title, String content, LocalDateTime createdDateTime) {
-        this.memberId = memberId;
+    public BoardCreateRequest(String title, String content, LocalDateTime createdDateTime) {
         this.title = title;
         this.content = content;
         this.createdDateTime = createdDateTime;

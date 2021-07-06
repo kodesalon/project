@@ -57,9 +57,9 @@ public class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("회원 식별 번호, 제목, 내용, 생성 날짜를 json으로 전달받아 게시물을 생성하고 HTTP 200을 반환한다.")
+    @DisplayName("제목, 내용, 생성 날짜를 json으로 전달받아 게시물을 생성하고 HTTP 200을 반환한다.")
     public void save() throws Exception {
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "게시물 내용", LocalDateTime.now());
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 내용", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -67,7 +67,6 @@ public class BoardControllerTest {
                 .andDo(document("board/create/success",
                         getDocumentRequest(),
                         requestFields(
-                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("작성자 식별 번호"),
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("게시물 제목"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("게시물 내용"),
                                 fieldWithPath("createdDateTime").type(JsonFieldType.STRING).description("게시물 작성 날짜")
@@ -78,7 +77,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("제목이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
     public void save_fail_with_invalid_title() throws Exception {
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "", "게시물 내용", LocalDateTime.now());
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("", "게시물 내용", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -94,7 +93,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("내용이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
     public void save_fail_with_invalid_content() throws Exception {
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest(1L, "게시물 제목", "", LocalDateTime.now());
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
                 .contentType(MediaType.APPLICATION_JSON))
