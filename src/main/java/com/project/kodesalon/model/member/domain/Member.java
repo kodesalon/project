@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.member.domain;
 
+import com.project.kodesalon.common.BaseEntity;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Email;
 import com.project.kodesalon.model.member.domain.vo.Name;
@@ -25,7 +26,7 @@ import javax.persistence.UniqueConstraint;
         @UniqueConstraint(name = "member_unique_constraint", columnNames = {"alias"})})
 @Where(clause = "deleted = 'false'")
 @Slf4j
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
