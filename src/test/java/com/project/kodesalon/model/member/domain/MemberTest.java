@@ -53,7 +53,7 @@ public class MemberTest {
 
     @Test
     @DisplayName("게시물을 추가한다.")
-    public void addBoard() {
+    void addBoard() {
         Board board = new Board(new Title("게시물 제목"), new Content("게시물 내용"), TEST_MEMBER, LocalDateTime.now());
         member.addBoard(board);
 
@@ -70,7 +70,7 @@ public class MemberTest {
 
     @Test
     @DisplayName("비밀번호를 변경한다.")
-    public void changePassword() {
+    void changePassword() {
         String newPassword = "ChangePassword1!";
 
         member.changePassword(newPassword);
@@ -80,7 +80,7 @@ public class MemberTest {
 
     @Test
     @DisplayName("변경하려는 패스워드가 기존 패스워드가 중복일 경우 예외가 발생한다.")
-    public void changePassword_throw_error_with_exist_password() {
+    void changePassword_throw_error_with_exist_password() {
         String password = member.getPassword();
         thenIllegalArgumentException()
                 .isThrownBy(() -> member.changePassword(password))

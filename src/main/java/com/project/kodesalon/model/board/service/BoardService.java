@@ -9,6 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
+
 @Slf4j
 @Service
 public class BoardService {
@@ -26,5 +30,19 @@ public class BoardService {
         Board createdBoard = boardCreateRequest.toBoard(member);
         log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
         boardRepository.save(createdBoard);
+    }
+
+    @Transactional
+    public void delete(Long memberId, Long boardId) {
+        Board board = findById(boardId);
+        board.delete(memberId);
+    }
+
+    private Board findById(final Long boardId) {
+        return boardRepository.findById(boardId)
+                .orElseThrow(() -> {
+                    log.info("존재하지 않는 게시물 식별자 boardId : {}", boardId);
+                    throw new EntityNotFoundException(NOT_EXIST_BOARD);
+                });
     }
 }

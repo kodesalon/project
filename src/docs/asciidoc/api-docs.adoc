@@ -153,9 +153,8 @@ include::{snippets}/board/create/success/http-request.adoc[]
 
 === Response
 
-==== **성공**
+==== *성공*
 
-include::{snippets}/board/create/fail/invalid-title/response-fields.adoc[]
 include::{snippets}/board/create/success/http-response.adoc[]
 
 ==== *실패*
@@ -167,3 +166,27 @@ include::{snippets}/board/create/fail/invalid-title/http-response.adoc[]
 - 유효하지 않은 내용
 include::{snippets}/board/create/fail/invalid-content/response-fields.adoc[]
 include::{snippets}/board/create/fail/invalid-content/http-response.adoc[]
+
+== Delete
+
+=== Request
+
+include::{snippets}/board/delete/success/path-parameters.adoc[]
+include::{snippets}/board/delete/success/http-request.adoc[]
+
+=== Response
+
+==== *성공*
+
+include::{snippets}/board/delete/success/http-response.adoc[]
+
+==== *실패*
+
+- 권한을 가지지 않은 회원이 삭제 시도할 경우
+include::{snippets}/board/delete/fail/invalid-auth/response-fields.adoc[]
+include::{snippets}/board/delete/fail/invalid-auth/http-response.adoc[]
+
+- 이미 삭제된 게시물을 다시 삭제 시도할 경우
+include::{snippets}/board/delete/fail/already-deleted/response-fields.adoc[]
+include::{snippets}/board/delete/fail/already-deleted/http-response.adoc[]
+

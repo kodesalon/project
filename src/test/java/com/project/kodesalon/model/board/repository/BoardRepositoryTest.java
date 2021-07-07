@@ -25,7 +25,7 @@ public class BoardRepositoryTest {
 
     @Test
     @DisplayName("게시판 객체를 DB에 저장한다.")
-    public void save() {
+    void save() {
         testEntityManager.persist(TEST_MEMBER);
         Board board = new Board(new Title("게시물 제목"), new Content("게시물 내용"), TEST_MEMBER, LocalDateTime.now());
         board = boardRepository.save(board);
