@@ -1,6 +1,5 @@
 package com.project.kodesalon.model.member.domain;
 
-import com.project.kodesalon.model.board.domain.Board;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,10 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.time.LocalDateTime;
-
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
+import static com.project.kodesalon.model.board.domain.BoardTest.TEST_BOARD;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
@@ -52,8 +50,7 @@ public class MemberTest {
     @Test
     @DisplayName("게시물을 추가한다.")
     void addBoard() {
-        Board board = new Board("게시물 제목", "게시물 내용", TEST_MEMBER, LocalDateTime.now());
-        member.addBoard(board);
+        member.addBoard(TEST_BOARD);
 
         then(member.getBoards().size()).isEqualTo(1);
     }

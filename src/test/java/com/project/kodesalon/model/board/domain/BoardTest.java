@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_DELETED_BOARD;
 import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
+import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.assertj.core.api.BDDAssertions.thenIllegalStateException;
@@ -20,8 +21,8 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardTest {
-    private final String title = "게시물 제목";
-    private final String content = "게시물 내용";
+    public static final Board TEST_BOARD = new Board("게시물 제목", "게시물 내용", TEST_MEMBER, LocalDateTime.now());
+
     private final LocalDateTime createdDateTime = LocalDateTime.now();
     private Board board;
 
@@ -33,15 +34,15 @@ public class BoardTest {
 
     @BeforeEach
     void setUp() {
-        board = new Board(title, content, member, createdDateTime);
+        board = new Board("게시물 제목", "게시물 내용", member, createdDateTime);
     }
 
     @Test
     @DisplayName("게시물의 제목, 내용, 작성자, 생성 시간, 삭제 여부를 반환한다.")
     void getter() {
         BDDSoftAssertions softly = new BDDSoftAssertions();
-        softly.then(board.getTitle()).isEqualTo(title);
-        softly.then(board.getContent()).isEqualTo(content);
+        softly.then(board.getTitle()).isEqualTo("게시물 제목");
+        softly.then(board.getContent()).isEqualTo("게시물 내용");
         softly.then(board.getWriter()).isEqualTo(member);
         softly.then(board.getCreatedDateTime()).isEqualTo(createdDateTime);
         softly.then(board.isDeleted()).isFalse();
