@@ -44,7 +44,8 @@ public class Board {
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
-    private boolean deleted;
+    @Column(name = "deleted")
+    private boolean deleted = false;
 
     public Board(final String title, final String content, final Member writer, final LocalDateTime createdDateTime) {
         this.title = new Title(title);
