@@ -29,12 +29,12 @@ import java.util.Objects;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 
+@Slf4j
 @Entity
+@Where(clause = "deleted = 'false'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member", uniqueConstraints = {
         @UniqueConstraint(name = "member_unique_constraint", columnNames = {"alias"})})
-@Where(clause = "deleted = 'false'")
-@Slf4j
 public class Member extends BaseEntity {
 
     @Id

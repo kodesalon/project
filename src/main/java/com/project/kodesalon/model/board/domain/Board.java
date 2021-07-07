@@ -22,8 +22,8 @@ import static com.project.kodesalon.common.ErrorCode.ALREADY_DELETED_BOARD;
 import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "deleted = 'false'")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
 
     @Id

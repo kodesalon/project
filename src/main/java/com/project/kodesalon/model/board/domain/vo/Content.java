@@ -11,8 +11,8 @@ import javax.persistence.Lob;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Content {
     public static final int CONTENT_LENGTH_BOUND_MAX = 500;
 

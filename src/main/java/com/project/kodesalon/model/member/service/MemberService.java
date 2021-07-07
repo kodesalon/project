@@ -16,8 +16,8 @@ import javax.persistence.EntityNotFoundException;
 import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 
-@Service
 @Slf4j
+@Service
 public class MemberService {
     private final MemberRepository memberRepository;
     private final MemberBoardService memberBoardService;

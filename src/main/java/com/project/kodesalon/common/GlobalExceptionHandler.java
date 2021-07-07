@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityNotFoundException;
 
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({IllegalArgumentException.class, EntityNotFoundException.class, IllegalStateException.class, DataIntegrityViolationException.class})

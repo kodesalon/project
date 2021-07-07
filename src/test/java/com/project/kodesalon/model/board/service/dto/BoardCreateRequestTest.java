@@ -19,7 +19,7 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
 import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 
-class BoardCreateRequestTest {
+public class BoardCreateRequestTest {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();

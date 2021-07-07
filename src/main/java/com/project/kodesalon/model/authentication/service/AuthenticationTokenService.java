@@ -21,8 +21,8 @@ import java.util.UUID;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 
-@Service
 @Slf4j
+@Service
 public class AuthenticationTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberService memberService;

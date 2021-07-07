@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Password {
     public static final String PASSWORD_REGEX = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[~!@#$%^&*()+|=])[A-Za-z\\d~!@#$%^&*()+|=]{8,16}$";
     private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);

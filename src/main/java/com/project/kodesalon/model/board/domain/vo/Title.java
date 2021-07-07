@@ -10,8 +10,8 @@ import javax.persistence.Embeddable;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
 
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Title {
     public static final int TITLE_LENGTH_MAX_BOUND = 30;
 
