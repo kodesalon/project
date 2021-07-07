@@ -28,4 +28,8 @@ public class MemberBoardService {
                     throw new EntityNotFoundException(NOT_EXIST_MEMBER);
                 });
     }
+
+    public void deleteBoardByMemberId(final Long memberId) {
+        boardRepository.deleteBoardByMemberId(memberId);
+    }
 }
