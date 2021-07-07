@@ -1,8 +1,6 @@
 package com.project.kodesalon.model.member.domain;
 
 import com.project.kodesalon.model.board.domain.Board;
-import com.project.kodesalon.model.board.domain.vo.Content;
-import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +52,7 @@ public class MemberTest {
     @Test
     @DisplayName("게시물을 추가한다.")
     void addBoard() {
-        Board board = new Board(new Title("게시물 제목"), new Content("게시물 내용"), TEST_MEMBER, LocalDateTime.now());
+        Board board = new Board("게시물 제목", "게시물 내용", TEST_MEMBER, LocalDateTime.now());
         member.addBoard(board);
 
         then(member.getBoards().size()).isEqualTo(1);

@@ -1,7 +1,5 @@
 package com.project.kodesalon.model.board.domain;
 
-import com.project.kodesalon.model.board.domain.vo.Content;
-import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.member.domain.Member;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +33,7 @@ public class BoardTest {
 
     @BeforeEach
     void setUp() {
-        board = new Board(new Title(title), new Content(content), member, createdDateTime);
+        board = new Board(title, content, member, createdDateTime);
     }
 
     @Test

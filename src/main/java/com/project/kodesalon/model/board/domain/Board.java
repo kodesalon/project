@@ -46,9 +46,9 @@ public class Board {
 
     private boolean deleted;
 
-    public Board(final Title title, final Content content, final Member writer, final LocalDateTime createdDateTime) {
-        this.title = title;
-        this.content = content;
+    public Board(final String title, final String content, final Member writer, final LocalDateTime createdDateTime) {
+        this.title = new Title(title);
+        this.content = new Content(content);
         this.writer = writer;
         this.createdDateTime = createdDateTime;
         this.writer.addBoard(this);
