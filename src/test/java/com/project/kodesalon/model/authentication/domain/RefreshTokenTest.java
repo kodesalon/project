@@ -1,6 +1,5 @@
 package com.project.kodesalon.model.authentication.domain;
 
-import com.project.kodesalon.model.member.domain.Member;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -9,16 +8,16 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 
 public class RefreshTokenTest {
-    private final Member member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
     private final LocalDateTime expiryDate = LocalDateTime.now();
     private RefreshToken refreshToken;
 
     @BeforeEach
     void setUp() {
-        refreshToken = new RefreshToken(member, "token", expiryDate);
+        refreshToken = new RefreshToken(TEST_MEMBER, "token", expiryDate);
 
     }
 
