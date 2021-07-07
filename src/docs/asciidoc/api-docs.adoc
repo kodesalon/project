@@ -190,3 +190,29 @@ include::{snippets}/board/delete/fail/invalid-auth/http-response.adoc[]
 include::{snippets}/board/delete/fail/already-deleted/response-fields.adoc[]
 include::{snippets}/board/delete/fail/already-deleted/http-response.adoc[]
 
+== Update
+
+=== Request
+
+include::{snippets}/board/update/success/path-parameters.adoc[]
+include::{snippets}/board/update/success/request-fields.adoc[]
+include::{snippets}/board/update/success/http-request.adoc[]
+
+=== Response
+
+==== *성공*
+
+include::{snippets}/board/update/success/response-fields.adoc[]
+include::{snippets}/board/update/success/http-response.adoc[]
+
+==== *실패*
+
+- 유효하지 않은 제목일 경우
+include::{snippets}/board/update/fail/invalid-title/http-response.adoc[]
+
+- 유효하지 않은 내용일 경우
+include::{snippets}/board/update/fail/invalid-content/http-response.adoc[]
+
+- 존재하지 않는 게시물일 경우 include::{snippets}/board/update/fail/no-board/http-response.adoc[]
+
+

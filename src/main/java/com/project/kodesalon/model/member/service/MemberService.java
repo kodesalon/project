@@ -8,6 +8,7 @@ import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import com.project.kodesalon.model.memberboard.MemberBoardService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,7 @@ public class MemberService {
     public void join(final CreateMemberRequest createMemberRequest) {
         String alias = createMemberRequest.getAlias();
         validateDuplicationOf(alias);
-        Member saveMember = memberRepository.save(createMemberRequest.toMember());
+        Member saveMember = saveMember(createMemberRequest);
         log.info("ID : {}, Alias : {} Member가 회원 가입 성공", saveMember.getId(), alias);
     }
 
@@ -41,6 +42,14 @@ public class MemberService {
                     log.info("{}는 이미 존재하는 Alias입니다.", alias);
                     throw new IllegalStateException(ALREADY_EXIST_MEMBER_ALIAS);
                 });
+    }
+
+    private Member saveMember(CreateMemberRequest createMemberRequest) {
+        try {
+            return memberRepository.save(createMemberRequest.toMember());
+        } catch (DataIntegrityViolationException e) {
+            throw new IllegalArgumentException(ALREADY_EXIST_MEMBER_ALIAS);
+        }
     }
 
     @Transactional(readOnly = true)

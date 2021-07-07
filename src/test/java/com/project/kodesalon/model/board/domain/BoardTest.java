@@ -1,5 +1,7 @@
 package com.project.kodesalon.model.board.domain;
 
+import com.project.kodesalon.model.board.domain.vo.Content;
+import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.member.domain.Member;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +23,7 @@ import static org.mockito.BDDMockito.given;
 public class BoardTest {
     public static final Board TEST_BOARD = new Board("게시물 제목", "게시물 내용", TEST_MEMBER, LocalDateTime.now());
 
+    private final BDDSoftAssertions softly = new BDDSoftAssertions();
     private final LocalDateTime createdDateTime = LocalDateTime.now();
     private Board board;
 
@@ -38,7 +41,6 @@ public class BoardTest {
     @Test
     @DisplayName("게시물의 제목, 내용, 작성자, 생성 시간, 삭제 여부를 반환한다.")
     void getter() {
-        BDDSoftAssertions softly = new BDDSoftAssertions();
         softly.then(board.getTitle()).isEqualTo("게시물 제목");
         softly.then(board.getContent()).isEqualTo("게시물 내용");
         softly.then(board.getWriter()).isEqualTo(member);
@@ -66,5 +68,18 @@ public class BoardTest {
         thenIllegalArgumentException()
                 .isThrownBy(() -> board.delete(stranger.getId()))
                 .withMessage(NOT_AUTHORIZED_MEMBER);
+    }
+
+    @Test
+    @DisplayName("게시물의 제목과 내용을 전달받아 board의 제목과 내용을 변경한다.")
+    void update_board() {
+        Title updateTitle = new Title("update title");
+        Content updateContent = new Content("update content");
+
+        board.updateTitleAndContent(updateTitle, updateContent);
+
+        softly.then(board.getTitle()).isEqualTo(updateTitle.value());
+        softly.then(board.getContent()).isEqualTo(updateContent.value());
+        softly.assertAll();
     }
 }

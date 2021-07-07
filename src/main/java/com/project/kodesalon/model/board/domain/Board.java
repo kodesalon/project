@@ -92,5 +92,10 @@ public class Board {
     private boolean isSameWriterId(Long memberId) {
         return writer.getId().equals(memberId);
     }
+
+    public void updateTitleAndContent(Title updateTitle, Content updateContent) {
+        this.title = updateTitle;
+        this.content = updateContent;
+    }
 }
 
