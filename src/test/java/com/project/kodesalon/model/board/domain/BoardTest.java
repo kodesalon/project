@@ -11,12 +11,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
-import static com.project.kodesalon.common.ErrorCode.ALREADY_DELETED_BOARD;
 import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
 import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
-import static org.assertj.core.api.BDDAssertions.thenIllegalStateException;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,15 +66,5 @@ public class BoardTest {
         thenIllegalArgumentException()
                 .isThrownBy(() -> board.delete(stranger.getId()))
                 .withMessage(NOT_AUTHORIZED_MEMBER);
-    }
-
-    @Test
-    @DisplayName("이미 삭제한 게시물을 다시 삭제 시도할 경우, 예외가 발생한다.")
-    void delete_throw_exception_with_already_deleted() {
-        board.delete(member.getId());
-
-        thenIllegalStateException()
-                .isThrownBy(() -> board.delete(member.getId()))
-                .withMessage(ALREADY_DELETED_BOARD);
     }
 }
