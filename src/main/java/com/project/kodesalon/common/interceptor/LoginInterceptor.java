@@ -1,6 +1,7 @@
 package com.project.kodesalon.common.interceptor;
 
 import com.project.kodesalon.common.JwtManager;
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -8,6 +9,8 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
+
+import static com.project.kodesalon.common.ErrorCode.INVALID_HEADER;
 
 @Slf4j
 @Component
@@ -23,23 +26,29 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String uuid = UUID.randomUUID().toString();
         String requestURI = request.getRequestURI();
         request.setAttribute(LOG_ID, uuid);
         log.info("REQUEST : [logId : {}] [requestURI : {}] [handler : {}]", uuid, requestURI, handler);
 
-        String token = request.getHeader("Authorization").substring(BEARER_LENGTH);
-
+        String token = parseTokenFrom(request);
         jwtManager.validateToken(token);
-
         Long memberId = jwtManager.getMemberIdFrom(token);
         request.setAttribute(LOGIN_MEMBER, memberId);
         return true;
     }
 
+    private String parseTokenFrom(HttpServletRequest request) {
+        try {
+            return request.getHeader("Authorization").substring(BEARER_LENGTH);
+        } catch (NullPointerException e) {
+            throw new JwtException(INVALID_HEADER);
+        }
+    }
+
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         String requestURI = request.getRequestURI();
         String logId = (String) request.getAttribute(LOG_ID);
         log.info("RESPONSE : [logId : {}] [requestURI : {}] [handler : {}]", logId, requestURI, handler);
