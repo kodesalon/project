@@ -18,7 +18,7 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
-class JwtUtilsTest {
+class JwtManagerTest {
 
     private static final String JWT_SECRET_KEY = "bG9jYWxUZXN0S2V5";
     private static final byte[] SECRET_KEY_BYTES = JWT_SECRET_KEY.getBytes();
@@ -27,32 +27,32 @@ class JwtUtilsTest {
     private static final Long MEMBER_ID = 1L;
     private static final int EXPIRATION_MS = 10000;
     private static final Date ISSUE_TIME = new Date();
-    private JwtUtils jwtUtils;
+    private JwtManager jwtManager;
 
     @BeforeEach
     void setUp() {
-        jwtUtils = new JwtUtils(JWT_SECRET_KEY, EXPIRATION_MS);
+        jwtManager = new JwtManager(JWT_SECRET_KEY, EXPIRATION_MS);
     }
 
     @Test
     @DisplayName("jwt token 토큰을 생성한다")
     void generateJwtToken() {
-        String jwtToken = jwtUtils.generateJwtToken(MEMBER_ID);
+        String jwtToken = jwtManager.generateJwtToken(MEMBER_ID);
         then(jwtToken).isNotEmpty();
     }
 
     @Test
     @DisplayName("토큰에 저장된 memberId를 반환한다.")
     void getMemberIdFrom() {
-        String jwtToken = jwtUtils.generateJwtToken(MEMBER_ID);
-        then(jwtUtils.getMemberIdFrom(jwtToken)).isEqualTo(MEMBER_ID);
+        String jwtToken = jwtManager.generateJwtToken(MEMBER_ID);
+        then(jwtManager.getMemberIdFrom(jwtToken)).isEqualTo(MEMBER_ID);
     }
 
     @Test
     @DisplayName("토큰이 유효할 경우, 참을 반환한다.")
     void validateToken() {
-        String jwtToken = jwtUtils.generateJwtToken(MEMBER_ID);
-        then(jwtUtils.validateToken(jwtToken)).isTrue();
+        String jwtToken = jwtManager.generateJwtToken(MEMBER_ID);
+        then(jwtManager.validateToken(jwtToken)).isTrue();
     }
 
     @Test
@@ -66,7 +66,7 @@ class JwtUtilsTest {
                 .signWith(SignatureAlgorithm.HS384, invalidSignKey)
                 .compact();
 
-        thenThrownBy(() -> jwtUtils.validateToken(invalidSignatureJwtToken))
+        thenThrownBy(() -> jwtManager.validateToken(invalidSignatureJwtToken))
                 .isInstanceOf(JwtException.class)
                 .hasMessage(INVALID_JWT_TOKEN);
     }
@@ -76,7 +76,7 @@ class JwtUtilsTest {
     void validateToken_throw_exception_with_malFormed_jwt_token() {
         String malFormedToken = "malFormedJwtToken";
 
-        thenThrownBy(() -> jwtUtils.validateToken(malFormedToken))
+        thenThrownBy(() -> jwtManager.validateToken(malFormedToken))
                 .isInstanceOf(JwtException.class)
                 .hasMessage(INVALID_JWT_TOKEN);
     }
@@ -89,7 +89,7 @@ class JwtUtilsTest {
                 .signWith(SIGNATURE_ALGORITHM, SIGN_KEY)
                 .compact();
 
-        thenThrownBy(() -> jwtUtils.validateToken(expiredJwtToken))
+        thenThrownBy(() -> jwtManager.validateToken(expiredJwtToken))
                 .isInstanceOf(JwtException.class)
                 .hasMessage(EXPIRED_JWT_TOKEN);
     }
@@ -101,7 +101,7 @@ class JwtUtilsTest {
                 .setExpiration(new Date(ISSUE_TIME.getTime() + EXPIRATION_MS))
                 .compact();
 
-        thenThrownBy(() -> jwtUtils.validateToken(unSupportedJwtToken))
+        thenThrownBy(() -> jwtManager.validateToken(unSupportedJwtToken))
                 .isInstanceOf(JwtException.class)
                 .hasMessage(INVALID_JWT_TOKEN);
     }
@@ -110,7 +110,7 @@ class JwtUtilsTest {
     @NullAndEmptySource
     @DisplayName("jwt 토큰이 없거나 빈 문자열일 경우 예외를 발생시킨다.")
     void validateToken_throw_exception_with_null_and_empty_token(String invalidJwtToken) {
-        thenThrownBy(() -> jwtUtils.validateToken(invalidJwtToken))
+        thenThrownBy(() -> jwtManager.validateToken(invalidJwtToken))
                 .isInstanceOf(JwtException.class)
                 .hasMessage(INVALID_JWT_TOKEN);
     }
