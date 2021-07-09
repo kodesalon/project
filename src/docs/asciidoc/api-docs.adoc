@@ -202,7 +202,6 @@ include::{snippets}/board/update/success/http-request.adoc[]
 
 ==== *성공*
 
-include::{snippets}/board/update/success/response-fields.adoc[]
 include::{snippets}/board/update/success/http-response.adoc[]
 
 ==== *실패*
@@ -213,6 +212,9 @@ include::{snippets}/board/update/fail/invalid-title/http-response.adoc[]
 - 유효하지 않은 내용일 경우
 include::{snippets}/board/update/fail/invalid-content/http-response.adoc[]
 
-- 존재하지 않는 게시물일 경우 include::{snippets}/board/update/fail/no-board/http-response.adoc[]
+- 존재하지 않는 게시물일 경우
+include::{snippets}/board/update/fail/no-board/http-response.adoc[]
+
+
 
 
