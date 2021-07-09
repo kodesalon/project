@@ -1,10 +1,11 @@
 package com.project.kodesalon.model.board.service;
 
 import com.project.kodesalon.model.board.domain.Board;
+import com.project.kodesalon.model.board.domain.vo.Content;
+import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
-import com.project.kodesalon.model.board.service.dto.BoardUpdateResponse;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.memberboard.MemberBoardService;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
-import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -73,9 +73,10 @@ public class BoardServiceTest {
         given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
         given(member.getId()).willReturn(1L);
 
-        BoardUpdateResponse boardUpdateResponse = boardService.updateBoard(member.getId(), 1L, BOARD_UPDATE_REQUEST);
+        boardService.updateBoard(member.getId(), 1L, BOARD_UPDATE_REQUEST);
 
-        then(boardUpdateResponse.getMessage()).isEqualTo("게시물 정보가 변경되었습니다");
+        verify(boardRepository, times(1)).findById(anyLong());
+        verify(board, times(1)).updateTitleAndContent(anyLong(), any(Title.class), any(Content.class));
     }
 
     @Test

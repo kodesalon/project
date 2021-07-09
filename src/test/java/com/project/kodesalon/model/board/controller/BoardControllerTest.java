@@ -6,7 +6,6 @@ import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
-import com.project.kodesalon.model.board.service.dto.BoardUpdateResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,7 +36,6 @@ import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -181,14 +179,10 @@ public class BoardControllerTest {
     @Test
     @DisplayName("회원 식별 번호, 수정할 게시물의 제목과 내용을 요청받아 성공시 200을 응답합니다")
     void update() throws Exception {
-        given(boardService.updateBoard(any(), anyLong(), any(BoardUpdateRequest.class)))
-                .willReturn(new BoardUpdateResponse("게시물 정보가 변경되었습니다"));
-
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("게시물 정보가 변경되었습니다"))
                 .andDo(document("board/update/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -197,9 +191,7 @@ public class BoardControllerTest {
                         ),
                         requestFields(
                                 fieldWithPath("updatedTitle").type(JsonFieldType.STRING).description("수정할 제목"),
-                                fieldWithPath("updatedContent").type(JsonFieldType.STRING).description("수정할 내용")),
-                        responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("게시물 정보가 변경되었습니다"))));
+                                fieldWithPath("updatedContent").type(JsonFieldType.STRING).description("수정할 내용"))));
     }
 
     @ParameterizedTest
@@ -241,8 +233,9 @@ public class BoardControllerTest {
     @Test
     @DisplayName("게시물 수정시 존재하지 않는 게시물은 400 상태와 에러 코드를 응답합니다")
     void update_throw_exception_with_not_exist_board_id() throws Exception {
-        given(boardService.updateBoard(any(), anyLong(), any(BoardUpdateRequest.class)))
-                .willThrow(new EntityNotFoundException(NOT_EXIST_BOARD));
+        willThrow(new EntityNotFoundException(NOT_EXIST_BOARD))
+                .given(boardService)
+                .updateBoard(any(), anyLong(), any(BoardUpdateRequest.class));
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)

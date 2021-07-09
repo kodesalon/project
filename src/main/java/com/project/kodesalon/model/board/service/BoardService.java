@@ -6,7 +6,6 @@ import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
-import com.project.kodesalon.model.board.service.dto.BoardUpdateResponse;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.memberboard.MemberBoardService;
 import lombok.extern.slf4j.Slf4j;
@@ -51,12 +50,11 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardUpdateResponse updateBoard(Long memberId, final Long boardId, final BoardUpdateRequest boardUpdateRequest) {
+    public void updateBoard(Long memberId, final Long boardId, final BoardUpdateRequest boardUpdateRequest) {
         Title updateTitle = new Title(boardUpdateRequest.getUpdatedTitle());
         Content updateContent = new Content(boardUpdateRequest.getUpdatedContent());
         Board updatedBoard = findBoardById(boardId);
         updatedBoard.updateTitleAndContent(memberId, updateTitle, updateContent);
-        return new BoardUpdateResponse("게시물 정보가 변경되었습니다");
     }
 
     private Board findBoardById(final Long boardId) {

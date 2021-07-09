@@ -41,7 +41,7 @@ public class BoardController {
 
     @PutMapping("/{boardId}")
     public ResponseEntity<BoardUpdateResponse> updateBoard(@Login final Long memberId, @PathVariable final Long boardId, @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
-        return ResponseEntity.ok()
-                .body(boardService.updateBoard(memberId, boardId, boardUpdateRequest));
+        boardService.updateBoard(memberId, boardId, boardUpdateRequest);
+        return ResponseEntity.ok().build();
     }
 }
