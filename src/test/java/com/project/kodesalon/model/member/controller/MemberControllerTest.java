@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.common.ErrorCode.EXPIRED_JWT_TOKEN;
+import static com.project.kodesalon.common.ErrorCode.INVALID_HEADER;
 import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ALIAS;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_EMAIL;
@@ -337,5 +338,21 @@ public class MemberControllerTest {
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").description("유효하지 않은 JWT 토큰에 대한 예외 코드"))));
+    }
+    
+    @Test
+    @DisplayName("authorization 안에 내용이 없을 경우 400상태 + 에러 코드를 반환한다.")
+    void invalid_authorization_throw_exception() throws Exception {
+        given(loginInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any()))
+                .willThrow(new JwtException(INVALID_HEADER));
+
+        this.mockMvc.perform(delete("/api/v1/members")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(INVALID_HEADER))
+                .andDo(document("jwt/invalid-header",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").description("Header에 Authorization 속성이 없을 경우에 대한 에러 코드"))));
     }
 }
