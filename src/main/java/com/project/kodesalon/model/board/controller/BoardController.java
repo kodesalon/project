@@ -4,7 +4,6 @@ import com.project.kodesalon.common.annotation.Login;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
-import com.project.kodesalon.model.board.service.dto.BoardUpdateResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +39,7 @@ public class BoardController {
     }
 
     @PutMapping("/{boardId}")
-    public ResponseEntity<BoardUpdateResponse> updateBoard(@Login final Long memberId, @PathVariable final Long boardId, @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
+    public ResponseEntity<Void> updateBoard(@Login final Long memberId, @PathVariable final Long boardId, @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
         boardService.updateBoard(memberId, boardId, boardUpdateRequest);
         return ResponseEntity.ok().build();
     }
