@@ -85,6 +85,5 @@ class LoginInterceptorTest {
         loginInterceptor.afterCompletion(request, response, handler, null);
 
         verify(request, times(1)).getRequestURI();
-        verify(request, times(1)).getAttribute(anyString());
     }
 }
