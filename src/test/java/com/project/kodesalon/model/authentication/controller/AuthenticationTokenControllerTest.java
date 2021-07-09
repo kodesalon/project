@@ -134,7 +134,7 @@ public class AuthenticationTokenControllerTest {
     @Test
     @DisplayName("유효한 refresh token일 경우, 새로 발급받은 access token, refresh token을 DTO에 당마 Http 200으로 응답한다.")
     void refresh_success() throws Exception {
-        given(authenticationTokenService.refreshToken(any(TokenRefreshRequest.class))).willReturn(jwtResponse);
+        given(authenticationTokenService.reissueAccessAndRefreshToken(any(TokenRefreshRequest.class))).willReturn(jwtResponse);
 
         this.mockMvc.perform(post("/api/v1/auth/refreshtoken")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -157,7 +157,7 @@ public class AuthenticationTokenControllerTest {
     @Test
     @DisplayName("존재하지 않거나 만료된 refresh token일 경우, 예외 메시지를 담은 DTO를 Http 400으로 응답한다.")
     void refresh_fail_no_existing_or_expired_token() throws Exception {
-        given(authenticationTokenService.refreshToken(any(TokenRefreshRequest.class))).willThrow(new JwtException(INVALID_JWT_TOKEN));
+        given(authenticationTokenService.reissueAccessAndRefreshToken(any(TokenRefreshRequest.class))).willThrow(new JwtException(INVALID_JWT_TOKEN));
 
         this.mockMvc.perform(post("/api/v1/auth/refreshtoken")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -29,7 +29,7 @@ public class AuthenticationTokenService {
     private final JwtManager jwtManager;
     private final int refreshExpirationWeeks;
 
-    public AuthenticationTokenService(RefreshTokenRepository refreshTokenRepository, MemberService memberService, JwtManager jwtManager, @Value("${spring.jwt.refreshExpirationWeeks}") int refreshExpirationWeeks) {
+    public AuthenticationTokenService(final RefreshTokenRepository refreshTokenRepository, final MemberService memberService, final JwtManager jwtManager, @Value("${spring.jwt.refreshExpirationWeeks}") final int refreshExpirationWeeks) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.memberService = memberService;
         this.jwtManager = jwtManager;
@@ -37,7 +37,7 @@ public class AuthenticationTokenService {
     }
 
     @Transactional
-    public LoginResponse login(LoginRequest loginRequest) {
+    public LoginResponse login(final LoginRequest loginRequest) {
         String alias = loginRequest.getAlias();
         Member member = memberService.findMemberByAlias(alias);
         String password = loginRequest.getPassword();
@@ -47,7 +47,7 @@ public class AuthenticationTokenService {
         return new LoginResponse(jwtResponse.getAccessToken(), jwtResponse.getRefreshToken(), member.getId(), member.getAlias());
     }
 
-    private JwtResponse issueToken(Member member) {
+    private JwtResponse issueToken(final Member member) {
         Long memberId = member.getId();
         String newRefreshToken = UUID.randomUUID().toString();
         String accessToken = jwtManager.generateJwtToken(memberId);
@@ -68,14 +68,14 @@ public class AuthenticationTokenService {
     }
 
     @Transactional
-    public JwtResponse refreshToken(TokenRefreshRequest tokenRefreshRequest) {
+    public JwtResponse reissueAccessAndRefreshToken(final TokenRefreshRequest tokenRefreshRequest) {
         String refreshTokenFromRequest = tokenRefreshRequest.getRefreshToken();
         RefreshToken refreshToken = findByToken(refreshTokenFromRequest);
         refreshToken.validateExpiryDate(LocalDateTime.now());
         return updateToken(refreshToken.getMember().getId(), refreshToken);
     }
 
-    private RefreshToken findByToken(String token) {
+    private RefreshToken findByToken(final String token) {
         return refreshTokenRepository.findByToken(token)
                 .orElseThrow(() -> {
                     log.info("{} Refresh token이 DB에 존재하지 않음", token);
@@ -83,7 +83,7 @@ public class AuthenticationTokenService {
                 });
     }
 
-    private JwtResponse updateToken(Long memberId, RefreshToken refreshToken) {
+    private JwtResponse updateToken(final Long memberId, final RefreshToken refreshToken) {
         String accessToken = jwtManager.generateJwtToken(memberId);
         String newRefreshToken = UUID.randomUUID().toString();
         refreshToken.replace(newRefreshToken);

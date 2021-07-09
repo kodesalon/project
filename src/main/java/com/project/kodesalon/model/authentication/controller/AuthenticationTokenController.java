@@ -19,7 +19,7 @@ public class AuthenticationTokenController {
 
     private final AuthenticationTokenService authenticationTokenService;
 
-    public AuthenticationTokenController(AuthenticationTokenService authenticationTokenService) {
+    public AuthenticationTokenController(final AuthenticationTokenService authenticationTokenService) {
         this.authenticationTokenService = authenticationTokenService;
     }
 
@@ -30,8 +30,8 @@ public class AuthenticationTokenController {
     }
 
     @PostMapping("/refreshtoken")
-    public ResponseEntity<JwtResponse> refreshToken(@RequestBody @Valid final TokenRefreshRequest tokenRefreshRequest) {
-        JwtResponse jwtResponse = authenticationTokenService.refreshToken(tokenRefreshRequest);
+    public ResponseEntity<JwtResponse> reissueAccessAndRefreshToken(@RequestBody @Valid final TokenRefreshRequest tokenRefreshRequest) {
+        JwtResponse jwtResponse = authenticationTokenService.reissueAccessAndRefreshToken(tokenRefreshRequest);
         return ResponseEntity.ok().body(jwtResponse);
     }
 }
