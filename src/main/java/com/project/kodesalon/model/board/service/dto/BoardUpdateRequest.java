@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
-import static com.project.kodesalon.model.board.domain.vo.Content.CONTENT_LENGTH_BOUND_MAX;
+import static com.project.kodesalon.model.board.domain.vo.Content.CONTENT_LENGTH_MAX_BOUND;
 import static com.project.kodesalon.model.board.domain.vo.Title.TITLE_LENGTH_MAX_BOUND;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -21,7 +21,7 @@ public class BoardUpdateRequest {
     private String updatedTitle;
 
     @NotEmpty(message = INVALID_BOARD_CONTENT)
-    @Length(max = CONTENT_LENGTH_BOUND_MAX, message = INVALID_BOARD_CONTENT)
+    @Length(max = CONTENT_LENGTH_MAX_BOUND, message = INVALID_BOARD_CONTENT)
     private String updatedContent;
 
     public BoardUpdateRequest(String updatedTitle, String updatedContent) {

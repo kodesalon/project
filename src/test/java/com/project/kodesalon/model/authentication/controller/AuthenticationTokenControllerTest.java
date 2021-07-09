@@ -25,9 +25,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.persistence.EntityNotFoundException;
 
+import static com.project.kodesalon.common.ErrorCode.INCORRECT_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
-import static com.project.kodesalon.common.ErrorCode.PASSWORD_NOT_CORRECT;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
@@ -96,14 +96,14 @@ public class AuthenticationTokenControllerTest {
     @DisplayName("로그인 시 비밀번호 틀렸을 경우, 예외 메세지를 담은 DTO을 Http 400으로 응답합니다.")
     void login_fail_with_invalid_password() throws Exception {
         given(authenticationTokenService.login(any(LoginRequest.class)))
-                .willThrow(new IllegalArgumentException(PASSWORD_NOT_CORRECT));
+                .willThrow(new IllegalArgumentException(INCORRECT_PASSWORD));
 
         this.mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(PASSWORD_NOT_CORRECT))
+                .andExpect(jsonPath("$.code").value(INCORRECT_PASSWORD))
                 .andDo(document("login/fail/mismatch_password",
                         getDocumentRequest(),
                         getDocumentResponse(),

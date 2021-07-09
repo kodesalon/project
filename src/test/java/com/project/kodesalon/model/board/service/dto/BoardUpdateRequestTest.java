@@ -14,7 +14,7 @@ import java.util.Set;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
-import static com.project.kodesalon.model.board.domain.vo.Content.CONTENT_LENGTH_BOUND_MAX;
+import static com.project.kodesalon.model.board.domain.vo.Content.CONTENT_LENGTH_MAX_BOUND;
 import static com.project.kodesalon.model.board.domain.vo.Title.TITLE_LENGTH_MAX_BOUND;
 import static org.assertj.core.api.BDDAssertions.then;
 
@@ -62,7 +62,7 @@ public class BoardUpdateRequestTest {
     @DisplayName("업데이트 할 내용이 500자를 초과할 경우, 예외가 발생합니다")
     void create_throw_exception_with_invalid_content() {
         BoardUpdateRequest boardUpdateRequest
-                = new BoardUpdateRequest("update title", "1".repeat(CONTENT_LENGTH_BOUND_MAX + 1));
+                = new BoardUpdateRequest("update title", "1".repeat(CONTENT_LENGTH_MAX_BOUND + 1));
         Set<ConstraintViolation<BoardUpdateRequest>> constraintViolations = validator.validate(boardUpdateRequest);
 
         then(constraintViolations)

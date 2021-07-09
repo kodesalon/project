@@ -14,10 +14,10 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Content {
-    public static final int CONTENT_LENGTH_BOUND_MAX = 500;
+    public static final int CONTENT_LENGTH_MAX_BOUND = 500;
 
     @Lob
-    @Column(nullable = false, length = CONTENT_LENGTH_BOUND_MAX)
+    @Column(nullable = false, length = CONTENT_LENGTH_MAX_BOUND)
     private String content;
 
     public Content(final String content) {
@@ -37,7 +37,7 @@ public class Content {
     }
 
     private void checkLength(final String content) {
-        if (content.length() > CONTENT_LENGTH_BOUND_MAX) {
+        if (content.length() > CONTENT_LENGTH_MAX_BOUND) {
             throw new IllegalArgumentException(INVALID_BOARD_CONTENT);
         }
     }

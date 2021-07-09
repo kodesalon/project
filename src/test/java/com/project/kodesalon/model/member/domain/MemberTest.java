@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import static com.project.kodesalon.common.ErrorCode.DUPLICATED_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
-import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 import static com.project.kodesalon.model.board.domain.BoardTest.TEST_BOARD;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
@@ -79,7 +79,7 @@ public class MemberTest {
         String password = member.getPassword();
         thenIllegalArgumentException()
                 .isThrownBy(() -> member.changePassword(password))
-                .withMessage(PASSWORD_DUPLICATION);
+                .withMessage(DUPLICATED_PASSWORD);
     }
 
     @Test
