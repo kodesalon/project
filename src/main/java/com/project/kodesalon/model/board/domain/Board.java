@@ -5,6 +5,7 @@ import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
@@ -18,12 +19,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
-import static com.project.kodesalon.common.ErrorCode.ALREADY_DELETED_BOARD;
 import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
 
+@Slf4j
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "deleted = 'false'")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board {
 
     @Id
@@ -44,11 +45,12 @@ public class Board {
     @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
-    private boolean deleted;
+    @Column(name = "deleted")
+    private boolean deleted = false;
 
-    public Board(final Title title, final Content content, final Member writer, final LocalDateTime createdDateTime) {
-        this.title = title;
-        this.content = content;
+    public Board(final String title, final String content, final Member writer, final LocalDateTime createdDateTime) {
+        this.title = new Title(title);
+        this.content = new Content(content);
         this.writer = writer;
         this.createdDateTime = createdDateTime;
         this.writer.addBoard(this);
@@ -66,8 +68,8 @@ public class Board {
         return content.value();
     }
 
-    public String getWriter() {
-        return writer.getName();
+    public Member getWriter() {
+        return writer;
     }
 
     public String getCreatedDateTime() {
@@ -78,26 +80,25 @@ public class Board {
         return deleted;
     }
 
-    public void delete(final Member member) {
-        validateState();
-        validateAuthorizationOf(member);
+    public void delete(final Long memberId) {
+        validateAuthorizationOf(memberId);
         deleted = true;
     }
 
-    private void validateState() {
-        if (deleted) {
-            throw new IllegalStateException(ALREADY_DELETED_BOARD);
-        }
+    public void updateTitleAndContent(Long memberId, Title updateTitle, Content updateContent) {
+        validateAuthorizationOf(memberId);
+        this.title = updateTitle;
+        this.content = updateContent;
     }
 
-    private void validateAuthorizationOf(final Member member) {
-        if (!isWrittenBy(member)) {
+    private void validateAuthorizationOf(Long memberId) {
+        if (!isSameWriterId(memberId)) {
+            log.info("{}가 {}에 관한 권한이 없음.", memberId, id);
             throw new IllegalArgumentException(NOT_AUTHORIZED_MEMBER);
         }
     }
 
-    private boolean isWrittenBy(final Member member) {
-        return writer.equals(member);
+    private boolean isSameWriterId(Long memberId) {
+        return writer.getId().equals(memberId);
     }
 }
-

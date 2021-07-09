@@ -1,12 +1,14 @@
 package com.project.kodesalon.model.board.service;
 
 import com.project.kodesalon.model.board.domain.Board;
+import com.project.kodesalon.model.board.domain.vo.Content;
+import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
-import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
+import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import com.project.kodesalon.model.member.domain.Member;
-import com.project.kodesalon.model.member.service.MemberService;
+import com.project.kodesalon.model.memberboard.MemberBoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,29 +23,46 @@ import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
 @Service
 public class BoardService {
     private final BoardRepository boardRepository;
-    private final MemberService memberService;
+    private final MemberBoardService memberBoardService;
 
-    public BoardService(final BoardRepository boardRepository, final MemberService memberService) {
+    public BoardService(final BoardRepository boardRepository, final MemberBoardService memberBoardService) {
         this.boardRepository = boardRepository;
-        this.memberService = memberService;
+        this.memberBoardService = memberBoardService;
     }
 
     @Transactional
-    public void save(final BoardCreateRequest boardCreateRequest) {
-        Member member = memberService.findById(boardCreateRequest.getMemberId());
+    public void save(final Long memberId, final BoardCreateRequest boardCreateRequest) {
+        Member member = memberBoardService.findById(memberId);
         Board createdBoard = boardCreateRequest.toBoard(member);
+        log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
         boardRepository.save(createdBoard);
     }
 
-    public void delete(final BoardDeleteRequest boardDeleteRequest) {
-        Board board = findById(boardDeleteRequest.getBoardId());
-        Member member = memberService.findById(boardDeleteRequest.getMemberId());
-        board.delete(member);
+    @Transactional
+    public void delete(final Long memberId, final Long boardId) {
+        Board board = findById(boardId);
+        board.delete(memberId);
     }
 
+    @Transactional(readOnly = true)
     public BoardSelectResponse selectBoard(final Long boardId) {
         Board board = findById(boardId);
-        return new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter());
+        return new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId());
+    }
+
+    @Transactional(readOnly = true)
+    public Page<BoardSelectResponse> selectBoards(Pageable pageable) {
+        Page<Board> boards = boardRepository.findAll(pageable);
+        return boards.map(board ->
+                new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId()));
+    }
+
+    @Transactional
+    public void updateBoard(Long memberId, final Long boardId, final BoardUpdateRequest boardUpdateRequest) {
+        Title updateTitle = new Title(boardUpdateRequest.getUpdatedTitle());
+        Content updateContent = new Content(boardUpdateRequest.getUpdatedContent());
+        Board updatedBoard = findById(boardId);
+        updatedBoard.updateTitleAndContent(memberId, updateTitle, updateContent);
     }
 
     private Board findById(final Long boardId) {
@@ -52,11 +71,5 @@ public class BoardService {
                     log.info("존재하지 않는 게시물 식별자 boardId : {}", boardId);
                     throw new EntityNotFoundException(NOT_EXIST_BOARD);
                 });
-    }
-
-    public Page<BoardSelectResponse> selectBoards(Pageable pageable) {
-        Page<Board> boards = boardRepository.findAll(pageable);
-        return boards.map(board ->
-                new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter()));
     }
 }

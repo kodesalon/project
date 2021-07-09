@@ -10,9 +10,9 @@ public class BoardSelectResponse {
     private String title;
     private String content;
     private String createdDateTime;
-    private String writer;
+    private Long writer;
 
-    public BoardSelectResponse(final String title, final String content, final String createdDateTime, final String writer) {
+    public BoardSelectResponse(final String title, final String content, final String createdDateTime, final Long writer) {
         this.title = title;
         this.content = content;
         this.createdDateTime = createdDateTime;

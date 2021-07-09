@@ -1,11 +1,6 @@
 package com.project.kodesalon.model.member.service.dto;
 
 import com.project.kodesalon.model.member.domain.Member;
-import com.project.kodesalon.model.member.domain.vo.Alias;
-import com.project.kodesalon.model.member.domain.vo.Email;
-import com.project.kodesalon.model.member.domain.vo.Name;
-import com.project.kodesalon.model.member.domain.vo.Password;
-import com.project.kodesalon.model.member.domain.vo.Phone;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,8 +19,8 @@ import static com.project.kodesalon.model.member.domain.vo.Name.NAME_REGEX;
 import static com.project.kodesalon.model.member.domain.vo.Password.PASSWORD_REGEX;
 import static com.project.kodesalon.model.member.domain.vo.Phone.PHONE_REGEX;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateMemberRequest {
 
     @NotNull(message = INVALID_MEMBER_ALIAS)
@@ -57,11 +52,6 @@ public class CreateMemberRequest {
     }
 
     public Member toMember() {
-        Alias validAlias = new Alias(alias);
-        Password validPassword = new Password(password);
-        Name validName = new Name(name);
-        Email validEmail = new Email(email);
-        Phone validPhone = new Phone(phone);
-        return new Member(validAlias, validPassword, validName, validEmail, validPhone);
+        return new Member(alias, password, name, email, phone);
     }
 }

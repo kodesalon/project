@@ -13,12 +13,12 @@ public class BoardSelectResponseTest {
     void getter() {
         BDDSoftAssertions softly = new BDDSoftAssertions();
         String createdDateTime = LocalDateTime.now().toString();
-        BoardSelectResponse boardSelectResponse = new BoardSelectResponse("제목", "내용", createdDateTime, "작성자 별명");
+        BoardSelectResponse boardSelectResponse = new BoardSelectResponse("제목", "내용", createdDateTime, 1L);
 
         softly.then(boardSelectResponse.getTitle()).isEqualTo("제목");
         softly.then(boardSelectResponse.getContent()).isEqualTo("내용");
         softly.then(boardSelectResponse.getCreatedDateTime()).isEqualTo(createdDateTime);
-        softly.then(boardSelectResponse.getWriter()).isEqualTo("작성자 별명");
+        softly.then(boardSelectResponse.getWriter()).isEqualTo(1L);
         softly.assertAll();
     }
 }
