@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.authentication.domain;
 
+import io.jsonwebtoken.JwtException;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -8,8 +9,10 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 public class RefreshTokenTest {
     private final LocalDateTime expiryDate = LocalDateTime.now();
@@ -40,9 +43,11 @@ public class RefreshTokenTest {
     }
 
     @Test
-    @DisplayName("인자로 받은 시간과 토큰 만료시간을 비교하여 토큰이 만료되었을 경우, 참을 반환한다.")
-    void isAfter() {
+    @DisplayName("인자로 받은 시간과 토큰 만료시간을 비교하여 토큰이 만료되었을 경우, 예외를 발생시킨다.")
+    void validate_throw_exception_with_expired_time() {
         LocalDateTime now = LocalDateTime.now().minus(expiryDate.getNano(), ChronoUnit.NANOS);
-        then(refreshToken.isAfter(now)).isTrue();
+        thenThrownBy(() -> refreshToken.validateExpiryDate(now))
+                .isInstanceOf(JwtException.class)
+                .hasMessage(INVALID_JWT_TOKEN);
     }
 }
