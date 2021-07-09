@@ -3,6 +3,7 @@ package com.project.kodesalon.common.interceptor;
 import com.project.kodesalon.common.JwtManager;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -29,7 +30,7 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         String uuid = UUID.randomUUID().toString();
         String requestURI = request.getRequestURI();
-        request.setAttribute(LOG_ID, uuid);
+        MDC.put(LOG_ID, uuid);
         log.info("REQUEST : [logId : {}] [requestURI : {}] [handler : {}]", uuid, requestURI, handler);
 
         String token = parseTokenFrom(request);
@@ -50,9 +51,9 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         String requestURI = request.getRequestURI();
-        String logId = (String) request.getAttribute(LOG_ID);
+        String logId = MDC.get(LOG_ID);
         log.info("RESPONSE : [logId : {}] [requestURI : {}] [handler : {}]", logId, requestURI, handler);
-
+        MDC.clear();
         if (ex != null) {
             log.error("afterCompletion error : ", ex.getMessage());
         }
