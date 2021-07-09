@@ -18,6 +18,8 @@ include::{snippets}/jwt/expired/http-response.adoc[]
 - 유효하지 않은 JWT token
 include::{snippets}/jwt/invalid/response-fields.adoc[]
 include::{snippets}/jwt/invalid/http-response.adoc[]
+include::{snippets}/jwt/invalid-header/response-fields.adoc[]
+include::{snippets}/jwt/invalid-header/http-response.adoc[]
 
 == Login
 
