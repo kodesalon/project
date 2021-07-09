@@ -19,6 +19,10 @@ include::{snippets}/jwt/expired/http-response.adoc[]
 include::{snippets}/jwt/invalid/response-fields.adoc[]
 include::{snippets}/jwt/invalid/http-response.adoc[]
 
+- Header에 Authorization 속성 값이 없을 경우
+include::{snippets}/jwt/invalid-header/response-fields.adoc[]
+include::{snippets}/jwt/invalid-header/http-response.adoc[]
+
 == Login
 
 === Request
