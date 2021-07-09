@@ -75,11 +75,26 @@ public class BoardTest {
     void update_board() {
         Title updateTitle = new Title("update title");
         Content updateContent = new Content("update content");
+        given(member.getId()).willReturn(1L);
 
-        board.updateTitleAndContent(updateTitle, updateContent);
+        board.updateTitleAndContent(member.getId(), updateTitle, updateContent);
 
         softly.then(board.getTitle()).isEqualTo(updateTitle.value());
         softly.then(board.getContent()).isEqualTo(updateContent.value());
         softly.assertAll();
+    }
+
+
+    @Test
+    @DisplayName("다른 회원이 게시물 삭제를 시도할 경우, 예외가 발생한다.")
+    void update_throw_exception_with_not_authorized_member() {
+        Title updateTitle = new Title("update title");
+        Content updateContent = new Content("update content");
+        given(member.getId()).willReturn(1L);
+        given(stranger.getId()).willReturn(2L);
+
+        thenIllegalArgumentException()
+                .isThrownBy(() -> board.updateTitleAndContent(stranger.getId(), updateTitle, updateContent))
+                .withMessage(NOT_AUTHORIZED_MEMBER);
     }
 }

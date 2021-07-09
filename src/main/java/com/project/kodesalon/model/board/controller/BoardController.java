@@ -28,20 +28,20 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> save(@Login Long memberId, @RequestBody @Valid final BoardCreateRequest boardCreateRequest) {
+    public ResponseEntity<Void> save(@Login final Long memberId, @RequestBody @Valid final BoardCreateRequest boardCreateRequest) {
         boardService.save(memberId, boardCreateRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<Void> delete(@Login Long memberId, @PathVariable final Long boardId) {
+    public ResponseEntity<Void> delete(@Login final Long memberId, @PathVariable final Long boardId) {
         boardService.delete(memberId, boardId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/{boardId}")
-    public ResponseEntity<BoardUpdateResponse> updateBoard(@PathVariable final Long boardId, @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
+    public ResponseEntity<BoardUpdateResponse> updateBoard(@Login final Long memberId, @PathVariable final Long boardId, @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
         return ResponseEntity.ok()
-                .body(boardService.updateBoard(boardId, boardUpdateRequest));
+                .body(boardService.updateBoard(memberId, boardId, boardUpdateRequest));
     }
 }

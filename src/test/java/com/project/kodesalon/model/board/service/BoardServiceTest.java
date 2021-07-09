@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
-import static com.project.kodesalon.model.board.domain.BoardTest.TEST_BOARD;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,6 +30,7 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class BoardServiceTest {
     private final BoardUpdateRequest BOARD_UPDATE_REQUEST = new BoardUpdateRequest("update title", "update content");
+
     @InjectMocks
     private BoardService boardService;
 
@@ -70,9 +70,10 @@ public class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 게시판 수정 요청 Dto를 전달받아 게시판을 수정한다.")
     void update() {
-        given(boardRepository.findById(anyLong())).willReturn(Optional.of(TEST_BOARD));
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        given(member.getId()).willReturn(1L);
 
-        BoardUpdateResponse boardUpdateResponse = boardService.updateBoard(1L, BOARD_UPDATE_REQUEST);
+        BoardUpdateResponse boardUpdateResponse = boardService.updateBoard(member.getId(), 1L, BOARD_UPDATE_REQUEST);
 
         then(boardUpdateResponse.getMessage()).isEqualTo("게시물 정보가 변경되었습니다");
     }
@@ -82,7 +83,7 @@ public class BoardServiceTest {
     void update_throws_exception_with_no_board() {
         given(boardRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        thenThrownBy(() -> boardService.updateBoard(1L, BOARD_UPDATE_REQUEST))
+        thenThrownBy(() -> boardService.updateBoard(member.getId(), 1L, BOARD_UPDATE_REQUEST))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(NOT_EXIST_BOARD);
     }

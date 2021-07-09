@@ -51,12 +51,11 @@ public class BoardService {
     }
 
     @Transactional
-    public BoardUpdateResponse updateBoard(final Long boardId, final BoardUpdateRequest boardUpdateRequest) {
+    public BoardUpdateResponse updateBoard(Long memberId, final Long boardId, final BoardUpdateRequest boardUpdateRequest) {
         Title updateTitle = new Title(boardUpdateRequest.getUpdatedTitle());
         Content updateContent = new Content(boardUpdateRequest.getUpdatedContent());
         Board updatedBoard = findBoardById(boardId);
-
-        updatedBoard.updateTitleAndContent(updateTitle, updateContent);
+        updatedBoard.updateTitleAndContent(memberId, updateTitle, updateContent);
         return new BoardUpdateResponse("게시물 정보가 변경되었습니다");
     }
 

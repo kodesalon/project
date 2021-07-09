@@ -5,6 +5,7 @@ import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.Column;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 
 import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
 
+@Slf4j
 @Entity
 @Where(clause = "deleted = 'false'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -83,19 +85,21 @@ public class Board {
         deleted = true;
     }
 
+    public void updateTitleAndContent(Long memberId, Title updateTitle, Content updateContent) {
+        validateAuthorizationOf(memberId);
+        this.title = updateTitle;
+        this.content = updateContent;
+    }
+
     private void validateAuthorizationOf(Long memberId) {
         if (!isSameWriterId(memberId)) {
+            log.info("{}가 {}에 관한 권한이 없음.", memberId, id);
             throw new IllegalArgumentException(NOT_AUTHORIZED_MEMBER);
         }
     }
 
     private boolean isSameWriterId(Long memberId) {
         return writer.getId().equals(memberId);
-    }
-
-    public void updateTitleAndContent(Title updateTitle, Content updateContent) {
-        this.title = updateTitle;
-        this.content = updateContent;
     }
 }
 

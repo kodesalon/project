@@ -181,7 +181,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("회원 식별 번호, 수정할 게시물의 제목과 내용을 요청받아 성공시 200을 응답합니다")
     void update() throws Exception {
-        given(boardService.updateBoard(anyLong(), any(BoardUpdateRequest.class)))
+        given(boardService.updateBoard(any(), anyLong(), any(BoardUpdateRequest.class)))
                 .willReturn(new BoardUpdateResponse("게시물 정보가 변경되었습니다"));
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
@@ -241,7 +241,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("게시물 수정시 존재하지 않는 게시물은 400 상태와 에러 코드를 응답합니다")
     void update_throw_exception_with_not_exist_board_id() throws Exception {
-        given(boardService.updateBoard(anyLong(), any(BoardUpdateRequest.class)))
+        given(boardService.updateBoard(any(), anyLong(), any(BoardUpdateRequest.class)))
                 .willThrow(new EntityNotFoundException(NOT_EXIST_BOARD));
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
