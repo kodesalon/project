@@ -28,11 +28,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class AuthenticationTokenServiceTest {
+public class AuthenticationTokenServiceTest {
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final TokenRefreshRequest tokenRefreshRequest = new TokenRefreshRequest("refreshToken");
 
@@ -125,17 +126,19 @@ class AuthenticationTokenServiceTest {
     void refreshToken_throw_exception_with_not_in_DB() {
         thenThrownBy(() -> authenticationTokenService.refreshToken(tokenRefreshRequest))
                 .isInstanceOf(JwtException.class)
-                .withFailMessage(INVALID_JWT_TOKEN);
+                .hasMessage(INVALID_JWT_TOKEN);
     }
 
     @Test
     @DisplayName("인자로 받은 Refresh token이 만료된 경우, 예외가 발생한다.")
     void refreshToken_throw_exception_with_expired_token() {
         given(refreshTokenRepository.findByToken(anyString())).willReturn(Optional.of(refreshToken));
-        given(refreshToken.isAfter(any(LocalDateTime.class))).willReturn(true);
+        willThrow(new JwtException(INVALID_JWT_TOKEN))
+                .given(refreshToken)
+                .validateExpiryDate(any(LocalDateTime.class));
 
         thenThrownBy(() -> authenticationTokenService.refreshToken(tokenRefreshRequest))
                 .isInstanceOf(JwtException.class)
-                .withFailMessage(INVALID_JWT_TOKEN);
+                .hasMessage(INVALID_JWT_TOKEN);
     }
 }

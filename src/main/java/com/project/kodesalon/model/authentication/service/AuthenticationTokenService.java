@@ -21,8 +21,8 @@ import java.util.UUID;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 
-@Service
 @Slf4j
+@Service
 public class AuthenticationTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberService memberService;
@@ -71,7 +71,7 @@ public class AuthenticationTokenService {
     public JwtResponse refreshToken(TokenRefreshRequest tokenRefreshRequest) {
         String refreshTokenFromRequest = tokenRefreshRequest.getRefreshToken();
         RefreshToken refreshToken = findByToken(refreshTokenFromRequest);
-        validateExpiration(refreshToken);
+        refreshToken.validateExpiryDate(LocalDateTime.now());
         return updateToken(refreshToken.getMember().getId(), refreshToken);
     }
 
@@ -81,13 +81,6 @@ public class AuthenticationTokenService {
                     log.info("{} Refresh token이 DB에 존재하지 않음", token);
                     throw new JwtException(INVALID_JWT_TOKEN);
                 });
-    }
-
-    private void validateExpiration(RefreshToken refreshToken) {
-        if (refreshToken.isAfter(LocalDateTime.now())) {
-            log.info("{} Refresh token 만료", refreshToken.getToken());
-            throw new JwtException(INVALID_JWT_TOKEN);
-        }
     }
 
     private JwtResponse updateToken(Long memberId, RefreshToken refreshToken) {

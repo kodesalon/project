@@ -1,9 +1,11 @@
 package com.project.kodesalon.model.authentication.domain;
 
 import com.project.kodesalon.model.member.domain.Member;
+import io.jsonwebtoken.JwtException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,9 +17,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import java.time.LocalDateTime;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
+
+@Slf4j
+@Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
 public class RefreshToken {
 
     @Id
@@ -45,7 +50,14 @@ public class RefreshToken {
         this.token = token;
     }
 
-    public boolean isAfter(LocalDateTime now) {
+    public void validateExpiryDate(LocalDateTime now) {
+        if (isAfter(now)) {
+            log.info("{} Refresh token 만료", token);
+            throw new JwtException(INVALID_JWT_TOKEN);
+        }
+    }
+
+    private boolean isAfter(LocalDateTime now) {
         return expiryDate.isAfter(now);
     }
 }
