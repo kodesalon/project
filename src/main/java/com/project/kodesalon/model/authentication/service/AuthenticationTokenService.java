@@ -1,6 +1,6 @@
 package com.project.kodesalon.model.authentication.service;
 
-import com.project.kodesalon.common.JwtUtils;
+import com.project.kodesalon.common.JwtManager;
 import com.project.kodesalon.model.authentication.domain.RefreshToken;
 import com.project.kodesalon.model.authentication.repository.RefreshTokenRepository;
 import com.project.kodesalon.model.authentication.service.dto.JwtResponse;
@@ -26,13 +26,13 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 public class AuthenticationTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberService memberService;
-    private final JwtUtils jwtUtils;
+    private final JwtManager jwtManager;
     private final int refreshExpirationWeeks;
 
-    public AuthenticationTokenService(RefreshTokenRepository refreshTokenRepository, MemberService memberService, JwtUtils jwtUtils, @Value("${spring.jwt.refreshExpirationWeeks}") int refreshExpirationWeeks) {
+    public AuthenticationTokenService(RefreshTokenRepository refreshTokenRepository, MemberService memberService, JwtManager jwtManager, @Value("${spring.jwt.refreshExpirationWeeks}") int refreshExpirationWeeks) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.memberService = memberService;
-        this.jwtUtils = jwtUtils;
+        this.jwtManager = jwtManager;
         this.refreshExpirationWeeks = refreshExpirationWeeks;
     }
 
@@ -50,7 +50,7 @@ public class AuthenticationTokenService {
     private JwtResponse issueToken(Member member) {
         Long memberId = member.getId();
         String newRefreshToken = UUID.randomUUID().toString();
-        String accessToken = jwtUtils.generateJwtToken(memberId);
+        String accessToken = jwtManager.generateJwtToken(memberId);
 
         refreshTokenRepository.findByMember(member)
                 .ifPresentOrElse(
@@ -91,7 +91,7 @@ public class AuthenticationTokenService {
     }
 
     private JwtResponse updateToken(Long memberId, RefreshToken refreshToken) {
-        String accessToken = jwtUtils.generateJwtToken(memberId);
+        String accessToken = jwtManager.generateJwtToken(memberId);
         String newRefreshToken = UUID.randomUUID().toString();
         refreshToken.replace(newRefreshToken);
         log.info("회원 ID : {}, Access Token : {}, Refresh Token : {} 토큰 재발급", memberId, accessToken, newRefreshToken);

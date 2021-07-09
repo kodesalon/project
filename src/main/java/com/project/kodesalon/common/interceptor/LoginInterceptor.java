@@ -1,6 +1,6 @@
 package com.project.kodesalon.common.interceptor;
 
-import com.project.kodesalon.common.JwtUtils;
+import com.project.kodesalon.common.JwtManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,10 +16,10 @@ public class LoginInterceptor implements HandlerInterceptor {
     private static final int BEARER_LENGTH = 7;
     private static final String LOG_ID = "logId";
 
-    private final JwtUtils jwtUtils;
+    private final JwtManager jwtManager;
 
-    public LoginInterceptor(JwtUtils jwtUtils) {
-        this.jwtUtils = jwtUtils;
+    public LoginInterceptor(JwtManager jwtManager) {
+        this.jwtManager = jwtManager;
     }
 
     @Override
@@ -31,9 +31,9 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         String token = request.getHeader("Authorization").substring(BEARER_LENGTH);
 
-        jwtUtils.validateToken(token);
+        jwtManager.validateToken(token);
 
-        Long memberId = jwtUtils.getMemberIdFrom(token);
+        Long memberId = jwtManager.getMemberIdFrom(token);
         request.setAttribute(LOGIN_MEMBER, memberId);
         return true;
     }

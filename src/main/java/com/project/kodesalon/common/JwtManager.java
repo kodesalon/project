@@ -21,17 +21,17 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 
 @Slf4j
 @Component
-public class JwtUtils {
+public class JwtManager {
 
-    private String secretKey;
-    private long accessExpirationMs;
+    private final String secretKey;
+    private final long accessExpirationMs;
 
-    public JwtUtils(@Value("${spring.jwt.secret}") String secretKey, @Value("${spring.jwt.accessExpirationMs}") long accessExpirationMs) {
+    public JwtManager(@Value("${spring.jwt.secret}") final String secretKey, @Value("${spring.jwt.accessExpirationMs}") final long accessExpirationMs) {
         this.secretKey = secretKey;
         this.accessExpirationMs = accessExpirationMs;
     }
 
-    public String generateJwtToken(Long memberId) {
+    public String generateJwtToken(final Long memberId) {
         Date issueTime = new Date();
         return Jwts.builder()
                 .setHeaderParam("typ", Header.JWT_TYPE)
@@ -42,7 +42,7 @@ public class JwtUtils {
                 .compact();
     }
 
-    public Long getMemberIdFrom(String token) {
+    public Long getMemberIdFrom(final String token) {
         return Jwts.parser()
                 .setSigningKey(getSignKey())
                 .parseClaimsJws(token)
@@ -50,7 +50,7 @@ public class JwtUtils {
                 .get("memberId", Long.class);
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(final String token) {
         try {
             Jwts.parser()
                     .setSigningKey(getSignKey())

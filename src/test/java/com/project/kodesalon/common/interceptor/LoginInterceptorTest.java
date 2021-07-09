@@ -1,6 +1,6 @@
 package com.project.kodesalon.common.interceptor;
 
-import com.project.kodesalon.common.JwtUtils;
+import com.project.kodesalon.common.JwtManager;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +29,7 @@ class LoginInterceptorTest {
     private LoginInterceptor loginInterceptor;
 
     @Mock
-    private JwtUtils jwtUtils;
+    private JwtManager jwtManager;
 
     @Spy
     private MockHttpServletRequest request;
@@ -48,8 +48,8 @@ class LoginInterceptorTest {
     @Test
     @DisplayName("request header에 jwt 토큰을 입력받아 회원 식별 번호를 attribute에 등록하고 true를 반환한다.")
     void preHandle() throws Exception {
-        given(jwtUtils.validateToken(anyString())).willReturn(true);
-        given(jwtUtils.getMemberIdFrom(anyString())).willReturn(1L);
+        given(jwtManager.validateToken(anyString())).willReturn(true);
+        given(jwtManager.getMemberIdFrom(anyString())).willReturn(1L);
 
         boolean expect = loginInterceptor.preHandle(request, response, handler);
 
@@ -60,7 +60,7 @@ class LoginInterceptorTest {
     @Test
     @DisplayName("유효한 access token이 아닌 경우 예외를 발생시킨다.")
     void preHandle_throws_exception_with_invalid_jwt_token() throws Exception {
-        given(jwtUtils.validateToken(anyString())).willThrow(new JwtException("invalid jwt token"));
+        given(jwtManager.validateToken(anyString())).willThrow(new JwtException("invalid jwt token"));
 
         thenThrownBy(() -> loginInterceptor.preHandle(request, response, handler))
                 .isInstanceOf(JwtException.class)
