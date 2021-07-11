@@ -49,7 +49,6 @@ public class MemberService {
     @Transactional(readOnly = true)
     public SelectMemberResponse selectMember(final Long memberId) {
         Member member = findById(memberId);
-        log.info("test22 {}", member.getId(), member.getAlias());
         return new SelectMemberResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone());
     }
 
