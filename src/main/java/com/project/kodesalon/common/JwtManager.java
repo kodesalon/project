@@ -23,6 +23,8 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 @Component
 public class JwtManager {
 
+    private static final String MEMBER_ID = "memberId";
+
     private final String secretKey;
     private final long accessExpirationMs;
 
@@ -35,7 +37,7 @@ public class JwtManager {
         Date issueTime = new Date();
         return Jwts.builder()
                 .setHeaderParam("typ", Header.JWT_TYPE)
-                .claim("memberId", memberId)
+                .claim(MEMBER_ID, memberId)
                 .setIssuedAt(issueTime)
                 .setExpiration(new Date(issueTime.getTime() + accessExpirationMs))
                 .signWith(SignatureAlgorithm.HS256, getSignKey())
@@ -47,7 +49,7 @@ public class JwtManager {
                 .setSigningKey(getSignKey())
                 .parseClaimsJws(token)
                 .getBody()
-                .get("memberId", Long.class);
+                .get(MEMBER_ID, Long.class);
     }
 
     public boolean validateToken(final String token) {
