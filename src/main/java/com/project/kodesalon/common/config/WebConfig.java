@@ -19,9 +19,6 @@ public class WebConfig implements WebMvcConfigurer {
     private final LoginInterceptor loginInterceptor;
     private final LoginMemberArgumentResolver loginMemberArgumentResolver;
 
-    @Value("${spring.server.url}")
-    private String serverUrl;
-
     public WebConfig(LoginInterceptor loginInterceptor, LoginMemberArgumentResolver loginMemberArgumentResolver) {
         this.loginInterceptor = loginInterceptor;
         this.loginMemberArgumentResolver = loginMemberArgumentResolver;
@@ -29,8 +26,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                .allowedOrigins(serverUrl);
+        registry.addMapping("/**");
     }
 
     @Override
