@@ -8,7 +8,7 @@ import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import com.project.kodesalon.model.member.domain.Member;
-import com.project.kodesalon.model.memberboard.MemberBoardService;
+import com.project.kodesalon.model.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,7 +44,7 @@ public class BoardServiceTest {
     private BoardService boardService;
 
     @Mock
-    private MemberBoardService memberBoardService;
+    private MemberService memberService;
 
     @Mock
     private BoardRepository boardRepository;
@@ -58,7 +58,7 @@ public class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 게시판 생성 요청 Dto를 전달받아 게시판을 생성한다.")
     void save() {
-        given(memberBoardService.findById(anyLong())).willReturn(member);
+        given(memberService.findById(anyLong())).willReturn(member);
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 작성", LocalDateTime.now());
 
         boardService.save(anyLong(), boardCreateRequest);
@@ -83,6 +83,10 @@ public class BoardServiceTest {
         given(member.getId()).willReturn(1L);
 
         boardService.updateBoard(member.getId(), 1L, BOARD_UPDATE_REQUEST);
+        given(board.getWriter()).willReturn(member);
+        given(member.getId()).willReturn(1L);
+
+        BoardSelectResponse boardSelectResponse = boardService.selectBoard(1L);
 
         verify(boardRepository, times(1)).findById(anyLong());
         verify(board, times(1)).updateTitleAndContent(anyLong(), any(Title.class), any(Content.class));
@@ -96,19 +100,6 @@ public class BoardServiceTest {
         thenThrownBy(() -> boardService.updateBoard(member.getId(), 1L, BOARD_UPDATE_REQUEST))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(NOT_EXIST_BOARD);
-    }
-
-    @Test
-    @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물을 조회하고 단일 게시물 조회 응답 DTO를 반환한다.")
-    void selectBoard() {
-        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
-        given(board.getWriter()).willReturn(member);
-        given(member.getId()).willReturn(1L);
-
-        BoardSelectResponse boardSelectResponse = boardService.selectBoard(1L);
-
-        then(boardSelectResponse).isNotNull();
-        verify(boardRepository).findById(anyLong());
     }
 
     @Test

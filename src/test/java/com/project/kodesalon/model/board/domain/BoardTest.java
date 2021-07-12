@@ -41,11 +41,10 @@ public class BoardTest {
     @Test
     @DisplayName("게시물의 제목, 내용, 작성자, 생성 시간, 삭제 여부를 반환한다.")
     void getter() {
-        BDDSoftAssertions softly = new BDDSoftAssertions();
         softly.then(board.getTitle()).isEqualTo("게시물 제목");
         softly.then(board.getContent()).isEqualTo("게시물 내용");
         softly.then(board.getWriter()).isEqualTo(member);
-        softly.then(board.getCreatedDateTime()).isEqualTo(createdDateTime.toString());
+        softly.then(board.getCreatedDateTime()).isEqualTo(createdDateTime);
         softly.then(board.isDeleted()).isFalse();
         softly.assertAll();
     }

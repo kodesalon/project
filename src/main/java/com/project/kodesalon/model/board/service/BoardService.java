@@ -8,7 +8,7 @@ import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import com.project.kodesalon.model.member.domain.Member;
-import com.project.kodesalon.model.memberboard.MemberBoardService;
+import com.project.kodesalon.model.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,18 +23,17 @@ import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
 @Service
 public class BoardService {
     private final BoardRepository boardRepository;
-    private final MemberBoardService memberBoardService;
+    private final MemberService memberService;
 
-    public BoardService(final BoardRepository boardRepository, final MemberBoardService memberBoardService) {
+    public BoardService(final BoardRepository boardRepository, final MemberService memberService) {
         this.boardRepository = boardRepository;
-        this.memberBoardService = memberBoardService;
+        this.memberService = memberService;
     }
 
     @Transactional
     public void save(final Long memberId, final BoardCreateRequest boardCreateRequest) {
-        Member member = memberBoardService.findById(memberId);
+        Member member = memberService.findById(memberId);
         Board createdBoard = boardCreateRequest.toBoard(member);
-        log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
         boardRepository.save(createdBoard);
     }
 
@@ -58,7 +57,7 @@ public class BoardService {
     }
 
     @Transactional
-    public void updateBoard(Long memberId, final Long boardId, final BoardUpdateRequest boardUpdateRequest) {
+    public void updateBoard(final Long memberId, final Long boardId, final BoardUpdateRequest boardUpdateRequest) {
         Title updateTitle = new Title(boardUpdateRequest.getUpdatedTitle());
         Content updateContent = new Content(boardUpdateRequest.getUpdatedContent());
         Board updatedBoard = findById(boardId);
