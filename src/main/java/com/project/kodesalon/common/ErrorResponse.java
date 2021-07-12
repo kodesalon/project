@@ -4,8 +4,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorResponse {
     private String code;
 

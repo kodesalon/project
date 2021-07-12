@@ -1,14 +1,6 @@
 package com.project.kodesalon.model.member.domain;
 
-
-import com.project.kodesalon.model.board.domain.Board;
-import com.project.kodesalon.model.board.domain.vo.Content;
-import com.project.kodesalon.model.board.domain.vo.Title;
-import com.project.kodesalon.model.member.domain.vo.Alias;
-import com.project.kodesalon.model.member.domain.vo.Email;
-import com.project.kodesalon.model.member.domain.vo.Name;
 import com.project.kodesalon.model.member.domain.vo.Password;
-import com.project.kodesalon.model.member.domain.vo.Phone;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,23 +8,22 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.time.LocalDateTime;
-
+import static com.project.kodesalon.common.ErrorCode.DUPLICATED_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
-import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
+import static com.project.kodesalon.model.board.domain.BoardTest.TEST_BOARD;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 public class MemberTest {
     public static final Member TEST_MEMBER
-            = new Member(new Alias("alias"), new Password("Password!!123"), new Name("이름"), new Email("email@email.com"), new Phone("010-1234-4444"));
+            = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
 
     private Member member;
 
     @BeforeEach
     void setup() {
-        member = new Member(new Alias("alias"), new Password("Password!!123"), new Name("이름"), new Email("email@email.com"), new Phone("010-1234-4444"));
+        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
     }
 
     @Test
@@ -59,8 +50,7 @@ public class MemberTest {
     @Test
     @DisplayName("게시물을 추가한다.")
     void addBoard() {
-        Board board = new Board(new Title("게시물 제목"), new Content("게시물 내용"), TEST_MEMBER, LocalDateTime.now());
-        member.addBoard(board);
+        member.addBoard(TEST_BOARD);
 
         then(member.getBoards().size()).isEqualTo(1);
     }
@@ -89,7 +79,7 @@ public class MemberTest {
         String password = member.getPassword();
         thenIllegalArgumentException()
                 .isThrownBy(() -> member.changePassword(password))
-                .withMessage(PASSWORD_DUPLICATION);
+                .withMessage(DUPLICATED_PASSWORD);
     }
 
     @Test

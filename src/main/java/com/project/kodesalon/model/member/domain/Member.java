@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.member.domain;
 
+import com.project.kodesalon.common.BaseEntity;
 import com.project.kodesalon.model.board.domain.Board;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Email;
@@ -25,16 +26,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.project.kodesalon.common.ErrorCode.DUPLICATED_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
-import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 
+@Slf4j
 @Entity
+@Where(clause = "deleted = 'false'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member", uniqueConstraints = {
         @UniqueConstraint(name = "member_unique_constraint", columnNames = {"alias"})})
-@Where(clause = "deleted = 'false'")
-@Slf4j
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,12 +63,12 @@ public class Member {
     @Column(name = "deleted")
     private boolean deleted = false;
 
-    public Member(final Alias alias, final Password password, final Name name, final Email email, final Phone phone) {
-        this.alias = alias;
-        this.password = password;
-        this.email = email;
-        this.name = name;
-        this.phone = phone;
+    public Member(final String alias, final String password, final String name, final String email, final String phone) {
+        this.alias = new Alias(alias);
+        this.password = new Password(password);
+        this.email = new Email(email);
+        this.name = new Name(name);
+        this.phone = new Phone(phone);
     }
 
     public Long getId() {
@@ -94,12 +95,12 @@ public class Member {
         return phone.value();
     }
 
-    public List<Board> getBoards() {
-        return boards;
-    }
-
     public boolean isDeleted() {
         return deleted;
+    }
+
+    public List<Board> getBoards() {
+        return boards;
     }
 
     public boolean hasSamePassword(final Password password) {
@@ -119,7 +120,7 @@ public class Member {
         final Password newPassword = new Password(password);
 
         if (hasSamePassword(newPassword)) {
-            throw new IllegalArgumentException(PASSWORD_DUPLICATION);
+            throw new IllegalArgumentException(DUPLICATED_PASSWORD);
         }
 
         this.password = newPassword;
@@ -138,11 +139,11 @@ public class Member {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Member member = (Member) o;
-        return alias.equals(member.alias);
+        return id.equals(member.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(alias);
+        return Objects.hash(id);
     }
 }

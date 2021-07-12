@@ -1,4 +1,4 @@
-package com.project.kodesalon.model.member.service.dto;
+package com.project.kodesalon.model.authentication.service.dto;
 
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +17,7 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ALIAS;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static org.assertj.core.api.BDDAssertions.then;
 
-class LoginRequestTest {
+public class LoginRequestTest {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
 

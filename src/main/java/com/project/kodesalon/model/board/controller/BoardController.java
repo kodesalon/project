@@ -1,10 +1,9 @@
 package com.project.kodesalon.model.board.controller;
 
+import com.project.kodesalon.common.annotation.Login;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
-import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
-import com.project.kodesalon.model.board.service.dto.BoardUpdateResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,20 +27,20 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody @Valid final BoardCreateRequest boardCreateRequest) {
-        boardService.save(boardCreateRequest);
+    public ResponseEntity<Void> save(@Login final Long memberId, @RequestBody @Valid final BoardCreateRequest boardCreateRequest) {
+        boardService.save(memberId, boardCreateRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{boardId}")
-    public ResponseEntity<BoardUpdateResponse> updateBoard(@PathVariable final Long boardId, @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
-        return ResponseEntity.ok()
-                .body(boardService.updateBoard(boardId, boardUpdateRequest));
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<Void> delete(@Login final Long memberId, @PathVariable final Long boardId) {
+        boardService.delete(memberId, boardId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestBody @Valid final BoardDeleteRequest boardDeleteRequest) {
-        boardService.delete(boardDeleteRequest);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PutMapping("/{boardId}")
+    public ResponseEntity<Void> updateBoard(@Login final Long memberId, @PathVariable final Long boardId, @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
+        boardService.updateBoard(memberId, boardId, boardUpdateRequest);
+        return ResponseEntity.ok().build();
     }
 }

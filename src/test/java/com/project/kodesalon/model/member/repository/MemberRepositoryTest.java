@@ -2,10 +2,6 @@ package com.project.kodesalon.model.member.repository;
 
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
-import com.project.kodesalon.model.member.domain.vo.Email;
-import com.project.kodesalon.model.member.domain.vo.Name;
-import com.project.kodesalon.model.member.domain.vo.Password;
-import com.project.kodesalon.model.member.domain.vo.Phone;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,20 +13,18 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
+import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @DataJpaTest
-class MemberRepositoryTest {
+public class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
 
-    private Member member;
-
     @BeforeEach
     void setUp() {
-        member = new Member(new Alias("alias"), new Password("Password!!123"), new Name("이름"), new Email("email@email.com"), new Phone("010-1234-4444"));
-        memberRepository.save(member);
+        memberRepository.save(TEST_MEMBER);
     }
 
     @Test
@@ -40,11 +34,11 @@ class MemberRepositoryTest {
         Member savedMember = memberRepository.findMemberByAlias(new Alias("alias"))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS));
 
-        softly.then(savedMember.getAlias()).isEqualTo(member.getAlias());
-        softly.then(savedMember.getPassword()).isEqualTo(member.getPassword());
-        softly.then(savedMember.getName()).isEqualTo(member.getName());
-        softly.then(savedMember.getEmail()).isEqualTo(member.getEmail());
-        softly.then(savedMember.getPhone()).isEqualTo(member.getPhone());
+        softly.then(savedMember.getAlias()).isEqualTo(TEST_MEMBER.getAlias());
+        softly.then(savedMember.getPassword()).isEqualTo(TEST_MEMBER.getPassword());
+        softly.then(savedMember.getName()).isEqualTo(TEST_MEMBER.getName());
+        softly.then(savedMember.getEmail()).isEqualTo(TEST_MEMBER.getEmail());
+        softly.then(savedMember.getPhone()).isEqualTo(TEST_MEMBER.getPhone());
         softly.assertAll();
     }
 
