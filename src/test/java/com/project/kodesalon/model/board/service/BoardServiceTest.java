@@ -83,10 +83,6 @@ public class BoardServiceTest {
         given(member.getId()).willReturn(1L);
 
         boardService.updateBoard(member.getId(), 1L, BOARD_UPDATE_REQUEST);
-        given(board.getWriter()).willReturn(member);
-        given(member.getId()).willReturn(1L);
-
-        BoardSelectResponse boardSelectResponse = boardService.selectBoard(1L);
 
         verify(boardRepository, times(1)).findById(anyLong());
         verify(board, times(1)).updateTitleAndContent(anyLong(), any(Title.class), any(Content.class));
@@ -100,6 +96,17 @@ public class BoardServiceTest {
         thenThrownBy(() -> boardService.updateBoard(member.getId(), 1L, BOARD_UPDATE_REQUEST))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(NOT_EXIST_BOARD);
+    }
+
+    @Test
+    @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물을 조회하고 단일 게시물 조회 응답 DTO를 반환한다.")
+    void selectBoard() {
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        given(board.getWriter()).willReturn(member);
+        given(member.getId()).willReturn(1L);
+        BoardSelectResponse boardSelectResponse = boardService.selectBoard(1L);
+        then(boardSelectResponse).isNotNull();
+        verify(boardRepository).findById(anyLong());
     }
 
     @Test
