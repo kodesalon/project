@@ -1,17 +1,14 @@
 package com.project.kodesalon.model.member.controller;
 
+import com.project.kodesalon.common.annotation.Login;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
-import com.project.kodesalon.model.member.service.dto.LoginRequest;
-import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,26 +27,21 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> logIn(@RequestBody @Valid final LoginRequest loginRequest) {
-        LoginResponse loginResponse = memberService.login(loginRequest);
-        return ResponseEntity.ok().body(loginResponse);
+    @PostMapping("/join")
+    public ResponseEntity<Void> join(@RequestBody @Valid final CreateMemberRequest createMemberRequest) {
+        memberService.join(createMemberRequest);
+        return ResponseEntity.ok().build();
     }
 
-    @PostMapping
-    public ResponseEntity<LoginResponse> join(@RequestBody @Valid final CreateMemberRequest createMemberRequest) {
-        LoginResponse loginResponse = memberService.join(createMemberRequest);
-        return ResponseEntity.ok().body(loginResponse);
+    @GetMapping
+    public ResponseEntity<SelectMemberResponse> selectMember(@Login Long memberId) {
+        SelectMemberResponse selectMemberResponse = memberService.selectMember(memberId);
+        return ResponseEntity.ok().body(selectMemberResponse);
     }
 
-    @GetMapping("/{memberId}")
-    public ResponseEntity<SelectMemberResponse> selectMember(@PathVariable final Long memberId) {
-        return new ResponseEntity<>(memberService.selectMember(memberId), HttpStatus.OK);
-    }
-
-    @PutMapping("/{memberId}")
-    public ResponseEntity<ChangePasswordResponse> changePassword(@PathVariable final Long memberId, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
+    @PutMapping("/password")
+    public ResponseEntity<ChangePasswordResponse> changePassword(@Login Long memberId, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
         ChangePasswordResponse changePasswordResponse = memberService.changePassword(memberId, changePasswordRequest);
-        return new ResponseEntity<>(changePasswordResponse, HttpStatus.OK);
+        return ResponseEntity.ok().body(changePasswordResponse);
     }
 }
