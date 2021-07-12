@@ -7,7 +7,7 @@ import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import com.project.kodesalon.model.member.domain.Member;
-import com.project.kodesalon.model.memberboard.MemberBoardService;
+import com.project.kodesalon.model.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +35,7 @@ public class BoardServiceTest {
     private BoardService boardService;
 
     @Mock
-    private MemberBoardService memberBoardService;
+    private MemberService memberService;
 
     @Mock
     private BoardRepository boardRepository;
@@ -49,7 +49,7 @@ public class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 게시판 생성 요청 Dto를 전달받아 게시판을 생성한다.")
     void save() {
-        given(memberBoardService.findById(anyLong())).willReturn(member);
+        given(memberService.findById(anyLong())).willReturn(member);
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 작성", LocalDateTime.now());
 
         boardService.save(anyLong(), boardCreateRequest);
