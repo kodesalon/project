@@ -262,7 +262,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("게시물 식별 번호를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoard() throws Exception {
-        BoardSelectResponse boardSelectResponse = new BoardSelectResponse("게시물 제목", "게시물 내용", LocalDateTime.now().toString(), 1L);
+        BoardSelectResponse boardSelectResponse = new BoardSelectResponse("게시물 제목", "게시물 내용", LocalDateTime.now().toString(), 1L, "alias");
         given(boardService.selectBoard(anyLong())).willReturn(boardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards/{boardId}", 1L)
@@ -278,14 +278,15 @@ public class BoardControllerTest {
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("게시물 제목"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("게시물 내용"),
                                 fieldWithPath("createdDateTime").type(JsonFieldType.STRING).description("게시물 생성 시간"),
-                                fieldWithPath("writer").type(JsonFieldType.NUMBER).description("게시물 작성자 별명")
+                                fieldWithPath("writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별자"),
+                                fieldWithPath("writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디")
                         )));
     }
 
     @Test
     @DisplayName("페이지 번호를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoards() throws Exception {
-        Page<BoardSelectResponse> content = new PageImpl<>(Arrays.asList(new BoardSelectResponse("title", "content", LocalDateTime.now().toString(), 1L)));
+        Page<BoardSelectResponse> content = new PageImpl<>(Arrays.asList(new BoardSelectResponse("title", "content", LocalDateTime.now().toString(), 1L, "alias")));
         given(boardService.selectBoards(any(Pageable.class))).willReturn(content);
 
         mockMvc.perform(get("/api/v1/boards?page=1")
@@ -302,7 +303,8 @@ public class BoardControllerTest {
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("게시물 제목"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("게시물 내용"),
                                 fieldWithPath("createdDateTime").type(JsonFieldType.STRING).description("게시물 생성 시간"),
-                                fieldWithPath("writer").type(JsonFieldType.NUMBER).description("게시물 작성자 별명")
+                                fieldWithPath("writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별자"),
+                                fieldWithPath("writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디")
                         )));
     }
 }

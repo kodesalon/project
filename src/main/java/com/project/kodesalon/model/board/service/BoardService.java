@@ -46,14 +46,14 @@ public class BoardService {
     @Transactional(readOnly = true)
     public BoardSelectResponse selectBoard(final Long boardId) {
         Board board = findById(boardId);
-        return new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId());
+        return new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias());
     }
 
     @Transactional(readOnly = true)
     public Page<BoardSelectResponse> selectBoards(Pageable pageable) {
         Page<Board> boards = boardRepository.findAll(pageable);
         return boards.map(board ->
-                new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId()));
+                new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias()));
     }
 
     @Transactional

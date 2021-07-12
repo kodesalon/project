@@ -7,10 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
     @Modifying(flushAutomatically = true, clearAutomatically = true)
-    @Query("update Board b set b.deleted = true where b.writer.id = :memberId and b.deleted = false")
+    @Query("update Board b set b.deleted = true where b.writer.id = :memberId")
     void deleteBoardByMemberId(@Param("memberId") Long memberId);
+
+    @Query("select b from Board b join fetch b.writer where b.id = :boardId")
+    Optional<Board> selectBoardById(@Param("boardId") Long boardId);
 }
