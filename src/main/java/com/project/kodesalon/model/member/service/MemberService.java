@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
-import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 
 @Slf4j
 @Service
