@@ -57,7 +57,7 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<BoardSelectResponse>> selectBoards(@PageableDefault(sort = "board_id", direction = Sort.Direction.DESC) final Pageable pageable) {
+    public ResponseEntity<Page<BoardSelectResponse>> selectBoards(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) final Pageable pageable) {
         Page<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(pageable);
         return ResponseEntity.ok().body(boardSelectMultiResponse);
     }

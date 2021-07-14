@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.BDDAssertions.then;
@@ -29,6 +30,8 @@ public class BoardRepositoryTest {
     @Autowired
     private EntityManagerFactory entityManagerFactory;
 
+    private PersistenceUnitUtil persistenceUnitUtil;
+
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
 
     private Member member;
@@ -36,6 +39,7 @@ public class BoardRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
         member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
         testEntityManager.persist(member);
         board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
@@ -69,9 +73,25 @@ public class BoardRepositoryTest {
     @DisplayName("게시물 식별자를 입력받아 게시물을 조회하면 작성자 정보와 함께 조인하여 반환한다.")
     void selectBoardById() {
         Optional<Board> board = boardRepository.selectBoardById(this.board.getId());
-        PersistenceUnitUtil persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
 
         softly.then(board).isNotEmpty();
         softly.then(persistenceUnitUtil.isLoaded(board.get().getWriter())).isTrue();
+    }
+
+    @Test
+    @DisplayName("마지막 게시물 번호를 입력받아 이후의 10개의 게시물과 작성자의 정보를 조인하여 반환한다.")
+    void findTop10Boards() {
+        for (int i = 0; i < 3; i++) {
+            Board board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
+            boardRepository.save(board);
+        }
+
+        List<Board> boards = boardRepository.findTop10Boards(1L);
+
+        softly.then(boards.size()).isEqualTo(3);
+        boards.forEach(b -> {
+            softly.then(persistenceUnitUtil.isLoaded(b.getWriter())).isTrue();
+        });
+        softly.assertAll();
     }
 }
