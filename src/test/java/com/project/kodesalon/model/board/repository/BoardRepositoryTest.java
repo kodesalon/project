@@ -21,6 +21,8 @@ import static org.assertj.core.api.BDDAssertions.then;
 @DataJpaTest
 public class BoardRepositoryTest {
 
+    private static final int BOARD_TO_BE_SELECTED_AT_ONCE = 10;
+
     @Autowired
     private BoardRepository boardRepository;
 
@@ -39,13 +41,13 @@ public class BoardRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
         member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
         testEntityManager.persist(member);
         board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
         board = boardRepository.save(board);
         testEntityManager.flush();
         testEntityManager.clear();
+        persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
     }
 
     @Test
@@ -81,14 +83,14 @@ public class BoardRepositoryTest {
     @Test
     @DisplayName("마지막 게시물 번호를 입력받아 이후의 10개의 게시물과 작성자의 정보를 조인하여 반환한다.")
     void findTop10Boards() {
-        for (int i = 0; i < 3; i++) {
+        for (int board_number = 0; board_number < BOARD_TO_BE_SELECTED_AT_ONCE + 1; board_number++) {
             Board board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
             boardRepository.save(board);
         }
 
-        List<Board> boards = boardRepository.findTop10Boards(1L);
+        List<Board> boards = boardRepository.findTop10By(1L);
 
-        softly.then(boards.size()).isEqualTo(3);
+        softly.then(boards.size()).isEqualTo(BOARD_TO_BE_SELECTED_AT_ONCE);
         boards.forEach(b -> {
             softly.then(persistenceUnitUtil.isLoaded(b.getWriter())).isTrue();
         });

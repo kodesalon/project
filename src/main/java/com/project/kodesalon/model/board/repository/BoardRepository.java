@@ -20,6 +20,7 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("select b from Board b join fetch b.writer where b.id = :boardId")
     Optional<Board> selectBoardById(@Param("boardId") Long boardId);
 
-    @Query("select b from Board b join fetch b.writer where b.id > :lastBoardId and b.deleted = false order by b.id desc")
-    List<Board> findTop10Boards(@Param("lastBoardId") Long lastBoardId);
+    @Query(value = "SELECT * FROM board b INNER JOIN member m ON b.member_id = m.member_id " +
+            "WHERE b.board_id > :lastBoardId AND b.deleted = FALSE ORDER BY b.board_id DESC LIMIT 10", nativeQuery = true)
+    List<Board> findTop10By(@Param("lastBoardId") Long lastBoardId);
 }
