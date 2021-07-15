@@ -78,7 +78,7 @@ public class AuthenticationTokenControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(1L))
                 .andExpect(jsonPath("$.alias").value("alias"))
-                .andDo(document("login/success",
+                .andDo(document("auth/login/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -104,7 +104,7 @@ public class AuthenticationTokenControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INCORRECT_PASSWORD))
-                .andDo(document("login/fail/mismatch_password",
+                .andDo(document("auth/login/fail/mismatch_password",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -127,7 +127,7 @@ public class AuthenticationTokenControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_EXIST_MEMBER_ALIAS))
-                .andDo(document("login/fail/no_alias",
+                .andDo(document("auth/login/fail/no_alias",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 아이디에 대한 예외 코드"))));
@@ -145,7 +145,7 @@ public class AuthenticationTokenControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value("accessToken"))
                 .andExpect(jsonPath("$.refreshToken").value("refreshToken"))
-                .andDo(document("refreshtoken/success",
+                .andDo(document("auth/refreshtoken/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -166,7 +166,7 @@ public class AuthenticationTokenControllerTest {
                 .content(objectMapper.writeValueAsString(tokenRefreshRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andDo(document("refreshtoken/fail",
+                .andDo(document("auth/refreshtoken/fail",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(

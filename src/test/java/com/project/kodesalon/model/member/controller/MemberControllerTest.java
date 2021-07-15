@@ -95,7 +95,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isOk())
-                .andDo(document("join/success",
+                .andDo(document("member/join/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -119,7 +119,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(ALREADY_EXIST_MEMBER_ALIAS))
-                .andDo(document("join/fail/existing_alias",
+                .andDo(document("member/join/fail/existing_alias",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("이미 존재하는 아이디에 대한 예외 코드"))));
@@ -136,7 +136,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidAlias)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_ALIAS))
-                .andDo(document("join/fail/invalid_alias",
+                .andDo(document("member/join/fail/invalid_alias",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 아이디에 대한 예외 코드"))));
@@ -153,7 +153,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidPassword)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PASSWORD))
-                .andDo(document("join/fail/invalid_password",
+                .andDo(document("member/join/fail/invalid_password",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호에 대한 예외 코드"))));
@@ -170,7 +170,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidName)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_NAME))
-                .andDo(document("join/fail/invalid_name",
+                .andDo(document("member/join/fail/invalid_name",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 이름에 대한 예외 코드"))));
@@ -187,7 +187,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidEmail)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_EMAIL))
-                .andDo(document("join/fail/invalid_email",
+                .andDo(document("member/join/fail/invalid_email",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 이메일에 대한 예외 코드"))));
@@ -204,7 +204,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidPhone)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PHONE))
-                .andDo(document("join/fail/invalid_phone",
+                .andDo(document("member/join/fail/invalid_phone",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 핸드폰 번호에 대한 예외 코드"))));
@@ -222,7 +222,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(ALREADY_EXIST_MEMBER_ALIAS))
-                .andDo(document("join/fail/deleted_alias",
+                .andDo(document("member/join/fail/deleted_alias",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("이미 삭제된 회원 어아다에 대한 회원 가입 예외 코드"))));
@@ -241,7 +241,7 @@ public class MemberControllerTest {
                 .andExpect(jsonPath("$.name").value("이름"))
                 .andExpect(jsonPath("$.email").value("email@email.com"))
                 .andExpect(jsonPath("$.phone").value("010-1111-2222"))
-                .andDo(document("select/success",
+                .andDo(document("member/select/success",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 회원의 아이디"),
@@ -257,7 +257,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(changePasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("changePassword/success",
+                .andDo(document("member/changePassword/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -274,7 +274,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(changePasswordRequestWithInvalidPassword)))
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PASSWORD))
-                .andDo(document("changePassword/fail/invalidPassword",
+                .andDo(document("member/changePassword/fail/invalidPassword",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호에 대한 예외 코드"))));
@@ -292,7 +292,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(changePasswordRequest)))
                 .andExpect(jsonPath("$.code").value(NOT_EXIST_MEMBER))
-                .andDo(document("changePassword/fail/noMember",
+                .andDo(document("member/changePassword/fail/noMember",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 회원에 대한 예외 코드"))));
@@ -304,7 +304,7 @@ public class MemberControllerTest {
         this.mockMvc.perform(delete("/api/v1/members")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("delete/success",
+                .andDo(document("member/delete/success",
                         getDocumentRequest()));
     }
 
@@ -318,7 +318,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(EXPIRED_JWT_TOKEN))
-                .andDo(document("jwt/expired",
+                .andDo(document("member/jwt/expired",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").description("만료 JWT 토큰에 대한 예외 코드"))));
@@ -334,7 +334,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_JWT_TOKEN))
-                .andDo(document("jwt/invalid",
+                .andDo(document("member/jwt/invalid",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").description("유효하지 않은 JWT 토큰에 대한 예외 코드"))));
@@ -350,7 +350,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_HEADER))
-                .andDo(document("jwt/invalid-header",
+                .andDo(document("member/jwt/invalid-header",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").description("Header에 Authorization 속성이 없을 경우에 대한 에러 코드"))));
