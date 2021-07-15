@@ -46,14 +46,14 @@ public class BoardService {
     @Transactional(readOnly = true)
     public BoardSelectResponse selectBoard(final Long boardId) {
         Board board = findById(boardId);
-        return new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias());
+        return new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias());
     }
 
     @Transactional(readOnly = true)
     public List<BoardSelectResponse> selectBoards(Long lastBoardId) {
         List<Board> boards = boardRepository.findTop10By(lastBoardId);
         return boards.stream()
-                .map(board -> new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias()))
+                .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias()))
                 .collect(Collectors.toList());
     }
 

@@ -260,7 +260,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("게시물 식별 번호를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoard() throws Exception {
-        BoardSelectResponse boardSelectResponse = new BoardSelectResponse("게시물 제목", "게시물 내용", LocalDateTime.now().toString(), 1L, "alias");
+        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "게시물 제목", "게시물 내용", LocalDateTime.now().toString(), 1L, "alias");
         given(boardService.selectBoard(anyLong())).willReturn(boardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards/{boardId}", 1L)
@@ -273,6 +273,7 @@ public class BoardControllerTest {
                                 parameterWithName("boardId").description("게시물 식별 번호")
                         ),
                         responseFields(
+                                fieldWithPath("boardId").type(JsonFieldType.NUMBER).description("게시물 식별자"),
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("게시물 제목"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("게시물 내용"),
                                 fieldWithPath("createdDateTime").type(JsonFieldType.STRING).description("게시물 생성 시간"),
@@ -284,7 +285,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("페이지 번호를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoards() throws Exception {
-        List<BoardSelectResponse> content = new ArrayList<>(Arrays.asList(new BoardSelectResponse("title", "content", LocalDateTime.now().toString(), 1L, "alias")));
+        List<BoardSelectResponse> content = new ArrayList<>(Arrays.asList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now().toString(), 1L, "alias")));
         given(boardService.selectBoards(anyLong())).willReturn(content);
 
         mockMvc.perform(get("/api/v1/boards?lastBoardId=1")
@@ -297,6 +298,7 @@ public class BoardControllerTest {
                                 parameterWithName("lastBoardId").description("페이지 번호")
                         ),
                         responseFields(
+                                fieldWithPath("[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별자"),
                                 fieldWithPath("[].title").type(JsonFieldType.STRING).description("게시물 제목"),
                                 fieldWithPath("[].content").type(JsonFieldType.STRING).description("게시물 내용"),
                                 fieldWithPath("[].createdDateTime").type(JsonFieldType.STRING).description("게시물 생성 시간"),

@@ -13,8 +13,9 @@ public class BoardSelectResponseTest {
     void getter() {
         BDDSoftAssertions softly = new BDDSoftAssertions();
         String createdDateTime = LocalDateTime.now().toString();
-        BoardSelectResponse boardSelectResponse = new BoardSelectResponse("제목", "내용", createdDateTime, 1L, "alias");
+        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "제목", "내용", createdDateTime, 1L, "alias");
 
+        softly.then(boardSelectResponse.getBoardId()).isEqualTo(1L);
         softly.then(boardSelectResponse.getTitle()).isEqualTo("제목");
         softly.then(boardSelectResponse.getContent()).isEqualTo("내용");
         softly.then(boardSelectResponse.getCreatedDateTime()).isEqualTo(createdDateTime);
