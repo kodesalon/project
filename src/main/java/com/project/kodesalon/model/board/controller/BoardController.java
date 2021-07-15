@@ -5,10 +5,6 @@ import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,9 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/boards")
@@ -57,8 +55,8 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<BoardSelectResponse>> selectBoards(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) final Pageable pageable) {
-        Page<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(pageable);
+    public ResponseEntity<List<BoardSelectResponse>> selectBoards(@RequestParam Long lastBoardId) {
+        List<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(lastBoardId);
         return ResponseEntity.ok().body(boardSelectMultiResponse);
     }
 }

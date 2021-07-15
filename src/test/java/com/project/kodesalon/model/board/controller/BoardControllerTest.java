@@ -17,9 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -31,7 +28,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_DELETED_BOARD;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
@@ -49,7 +48,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
-import static org.springframework.restdocs.payload.PayloadDocumentation.beneathPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
@@ -286,25 +284,24 @@ public class BoardControllerTest {
     @Test
     @DisplayName("페이지 번호를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoards() throws Exception {
-        Page<BoardSelectResponse> content = new PageImpl<>(Arrays.asList(new BoardSelectResponse("title", "content", LocalDateTime.now().toString(), 1L, "alias")));
-        given(boardService.selectBoards(any(Pageable.class))).willReturn(content);
+        List<BoardSelectResponse> content = new ArrayList<>(Arrays.asList(new BoardSelectResponse("title", "content", LocalDateTime.now().toString(), 1L, "alias")));
+        given(boardService.selectBoards(anyLong())).willReturn(content);
 
-        mockMvc.perform(get("/api/v1/boards?page=1")
+        mockMvc.perform(get("/api/v1/boards?lastBoardId=1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("board/select-multi/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
-                                parameterWithName("page").description("페이지 번호")
+                                parameterWithName("lastBoardId").description("페이지 번호")
                         ),
                         responseFields(
-                                beneathPath("content"),
-                                fieldWithPath("title").type(JsonFieldType.STRING).description("게시물 제목"),
-                                fieldWithPath("content").type(JsonFieldType.STRING).description("게시물 내용"),
-                                fieldWithPath("createdDateTime").type(JsonFieldType.STRING).description("게시물 생성 시간"),
-                                fieldWithPath("writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별자"),
-                                fieldWithPath("writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디")
+                                fieldWithPath("[].title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                fieldWithPath("[].content").type(JsonFieldType.STRING).description("게시물 내용"),
+                                fieldWithPath("[].createdDateTime").type(JsonFieldType.STRING).description("게시물 생성 시간"),
+                                fieldWithPath("[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별자"),
+                                fieldWithPath("[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디")
                         )));
     }
 }

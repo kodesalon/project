@@ -15,15 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
@@ -110,15 +107,14 @@ public class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("페이지 번호를 전달받아 복수 게시물을 조회하고 복수 게시물 조회 응답 DTO를 반환한다.")
+    @DisplayName("마지막 게시물 식별번호를 전달받아 복수 게시물을 조회하고 복수 게시물 조회 응답 DTO를 반환한다.")
     void selectBoards() {
-        Pageable pageable = PageRequest.of(0, 10, Sort.Direction.DESC, "board_id");
-        Page<Board> boards = new PageImpl<>(Arrays.asList(new Board("title", "content", TEST_MEMBER, LocalDateTime.now())));
-        given(boardRepository.findAll(any(Pageable.class))).willReturn(boards);
+        List<Board> boards = new ArrayList<>(Arrays.asList(new Board("title", "content", TEST_MEMBER, LocalDateTime.now())));
+        given(boardRepository.findTop10By(anyLong())).willReturn(boards);
 
-        Page<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(pageable);
+        List<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(1L);
 
         then(boardSelectMultiResponse).isNotNull();
-        verify(boardRepository, times(1)).findAll(any(Pageable.class));
+        verify(boardRepository, times(1)).findTop10By(anyLong());
     }
 }

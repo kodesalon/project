@@ -10,12 +10,12 @@ import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
 
@@ -50,10 +50,11 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public Page<BoardSelectResponse> selectBoards(Pageable pageable) {
-        Page<Board> boards = boardRepository.findAll(pageable);
-        return boards.map(board ->
-                new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias()));
+    public List<BoardSelectResponse> selectBoards(Long lastBoardId) {
+        List<Board> boards = boardRepository.findTop10By(lastBoardId);
+        return boards.stream()
+                .map(board -> new BoardSelectResponse(board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias()))
+                .collect(Collectors.toList());
     }
 
     @Transactional
