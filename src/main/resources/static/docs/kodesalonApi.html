@@ -2240,7 +2240,7 @@ Host: localhost:8080
   "memberId" : 1,
   "title" : "게시물 제목",
   "content" : "게시물 내용",
-  "createdDateTime" : "2021-06-16T18:57:20"
+  "createdDateTime" : "2021-07-06T14:06:41"
 }</code></pre>
                             </div>
                         </div>
@@ -2275,7 +2275,7 @@ Host: localhost:8080
                         </thead>
                         <tbody>
                         <tr>
-                            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p>
+                            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p>
                             </td>
                             <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p>
                             </td>
@@ -2292,10 +2292,10 @@ Host: localhost:8080
                             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json
-Content-Length: 107
+Content-Length: 104
 
 {
-  "message" : "제목에 공백 아닌 1자 이상의 문자를 입력하였는지 확인해주세요."
+  "code" : "제목에 공백 아닌 1자 이상의 문자를 입력하였는지 확인해주세요."
 }</code></pre>
                             </div>
                         </div>
@@ -2309,10 +2309,10 @@ Content-Length: 107
                             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json
-Content-Length: 107
+Content-Length: 104
 
 {
-  "message" : "내용에 공백 아닌 1자 이상의 문자를 입력하였는지 확인해주세요."
+  "code" : "내용에 공백 아닌 1자 이상의 문자를 입력하였는지 확인해주세요."
 }</code></pre>
                             </div>
                         </div>
@@ -2325,7 +2325,7 @@ Content-Length: 107
 <div id="footer">
     <div id="footer-text">
         Version 0.0.1-SNAPSHOT<br>
-        Last updated 2021-06-14 16:58:59 +0900
+        Last updated 2021-06-24 01:06:16 +0900
     </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

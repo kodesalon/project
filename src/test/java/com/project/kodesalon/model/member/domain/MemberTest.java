@@ -1,6 +1,5 @@
 package com.project.kodesalon.model.member.domain;
 
-
 import com.project.kodesalon.model.member.domain.vo.Password;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +30,7 @@ class MemberTest {
         softly.then(member.getName()).isEqualTo("이름");
         softly.then(member.getEmail()).isEqualTo("email@email.com");
         softly.then(member.getPhone()).isEqualTo("010-1234-4444");
+        softly.then(member.isDeleted()).isFalse();
         softly.assertAll();
     }
 
@@ -66,5 +66,13 @@ class MemberTest {
         thenIllegalArgumentException()
                 .isThrownBy(() -> member.changePassword(password))
                 .withMessageContaining("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
+    }
+
+    @Test
+    @DisplayName("멤버를 삭제하면 isDeleted 속성이 true가 된다.")
+    void delete() {
+        member.delete();
+
+        then(member.isDeleted()).isTrue();
     }
 }

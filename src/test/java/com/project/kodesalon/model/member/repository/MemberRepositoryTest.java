@@ -24,7 +24,7 @@ class MemberRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        member = new Member("alias", "Password1234!", "엄희상", "email@email.com", "010-1111-2222");
+        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
         memberRepository.save(member);
     }
 

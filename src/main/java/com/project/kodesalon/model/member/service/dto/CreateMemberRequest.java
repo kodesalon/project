@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -20,8 +19,8 @@ import static com.project.kodesalon.model.member.domain.vo.Password.PASSWORD_REG
 import static com.project.kodesalon.model.member.domain.vo.Phone.PHONE_EXCEPTION_MESSAGE;
 import static com.project.kodesalon.model.member.domain.vo.Phone.PHONE_REGEX;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CreateMemberRequest {
 
     @NotNull(message = "null이 아닌 4자리 이상의 아이디를 입력해주세요.")
@@ -37,7 +36,7 @@ public class CreateMemberRequest {
     private String name;
 
     @NotEmpty(message = "null 또는 빈 공백이 아닌 이메일 주소를 입력해주세요.")
-    @Email(message = EMAIL_EXCEPTION_MESSAGE)
+    @javax.validation.constraints.Email(message = EMAIL_EXCEPTION_MESSAGE)
     private String email;
 
     @NotNull(message = "null이 아닌 휴대폰 번호를 입력해주세요.")

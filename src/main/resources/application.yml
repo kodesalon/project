@@ -33,3 +33,7 @@ spring:
           in_clause_parameter_padding: true
         format_sql: true
     open-in-view: false
+  jwt:
+    secret: bG9jYWxUZXN0S2V5
+    accessExpirationMs: 60000
+    refreshExpirationWeeks: 2
