@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -16,6 +17,7 @@ import java.util.Set;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 
@@ -95,5 +97,18 @@ class BoardCreateRequestTest {
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
                 .contains(INVALID_BOARD_CONTENT);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("null 일 경우, 예외가 발생합니다")
+    void create_throw_exception_with_null_created_date_time(LocalDateTime createdDateTime) {
+        BoardCreateRequest boardCreateRequest
+                = new BoardCreateRequest("게시물 제목", "게시물 내용", createdDateTime);
+        Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
+
+        then(constraintViolations)
+                .extracting(ConstraintViolation::getMessage)
+                .contains(INVALID_DATE_TIME);
     }
 }

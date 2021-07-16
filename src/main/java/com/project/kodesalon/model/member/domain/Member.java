@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,12 +63,13 @@ public class Member extends BaseEntity {
     @Column(name = "deleted")
     private boolean deleted = false;
 
-    public Member(final String alias, final String password, final String name, final String email, final String phone) {
+    public Member(final String alias, final String password, final String name, final String email, final String phone, LocalDateTime createdDateTime) {
         this.alias = new Alias(alias);
         this.password = new Password(password);
         this.email = new Email(email);
         this.name = new Name(name);
         this.phone = new Phone(phone);
+        this.createdDateTime = createdDateTime;
     }
 
     public Long getId() {
@@ -92,6 +94,10 @@ public class Member extends BaseEntity {
 
     public String getPhone() {
         return phone.value();
+    }
+
+    public LocalDateTime getCreatedDateTime() {
+        return createdDateTime;
     }
 
     public boolean isDeleted() {

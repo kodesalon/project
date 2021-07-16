@@ -21,13 +21,13 @@ import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 public class MemberTest {
     public static final Member TEST_MEMBER
-            = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
+            = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
 
     private Member member;
 
     @BeforeEach
     void setup() {
-        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
+        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.of(2021, 7, 16, 23, 59));
     }
 
     @Test
@@ -40,6 +40,7 @@ public class MemberTest {
         softly.then(member.getName()).isEqualTo("이름");
         softly.then(member.getEmail()).isEqualTo("email@email.com");
         softly.then(member.getPhone()).isEqualTo("010-1234-4444");
+        softly.then(member.getCreatedDateTime()).isEqualTo(LocalDateTime.of(2021, 7, 16, 23, 59));
         softly.then(member.isDeleted()).isFalse();
         softly.assertAll();
     }

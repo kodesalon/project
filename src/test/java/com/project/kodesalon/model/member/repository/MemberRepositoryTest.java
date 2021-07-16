@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
@@ -25,7 +26,7 @@ class MemberRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
+        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
         memberRepository.save(member);
     }
 
@@ -41,6 +42,7 @@ class MemberRepositoryTest {
         softly.then(savedMember.getName()).isEqualTo(member.getName());
         softly.then(savedMember.getEmail()).isEqualTo(member.getEmail());
         softly.then(savedMember.getPhone()).isEqualTo(member.getPhone());
+        softly.then(savedMember.getCreatedDateTime()).isEqualTo(member.getCreatedDateTime());
         softly.assertAll();
     }
 

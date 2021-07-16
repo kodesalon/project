@@ -3,6 +3,7 @@ package com.project.kodesalon.model.member.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.common.interceptor.LoginInterceptor;
+import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
@@ -14,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -27,9 +30,11 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.common.ErrorCode.EXPIRED_JWT_TOKEN;
+import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_HEADER;
 import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ALIAS;
@@ -55,11 +60,11 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+@Import(JacksonConfiguration.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class MemberControllerTest {
     private final CreateMemberRequest createMemberRequest =
-            new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+            new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
     private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
 
     private MockMvc mockMvc;
@@ -73,7 +78,8 @@ public class MemberControllerTest {
     @Mock
     LoginInterceptor loginInterceptor;
 
-    ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation) throws Exception {
@@ -103,7 +109,8 @@ public class MemberControllerTest {
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("회원 가입할 비밀번호"),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("회원 가입할 이름"),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("회원 가입할 이메일"),
-                                fieldWithPath("phone").type(JsonFieldType.STRING).description("회원 가입할 핸드폰 번호")
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("회원 가입할 핸드폰 번호"),
+                                fieldWithPath("createdDateTime").type(JsonFieldType.STRING).description("회원 가입한 시간")
                         )));
     }
 
@@ -129,7 +136,7 @@ public class MemberControllerTest {
     @DisplayName("회원가입 시 유효하지 않은 아이디(Alias)를 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_alias() throws Exception {
         CreateMemberRequest createMemberRequestWithInvalidAlias
-                = new CreateMemberRequest("", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+                = new CreateMemberRequest("", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
         this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -146,7 +153,7 @@ public class MemberControllerTest {
     @DisplayName("회원가입 시 유효하지 않은 비밀번호를 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_password() throws Exception {
         CreateMemberRequest createMemberRequestWithInvalidPassword
-                = new CreateMemberRequest("alias", "", "이름", "email@email.com", "010-1111-2222");
+                = new CreateMemberRequest("alias", "", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
         this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -163,7 +170,7 @@ public class MemberControllerTest {
     @DisplayName("회원가입 시 유효하지 않은 이름을 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_name() throws Exception {
         CreateMemberRequest createMemberRequestWithInvalidName
-                = new CreateMemberRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222");
+                = new CreateMemberRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
         this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -180,7 +187,7 @@ public class MemberControllerTest {
     @DisplayName("회원가입 시 유효하지 않은 이메일을 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_email() throws Exception {
         CreateMemberRequest createMemberRequestWithInvalidEmail
-                = new CreateMemberRequest("alias", "Password123!!", "이름", " ", "010-1111-2222");
+                = new CreateMemberRequest("alias", "Password123!!", "이름", " ", "010-1111-2222", LocalDateTime.now());
 
         this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -197,7 +204,7 @@ public class MemberControllerTest {
     @DisplayName("회원가입 시 유효하지 않은 휴대폰 번호를 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_phone() throws Exception {
         CreateMemberRequest createMemberRequestWithInvalidPhone
-                = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "");
+                = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "", LocalDateTime.now());
 
         this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -226,6 +233,23 @@ public class MemberControllerTest {
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("이미 삭제된 회원 어아다에 대한 회원 가입 예외 코드"))));
+    }
+
+    @Test
+    @DisplayName("회원 가입시 회원 가입 시간이 없는 경우 예외 메세지를 반환합니다.")
+    void join_fail_with_null_created_date_time() throws Exception {
+        CreateMemberRequest createMemberRequest
+                = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", null);
+
+        this.mockMvc.perform(post("/api/v1/members/join")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(createMemberRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
+                .andDo(document("join/fail/null-created-time",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("회원 가입 시간이 없는 경우에 대한 예외 코드"))));
     }
 
     @Test
@@ -339,7 +363,7 @@ public class MemberControllerTest {
                         responseFields(
                                 fieldWithPath("code").description("유효하지 않은 JWT 토큰에 대한 예외 코드"))));
     }
-    
+
     @Test
     @DisplayName("authorization 안에 내용이 없을 경우 400상태 + 에러 코드를 반환한다.")
     void invalid_authorization_throw_exception() throws Exception {

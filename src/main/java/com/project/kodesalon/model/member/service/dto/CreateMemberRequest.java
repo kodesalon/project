@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.member.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.kodesalon.model.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -8,7 +9,9 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDateTime;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_ALIAS;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_EMAIL;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_NAME;
@@ -43,15 +46,20 @@ public class CreateMemberRequest {
     @Pattern(regexp = PHONE_REGEX, message = INVALID_MEMBER_PHONE)
     private String phone;
 
-    public CreateMemberRequest(final String alias, final String password, final String name, final String email, final String phone) {
+    @NotNull(message = INVALID_DATE_TIME)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime createdDateTime;
+
+    public CreateMemberRequest(final String alias, final String password, final String name, final String email, final String phone, final LocalDateTime createdDateTime) {
         this.alias = alias;
         this.password = password;
         this.name = name;
         this.email = email;
         this.phone = phone;
+        this.createdDateTime = createdDateTime;
     }
 
     public Member toMember() {
-        return new Member(alias, password, name, email, phone);
+        return new Member(alias, password, name, email, phone, createdDateTime);
     }
 }

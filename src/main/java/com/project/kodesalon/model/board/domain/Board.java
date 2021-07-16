@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.board.domain;
 
+import com.project.kodesalon.common.BaseEntity;
 import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.member.domain.Member;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Board {
+public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,9 +36,6 @@ public class Board {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id", nullable = false)
     private Member writer;
-
-    @Column(nullable = false)
-    private LocalDateTime createdDateTime;
 
     private boolean isDeleted;
 
@@ -63,10 +61,6 @@ public class Board {
 
     public String getWriter() {
         return writer.getName();
-    }
-
-    public LocalDateTime getCreatedDateTime() {
-        return createdDateTime;
     }
 
     public boolean isDeleted() {
