@@ -18,6 +18,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
+import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -60,7 +62,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.join(createMemberRequest))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("이미 존재하는 아이디입니다");
+                .hasMessage(ALREADY_EXIST_MEMBER_ALIAS);
     }
 
     @Test
@@ -98,7 +100,7 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.selectMember(1L))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessage("찾으려는 회원이 없습니다");
+                .hasMessage(NOT_EXIST_MEMBER);
     }
 
     @Test
@@ -128,6 +130,6 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.deleteMember(member.getId()))
                 .isInstanceOf(EntityNotFoundException.class)
-                .hasMessage("찾으려는 회원이 없습니다");
+                .hasMessage(NOT_EXIST_MEMBER);
     }
 }
