@@ -1,21 +1,22 @@
 package com.project.kodesalon.common;
 
 import lombok.Getter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Column;
+import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
 @Getter
 @MappedSuperclass
-public abstract class BaseEntity {
+@EntityListeners(AuditingEntityListener.class)
+public class BaseEntity {
 
-    @Column(name = "created_date")
-    private LocalDateTime createdDateTime;
+    @CreatedDate
+    private LocalDateTime createdDate;
 
-    @Column(name = "last_modified_date")
-    private LocalDateTime lastModifiedDateTime;
-
-    @Column(name = "deleted_date")
-    protected LocalDateTime deletedDate;
+    @LastModifiedDate
+    private LocalDateTime lastModifiedDate;
 }

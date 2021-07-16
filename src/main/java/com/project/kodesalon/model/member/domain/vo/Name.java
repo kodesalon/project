@@ -8,13 +8,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.regex.Pattern;
 
-import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_NAME;
-
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
 public class Name {
     public static final String NAME_REGEX = "^[가-힣]{2,17}";
+    public static final String NAME_EXCEPTION_MESSAGE = "이름은 2자리 이상 17자리 이하의 한글이어야 합니다.";
     private static final Pattern NAME_PATTERN = Pattern.compile(NAME_REGEX);
 
     @Column(name = "name", nullable = false, length = 17)
@@ -22,7 +21,7 @@ public class Name {
 
     public Name(final String name) {
         if (name == null || !NAME_PATTERN.matcher(name).matches()) {
-            throw new IllegalArgumentException(INVALID_MEMBER_NAME);
+            throw new IllegalArgumentException(NAME_EXCEPTION_MESSAGE);
         }
 
         this.name = name;

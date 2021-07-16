@@ -1,6 +1,7 @@
 package com.project.kodesalon.common.argumentresolver;
 
 import com.project.kodesalon.common.annotation.Login;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import static com.project.kodesalon.common.interceptor.LoginInterceptor.LOGIN_MEMBER;
 
+@Slf4j
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 

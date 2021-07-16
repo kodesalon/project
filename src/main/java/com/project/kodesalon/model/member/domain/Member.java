@@ -1,40 +1,27 @@
 package com.project.kodesalon.model.member.domain;
 
-import com.project.kodesalon.common.BaseEntity;
-import com.project.kodesalon.model.board.domain.Board;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.domain.vo.Email;
 import com.project.kodesalon.model.member.domain.vo.Name;
 import com.project.kodesalon.model.member.domain.vo.Password;
 import com.project.kodesalon.model.member.domain.vo.Phone;
-import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.Where;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
-import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "member", uniqueConstraints = {
-        @UniqueConstraint(name = "member_unique_constraint", columnNames = {"alias"})})
-@Where(clause = "deleted = 'false'")
+@NoArgsConstructor
+@Table(name = "member", uniqueConstraints = {@UniqueConstraint(columnNames = {"alias"})})
 @Slf4j
-public class Member extends BaseEntity {
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -55,12 +42,6 @@ public class Member extends BaseEntity {
 
     @Embedded
     private Name name;
-
-    @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL)
-    private List<Board> boards = new ArrayList<>();
-
-    @Column(name = "deleted")
-    private boolean deleted = false;
 
     public Member(final String alias, final String password, final String name, final String email, final String phone) {
         this.alias = new Alias(alias);
@@ -94,16 +75,18 @@ public class Member extends BaseEntity {
         return phone.value();
     }
 
-    public boolean isDeleted() {
-        return deleted;
-    }
-
-    public List<Board> getBoards() {
-        return boards;
-    }
-
     public boolean hasSamePassword(final Password password) {
         return this.password.equals(password);
+    }
+
+    public void changePassword(final String password) {
+        final Password newPassword = new Password(password);
+
+        if (hasSamePassword(newPassword)) {
+            throw new IllegalArgumentException("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
+        }
+
+        this.password = newPassword;
     }
 
     public void login(final String password) {
@@ -111,25 +94,7 @@ public class Member extends BaseEntity {
 
         if (!hasSamePassword(inputPassword)) {
             log.info("{}의 Password가 일치하지 않음", getAlias());
-            throw new IllegalArgumentException(INVALID_MEMBER_PASSWORD);
+            throw new IllegalArgumentException("비밀 번호가 일치하지 않습니다.");
         }
-    }
-
-    public void changePassword(final String password) {
-        final Password newPassword = new Password(password);
-
-        if (hasSamePassword(newPassword)) {
-            throw new IllegalArgumentException(PASSWORD_DUPLICATION);
-        }
-
-        this.password = newPassword;
-    }
-
-    public void delete() {
-        deleted = true;
-    }
-
-    public void addBoard(Board newBoard) {
-        boards.add(newBoard);
     }
 }

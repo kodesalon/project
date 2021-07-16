@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 
@@ -26,7 +25,7 @@ class PasswordTest {
     @DisplayName("올바르지 않은 양식의 비밀번호일 경우, 예외가 발생합니다.")
     void password_throw_exception_with_invalid_format(String invalidPassword) {
         thenIllegalArgumentException().isThrownBy(() -> new Password(invalidPassword))
-                .withMessage(INVALID_MEMBER_PASSWORD);
+                .withMessageContaining("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.");
     }
 
     @ParameterizedTest
@@ -34,7 +33,7 @@ class PasswordTest {
     @DisplayName("null일 경우, 예외가 발생합니다.")
     void password_throw_exception_with_null(String invalidPassword) {
         thenIllegalArgumentException().isThrownBy(() -> new Password(invalidPassword))
-                .withMessage(INVALID_MEMBER_PASSWORD);
+                .withMessageContaining("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.");
     }
 
     @Test

@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_NAME;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 
@@ -25,7 +24,7 @@ class NameTest {
     @DisplayName("유효하지 않은 이름은 예외를 발생시킵니다.")
     void name_throw_exception_with_invalid_format(String invalidName) {
         thenIllegalArgumentException().isThrownBy(() -> new Name(invalidName))
-                .withMessage(INVALID_MEMBER_NAME);
+                .withMessageContaining("이름은 2자리 이상 17자리 이하의 한글이어야 합니다.");
     }
 
     @ParameterizedTest
@@ -33,7 +32,7 @@ class NameTest {
     @DisplayName("null일 경우, 예외가 발생합니다")
     void name_throw_exception_with_null(String nullArgument) {
         thenIllegalArgumentException().isThrownBy(() -> new Name(nullArgument))
-                .withMessage(INVALID_MEMBER_NAME);
+                .withMessageContaining("이름은 2자리 이상 17자리 이하의 한글이어야 합니다.");
 
     }
 

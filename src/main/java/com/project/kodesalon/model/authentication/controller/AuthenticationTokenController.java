@@ -2,9 +2,9 @@ package com.project.kodesalon.model.authentication.controller;
 
 import com.project.kodesalon.model.authentication.service.AuthenticationTokenService;
 import com.project.kodesalon.model.authentication.service.dto.JwtResponse;
-import com.project.kodesalon.model.authentication.service.dto.LoginRequest;
-import com.project.kodesalon.model.authentication.service.dto.LoginResponse;
 import com.project.kodesalon.model.authentication.service.dto.TokenRefreshRequest;
+import com.project.kodesalon.model.member.service.dto.LoginRequest;
+import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
