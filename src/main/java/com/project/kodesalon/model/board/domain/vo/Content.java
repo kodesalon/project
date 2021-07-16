@@ -8,13 +8,13 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
+
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
 public class Content {
-    private static final String CHECK_CONTENT_IS_BLANK = "내용에 공백 아닌 1자 이상의 문자를 입력하였는지 확인해주세요.";
-    private static final String CHECK_CONTENT_LENGTH = "내용이 500자를 초과하는지 확인해주세요.";
-    private static final int CONTENT_LENGTH_BOUND_MAX = 500;
+    public static final int CONTENT_LENGTH_BOUND_MAX = 500;
 
     @Lob
     @Column(nullable = false, length = CONTENT_LENGTH_BOUND_MAX)
@@ -32,13 +32,13 @@ public class Content {
 
     private void checkNullOrBlank(String content) {
         if (content == null || content.isBlank()) {
-            throw new IllegalArgumentException(CHECK_CONTENT_IS_BLANK);
+            throw new IllegalArgumentException(INVALID_BOARD_CONTENT);
         }
     }
 
     private void checkLength(String content) {
         if (content.length() > CONTENT_LENGTH_BOUND_MAX) {
-            throw new IllegalArgumentException(CHECK_CONTENT_LENGTH);
+            throw new IllegalArgumentException(INVALID_BOARD_CONTENT);
         }
     }
 

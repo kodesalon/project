@@ -4,7 +4,6 @@ import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
-import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.assertj.core.api.BDDSoftAssertions;
@@ -14,13 +13,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
-import static org.assertj.core.api.BDDAssertions.then;
+import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -59,7 +62,17 @@ public class MemberServiceTest {
 
         thenThrownBy(() -> memberService.join(createMemberRequest))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("이미 존재하는 아이디입니다");
+                .hasMessage(ALREADY_EXIST_MEMBER_ALIAS);
+    }
+
+    @Test
+    @DisplayName("회원 가입시 삭제한 회원이 다시 가입했을 경우에는 예외를 발생시킵니다")
+    void join_throw_exception_with_left_alias_after_delete() {
+        given(memberRepository.save(any(Member.class))).willThrow(new DataIntegrityViolationException("이미 삭제된 회원에 대한 Alias"));
+
+        thenThrownBy(() -> memberService.join(createMemberRequest))
+                .isInstanceOf(DataIntegrityViolationException.class)
+                .hasMessage("이미 삭제된 회원에 대한 Alias");
     }
 
     @Test
@@ -81,12 +94,42 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("비밀번호를 변경하고 성공 메세지를 담은 DTO를 반환한다.")
+    @DisplayName("회원 정보 조회 시 찾으려는 회원이 없으면 예외를 반환합니다.")
+    void select_not_exist_id_throws_exception() {
+        given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
+
+        thenThrownBy(() -> memberService.selectMember(1L))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage(NOT_EXIST_MEMBER);
+    }
+
+    @Test
+    @DisplayName("비밀번호를 변경한다.")
     public void changePassword() {
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
-        ChangePasswordResponse changePasswordResponse = memberService.changePassword(anyLong(), changePasswordRequest);
-        then(changePasswordResponse.getMessage()).isEqualTo("비밀번호 변경 성공하였습니다.");
+        memberService.changePassword(anyLong(), changePasswordRequest);
+        verify(member, times(1)).changePassword(anyString());
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴에 성공한다.")
+    void deleteMember() {
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+
+        memberService.deleteMember(member.getId());
+
+        verify(member, times(1)).delete();
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴시, 존재하지 않는 회원 식별자면 예외를 발생시킨다.")
+    void deleteMember_throws_exception() {
+        given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
+
+        thenThrownBy(() -> memberService.deleteMember(member.getId()))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage(NOT_EXIST_MEMBER);
     }
 }
