@@ -8,114 +8,166 @@ kodesalon;
 :sectlinks:
 
 [[Introduction]]
-=== Kodesalon server document
+= AuthenticationToken
+== JWT Token Error
+=== Response
+- 만료된 JWT token
+include::{snippets}/jwt/expired/response-fields.adoc[]
+include::{snippets}/jwt/expired/http-response.adoc[]
 
-[[sample]]
-== Member
-=== Login
-==== Request
-- Response Body
+- 유효하지 않은 JWT token
+include::{snippets}/jwt/invalid/response-fields.adoc[]
+include::{snippets}/jwt/invalid/http-response.adoc[]
+
+- Header에 Authorization 속성 값이 없을 경우
+include::{snippets}/jwt/invalid-header/response-fields.adoc[]
+include::{snippets}/jwt/invalid-header/http-response.adoc[]
+
+== Login
+
+=== Request
+
 include::{snippets}/login/success/request-fields.adoc[]
-
-- Request Body Example
 include::{snippets}/login/success/http-request.adoc[]
 
-==== Reponse
-- 로그인 성공 Response
-include::{snippets}/login/success/response-fields.adoc[]
+=== Reponse
 
-- 로그인 성공 Example
+==== *성공*
+
+include::{snippets}/login/success/response-fields.adoc[]
 include::{snippets}/login/success/http-response.adoc[]
 
-- 로그인 실패 Response
-include::{snippets}/login/fail/mismatch_password/response-fields.adoc[]
+==== *실패*
 
-- 로그인 실패 example (Alias가 없는 경우)
+- Alias가 없는 경우
+include::{snippets}/login/fail/no_alias/response-fields.adoc[]
 include::{snippets}/login/fail/no_alias/http-response.adoc[]
 
-- 로그인 실패 example (Password가 일치하지 않는 경우)
+- Password가 일치하지 않는 경우
+include::{snippets}/login/fail/mismatch_password/response-fields.adoc[]
 include::{snippets}/login/fail/mismatch_password/http-response.adoc[]
 
-=== Join
-==== Request
-- Request Body
+== Refresh Token
+
+=== Request
+
+include::{snippets}/refreshtoken/success/request-fields.adoc[]
+include::{snippets}/refreshtoken/success/http-request.adoc[]
+
+=== Response
+
+==== *성공*
+
+include::{snippets}/refreshtoken/success/response-fields.adoc[]
+include::{snippets}/refreshtoken/success/http-response.adoc[]
+
+==== *실패*
+
+- 유효하지 않거나 만료된 토큰일 경우
+include::{snippets}/refreshtoken/fail/response-fields.adoc[]
+include::{snippets}/refreshtoken/fail/http-response.adoc[]
+
+= Member
+== Join
+=== Request
 include::{snippets}/join/success/request-fields.adoc[]
-
-- Request Body Example
 include::{snippets}/join/success/http-request.adoc[]
-==== Response
-- 회원가입 성공 Response
-include::{snippets}/join/success/response-fields.adoc[]
 
-- 회원가입 성공 Example
+=== Response
+
+==== *성공*
+
 include::{snippets}/join/success/http-response.adoc[]
 
-- 회원가입 실패 Response
-include::{snippets}/join/fail/existing_alias/response-fields.adoc[]
+==== *실패*
 
-- 회원가입 실패 Example (이미 존재하는 Alias일 경우)
+- 이미 존재하는 Alias일 경우
+include::{snippets}/join/fail/existing_alias/response-fields.adoc[]
 include::{snippets}/join/fail/existing_alias/http-response.adoc[]
 
-- 회원가입 실패 Example (Alias 형식이 맞지 않을 경우)
-include::{snippets}/join/fail/invalid_alias/http-response.adoc[]
-
-- 회원가입 실패 Example (Password 형식이 맞지 않을 경우)
+- Password 형식이 맞지 않을 경우
+include::{snippets}/join/fail/invalid_password/response-fields.adoc[]
 include::{snippets}/join/fail/invalid_password/http-response.adoc[]
 
-- 회원가입 실패 Example (Name 형식이 맞지 않을 경우)
-include::{snippets}/join/fail/invalid_name/http-response.adoc[]
+- Alias 형식이 맞지 않을 경우
+include::{snippets}/join/fail/invalid_alias/response-fields.adoc[]
+include::{snippets}/join/fail/invalid_alias/http-response.adoc[]
 
-- 회원가입 실패 Example (email이 email 형식이 아닌 경우)
+- email이 email 형식이 아닌 경우
+include::{snippets}/join/fail/invalid_email/response-fields.adoc[]
 include::{snippets}/join/fail/invalid_email/http-response.adoc[]
 
-- 회원가입 실패 Example (Phone이 핸드폰 형식이 아닌 경우)
+- Name 형식이 맞지 않을 경우
+include::{snippets}/join/fail/invalid_name/response-fields.adoc[]
+include::{snippets}/join/fail/invalid_name/http-response.adoc[]
+
+- Phone이 핸드폰 형식이 아닌 경우
+include::{snippets}/join/fail/invalid_phone/response-fields.adoc[]
 include::{snippets}/join/fail/invalid_phone/http-response.adoc[]
 
-=== Select
-==== Request
-- 회원 정보 조회
+== Select
 
-include::{snippets}/select/success/path-parameters.adoc[]
+=== Request
 
-- 회원 정보 조회 Example
 include::{snippets}/select/success/http-request.adoc[]
-
-- 회원 정보 조회 Response
 include::{snippets}/select/success/response-fields.adoc[]
 
-==== Response
+=== Response
 
-- 회원 정보 조회 성공 response example
+==== *성공*
+
 include::{snippets}/select/success/http-response.adoc[]
 
-- 회원 정보 조회 실패 example
-include::{snippets}/select/fail/no_member/http-response.adoc[]
+== Update Password
 
-=== Update Password
+=== Request
 
-==== Request
-
-- 회원 비밀번호 변경 path variable
-
-include::{snippets}/changePassword/success/path-parameters.adoc[]
-
-- 회원 비밀번호 변경 Request Body
-include::{snippets}/changePassword/success/response-fields.adoc[]
-
-- 회원 비밀번호 변경 Example
+include::{snippets}/changePassword/success/request-fields.adoc[]
 include::{snippets}/changePassword/success/http-request.adoc[]
 
-==== Response
+=== Response
 
-- 회원 비밀번호 변경 Response
-include::{snippets}/changePassword/success/response-fields.adoc[]
+==== *성공*
 
-- 회원 비밀번호 변경 성공 response example
 include::{snippets}/changePassword/success/http-response.adoc[]
 
-- 회원 비밀번호 변경 실패 example(유효하지 않은 비밀번호)
+==== *실패*
+
+- 유효하지 않은 비밀번호
+include::{snippets}/changePassword/fail/invalidPassword/response-fields.adoc[]
 include::{snippets}/changePassword/fail/invalidPassword/http-response.adoc[]
 
-- 회원 비밀번호 변경 실패 example(존재하지 않는 회원 식별자)
-include::{snippets}/changePassword/fail/noMember/http-response.adoc[]
+== Delete
 
+=== Request
+
+include::{snippets}/delete/success/http-request.adoc[]
+
+=== Response
+
+==== *성공*
+
+include::{snippets}/delete/success/http-response.adoc[]
+
+= Board
+== Save
+=== Request
+include::{snippets}/board/create/success/request-fields.adoc[]
+include::{snippets}/board/create/success/http-request.adoc[]
+
+=== Response
+
+==== **성공**
+
+include::{snippets}/board/create/fail/invalid-title/response-fields.adoc[]
+include::{snippets}/board/create/success/http-response.adoc[]
+
+==== *실패*
+
+- 유효하지 않은 제목
+include::{snippets}/board/create/fail/invalid-title/response-fields.adoc[]
+include::{snippets}/board/create/fail/invalid-title/http-response.adoc[]
+
+- 유효하지 않은 내용
+include::{snippets}/board/create/fail/invalid-content/response-fields.adoc[]
+include::{snippets}/board/create/fail/invalid-content/http-response.adoc[]
