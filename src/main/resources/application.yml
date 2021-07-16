@@ -37,5 +37,3 @@ spring:
     secret: bG9jYWxUZXN0S2V5
     accessExpirationMs: 60000
     refreshExpirationWeeks: 2
-  server:
-    url: http://localhost:8080
