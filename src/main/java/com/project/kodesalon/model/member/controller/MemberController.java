@@ -3,10 +3,11 @@ package com.project.kodesalon.model.member.controller;
 import com.project.kodesalon.common.annotation.Login;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
+import com.project.kodesalon.model.member.service.dto.ChangePasswordResponse;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +19,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/members")
+@CrossOrigin("*")
 public class MemberController {
     private final MemberService memberService;
 
@@ -38,14 +40,8 @@ public class MemberController {
     }
 
     @PutMapping("/password")
-    public ResponseEntity<Void> changePassword(@Login Long memberId, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
-        memberService.changePassword(memberId, changePasswordRequest);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping
-    public ResponseEntity<Void> deleteMember(@Login Long memberId) {
-        memberService.deleteMember(memberId);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ChangePasswordResponse> changePassword(@Login Long memberId, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
+        ChangePasswordResponse changePasswordResponse = memberService.changePassword(memberId, changePasswordRequest);
+        return ResponseEntity.ok().body(changePasswordResponse);
     }
 }

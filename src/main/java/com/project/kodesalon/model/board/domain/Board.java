@@ -2,19 +2,15 @@ package com.project.kodesalon.model.board.domain;
 
 import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
-import com.project.kodesalon.model.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,21 +28,17 @@ public class Board {
     @Embedded
     private Content content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member writer;
+    private String writer;
 
-    @Column(nullable = false)
     private LocalDateTime createdDateTime;
 
     private boolean isDeleted;
 
-    public Board(Title title, Content content, Member writer, LocalDateTime createdDateTime) {
+    public Board(Title title, Content content, String writer, LocalDateTime createdDateTime) {
         this.title = title;
         this.content = content;
         this.writer = writer;
         this.createdDateTime = createdDateTime;
-        this.writer.addBoard(this);
     }
 
     public Long getId() {
@@ -62,7 +54,7 @@ public class Board {
     }
 
     public String getWriter() {
-        return writer.getName();
+        return writer;
     }
 
     public LocalDateTime getCreatedDateTime() {

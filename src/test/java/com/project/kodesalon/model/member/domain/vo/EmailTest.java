@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_EMAIL;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 
@@ -25,7 +24,7 @@ class EmailTest {
     @DisplayName("올바르지 않은 형식의 이메일일 경우, 예외가 발생합니다")
     void email_throw_exception_with_invalid_format(String value) {
         thenIllegalArgumentException().isThrownBy(() -> new Email(value))
-                .withMessage(INVALID_MEMBER_EMAIL);
+                .withMessageContaining("이메일은 id@domain.com과 같은 형식이어야 합니다.");
     }
 
     @ParameterizedTest
@@ -33,7 +32,7 @@ class EmailTest {
     @DisplayName("null일 경우, 예외가 발생합니다")
     void email_throw_exception_with_null(String nullArgument) {
         thenIllegalArgumentException().isThrownBy(() -> new Email(nullArgument))
-                .withMessage(INVALID_MEMBER_EMAIL);
+                .withMessageContaining("이메일은 id@domain.com과 같은 형식이어야 합니다.");
     }
 
     @Test

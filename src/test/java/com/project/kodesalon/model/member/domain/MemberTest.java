@@ -1,8 +1,6 @@
 package com.project.kodesalon.model.member.domain;
 
-import com.project.kodesalon.model.board.domain.Board;
-import com.project.kodesalon.model.board.domain.vo.Content;
-import com.project.kodesalon.model.board.domain.vo.Title;
+
 import com.project.kodesalon.model.member.domain.vo.Password;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,18 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.time.LocalDateTime;
-
-import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
-import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
-public class MemberTest {
-    public static final Member TEST_MEMBER
-            = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
-
+class MemberTest {
     private Member member;
 
     @BeforeEach
@@ -40,7 +31,6 @@ public class MemberTest {
         softly.then(member.getName()).isEqualTo("이름");
         softly.then(member.getEmail()).isEqualTo("email@email.com");
         softly.then(member.getPhone()).isEqualTo("010-1234-4444");
-        softly.then(member.isDeleted()).isFalse();
         softly.assertAll();
     }
 
@@ -52,20 +42,11 @@ public class MemberTest {
     }
 
     @Test
-    @DisplayName("게시물을 추가한다.")
-    public void addBoard() {
-        Board board = new Board(new Title("게시물 제목"), new Content("게시물 내용"), TEST_MEMBER, LocalDateTime.now());
-        member.addBoard(board);
-
-        then(member.getBoards().size()).isEqualTo(1);
-    }
-
-    @Test
     @DisplayName("로그인 시, 비밀번호가 다른 경우 로그인에 실패하면 예외를 발생시킵니다")
     void login_throw_exception_with_different_password() {
         thenThrownBy(() -> member.login("Password123!!!"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(INVALID_MEMBER_PASSWORD);
+                .hasMessage("비밀 번호가 일치하지 않습니다.");
     }
 
     @Test
@@ -84,14 +65,6 @@ public class MemberTest {
         String password = member.getPassword();
         thenIllegalArgumentException()
                 .isThrownBy(() -> member.changePassword(password))
-                .withMessage(PASSWORD_DUPLICATION);
-    }
-
-    @Test
-    @DisplayName("멤버를 삭제하면 isDeleted 속성이 true가 된다.")
-    void delete() {
-        member.delete();
-
-        then(member.isDeleted()).isTrue();
+                .withMessageContaining("변경하려는 패스워드가 기존 패스워드와 일치합니다.");
     }
 }

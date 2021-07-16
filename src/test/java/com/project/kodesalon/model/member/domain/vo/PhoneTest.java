@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PHONE;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 
@@ -26,7 +25,7 @@ class PhoneTest {
     @DisplayName("유효하지 않은 형식의 핸드폰 번호는 예외를 발생시킵니다.")
     void phone_throw_exception_with_invalid_format(String invalidPhoneNumber) {
         thenIllegalArgumentException().isThrownBy(() -> new Phone(invalidPhoneNumber))
-                .withMessage(INVALID_MEMBER_PHONE);
+                .withMessageContaining("휴대폰 번호는 [3자리 수] - [3 ~ 4자리 수] - [4자리 수]의 형식 이어야 합니다.");
     }
 
     @ParameterizedTest
@@ -34,7 +33,7 @@ class PhoneTest {
     @DisplayName("null일 경우, 예외가 발생합니다.")
     void phone_throw_exception_with_null(String nullArgument) {
         thenIllegalArgumentException().isThrownBy(() -> new Phone(nullArgument))
-                .withMessage(INVALID_MEMBER_PHONE);
+                .withMessageContaining("휴대폰 번호는 [3자리 수] - [3 ~ 4자리 수] - [4자리 수]의 형식 이어야 합니다.");
     }
 
     @Test
