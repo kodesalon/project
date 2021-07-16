@@ -131,7 +131,7 @@ public class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원 탈퇴시, 존재하지 않는 회원 식별자면 예외를 발생시킨다.")
+    @DisplayName("회원 탈퇴시, 존재하지 않는 회원 식별 번호면 예외를 발생시킨다.")
     void deleteMember_throws_exception() {
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 

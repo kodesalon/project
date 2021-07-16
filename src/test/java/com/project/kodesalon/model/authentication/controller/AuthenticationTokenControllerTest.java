@@ -68,7 +68,7 @@ public class AuthenticationTokenControllerTest {
     }
 
     @Test
-    @DisplayName("로그인 성공하면 회원 식별자, 별명을 담은 DTO을 Http 200으로 응답합니다.")
+    @DisplayName("로그인 성공하면 회원 식별 번호, 별명을 담은 DTO을 Http 200으로 응답합니다.")
     void login_success() throws Exception {
         given(authenticationTokenService.login(any(LoginRequest.class))).willReturn(loginResponse);
 

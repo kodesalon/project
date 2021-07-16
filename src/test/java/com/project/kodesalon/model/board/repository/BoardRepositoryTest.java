@@ -21,8 +21,6 @@ import static org.assertj.core.api.BDDAssertions.then;
 @DataJpaTest
 public class BoardRepositoryTest {
 
-    private static final int BOARD_TO_BE_SELECTED_AT_ONCE = 10;
-
     @Autowired
     private BoardRepository boardRepository;
 
@@ -72,7 +70,7 @@ public class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("게시물 식별자를 입력받아 게시물을 조회하면 작성자 정보와 함께 조인하여 반환한다.")
+    @DisplayName("게시물 식별 번호를 입력받아 게시물을 조회하면 작성자 정보와 함께 조인하여 반환한다.")
     void selectBoardById() {
         Optional<Board> board = boardRepository.selectBoardById(this.board.getId());
 
@@ -83,14 +81,16 @@ public class BoardRepositoryTest {
     @Test
     @DisplayName("마지막 게시물 번호를 입력받아 이후의 10개의 게시물과 작성자의 정보를 조인하여 반환한다.")
     void findTop10Boards() {
-        for (int board_number = 0; board_number < BOARD_TO_BE_SELECTED_AT_ONCE + 1; board_number++) {
+        int boardToBeSelectedAtOnce = 10;
+
+        for (int board_number = 0; board_number < boardToBeSelectedAtOnce + 1; board_number++) {
             Board board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
             boardRepository.save(board);
         }
 
-        List<Board> boards = boardRepository.findTop10By(1L);
+        List<Board> boards = boardRepository.selectBoards(1L, boardToBeSelectedAtOnce);
 
-        softly.then(boards.size()).isEqualTo(BOARD_TO_BE_SELECTED_AT_ONCE);
+        softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
         boards.forEach(b -> {
             softly.then(persistenceUnitUtil.isLoaded(b.getWriter())).isTrue();
         });

@@ -50,8 +50,9 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public List<BoardSelectResponse> selectBoards(Long lastBoardId) {
-        List<Board> boards = boardRepository.findTop10By(lastBoardId);
+    public List<BoardSelectResponse> selectBoards(Long lastBoardId, int size) {
+        List<Board> boards = boardRepository.selectBoards(lastBoardId, size);
+
         return boards.stream()
                 .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias()))
                 .collect(Collectors.toList());

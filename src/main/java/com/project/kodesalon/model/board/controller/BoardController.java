@@ -55,8 +55,8 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BoardSelectResponse>> selectBoards(@RequestParam Long lastBoardId) {
-        List<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(lastBoardId);
+    public ResponseEntity<List<BoardSelectResponse>> selectBoards(@RequestParam final Long lastBoardId, @RequestParam final int size) {
+        List<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(lastBoardId, size);
         return ResponseEntity.ok().body(boardSelectMultiResponse);
     }
 }

@@ -24,7 +24,7 @@ public class BoardUpdateRequestTest {
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
 
     @Test
-    @DisplayName("수정할 게시물의 식별자, 변경할 게시물 제목, 변경할 게시물 내용을 반환합니다")
+    @DisplayName("수정할 게시물의 식별 번호, 변경할 게시물 제목, 변경할 게시물 내용을 반환합니다")
     void getter() {
         BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("update title", "update content");
 

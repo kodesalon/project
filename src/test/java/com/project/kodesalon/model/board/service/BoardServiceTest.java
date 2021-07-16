@@ -28,6 +28,7 @@ import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -110,11 +111,11 @@ public class BoardServiceTest {
     @DisplayName("마지막 게시물 식별번호를 전달받아 복수 게시물을 조회하고 복수 게시물 조회 응답 DTO를 반환한다.")
     void selectBoards() {
         List<Board> boards = new ArrayList<>(Arrays.asList(new Board("title", "content", TEST_MEMBER, LocalDateTime.now())));
-        given(boardRepository.findTop10By(anyLong())).willReturn(boards);
+        given(boardRepository.selectBoards(anyLong(), anyInt())).willReturn(boards);
 
-        List<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(1L);
+        List<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(1L, 10);
 
         then(boardSelectMultiResponse).isNotNull();
-        verify(boardRepository, times(1)).findTop10By(anyLong());
+        verify(boardRepository, times(1)).selectBoards(anyLong(), anyInt());
     }
 }

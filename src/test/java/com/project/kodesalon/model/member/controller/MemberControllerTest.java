@@ -281,7 +281,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("비밀번호 변경시, 변경하려는 회원 식별자가 없는 경우 400 상태 + 예외 코드를 반환합니다.")
+    @DisplayName("비밀번호 변경시, 변경하려는 회원 식별 번호가 없는 경우 400 상태 + 예외 코드를 반환합니다.")
     void failed_change_password_with_member_id_not_exist() throws Exception {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!");
         willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER))
@@ -299,7 +299,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("회원의 식별자를 전달받아 회원을 탈퇴하고 200 상태 + 성공 메세지를 반환합니다.")
+    @DisplayName("회원의 식별 번호를 전달받아 회원을 탈퇴하고 200 상태 + 성공 메세지를 반환합니다.")
     void deleteMember() throws Exception {
         this.mockMvc.perform(delete("/api/v1/members")
                 .contentType(MediaType.APPLICATION_JSON))

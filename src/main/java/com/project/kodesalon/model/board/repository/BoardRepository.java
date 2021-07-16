@@ -21,6 +21,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     Optional<Board> selectBoardById(@Param("boardId") Long boardId);
 
     @Query(value = "SELECT * FROM board b INNER JOIN member m ON b.member_id = m.member_id " +
-            "WHERE b.board_id > :lastBoardId AND b.deleted = FALSE ORDER BY b.board_id DESC LIMIT 10", nativeQuery = true)
-    List<Board> findTop10By(@Param("lastBoardId") Long lastBoardId);
+            "WHERE b.board_id > :lastBoardId AND b.deleted = FALSE ORDER BY b.board_id DESC LIMIT :size", nativeQuery = true)
+    List<Board> selectBoards(@Param("lastBoardId") Long lastBoardId, @Param("size") int size);
 }
