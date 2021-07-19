@@ -98,10 +98,6 @@ public class Member extends BaseEntity {
         return phone.value();
     }
 
-    public LocalDateTime getCreatedDateTime() {
-        return createdDateTime;
-    }
-
     public boolean isDeleted() {
         return deleted;
     }
@@ -126,20 +122,29 @@ public class Member extends BaseEntity {
     public void changePassword(final String password, final LocalDateTime lastModifiedDateTime) {
         final Password newPassword = new Password(password);
 
-        if (hasSamePassword(newPassword)) {
-            throw new IllegalArgumentException(PASSWORD_DUPLICATION);
-        }
-
-        if (Objects.isNull(lastModifiedDateTime)) {
-            throw new IllegalArgumentException(INVALID_DATE_TIME);
-        }
+        validateDuplication(newPassword);
+        validateDateTime(lastModifiedDateTime);
 
         this.password = newPassword;
         this.lastModifiedDateTime = lastModifiedDateTime;
     }
 
-    public void delete() {
+    private void validateDuplication(final Password newPassword) {
+        if (hasSamePassword(newPassword)) {
+            throw new IllegalArgumentException(PASSWORD_DUPLICATION);
+        }
+    }
+
+    private void validateDateTime(final LocalDateTime localDateTime) {
+        if (Objects.isNull(localDateTime)) {
+            throw new IllegalArgumentException(INVALID_DATE_TIME);
+        }
+    }
+
+    public void delete(final LocalDateTime deletedDateTime) {
+        validateDateTime(deletedDateTime);
         deleted = true;
+        this.deletedDateTime = deletedDateTime;
     }
 
     public void addBoard(Board newBoard) {

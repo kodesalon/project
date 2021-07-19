@@ -95,8 +95,20 @@ public class MemberTest {
     @Test
     @DisplayName("멤버를 삭제하면 isDeleted 속성이 true가 된다.")
     void delete() {
-        member.delete();
+        LocalDateTime deletedDateTime = LocalDateTime.now();
+        member.delete(deletedDateTime);
 
-        then(member.isDeleted()).isTrue();
+        softly.then(member.isDeleted()).isTrue();
+        softly.then(member.getDeletedDateTime()).isEqualTo(deletedDateTime);
+        softly.assertAll();
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("회월 탈퇴 시간이 없으면 예외를 발생시킨다.")
+    void delete_throws_exception_with_null_deleted_date_time(LocalDateTime invalidDeletedTime) {
+        thenIllegalArgumentException()
+                .isThrownBy(() -> member.delete(invalidDeletedTime))
+                .withMessage(INVALID_DATE_TIME);
     }
 }

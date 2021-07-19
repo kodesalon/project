@@ -7,6 +7,7 @@ import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
+import com.project.kodesalon.model.member.service.dto.DeleteMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
@@ -367,15 +368,36 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원의 식별자를 전달받아 회원을 탈퇴하고 200 상태 + 성공 메세지를 반환합니다.")
     void deleteMember() throws Exception {
+        DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(LocalDateTime.now());
+
         this.mockMvc.perform(delete("/api/v1/members")
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(deleteMemberRequest)))
                 .andExpect(status().isOk())
                 .andDo(document("delete/success",
-                        getDocumentRequest()));
+                        getDocumentRequest(),
+                        requestFields(
+                                fieldWithPath("deletedDateTime").type(JsonFieldType.STRING).description("회원 탈퇴 시간"))));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("회원 탈퇴 시간이 존재하지 않을 경우 400 상태 + 예외 코드를 반환합니다.")
+    void deleteMember_throws_exception_with_null_deleted_date_time(LocalDateTime invalidDeletedDateTime) throws Exception {
+        DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(invalidDeletedDateTime);
+
+        this.mockMvc.perform(delete("/api/v1/members")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(deleteMemberRequest)))
+                .andExpect(status().isBadRequest())
+                .andDo(document("delete/fail/null-deleted-date-time",
+                        getDocumentRequest(),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("회원 탈퇴 시간이 없는 경우에 대한 예외 코드"))));
     }
 
     @Test
-    @DisplayName("토큰이 만료된 경우 400 상태 + 에러 코드를 반환한다.")
+    @DisplayName("토큰이 만료된 경우 400 상태 + 예외 코드를 반환한다.")
     void access_token_expired() throws Exception {
         given(loginInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any()))
                 .willThrow(new JwtException(EXPIRED_JWT_TOKEN));
@@ -391,7 +413,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("토큰이 유효하지 않을 경우 400 상태 + 에러 코드를 반환한다.")
+    @DisplayName("토큰이 유효하지 않을 경우 400 상태 + 예외 코드를 반환한다.")
     void invalid_access_token() throws Exception {
         given(loginInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any()))
                 .willThrow(new JwtException(INVALID_JWT_TOKEN));
@@ -407,7 +429,7 @@ public class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("authorization 안에 내용이 없을 경우 400상태 + 에러 코드를 반환한다.")
+    @DisplayName("authorization 안에 내용이 없을 경우 400상태 + 예외 코드를 반환한다.")
     void invalid_authorization_throw_exception() throws Exception {
         given(loginInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any()))
                 .willThrow(new JwtException(INVALID_HEADER));
@@ -419,6 +441,6 @@ public class MemberControllerTest {
                 .andDo(document("jwt/invalid-header",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").description("Header에 Authorization 속성이 없을 경우에 대한 에러 코드"))));
+                                fieldWithPath("code").description("Header에 Authorization 속성이 없을 경우에 대한 예외 코드"))));
     }
 }

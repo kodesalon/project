@@ -5,6 +5,7 @@ import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
+import com.project.kodesalon.model.member.service.dto.DeleteMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -118,19 +119,21 @@ public class MemberServiceTest {
     @Test
     @DisplayName("회원 탈퇴에 성공한다.")
     void deleteMember() {
+        DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(LocalDateTime.now());
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
-        memberService.deleteMember(member.getId());
+        memberService.deleteMember(member.getId(), deleteMemberRequest);
 
-        verify(member, times(1)).delete();
+        verify(member, times(1)).delete(any(LocalDateTime.class));
     }
 
     @Test
     @DisplayName("회원 탈퇴시, 존재하지 않는 회원 식별자면 예외를 발생시킨다.")
     void deleteMember_throws_exception() {
+        DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(LocalDateTime.now());
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        thenThrownBy(() -> memberService.deleteMember(member.getId()))
+        thenThrownBy(() -> memberService.deleteMember(member.getId(), deleteMemberRequest))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(NOT_EXIST_MEMBER);
     }
