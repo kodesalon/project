@@ -17,5 +17,5 @@ public abstract class BaseEntity {
     protected LocalDateTime lastModifiedDateTime;
 
     @Column(name = "deleted_date_time")
-    protected LocalDateTime deletedDate;
+    protected LocalDateTime deletedDateTime;
 }
