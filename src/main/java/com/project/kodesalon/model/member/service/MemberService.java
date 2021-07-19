@@ -50,7 +50,7 @@ public class MemberService {
     @Transactional
     public void changePassword(final Long memberId, final ChangePasswordRequest changePasswordRequest) {
         Member member = findById(memberId);
-        member.changePassword(changePasswordRequest.getPassword());
+        member.changePassword(changePasswordRequest.getPassword(), changePasswordRequest.getLastModifiedDateTime());
     }
 
     @Transactional

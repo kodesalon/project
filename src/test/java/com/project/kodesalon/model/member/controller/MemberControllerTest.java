@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,7 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_NAME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PHONE;
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER;
+import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
@@ -65,7 +68,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class MemberControllerTest {
     private final CreateMemberRequest createMemberRequest =
             new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
-    private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
+    private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!", LocalDateTime.now());
 
     private MockMvc mockMvc;
 
@@ -276,7 +279,7 @@ public class MemberControllerTest {
 
     @Test
     @DisplayName("비밀번호 변경시, 변경하려는 비밀번호, 회원 식별 번호를 전달받아 비밀번호를 변경하고 200 상태를 반환한다.")
-    public void changePassword() throws Exception {
+    void changePassword() throws Exception {
         this.mockMvc.perform(put("/api/v1/members/password")
                 .content(objectMapper.writeValueAsString(changePasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
@@ -285,20 +288,22 @@ public class MemberControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("변경하려는 비밀번호")
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("변경하려는 비밀번호"),
+                                fieldWithPath("lastModifiedDateTime").type(JsonFieldType.STRING).description("비밀번호 변경 시간")
                         )));
     }
 
     @Test
     @DisplayName("비밀번호 변경시, 변경하려는 비밀변호가 유효하지 않은 경우 400 상태 + 예외 코드를 반환합니다.")
     void failed_change_password_with_invalid_password() throws Exception {
-        ChangePasswordRequest changePasswordRequestWithInvalidPassword = new ChangePasswordRequest("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.");
+        ChangePasswordRequest changePasswordRequestWithInvalidPassword = new ChangePasswordRequest("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.", LocalDateTime.now());
 
         this.mockMvc.perform(put("/api/v1/members/password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(changePasswordRequestWithInvalidPassword)))
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PASSWORD))
-                .andDo(document("changePassword/fail/invalidPassword",
+                .andDo(document("changePassword/fail/invalid-password",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호에 대한 예외 코드"))));
@@ -307,7 +312,7 @@ public class MemberControllerTest {
     @Test
     @DisplayName("비밀번호 변경시, 변경하려는 회원 식별자가 없는 경우 400 상태 + 예외 코드를 반환합니다.")
     void failed_change_password_with_member_id_not_exist() throws Exception {
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!");
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!", LocalDateTime.now());
         willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER))
                 .given(memberService)
                 .changePassword(any(), any(ChangePasswordRequest.class));
@@ -315,11 +320,48 @@ public class MemberControllerTest {
         this.mockMvc.perform(put("/api/v1/members/password")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(changePasswordRequest)))
+                .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_EXIST_MEMBER))
-                .andDo(document("changePassword/fail/noMember",
+                .andDo(document("changePassword/fail/no-member",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 회원에 대한 예외 코드"))));
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경시, 변경하려는 비밀번호가 기존 비밀번호와 일치하는 경우 400 상태 + 예외 코드를 반환합니다")
+    void failed_change_password_with_duplicate_password() throws Exception {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!", LocalDateTime.now());
+        willThrow(new IllegalArgumentException(PASSWORD_DUPLICATION))
+                .given(memberService)
+                .changePassword(any(), any(ChangePasswordRequest.class));
+
+        this.mockMvc.perform(put("/api/v1/members/password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(changePasswordRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(PASSWORD_DUPLICATION))
+                .andDo(document("changePassword/fail/password-duplicate",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("기존 비밀번호와 일치할 경우에 대한 예외 코드"))));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("비밀번호 변경시, 마지막으로 변경된 시간이 없을 경우, 400 상태 + 예외 코드를 반환합니다")
+    void failed_change_password_with_invalid_last_modified_date_time(LocalDateTime invalidLastModifiedDateTime) throws Exception {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!", invalidLastModifiedDateTime);
+
+        this.mockMvc.perform(put("/api/v1/members/password")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(changePasswordRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
+                .andDo(document("changePassword/fail/null-last-modified-date-time",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("마지막으로 수정된 시간이 없을 경우에 대한 예외 코드"))));
     }
 
     @Test

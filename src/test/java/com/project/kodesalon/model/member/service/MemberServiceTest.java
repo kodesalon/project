@@ -107,10 +107,10 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("비밀번호를 변경한다.")
-    public void changePassword() {
+    void changePassword() {
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!", LocalDateTime.now());
         memberService.changePassword(anyLong(), changePasswordRequest);
         verify(member, times(1)).changePassword(anyString());
     }

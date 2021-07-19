@@ -10,9 +10,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullSource;
 
 import java.time.LocalDateTime;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -23,6 +25,7 @@ public class MemberTest {
     public static final Member TEST_MEMBER
             = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
 
+    private final BDDSoftAssertions softly = new BDDSoftAssertions();
     private Member member;
 
     @BeforeEach
@@ -33,8 +36,6 @@ public class MemberTest {
     @Test
     @DisplayName("Member 객체를 생성하면 각 필드가 초기화 됩니다.")
     void create_member_init_filed() {
-        BDDSoftAssertions softly = new BDDSoftAssertions();
-
         softly.then(member.getAlias()).isEqualTo("alias");
         softly.then(member.getPassword()).isEqualTo("Password!!123");
         softly.then(member.getName()).isEqualTo("이름");
@@ -71,17 +72,20 @@ public class MemberTest {
 
     @Test
     @DisplayName("비밀번호를 변경한다.")
-    public void changePassword() {
+    void changePassword() {
         String newPassword = "ChangePassword1!";
+        LocalDateTime lastModifiedDateTime = LocalDateTime.of(2021, 7, 16, 23, 59);
 
-        member.changePassword(newPassword);
+        member.changePassword(newPassword, lastModifiedDateTime);
 
-        then(member.getPassword()).isEqualTo(newPassword);
+        softly.then(member.getPassword()).isEqualTo(newPassword);
+        softly.then(member.getLastModifiedDateTime()).isEqualTo(lastModifiedDateTime);
+        softly.assertAll();
     }
 
     @Test
     @DisplayName("변경하려는 패스워드가 기존 패스워드가 중복일 경우 예외가 발생한다.")
-    public void changePassword_throw_error_with_exist_password() {
+    void changePassword_throw_error_with_exist_password() {
         String password = member.getPassword();
         thenIllegalArgumentException()
                 .isThrownBy(() -> member.changePassword(password))
