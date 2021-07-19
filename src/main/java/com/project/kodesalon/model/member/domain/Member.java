@@ -121,10 +121,8 @@ public class Member extends BaseEntity {
 
     public void changePassword(final String password, final LocalDateTime lastModifiedDateTime) {
         final Password newPassword = new Password(password);
-
         validateDuplication(newPassword);
         validateDateTime(lastModifiedDateTime);
-
         this.password = newPassword;
         this.lastModifiedDateTime = lastModifiedDateTime;
     }

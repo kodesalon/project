@@ -101,9 +101,13 @@ include::{snippets}/join/fail/invalid-email/http-response.adoc[]
 include::{snippets}/join/fail/invalid-name/response-fields.adoc[]
 include::{snippets}/join/fail/invalid-name/http-response.adoc[]
 
-- Phone이 핸드폰 형식이 아닌 경우
-include::{snippets}/join/fail/invalid_phone/response-fields.adoc[]
-include::{snippets}/join/fail/invalid_phone/http-response.adoc[]
+- 유효하지 않은 Phone
+include::{snippets}/join/fail/invalid-phone/response-fields.adoc[]
+include::{snippets}/join/fail/invalid-phone/http-response.adoc[]
+
+- 유효하지 않은 가입 시간
+include::{snippets}/join/fail/null-created-date-time/response-fields.adoc[]
+include::{snippets}/join/fail/null-created-date-time/http-response.adoc[]
 
 == Select
 
@@ -134,8 +138,12 @@ include::{snippets}/changePassword/success/http-response.adoc[]
 ==== *실패*
 
 - 유효하지 않은 비밀번호
-include::{snippets}/changePassword/fail/invalidPassword/response-fields.adoc[]
-include::{snippets}/changePassword/fail/invalidPassword/http-response.adoc[]
+include::{snippets}/changePassword/fail/invalid-password/response-fields.adoc[]
+include::{snippets}/changePassword/fail/invalid-password/http-response.adoc[]
+
+- 유효하지 않은 변경 시간
+include::{snippets}/changePassword/fail/null-last-modified-date-time/response-fields.adoc[]
+include::{snippets}/changePassword/fail/null-last-modified-date-time/http-response.adoc[]
 
 == Delete
 
@@ -152,6 +160,7 @@ include::{snippets}/delete/success/http-response.adoc[]
 
 ==== *실패*
 
+- 유효하지 않은 탈퇴 시간
 include::{snippets}/delete/fail/null-deleted-date-time/response-fields.adoc[]
 include::{snippets}/delete/fail/null-deleted-date-time/http-response.adoc[]
 

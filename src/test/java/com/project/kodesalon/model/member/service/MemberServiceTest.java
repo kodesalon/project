@@ -113,7 +113,7 @@ public class MemberServiceTest {
 
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!", LocalDateTime.now());
         memberService.changePassword(anyLong(), changePasswordRequest);
-        verify(member, times(1)).changePassword(anyString());
+        verify(member, times(1)).changePassword(anyString(), any(LocalDateTime.class));
     }
 
     @Test

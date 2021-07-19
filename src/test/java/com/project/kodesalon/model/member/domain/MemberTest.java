@@ -88,7 +88,7 @@ public class MemberTest {
     void changePassword_throw_error_with_exist_password() {
         String password = member.getPassword();
         thenIllegalArgumentException()
-                .isThrownBy(() -> member.changePassword(password))
+                .isThrownBy(() -> member.changePassword(password, LocalDateTime.now()))
                 .withMessage(PASSWORD_DUPLICATION);
     }
 
