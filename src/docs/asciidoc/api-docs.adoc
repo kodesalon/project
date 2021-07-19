@@ -141,6 +141,7 @@ include::{snippets}/changePassword/fail/invalidPassword/http-response.adoc[]
 
 === Request
 
+include::{snippets}/delete/success/request-fields.adoc[]
 include::{snippets}/delete/success/http-request.adoc[]
 
 === Response
@@ -148,6 +149,11 @@ include::{snippets}/delete/success/http-request.adoc[]
 ==== *성공*
 
 include::{snippets}/delete/success/http-response.adoc[]
+
+==== *실패*
+
+include::{snippets}/delete/fail/null-deleted-date-time/response-fields.adoc[]
+include::{snippets}/delete/fail/null-deleted-date-time/http-response.adoc[]
 
 = Board
 == Save

@@ -391,7 +391,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(deleteMemberRequest)))
                 .andExpect(status().isBadRequest())
                 .andDo(document("delete/fail/null-deleted-date-time",
-                        getDocumentRequest(),
+                        getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("회원 탈퇴 시간이 없는 경우에 대한 예외 코드"))));
     }
