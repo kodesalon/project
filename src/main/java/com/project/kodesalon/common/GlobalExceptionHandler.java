@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.format.DateTimeParseException;
+
+import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 
 @RestControllerAdvice
 @Slf4j
@@ -30,5 +33,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(JwtException.class)
     protected ResponseEntity<ErrorResponse> handleJwtException(JwtException e) {
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(DateTimeParseException.class)
+    protected ResponseEntity<ErrorResponse> handleDateTimeParseException(DateTimeParseException e) {
+        log.info(INVALID_DATE_TIME);
+        return ResponseEntity.badRequest().body(new ErrorResponse(INVALID_DATE_TIME));
     }
 }

@@ -239,11 +239,12 @@ public class MemberControllerTest {
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("이미 삭제된 회원 어아다에 대한 회원 가입 예외 코드"))));
     }
 
-    @Test
+    @ParameterizedTest
+    @NullSource
     @DisplayName("회원 가입시 회원 가입 시간이 없는 경우 예외 메세지를 반환합니다.")
-    void join_fail_with_null_created_date_time() throws Exception {
+    void join_fail_with_null_created_date_time(LocalDateTime invalidCreateDateTime) throws Exception {
         CreateMemberRequest createMemberRequest
-                = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", null);
+                = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", invalidCreateDateTime);
 
         this.mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
