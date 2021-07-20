@@ -196,7 +196,7 @@ include::{snippets}/board/create/fail/null-created-date-time/http-response.adoc[
 
 === Request
 
-include::{snippets}/board/delete/success/path-parameters.adoc[]
+include::{snippets}/board/delete/success/request-fields.adoc[]
 include::{snippets}/board/delete/success/http-request.adoc[]
 
 === Response
@@ -207,11 +207,18 @@ include::{snippets}/board/delete/success/http-response.adoc[]
 
 ==== *실패*
 
-- 권한을 가지지 않은 회원이 삭제 시도할 경우
+- 권한을 가지지 않은 회원
 include::{snippets}/board/delete/fail/invalid-auth/response-fields.adoc[]
 include::{snippets}/board/delete/fail/invalid-auth/http-response.adoc[]
 
-- 이미 삭제된 게시물을 다시 삭제 시도할 경우
+- 이미 삭제된 게시물
 include::{snippets}/board/delete/fail/already-deleted/response-fields.adoc[]
 include::{snippets}/board/delete/fail/already-deleted/http-response.adoc[]
 
+- 유효하지 않은 게시물 번호
+include::{snippets}/board/delete/fail/null-board-id/response-fields.adoc[]
+include::{snippets}/board/delete/fail/null-board-id/http-response.adoc[]
+
+- 유효하지 않은 삭제 시간
+include::{snippets}/board/delete/fail/null-deleted-date-time/response-fields.adoc[]
+include::{snippets}/board/delete/fail/null-deleted-date-time/http-response.adoc[]

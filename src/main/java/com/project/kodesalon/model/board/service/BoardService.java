@@ -3,6 +3,7 @@ package com.project.kodesalon.model.board.service;
 import com.project.kodesalon.model.board.domain.Board;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
+import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.memberboard.MemberBoardService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,9 +34,9 @@ public class BoardService {
     }
 
     @Transactional
-    public void delete(Long memberId, Long boardId) {
-        Board board = findById(boardId);
-        board.delete(memberId);
+    public void delete(final Long memberId, final BoardDeleteRequest boardDeleteRequest) {
+        Board board = findById(boardDeleteRequest.getBoardId());
+        board.delete(memberId, boardDeleteRequest.getDeletedDateTime());
     }
 
     private Board findById(final Long boardId) {

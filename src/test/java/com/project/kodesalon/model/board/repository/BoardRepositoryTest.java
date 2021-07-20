@@ -27,7 +27,7 @@ public class BoardRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
+        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
         testEntityManager.persist(member);
     }
 
