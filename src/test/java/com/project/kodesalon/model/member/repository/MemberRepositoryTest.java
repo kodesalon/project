@@ -39,6 +39,7 @@ public class MemberRepositoryTest {
         softly.then(savedMember.getName()).isEqualTo(TEST_MEMBER.getName());
         softly.then(savedMember.getEmail()).isEqualTo(TEST_MEMBER.getEmail());
         softly.then(savedMember.getPhone()).isEqualTo(TEST_MEMBER.getPhone());
+        softly.then(savedMember.getCreatedDateTime()).isEqualTo(TEST_MEMBER.getCreatedDateTime());
         softly.assertAll();
     }
 

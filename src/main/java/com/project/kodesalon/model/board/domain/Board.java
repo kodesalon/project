@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.board.domain;
 
+import com.project.kodesalon.common.BaseEntity;
 import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.member.domain.Member;
@@ -23,7 +24,7 @@ import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
 @Entity
 @Where(clause = "deleted = 'false'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Board {
+public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -68,10 +69,6 @@ public class Board {
 
     public Member getWriter() {
         return writer;
-    }
-
-    public LocalDateTime getCreatedDateTime() {
-        return createdDateTime;
     }
 
     public boolean isDeleted() {

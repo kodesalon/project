@@ -22,10 +22,12 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 
@@ -63,12 +65,13 @@ public class Member extends BaseEntity {
     @Column(name = "deleted")
     private boolean deleted = false;
 
-    public Member(final String alias, final String password, final String name, final String email, final String phone) {
+    public Member(final String alias, final String password, final String name, final String email, final String phone, LocalDateTime createdDateTime) {
         this.alias = new Alias(alias);
         this.password = new Password(password);
         this.email = new Email(email);
         this.name = new Name(name);
         this.phone = new Phone(phone);
+        this.createdDateTime = createdDateTime;
     }
 
     public Long getId() {
@@ -116,18 +119,30 @@ public class Member extends BaseEntity {
         }
     }
 
-    public void changePassword(final String password) {
+    public void changePassword(final String password, final LocalDateTime lastModifiedDateTime) {
         final Password newPassword = new Password(password);
+        validateDuplication(newPassword);
+        validateDateTime(lastModifiedDateTime);
+        this.password = newPassword;
+        this.lastModifiedDateTime = lastModifiedDateTime;
+    }
 
+    private void validateDuplication(final Password newPassword) {
         if (hasSamePassword(newPassword)) {
             throw new IllegalArgumentException(PASSWORD_DUPLICATION);
         }
-
-        this.password = newPassword;
     }
 
-    public void delete() {
+    private void validateDateTime(final LocalDateTime localDateTime) {
+        if (Objects.isNull(localDateTime)) {
+            throw new IllegalArgumentException(INVALID_DATE_TIME);
+        }
+    }
+
+    public void delete(final LocalDateTime deletedDateTime) {
+        validateDateTime(deletedDateTime);
         deleted = true;
+        this.deletedDateTime = deletedDateTime;
     }
 
     public void addBoard(final Board newBoard) {

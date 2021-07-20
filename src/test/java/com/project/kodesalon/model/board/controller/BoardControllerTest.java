@@ -116,6 +116,22 @@ public class BoardControllerTest {
     }
 
     @Test
+    @DisplayName("생성 시간이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
+    public void save_fail_with_invalid_created_date_time() throws Exception {
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 내용", null);
+        mockMvc.perform(post("/api/v1/boards")
+                .content(objectMapper.writeValueAsString(boardCreateRequest))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(document("board/create/fail/null-created-date-time",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("게시물 생성 시간이 없을 경우에 대한 예외 코드")
+                        )));
+    }
+
+    @Test
     @DisplayName("게시물 식별번호를 인자로 받아 게시물을 삭제하고 HTTP 200을 반환한다.")
     void delete_success() throws Exception {
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)

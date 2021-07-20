@@ -5,6 +5,7 @@ import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
+import com.project.kodesalon.model.member.service.dto.DeleteMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import com.project.kodesalon.model.memberboard.MemberBoardService;
 import org.assertj.core.api.BDDSoftAssertions;
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
@@ -32,7 +34,8 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
-    private final CreateMemberRequest createMemberRequest = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222");
+    private final CreateMemberRequest createMemberRequest
+            = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
     @InjectMocks
     private MemberService memberService;
@@ -112,27 +115,29 @@ public class MemberServiceTest {
     public void changePassword() {
         given(memberBoardService.findById(anyLong())).willReturn(member);
 
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!");
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!", LocalDateTime.now());
         memberService.changePassword(anyLong(), changePasswordRequest);
-        verify(member, times(1)).changePassword(anyString());
+        verify(member, times(1)).changePassword(anyString(), any(LocalDateTime.class));
     }
 
     @Test
     @DisplayName("회원 탈퇴에 성공한다.")
     void deleteMember() {
+        DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(LocalDateTime.now());
         given(memberBoardService.findById(anyLong())).willReturn(member);
 
-        memberService.deleteMember(member.getId());
+        memberService.deleteMember(member.getId(), deleteMemberRequest);
 
-        verify(member, times(1)).delete();
+        verify(member, times(1)).delete(any(LocalDateTime.class));
     }
 
     @Test
     @DisplayName("회원 탈퇴시, 존재하지 않는 회원 식별자면 예외를 발생시킨다.")
     void deleteMember_throws_exception() {
+        DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(LocalDateTime.now());
         given(memberBoardService.findById(anyLong())).willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER));
 
-        thenThrownBy(() -> memberService.deleteMember(member.getId()))
+        thenThrownBy(() -> memberService.deleteMember(member.getId(), deleteMemberRequest))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(NOT_EXIST_MEMBER);
     }

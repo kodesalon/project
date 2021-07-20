@@ -7,7 +7,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullSource;
 
+import java.time.LocalDateTime;
+
+import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 import static com.project.kodesalon.model.board.domain.BoardTest.TEST_BOARD;
@@ -17,25 +21,25 @@ import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 public class MemberTest {
     public static final Member TEST_MEMBER
-            = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
+            = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
 
+    private final BDDSoftAssertions softly = new BDDSoftAssertions();
     private Member member;
 
     @BeforeEach
     void setup() {
-        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
+        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.of(2021, 7, 16, 23, 59));
     }
 
     @Test
     @DisplayName("Member 객체를 생성하면 각 필드가 초기화 됩니다.")
     void create_member_init_filed() {
-        BDDSoftAssertions softly = new BDDSoftAssertions();
-
         softly.then(member.getAlias()).isEqualTo("alias");
         softly.then(member.getPassword()).isEqualTo("Password!!123");
         softly.then(member.getName()).isEqualTo("이름");
         softly.then(member.getEmail()).isEqualTo("email@email.com");
         softly.then(member.getPhone()).isEqualTo("010-1234-4444");
+        softly.then(member.getCreatedDateTime()).isEqualTo(LocalDateTime.of(2021, 7, 16, 23, 59));
         softly.then(member.isDeleted()).isFalse();
         softly.assertAll();
     }
@@ -67,10 +71,13 @@ public class MemberTest {
     @DisplayName("비밀번호를 변경한다.")
     void changePassword() {
         String newPassword = "ChangePassword1!";
+        LocalDateTime lastModifiedDateTime = LocalDateTime.of(2021, 7, 16, 23, 59);
 
-        member.changePassword(newPassword);
+        member.changePassword(newPassword, lastModifiedDateTime);
 
-        then(member.getPassword()).isEqualTo(newPassword);
+        softly.then(member.getPassword()).isEqualTo(newPassword);
+        softly.then(member.getLastModifiedDateTime()).isEqualTo(lastModifiedDateTime);
+        softly.assertAll();
     }
 
     @Test
@@ -78,15 +85,27 @@ public class MemberTest {
     void changePassword_throw_error_with_exist_password() {
         String password = member.getPassword();
         thenIllegalArgumentException()
-                .isThrownBy(() -> member.changePassword(password))
+                .isThrownBy(() -> member.changePassword(password, LocalDateTime.now()))
                 .withMessage(PASSWORD_DUPLICATION);
     }
 
     @Test
     @DisplayName("멤버를 삭제하면 isDeleted 속성이 true가 된다.")
     void delete() {
-        member.delete();
+        LocalDateTime deletedDateTime = LocalDateTime.now();
+        member.delete(deletedDateTime);
 
-        then(member.isDeleted()).isTrue();
+        softly.then(member.isDeleted()).isTrue();
+        softly.then(member.getDeletedDateTime()).isEqualTo(deletedDateTime);
+        softly.assertAll();
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("회월 탈퇴 시간이 없으면 예외를 발생시킨다.")
+    void delete_throws_exception_with_null_deleted_date_time(LocalDateTime invalidDeletedTime) {
+        thenIllegalArgumentException()
+                .isThrownBy(() -> member.delete(invalidDeletedTime))
+                .withMessage(INVALID_DATE_TIME);
     }
 }
