@@ -62,7 +62,7 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL)
     private List<Board> boards = new ArrayList<>();
 
-    @Column(name = "deleted", columnDefinition = "boolean default false")
+    @Column(nullable = false, name = "deleted", columnDefinition = "boolean default false")
     private boolean deleted;
 
     public Member(final String alias, final String password, final String name, final String email, final String phone, LocalDateTime createdDateTime) {
