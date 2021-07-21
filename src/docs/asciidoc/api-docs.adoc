@@ -126,24 +126,24 @@ include::{snippets}/member/select/success/http-response.adoc[]
 
 === Request
 
-include::{snippets}/member/changePassword/success/request-fields.adoc[]
-include::{snippets}/member/changePassword/success/http-request.adoc[]
+include::{snippets}/member/change-password/success/request-fields.adoc[]
+include::{snippets}/member/change-password/success/http-request.adoc[]
 
 === Response
 
 ==== *성공*
 
-include::{snippets}/member/changePassword/success/http-response.adoc[]
+include::{snippets}/member/change-password/success/http-response.adoc[]
 
 ==== *실패*
 
 - 유효하지 않은 비밀번호
-include::{snippets}/member/changePassword/fail/invalid-password/response-fields.adoc[]
-include::{snippets}/member/changePassword/fail/invalid-password/http-response.adoc[]
+include::{snippets}/member/change-password/fail/invalid-password/response-fields.adoc[]
+include::{snippets}/member/change-password/fail/invalid-password/http-response.adoc[]
 
 - 유효하지 않은 변경 시간
-include::{snippets}/member/changePassword/fail/null-last-modified-date-time/response-fields.adoc[]
-include::{snippets}/member/changePassword/fail/null-last-modified-date-time/http-response.adoc[]
+include::{snippets}/member/change-password/fail/null-last-modified-date-time/response-fields.adoc[]
+include::{snippets}/member/change-password/fail/null-last-modified-date-time/http-response.adoc[]
 
 == Delete
 

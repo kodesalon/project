@@ -251,7 +251,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
-                .andDo(document("join/fail/null-created-date-time",
+                .andDo(document("member/join/fail/null-created-date-time",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("회원 가입 시간이 없는 경우에 대한 예외 코드"))));
@@ -286,7 +286,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(changePasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("member/changePassword/success",
+                .andDo(document("member/change-password/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -305,7 +305,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(changePasswordRequestWithInvalidPassword)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PASSWORD))
-                .andDo(document("member/changePassword/fail/invalid-password",
+                .andDo(document("member/change-password/fail/invalid-password",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호에 대한 예외 코드"))));
@@ -324,7 +324,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(changePasswordRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_EXIST_MEMBER))
-                .andDo(document("member/changePassword/fail/no-member",
+                .andDo(document("member/change-password/fail/no-member",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 회원에 대한 예외 코드"))));
@@ -343,7 +343,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(changePasswordRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(DUPLICATED_PASSWORD))
-                .andDo(document("member/changePassword/fail/password-duplicate",
+                .andDo(document("member/change-password/fail/password-duplicate",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("기존 비밀번호와 일치할 경우에 대한 예외 코드"))));
@@ -360,7 +360,7 @@ public class MemberControllerTest {
                 .content(objectMapper.writeValueAsString(changePasswordRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
-                .andDo(document("member/changePassword/fail/null-last-modified-date-time",
+                .andDo(document("member/change-password/fail/null-last-modified-date-time",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("마지막으로 수정된 시간이 없을 경우에 대한 예외 코드"))));

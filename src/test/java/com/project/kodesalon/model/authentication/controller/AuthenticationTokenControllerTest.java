@@ -104,7 +104,7 @@ public class AuthenticationTokenControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INCORRECT_PASSWORD))
-                .andDo(document("auth/login/fail/mismatch_password",
+                .andDo(document("auth/login/fail/mismatch-password",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -127,7 +127,7 @@ public class AuthenticationTokenControllerTest {
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_EXIST_MEMBER_ALIAS))
-                .andDo(document("auth/login/fail/no_alias",
+                .andDo(document("auth/login/fail/no-alias",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 아이디에 대한 예외 코드"))));

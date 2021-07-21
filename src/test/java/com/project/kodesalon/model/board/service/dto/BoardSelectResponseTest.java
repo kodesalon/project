@@ -12,7 +12,7 @@ public class BoardSelectResponseTest {
     @DisplayName("제목, 내용, 생성 시간, 작성자 별명을 반환한다.")
     void getter() {
         BDDSoftAssertions softly = new BDDSoftAssertions();
-        String createdDateTime = LocalDateTime.now().toString();
+        LocalDateTime createdDateTime = LocalDateTime.now();
         BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "제목", "내용", createdDateTime, 1L, "alias");
 
         softly.then(boardSelectResponse.getBoardId()).isEqualTo(1L);

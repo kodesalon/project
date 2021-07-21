@@ -289,7 +289,7 @@ public class BoardControllerTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("내용이 존재하지 않을 경우 400 Http 상태와 예외 코드를 응답합니다")
-    public void update_throw_exception_with_invalid_content(String nullAndEmptyContent) throws Exception {
+    void update_throw_exception_with_invalid_content(String nullAndEmptyContent) throws Exception {
         BoardUpdateRequest boardUpdateRequest
                 = new BoardUpdateRequest("update content", nullAndEmptyContent, LocalDateTime.now());
 
@@ -343,7 +343,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("게시물 식별 번호를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoard() throws Exception {
-        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "게시물 제목", "게시물 내용", LocalDateTime.now().toString(), 1L, "alias");
+        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "게시물 제목", "게시물 내용", LocalDateTime.now(), 1L, "alias");
         given(boardService.selectBoard(anyLong())).willReturn(boardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards/{boardId}", 1L)
@@ -359,7 +359,7 @@ public class BoardControllerTest {
                                 fieldWithPath("boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("게시물 제목"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("게시물 내용"),
-                                fieldWithPath("createdDateTime").type(JsonFieldType.STRING).description("게시물 생성 시간"),
+                                fieldWithPath("createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
                                 fieldWithPath("writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
                                 fieldWithPath("writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디")
                         )));
@@ -368,7 +368,7 @@ public class BoardControllerTest {
     @Test
     @DisplayName("마지막으로 조회한 게시물의 식별 번호와 한번에 조회할 게시물의 크기를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoards() throws Exception {
-        List<BoardSelectResponse> content = new ArrayList<>(Arrays.asList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now().toString(), 1L, "alias")));
+        List<BoardSelectResponse> content = new ArrayList<>(Arrays.asList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias")));
         given(boardService.selectBoards(anyLong(), anyInt())).willReturn(content);
 
         mockMvc.perform(get("/api/v1/boards")
@@ -387,7 +387,7 @@ public class BoardControllerTest {
                                 fieldWithPath("[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
                                 fieldWithPath("[].title").type(JsonFieldType.STRING).description("게시물 제목"),
                                 fieldWithPath("[].content").type(JsonFieldType.STRING).description("게시물 내용"),
-                                fieldWithPath("[].createdDateTime").type(JsonFieldType.STRING).description("게시물 생성 시간"),
+                                fieldWithPath("[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
                                 fieldWithPath("[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
                                 fieldWithPath("[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디")
                         )));
