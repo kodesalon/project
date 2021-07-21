@@ -49,6 +49,7 @@ public class BoardRepositoryTest {
         boardRepository.save(secondBoard);
 
         boardRepository.deleteBoardByMemberId(member.getId());
+        testEntityManager.clear();
 
         softly.then(boardRepository.findById(firstBoard.getId())).isEmpty();
         softly.then(boardRepository.findById(secondBoard.getId())).isEmpty();
