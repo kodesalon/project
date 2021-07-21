@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.member.service;
 
+import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
@@ -7,7 +8,6 @@ import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.DeleteMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
-import com.project.kodesalon.model.memberboard.MemberBoardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -16,17 +16,18 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityNotFoundException;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER;
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 
 @Slf4j
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
-    private final MemberBoardService memberBoardService;
+    private final BoardRepository boardRepository;
 
-    public MemberService(final MemberRepository memberRepository, MemberBoardService memberBoardService) {
+    public MemberService(final MemberRepository memberRepository, BoardRepository boardRepository) {
         this.memberRepository = memberRepository;
-        this.memberBoardService = memberBoardService;
+        this.boardRepository = boardRepository;
     }
 
     @Transactional
@@ -55,21 +56,29 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public SelectMemberResponse selectMember(final Long memberId) {
-        Member member = memberBoardService.findById(memberId);
+        Member member = findById(memberId);
         return new SelectMemberResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone());
     }
 
     @Transactional
     public void changePassword(final Long memberId, final ChangePasswordRequest changePasswordRequest) {
-        Member member = memberBoardService.findById(memberId);
+        Member member = findById(memberId);
         member.changePassword(changePasswordRequest.getPassword(), changePasswordRequest.getLastModifiedDateTime());
     }
 
     @Transactional
     public void deleteMember(final Long memberId, final DeleteMemberRequest deleteMemberRequest) {
-        Member member = memberBoardService.findById(memberId);
-        memberBoardService.deleteBoardByMemberId(memberId);
+        Member member = findById(memberId);
+        boardRepository.deleteBoardByMemberId(memberId);
         member.delete(deleteMemberRequest.getDeletedDateTime());
+    }
+
+    public Member findById(final Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> {
+                    log.info("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
+                    throw new EntityNotFoundException(NOT_EXIST_MEMBER);
+                });
     }
 
     public Member findMemberByAlias(final String alias) {
