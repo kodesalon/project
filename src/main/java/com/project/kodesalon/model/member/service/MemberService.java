@@ -6,6 +6,7 @@ import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
+import com.project.kodesalon.model.member.service.dto.DeleteMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -62,14 +63,14 @@ public class MemberService {
     @Transactional
     public void changePassword(final Long memberId, final ChangePasswordRequest changePasswordRequest) {
         Member member = findById(memberId);
-        member.changePassword(changePasswordRequest.getPassword());
+        member.changePassword(changePasswordRequest.getPassword(), changePasswordRequest.getLastModifiedDateTime());
     }
 
     @Transactional
-    public void deleteMember(final Long memberId) {
+    public void deleteMember(final Long memberId, final DeleteMemberRequest deleteMemberRequest) {
         Member member = findById(memberId);
         boardRepository.deleteBoardByMemberId(memberId);
-        member.delete();
+        member.delete(deleteMemberRequest.getDeletedDateTime());
     }
 
     public Member findById(final Long memberId) {

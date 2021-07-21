@@ -5,6 +5,7 @@ import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
+import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import com.project.kodesalon.model.member.domain.Member;
@@ -36,7 +37,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardServiceTest {
-    private final BoardUpdateRequest BOARD_UPDATE_REQUEST = new BoardUpdateRequest("update title", "update content");
+    private final BoardUpdateRequest BOARD_UPDATE_REQUEST = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
 
     @InjectMocks
     private BoardService boardService;
@@ -67,11 +68,12 @@ public class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 회원 식별 번호, 게시물 식별 번호를 인자로 전달받아 게시물을 삭제한다.")
     void delete() {
+        BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(LocalDateTime.now());
         given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
 
-        boardService.delete(1L, anyLong());
+        boardService.delete(1L, 1L, boardDeleteRequest);
 
-        verify(board, times(1)).delete(anyLong());
+        verify(board, times(1)).delete(anyLong(), any(LocalDateTime.class));
     }
 
     @Test
@@ -83,7 +85,7 @@ public class BoardServiceTest {
         boardService.updateBoard(member.getId(), 1L, BOARD_UPDATE_REQUEST);
 
         verify(boardRepository, times(1)).findById(anyLong());
-        verify(board, times(1)).updateTitleAndContent(anyLong(), any(Title.class), any(Content.class));
+        verify(board, times(1)).updateTitleAndContent(anyLong(), any(Title.class), any(Content.class), any(LocalDateTime.class));
     }
 
     @Test

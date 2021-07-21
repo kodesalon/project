@@ -1,5 +1,6 @@
 package com.project.kodesalon.model.board.domain;
 
+import com.project.kodesalon.common.BaseEntity;
 import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.member.domain.Member;
@@ -18,14 +19,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
 
 @Slf4j
 @Entity
 @Where(clause = "deleted = 'false'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Board {
+public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,11 +45,8 @@ public class Board {
     @JoinColumn(name = "member_id", nullable = false)
     private Member writer;
 
-    @Column(nullable = false)
-    private LocalDateTime createdDateTime;
-
-    @Column(name = "deleted")
-    private boolean deleted = false;
+    @Column(nullable = false, name = "deleted", columnDefinition = "boolean default false")
+    private boolean deleted;
 
     public Board(final String title, final String content, final Member writer, final LocalDateTime createdDateTime) {
         this.title = new Title(title);
@@ -72,33 +72,38 @@ public class Board {
         return writer;
     }
 
-    public String getCreatedDateTime() {
-        return createdDateTime.toString();
-    }
-
     public boolean isDeleted() {
         return deleted;
     }
 
-    public void delete(final Long memberId) {
+    public void delete(final Long memberId, final LocalDateTime deletedDateTime) {
         validateAuthorizationOf(memberId);
+        validateDateTime(deletedDateTime);
         deleted = true;
     }
 
-    public void updateTitleAndContent(Long memberId, Title updateTitle, Content updateContent) {
+    public void updateTitleAndContent(final Long memberId, final Title updatedTitle, final Content updatedContent, final LocalDateTime lastModifiedDateTime) {
         validateAuthorizationOf(memberId);
-        this.title = updateTitle;
-        this.content = updateContent;
+        validateDateTime(lastModifiedDateTime);
+        this.title = updatedTitle;
+        this.content = updatedContent;
+        this.lastModifiedDateTime = lastModifiedDateTime;
     }
 
-    private void validateAuthorizationOf(Long memberId) {
+    private void validateAuthorizationOf(final Long memberId) {
         if (!isSameWriterId(memberId)) {
             log.info("{}가 {}에 관한 권한이 없음.", memberId, id);
             throw new IllegalArgumentException(NOT_AUTHORIZED_MEMBER);
         }
     }
 
-    private boolean isSameWriterId(Long memberId) {
+    private void validateDateTime(final LocalDateTime deletedDateTime) {
+        if (Objects.isNull(deletedDateTime)) {
+            throw new IllegalArgumentException(INVALID_DATE_TIME);
+        }
+    }
+
+    private boolean isSameWriterId(final Long memberId) {
         return writer.getId().equals(memberId);
     }
 }

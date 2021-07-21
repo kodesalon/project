@@ -5,6 +5,7 @@ import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
+import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import com.project.kodesalon.model.member.domain.Member;
@@ -39,9 +40,9 @@ public class BoardService {
     }
 
     @Transactional
-    public void delete(final Long memberId, final Long boardId) {
+    public void delete(final Long memberId, final Long boardId, final BoardDeleteRequest boardDeleteRequest) {
         Board board = findById(boardId);
-        board.delete(memberId);
+        board.delete(memberId, boardDeleteRequest.getDeletedDateTime());
     }
 
     @Transactional(readOnly = true)
@@ -60,11 +61,11 @@ public class BoardService {
     }
 
     @Transactional
-    public void updateBoard(final Long memberId, final Long boardId, final BoardUpdateRequest boardUpdateRequest) {
-        Title updateTitle = new Title(boardUpdateRequest.getUpdatedTitle());
-        Content updateContent = new Content(boardUpdateRequest.getUpdatedContent());
+    public void updateBoard(Long memberId, final Long boardId, final BoardUpdateRequest boardUpdateRequest) {
+        Title updateTitle = new Title(boardUpdateRequest.getTitle());
+        Content updateContent = new Content(boardUpdateRequest.getContent());
         Board updatedBoard = findById(boardId);
-        updatedBoard.updateTitleAndContent(memberId, updateTitle, updateContent);
+        updatedBoard.updateTitleAndContent(memberId, updateTitle, updateContent, boardUpdateRequest.getLastModifiedDateTime());
     }
 
     private Board findById(final Long boardId) {

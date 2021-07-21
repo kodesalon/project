@@ -502,7 +502,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#_update_password">Update Password</a>
+<li><a href="#_change_password">Change Password</a>
 <ul class="sectlevel2">
 <li><a href="#_request_5">Request</a></li>
 <li><a href="#_response_5">Response</a>
@@ -519,6 +519,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_response_6">Response</a>
 <ul class="sectlevel3">
 <li><a href="#_성공_6"><strong>성공</strong></a></li>
+<li><a href="#_실패_5"><strong>실패</strong></a></li>
 </ul>
 </li>
 </ul>
@@ -529,52 +530,33 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel1">
 <li><a href="#_save">Save</a>
 <ul class="sectlevel2">
-  <li><a href="#_request_7">Request</a></li>
-  <li><a href="#_response_7">Response</a>
+<li><a href="#_request_7">Request</a></li>
+<li><a href="#_response_7">Response</a>
+<ul class="sectlevel3">
+<li><a href="#_성공_7"><strong>성공</strong></a></li>
+<li><a href="#_실패_6"><strong>실패</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#_delete_2">Delete</a>
+<ul class="sectlevel2">
+  <li><a href="#_request_8">Request</a></li>
+  <li><a href="#_response_8">Response</a>
     <ul class="sectlevel3">
-      <li><a href="#_성공_7"><strong>성공</strong></a></li>
-      <li><a href="#_실패_5"><strong>실패</strong></a></li>
+      <li><a href="#_성공_8"><strong>성공</strong></a></li>
+      <li><a href="#_실패_7"><strong>실패</strong></a></li>
     </ul>
   </li>
 </ul>
 </li>
-  <li><a href="#_select_single">Select Single</a>
-    <ul class="sectlevel2">
-      <li><a href="#_request_8">Request</a></li>
-      <li><a href="#_response_8">Response</a>
-        <ul class="sectlevel3">
-          <li><a href="#_성공_8"><strong>성공</strong></a></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li><a href="#_select_multi">Select Multi</a>
-    <ul class="sectlevel2">
-      <li><a href="#_request_9">Request</a>
-        <ul class="sectlevel3">
-          <li><a href="#_성공_9"><strong>성공</strong></a></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li><a href="#_delete_2">Delete</a>
-    <ul class="sectlevel2">
-      <li><a href="#_request_10">Request</a></li>
-      <li><a href="#_response_9">Response</a>
-        <ul class="sectlevel3">
-          <li><a href="#_성공_10"><strong>성공</strong></a></li>
-          <li><a href="#_실패_6"><strong>실패</strong></a></li>
-        </ul>
-      </li>
-    </ul>
-  </li>
   <li><a href="#_update">Update</a>
     <ul class="sectlevel2">
-      <li><a href="#_request_11">Request</a></li>
-      <li><a href="#_response_10">Response</a>
+      <li><a href="#_request_9">Request</a></li>
+      <li><a href="#_response_9">Response</a>
         <ul class="sectlevel3">
-          <li><a href="#_성공_11"><strong>성공</strong></a></li>
-          <li><a href="#_실패_7"><strong>실패</strong></a></li>
+          <li><a href="#_성공_9"><strong>성공</strong></a></li>
+          <li><a href="#_실패_8"><strong>실패</strong></a></li>
         </ul>
       </li>
     </ul>
@@ -672,7 +654,7 @@ Content-Length: 21
 <div class="ulist">
 <ul>
 <li>
-<p>Header에 Authorization 속성 값이 없을 경우</p>
+<p>유효하지 않은 Authorization 속성 값</p>
 </li>
 </ul>
 </div>
@@ -693,7 +675,7 @@ Content-Length: 21
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Header에 Authorization 속성이 없을 경우에 대한 에러 코드</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Header에 Authorization 속성이 없을 경우에 대한 예외 코드</p></td>
 </tr>
 </tbody>
 </table>
@@ -816,7 +798,7 @@ Content-Length: 111
 <div class="ulist">
 <ul>
 <li>
-<p>Alias가 없는 경우</p>
+<p>존재하지 않는 Alias</p>
 </li>
 </ul>
 </div>
@@ -855,7 +837,7 @@ Content-Length: 21
 <div class="ulist">
 <ul>
 <li>
-<p>Password가 일치하지 않는 경우</p>
+<p>일치하지 않는 Password</p>
 </li>
 </ul>
 </div>
@@ -983,7 +965,7 @@ Content-Length: 70
 <div class="ulist">
 <ul>
 <li>
-<p>유효하지 않거나 만료된 토큰일 경우</p>
+<p>유효하지 않거나 만료된 토큰</p>
 </li>
 </ul>
 </div>
@@ -1068,13 +1050,18 @@ Content-Length: 21
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 가입할 핸드폰 번호</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>createdDateTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 가입한 시간</p></td>
+</tr>
 </tbody>
 </table>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members/join HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 136
+Content-Length: 181
 Host: localhost:8080
 
 {
@@ -1082,7 +1069,8 @@ Host: localhost:8080
   "password" : "Password123!!",
   "name" : "이름",
   "email" : "email@email.com",
-  "phone" : "010-1111-2222"
+  "phone" : "010-1111-2222",
+  "createdDateTime" : "2021-07-21T16:39:04"
 }</code></pre>
 </div>
 </div>
@@ -1102,7 +1090,7 @@ Host: localhost:8080
 <div class="ulist">
 <ul>
 <li>
-<p>이미 존재하는 Alias일 경우</p>
+<p>이미 존재하는 Alias</p>
 </li>
 </ul>
 </div>
@@ -1141,7 +1129,7 @@ Content-Length: 21
 <div class="ulist">
 <ul>
 <li>
-<p>Password 형식이 맞지 않을 경우</p>
+<p>유효하지 않은 Password</p>
 </li>
 </ul>
 </div>
@@ -1180,7 +1168,7 @@ Content-Length: 21
 <div class="ulist">
 <ul>
 <li>
-<p>Alias 형식이 맞지 않을 경우</p>
+<p>유효하지 않은 Alias</p>
 </li>
 </ul>
 </div>
@@ -1219,7 +1207,7 @@ Content-Length: 21
 <div class="ulist">
 <ul>
 <li>
-<p>email이 email 형식이 아닌 경우</p>
+<p>유효하지 않은 Email</p>
 </li>
 </ul>
 </div>
@@ -1258,7 +1246,7 @@ Content-Length: 21
 <div class="ulist">
 <ul>
 <li>
-<p>Name 형식이 맞지 않을 경우</p>
+<p>유효하지 않은 Name</p>
 </li>
 </ul>
 </div>
@@ -1297,7 +1285,7 @@ Content-Length: 21
 <div class="ulist">
 <ul>
 <li>
-<p>Phone이 핸드폰 형식이 아닌 경우</p>
+<p>유효하지 않은 Phone</p>
 </li>
 </ul>
 </div>
@@ -1330,6 +1318,45 @@ Content-Length: 21
 
 {
   "code" : "M007"
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>유효하지 않은 가입 시간</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 가입 시간이 없는 경우에 대한 예외 코드</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+Content-Length: 21
+
+{
+  "code" : "D001"
 }</code></pre>
 </div>
 </div>
@@ -1409,7 +1436,7 @@ Content-Length: 104
 </div>
 </div>
 <div class="sect1">
-<h2 id="_update_password"><a class="link" href="#_update_password">Update Password</a></h2>
+<h2 id="_change_password"><a class="link" href="#_change_password">Change Password</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_request_5"><a class="link" href="#_request_5">Request</a></h3>
@@ -1432,17 +1459,23 @@ Content-Length: 104
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">변경하려는 비밀번호</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>lastModifiedDateTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호 변경 시간</p></td>
+</tr>
 </tbody>
 </table>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/v1/members/password HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 37
+Content-Length: 87
 Host: localhost:8080
 
 {
-  "password" : "ChangePassword1!"
+  "password" : "ChangePassword1!",
+  "lastModifiedDateTime" : "2021-07-21T16:39:04"
 }</code></pre>
 </div>
 </div>
@@ -1498,6 +1531,45 @@ Content-Length: 21
 }</code></pre>
 </div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>유효하지 않은 변경 시간</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">마지막으로 수정된 시간이 없을 경우에 대한 예외 코드</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+Content-Length: 21
+
+{
+  "code" : "D001"
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1507,11 +1579,37 @@ Content-Length: 21
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_request_6"><a class="link" href="#_request_6">Request</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>deletedDateTime</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 탈퇴 시간</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/members HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Host: localhost:8080</code></pre>
+Content-Length: 47
+Host: localhost:8080
+
+{
+  "deletedDateTime" : "2021-07-21T16:39:04"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1522,6 +1620,48 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_실패_5"><a class="link" href="#_실패_5"><strong>실패</strong></a></h4>
+<div class="ulist">
+<ul>
+<li>
+<p>유효하지 않은 탈퇴 시간</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 탈퇴 시간이 없는 경우에 대한 예외 코드</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
+Content-Type: application/json;charset=UTF-8
+Content-Length: 21
+
+{
+  "code" : "D001"
+}</code></pre>
 </div>
 </div>
 </div>
@@ -1575,7 +1715,7 @@ Host: localhost:8080
 {
   "title" : "게시물 제목",
   "content" : "게시물 내용",
-  "createdDateTime" : "2021-07-16T12:51:46"
+  "createdDateTime" : "2021-07-21T16:39:01"
 }</code></pre>
 </div>
 </div>
@@ -1584,6 +1724,27 @@ Host: localhost:8080
 <h3 id="_response_7"><a class="link" href="#_response_7">Response</a></h3>
 <div class="sect3">
 <h4 id="_성공_7"><a class="link" href="#_성공_7"><strong>성공</strong></a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">유효하지 않은 제목에 대한 예외 코드</p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK</code></pre>
@@ -1591,7 +1752,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_실패_5"><a class="link" href="#_실패_5"><strong>실패</strong></a></h4>
+<h4 id="_실패_6"><a class="link" href="#_실패_6"><strong>실패</strong></a></h4>
 <div class="ulist">
 <ul>
 <li>
@@ -1670,118 +1831,56 @@ Content-Length: 21
 }</code></pre>
 </div>
 </div>
+<div class="ulist">
+<ul>
+<li>
+<p>유효하지 않은 작성 시간</p>
+</li>
+</ul>
 </div>
-</div>
-</div>
-</div>
-<div class="sect1">
-  <h2 id="_select_single"><a class="link" href="#_select_single">Select Single</a></h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_request_8"><a class="link" href="#_request_8">Request</a></h3>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. /api/v1/boards/{boardId}</caption>
 <colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boardId</code></p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 식별 번호</p></td>
-</tr>
-</tbody>
+  <tbody>
+  <tr>
+    <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+    <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+    <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 생성 시간이 없을 경우에 대한 예외 코드</p></td>
+  </tr>
+  </tbody>
 </table>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/boards/1 HTTP/1.1
+  <div class="listingblock">
+    <div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-  <div class="sect2">
-    <h3 id="_response_8"><a class="link" href="#_response_8">Response</a></h3>
-    <div class="sect3">
-      <h4 id="_성공_8"><a class="link" href="#_성공_8"><strong>성공</strong></a></h4>
-      <table class="tableblock frame-all grid-all stretch">
-        <colgroup>
-          <col style="width: 33.3333%;">
-          <col style="width: 33.3333%;">
-          <col style="width: 33.3334%;">
-        </colgroup>
-        <thead>
-        <tr>
-          <th class="tableblock halign-left valign-top">Path</th>
-          <th class="tableblock halign-left valign-top">Type</th>
-          <th class="tableblock halign-left valign-top">Description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boardId</code></p></td>
-          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-          <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 식별 번호</p></td>
-        </tr>
-        <tr>
-          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
-          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-          <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 제목</p></td>
-        </tr>
-        <tr>
-          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
-          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-          <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 내용</p></td>
-        </tr>
-        <tr>
-          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>createdDateTime</code></p></td>
-          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-          <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 생성 시간</p></td>
-        </tr>
-        <tr>
-          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>writerId</code></p></td>
-          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-          <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 작성자 식별 번호</p></td>
-        </tr>
-        <tr>
-          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>writerAlias</code></p></td>
-          <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-          <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 작성자 아이디</p></td>
-        </tr>
-        </tbody>
-      </table>
-      <div class="listingblock">
-        <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
-Content-Type: application/json
-Content-Length: 182
+Content-Length: 21
 
 {
-  "boardId" : 1,
-  "title" : "게시물 제목",
-  "content" : "게시물 내용",
-  "createdDateTime" : "2021-07-16T12:51:46.922898",
-  "writerId" : 1,
-  "writerAlias" : "alias"
+  "code" : "D001"
 }</code></pre>
-        </div>
-      </div>
     </div>
   </div>
 </div>
 </div>
+</div>
+</div>
   <div class="sect1">
-    <h2 id="_select_multi"><a class="link" href="#_select_multi">Select Multi</a></h2>
+    <h2 id="_delete_2"><a class="link" href="#_delete_2">Delete</a></h2>
     <div class="sectionbody">
       <div class="sect2">
-        <h3 id="_request_9"><a class="link" href="#_request_9">Request</a></h3>
+        <h3 id="_request_8"><a class="link" href="#_request_8">Request</a></h3>
         <table class="tableblock frame-all grid-all stretch">
+          <caption class="title">Table 1. /api/v1/boards/{boardId}</caption>
           <colgroup>
             <col style="width: 50%;">
             <col style="width: 50%;">
@@ -1794,24 +1893,64 @@ Content-Length: 182
           </thead>
           <tbody>
           <tr>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>lastBoardId</code></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock">마지막으로 조회한 게시물 식별 번호</p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boardId</code></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">삭제하려는 게시물 번호</p></td>
           </tr>
+          </tbody>
+        </table>
+        <table class="tableblock frame-all grid-all stretch">
+          <colgroup>
+            <col style="width: 33.3333%;">
+            <col style="width: 33.3333%;">
+            <col style="width: 33.3334%;">
+          </colgroup>
+          <thead>
           <tr>
-            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>size</code></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock">한번에 조회할 게시물 크기</p></td>
+            <th class="tableblock halign-left valign-top">Path</th>
+            <th class="tableblock halign-left valign-top">Type</th>
+            <th class="tableblock halign-left valign-top">Description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>deletedDateTime</code></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">삭제 시간</p></td>
           </tr>
           </tbody>
         </table>
         <div class="listingblock">
           <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/boards?lastBoardId=1&amp;size=10 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/boards/1 HTTP/1.1
 Content-Type: application/json
-Host: localhost:8080</code></pre>
+Content-Length: 47
+Host: localhost:8080
+
+{
+  "deletedDateTime" : "2021-07-21T16:39:01"
+}</code></pre>
+          </div>
+        </div>
+      </div>
+      <div class="sect2">
+        <h3 id="_response_8"><a class="link" href="#_response_8">Response</a></h3>
+        <div class="sect3">
+          <h4 id="_성공_8"><a class="link" href="#_성공_8"><strong>성공</strong></a></h4>
+          <div class="listingblock">
+            <div class="content">
+              <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK</code></pre>
+            </div>
           </div>
         </div>
         <div class="sect3">
-          <h4 id="_성공_9"><a class="link" href="#_성공_9"><strong>성공</strong></a></h4>
+          <h4 id="_실패_7"><a class="link" href="#_실패_7"><strong>실패</strong></a></h4>
+          <div class="ulist">
+            <ul>
+              <li>
+                <p>권한을 가지지 않은 회원</p>
+              </li>
+            </ul>
+          </div>
           <table class="tableblock frame-all grid-all stretch">
             <colgroup>
               <col style="width: 33.3333%;">
@@ -1827,52 +1966,138 @@ Host: localhost:8080</code></pre>
             </thead>
             <tbody>
             <tr>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].boardId</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 식별 번호</p></td>
-            </tr>
-            <tr>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].title</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
               <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 제목</p></td>
-            </tr>
-            <tr>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].content</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 내용</p></td>
-            </tr>
-            <tr>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].createdDateTime</code></p>
-              </td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 생성 시간</p></td>
-            </tr>
-            <tr>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].writerId</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 작성자 식별 번호</p></td>
-            </tr>
-            <tr>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].writerAlias</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-              <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 작성자 아이디</p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock">권한이 없는 경우에 대한 예외 코드</p></td>
             </tr>
             </tbody>
           </table>
           <div class="listingblock">
             <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json
-Content-Length: 166
+Content-Length: 21
 
-[ {
-  "boardId" : 1,
-  "title" : "title",
-  "content" : "content",
-  "createdDateTime" : "2021-07-16T12:51:47.091732",
-  "writerId" : 1,
-  "writerAlias" : "alias"
-} ]</code></pre>
+{
+  "code" : "B004"
+}</code></pre>
+            </div>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li>
+                <p>이미 삭제된 게시물</p>
+              </li>
+            </ul>
+          </div>
+          <table class="tableblock frame-all grid-all stretch">
+            <colgroup>
+              <col style="width: 33.3333%;">
+              <col style="width: 33.3333%;">
+              <col style="width: 33.3334%;">
+            </colgroup>
+            <thead>
+            <tr>
+              <th class="tableblock halign-left valign-top">Path</th>
+              <th class="tableblock halign-left valign-top">Type</th>
+              <th class="tableblock halign-left valign-top">Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock">이미 삭제된 게시물에 재삭제 요청에 대한 예외 코드</p></td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="listingblock">
+            <div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 21
+
+{
+  "code" : "B005"
+}</code></pre>
+            </div>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li>
+                <p>존재하지 않는 게시물</p>
+              </li>
+            </ul>
+          </div>
+          <table class="tableblock frame-all grid-all stretch">
+            <colgroup>
+              <col style="width: 33.3333%;">
+              <col style="width: 33.3333%;">
+              <col style="width: 33.3334%;">
+            </colgroup>
+            <thead>
+            <tr>
+              <th class="tableblock halign-left valign-top">Path</th>
+              <th class="tableblock halign-left valign-top">Type</th>
+              <th class="tableblock halign-left valign-top">Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock">존재하지 않는 게시물 삭제 요청에 대한 예외 코드</p></td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="listingblock">
+            <div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 21
+
+{
+  "code" : "B003"
+}</code></pre>
+            </div>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li>
+                <p>유효하지 않은 삭제 시간</p>
+              </li>
+            </ul>
+          </div>
+          <table class="tableblock frame-all grid-all stretch">
+            <colgroup>
+              <col style="width: 33.3333%;">
+              <col style="width: 33.3333%;">
+              <col style="width: 33.3334%;">
+            </colgroup>
+            <thead>
+            <tr>
+              <th class="tableblock halign-left valign-top">Path</th>
+              <th class="tableblock halign-left valign-top">Type</th>
+              <th class="tableblock halign-left valign-top">Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock">유효하지 않은 삭제 시간에 대한 예외 코드</p></td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="listingblock">
+            <div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 21
+
+{
+  "code" : "D001"
+}</code></pre>
             </div>
           </div>
         </div>
@@ -1880,10 +2105,10 @@ Content-Length: 166
     </div>
   </div>
   <div class="sect1">
-    <h2 id="_delete_2"><a class="link" href="#_delete_2">Delete</a></h2>
+    <h2 id="_update"><a class="link" href="#_update">Update</a></h2>
     <div class="sectionbody">
       <div class="sect2">
-        <h3 id="_request_10"><a class="link" href="#_request_10">Request</a></h3>
+        <h3 id="_request_9"><a class="link" href="#_request_9">Request</a></h3>
         <table class="tableblock frame-all grid-all stretch">
           <caption class="title">Table 2. /api/v1/boards/{boardId}</caption>
           <colgroup>
@@ -1899,22 +2124,61 @@ Content-Length: 166
           <tbody>
           <tr>
             <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boardId</code></p></td>
-            <td class="tableblock halign-left valign-top"><p class="tableblock">삭제하려는 게시물 식별 번호</p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">수정할 게시물 식별자</p></td>
+          </tr>
+          </tbody>
+        </table>
+        <table class="tableblock frame-all grid-all stretch">
+          <colgroup>
+            <col style="width: 33.3333%;">
+            <col style="width: 33.3333%;">
+            <col style="width: 33.3334%;">
+          </colgroup>
+          <thead>
+          <tr>
+            <th class="tableblock halign-left valign-top">Path</th>
+            <th class="tableblock halign-left valign-top">Type</th>
+            <th class="tableblock halign-left valign-top">Description</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">수정할 제목</p></td>
+          </tr>
+          <tr>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>content</code></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">수정할 내용</p></td>
+          </tr>
+          <tr>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>lastModifiedDateTime</code></p>
+            </td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+            <td class="tableblock halign-left valign-top"><p class="tableblock">마지막으로 수정된 시간</p></td>
           </tr>
           </tbody>
         </table>
         <div class="listingblock">
           <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/boards/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/v1/boards/1 HTTP/1.1
 Content-Type: application/json
-Host: localhost:8080</code></pre>
+Content-Length: 112
+Host: localhost:8080
+
+{
+  "title" : "update title",
+  "content" : "update content",
+  "lastModifiedDateTime" : "2021-07-21T16:39:01"
+}</code></pre>
           </div>
         </div>
       </div>
       <div class="sect2">
         <h3 id="_response_9"><a class="link" href="#_response_9">Response</a></h3>
         <div class="sect3">
-          <h4 id="_성공_10"><a class="link" href="#_성공_10"><strong>성공</strong></a></h4>
+          <h4 id="_성공_9"><a class="link" href="#_성공_9"><strong>성공</strong></a></h4>
           <div class="listingblock">
             <div class="content">
               <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK</code></pre>
@@ -1922,11 +2186,11 @@ Host: localhost:8080</code></pre>
           </div>
         </div>
         <div class="sect3">
-          <h4 id="_실패_6"><a class="link" href="#_실패_6"><strong>실패</strong></a></h4>
+          <h4 id="_실패_8"><a class="link" href="#_실패_8"><strong>실패</strong></a></h4>
           <div class="ulist">
             <ul>
               <li>
-                <p>권한을 가지지 않은 회원이 삭제 시도할 경우</p>
+                <p>유효하지 않은 제목</p>
               </li>
             </ul>
           </div>
@@ -1935,215 +2199,160 @@ Host: localhost:8080</code></pre>
               <col style="width: 33.3333%;">
               <col style="width: 33.3333%;">
               <col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">권한이 없는 경우에 대한 예외 코드</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="content">
+            </colgroup>
+            <thead>
+            <tr>
+              <th class="tableblock halign-left valign-top">Path</th>
+              <th class="tableblock halign-left valign-top">Type</th>
+              <th class="tableblock halign-left valign-top">Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 수정 시 유효하지 않은 제목에 대한 예외 코드</p></td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="listingblock">
+            <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
-Content-Length: 21
-
-{
-  "code" : "B004"
-}</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>이미 삭제된 게시물을 다시 삭제 시도할 경우</p>
-</li>
-</ul>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미 삭제된 게시물에 재삭제 요청에 대한 예외 코드</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
-Content-Length: 21
-
-{
-  "code" : "B005"
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_update"><a class="link" href="#_update">Update</a></h2>
-<div class="sectionbody">
-<div class="sect2">
-  <h3 id="_request_11"><a class="link" href="#_request_11">Request</a></h3>
-<table class="tableblock frame-all grid-all stretch">
-  <caption class="title">Table 3. /api/v1/boards/{boardId}</caption>
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Parameter</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>boardId</code></p></td>
-  <td class="tableblock halign-left valign-top"><p class="tableblock">수정할 게시물 식별 번호</p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>updatedTitle</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">수정할 제목</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>updatedContent</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">수정할 내용</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/v1/boards/1 HTTP/1.1
-Content-Type: application/json
-Content-Length: 76
-Host: localhost:8080
-
-{
-  "updatedTitle" : "update title",
-  "updatedContent" : "update content"
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-  <h3 id="_response_10"><a class="link" href="#_response_10">Response</a></h3>
-<div class="sect3">
-  <h4 id="_성공_11"><a class="link" href="#_성공_11"><strong>성공</strong></a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_실패_7"><a class="link" href="#_실패_7"><strong>실패</strong></a></h4>
-<div class="ulist">
-<ul>
-<li>
-<p>유효하지 않은 제목일 경우</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>HTTP/1.1 400 Bad Request
 Content-Type: application/json
 Content-Length: 21
 
 {
   "code" : "B001"
-}</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>유효하지 않은 내용일 경우</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>HTTP/1.1 400 Bad Request
+}</code></pre>
+            </div>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li>
+                <p>유효하지 않은 내용</p>
+              </li>
+            </ul>
+          </div>
+          <table class="tableblock frame-all grid-all stretch">
+            <colgroup>
+              <col style="width: 33.3333%;">
+              <col style="width: 33.3333%;">
+              <col style="width: 33.3334%;">
+            </colgroup>
+            <thead>
+            <tr>
+              <th class="tableblock halign-left valign-top">Path</th>
+              <th class="tableblock halign-left valign-top">Type</th>
+              <th class="tableblock halign-left valign-top">Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 수정 시 유효하지 않은 내용에 대한 예외 코드</p></td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="listingblock">
+            <div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json
 Content-Length: 21
 
 {
   "code" : "B002"
-}</pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>존재하지 않는 게시물일 경우</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>HTTP/1.1 400 Bad Request
+}</code></pre>
+            </div>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li>
+                <p>존재하지 않는 게시물</p>
+              </li>
+            </ul>
+          </div>
+          <table class="tableblock frame-all grid-all stretch">
+            <colgroup>
+              <col style="width: 33.3333%;">
+              <col style="width: 33.3333%;">
+              <col style="width: 33.3334%;">
+            </colgroup>
+            <thead>
+            <tr>
+              <th class="tableblock halign-left valign-top">Path</th>
+              <th class="tableblock halign-left valign-top">Type</th>
+              <th class="tableblock halign-left valign-top">Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock">존재하지 않는 게시물에 대한 예외 메세지</p></td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="listingblock">
+            <div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
 Content-Type: application/json
 Content-Length: 21
 
 {
   "code" : "B003"
-}</pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+}</code></pre>
+            </div>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li>
+                <p>유효하지 않은 수정 시간</p>
+              </li>
+            </ul>
+          </div>
+          <table class="tableblock frame-all grid-all stretch">
+            <colgroup>
+              <col style="width: 33.3333%;">
+              <col style="width: 33.3333%;">
+              <col style="width: 33.3334%;">
+            </colgroup>
+            <thead>
+            <tr>
+              <th class="tableblock halign-left valign-top">Path</th>
+              <th class="tableblock halign-left valign-top">Type</th>
+              <th class="tableblock halign-left valign-top">Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+              <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 수정 시 유효하지 않은 게시물 수정 시간에 대한 예외
+                코</p></td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="listingblock">
+            <div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
+Content-Type: application/json
+Content-Length: 21
+
+{
+  "code" : "D001"
+}</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-  Last updated 2021-07-15 15:58:47 +0900
+  Last updated 2021-07-21 16:37:02 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

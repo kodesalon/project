@@ -5,6 +5,7 @@ import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
+import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,11 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -35,6 +36,7 @@ import java.util.List;
 import static com.project.kodesalon.common.ErrorCode.ALREADY_DELETED_BOARD;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
@@ -62,9 +64,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(JacksonConfiguration.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class BoardControllerTest {
-
-    private final BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("update title", "update content");
-
+    private final BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(LocalDateTime.now());
+    private final BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
     private MockMvc mockMvc;
 
     @InjectMocks
@@ -81,7 +82,6 @@ public class BoardControllerTest {
         this.mockMvc = MockMvcBuilders.standaloneSetup(boardController)
                 .apply(documentationConfiguration(restDocumentation))
                 .setControllerAdvice(new GlobalExceptionHandler())
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .build();
     }
 
@@ -136,16 +136,38 @@ public class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("게시물 식별번호를 인자로 받아 게시물을 삭제하고 HTTP 200을 반환한다.")
-    void delete_success() throws Exception {
-        mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
+    @DisplayName("생성 시간이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
+    void save_fail_with_invalid_created_date_time() throws Exception {
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 내용", null);
+        mockMvc.perform(post("/api/v1/boards")
+                .content(objectMapper.writeValueAsString(boardCreateRequest))
                 .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andDo(document("board/create/fail/null-created-date-time",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("게시물 생성 시간이 없을 경우에 대한 예외 코드")
+                        )));
+    }
+
+    @Test
+    @DisplayName("삭제 시간을 인자로 받아 게시물을 삭제하고 HTTP 200을 반환한다.")
+    void delete_success() throws Exception {
+        BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(LocalDateTime.now());
+
+        mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
                 .andExpect(status().isOk())
                 .andDo(document("board/delete/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("boardId").description("삭제하려는 게시물 식별 번호"))));
+                                parameterWithName("boardId").description("삭제하려는 게시물 번호")
+                        ),
+                        requestFields(
+                                fieldWithPath("deletedDateTime").type(JsonFieldType.STRING).description("삭제 시간"))));
     }
 
     @Test
@@ -153,10 +175,11 @@ public class BoardControllerTest {
     void delete_fail_with_invalid_authorization() throws Exception {
         willThrow(new IllegalArgumentException(NOT_AUTHORIZED_MEMBER))
                 .given(boardService)
-                .delete(any(), anyLong());
+                .delete(any(), anyLong(), any(BoardDeleteRequest.class));
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_AUTHORIZED_MEMBER))
                 .andDo(document("board/delete/fail/invalid-auth",
@@ -172,10 +195,11 @@ public class BoardControllerTest {
     void delete_fail_with_already_deleted() throws Exception {
         willThrow(new IllegalArgumentException(ALREADY_DELETED_BOARD))
                 .given(boardService)
-                .delete(any(), anyLong());
+                .delete(any(), anyLong(), any(BoardDeleteRequest.class));
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(ALREADY_DELETED_BOARD))
                 .andDo(document("board/delete/fail/already-deleted",
@@ -183,6 +207,45 @@ public class BoardControllerTest {
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("이미 삭제된 게시물에 재삭제 요청에 대한 예외 코드")
+                        )));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 게시물 삭제를 시도할 경우, HTTP 400과 예외 코드를 반환한다.")
+    void delete_fail_with_not_exist_board() throws Exception {
+        willThrow(new EntityNotFoundException(NOT_EXIST_BOARD))
+                .given(boardService)
+                .delete(any(), anyLong(), any(BoardDeleteRequest.class));
+
+        mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(NOT_EXIST_BOARD))
+                .andDo(document("board/delete/fail/not-exist-board",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 게시물 삭제 요청에 대한 예외 코드")
+                        )));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("삭제 시간이 null일 경우, 예외가 발생환다.")
+    void delete_fail_with_null_deleted_date_time(LocalDateTime deletedDateTime) throws Exception {
+        BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(deletedDateTime);
+
+        mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
+                .andDo(document("board/delete/fail/null-deleted-date-time",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 삭제 시간에 대한 예외 코드")
                         )));
     }
 
@@ -200,8 +263,9 @@ public class BoardControllerTest {
                                 parameterWithName("boardId").description("수정할 게시물 식별 번호")
                         ),
                         requestFields(
-                                fieldWithPath("updatedTitle").type(JsonFieldType.STRING).description("수정할 제목"),
-                                fieldWithPath("updatedContent").type(JsonFieldType.STRING).description("수정할 내용"))));
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("수정할 제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("수정할 내용"),
+                                fieldWithPath("lastModifiedDateTime").type(JsonFieldType.STRING).description("마지막으로 수정된 시간"))));
     }
 
     @ParameterizedTest
@@ -209,7 +273,7 @@ public class BoardControllerTest {
     @DisplayName("제목이 존재하지 않을 경우 400 Http 상태와 예외 코드를 응답합니다")
     public void update_throw_exception_with_invalid_title(String nullAndEmptyTitle) throws Exception {
         BoardUpdateRequest boardUpdateRequest
-                = new BoardUpdateRequest(nullAndEmptyTitle, "update content");
+                = new BoardUpdateRequest(nullAndEmptyTitle, "update content", LocalDateTime.now());
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -227,7 +291,7 @@ public class BoardControllerTest {
     @DisplayName("내용이 존재하지 않을 경우 400 Http 상태와 예외 코드를 응답합니다")
     public void update_throw_exception_with_invalid_content(String nullAndEmptyContent) throws Exception {
         BoardUpdateRequest boardUpdateRequest
-                = new BoardUpdateRequest("update content", nullAndEmptyContent);
+                = new BoardUpdateRequest("update content", nullAndEmptyContent, LocalDateTime.now());
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -238,6 +302,24 @@ public class BoardControllerTest {
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("게시물 수정 시 유효하지 않은 내용에 대한 예외 코드"))));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("마지막으로 수정된 시간이 유효하지 않은 경우 예외 코드를 응답합니다.")
+    void update_throw_exception_with_invalid_last_modified_date_time(LocalDateTime invalidLastModifiedDateTime) throws Exception {
+        BoardUpdateRequest boardUpdateRequest
+                = new BoardUpdateRequest("updated title", "updated content", invalidLastModifiedDateTime);
+
+        mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
+                .andDo(document("board/update/fail/invalid-last-modified-date-time",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("게시물 수정 시 유효하지 않은 게시물 수정 시간에 대한 예외 코"))));
     }
 
     @Test
