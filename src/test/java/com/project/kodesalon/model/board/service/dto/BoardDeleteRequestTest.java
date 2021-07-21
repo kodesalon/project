@@ -21,7 +21,7 @@ public class BoardDeleteRequestTest {
     private final Validator validator = validatorFactory.getValidator();
 
     @Test
-    @DisplayName("게시물 번호, 삭제 시간을 반환한다.")
+    @DisplayName("삭제 시간을 반환한다.")
     void getter() {
         LocalDateTime deletedDateTime = LocalDateTime.now();
 

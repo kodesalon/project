@@ -24,6 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_DELETED_BOARD;
@@ -122,7 +123,7 @@ public class BoardControllerTest {
 
     @Test
     @DisplayName("생성 시간이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
-    public void save_fail_with_invalid_created_date_time() throws Exception {
+    void save_fail_with_invalid_created_date_time() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 내용", null);
         mockMvc.perform(post("/api/v1/boards")
                 .content(objectMapper.writeValueAsString(boardCreateRequest))
@@ -137,7 +138,7 @@ public class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("게시물 번호, 삭제 시간을 인자로 받아 게시물을 삭제하고 HTTP 200을 반환한다.")
+    @DisplayName("삭제 시간을 인자로 받아 게시물을 삭제하고 HTTP 200을 반환한다.")
     void delete_success() throws Exception {
         BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(LocalDateTime.now());
 
@@ -152,7 +153,6 @@ public class BoardControllerTest {
                                 parameterWithName("boardId").description("삭제하려는 게시물 번호")
                         ),
                         requestFields(
-                                fieldWithPath("boardId").type(JsonFieldType.NUMBER).description("삭제하려는 게시물 번호"),
                                 fieldWithPath("deletedDateTime").type(JsonFieldType.STRING).description("삭제 시간"))));
     }
 
