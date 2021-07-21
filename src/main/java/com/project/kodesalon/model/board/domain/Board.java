@@ -24,7 +24,7 @@ public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
+    @Column(name = "board_id", updatable = false)
     private Long id;
 
     @Embedded
@@ -34,7 +34,7 @@ public class Board extends BaseEntity {
     private Content content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false, updatable = false)
     private Member writer;
 
     private boolean isDeleted;
