@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
+import static com.project.kodesalon.common.ErrorCode.DUPLICATED_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.EXPIRED_JWT_TOKEN;
 import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_HEADER;
@@ -46,7 +47,6 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_NAME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PHONE;
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER;
-import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
@@ -334,7 +334,7 @@ public class MemberControllerTest {
     @DisplayName("비밀번호 변경시, 변경하려는 비밀번호가 기존 비밀번호와 일치하는 경우 400 상태 + 예외 코드를 반환합니다")
     void failed_change_password_with_duplicate_password() throws Exception {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!", LocalDateTime.now());
-        willThrow(new IllegalArgumentException(PASSWORD_DUPLICATION))
+        willThrow(new IllegalArgumentException(DUPLICATED_PASSWORD))
                 .given(memberService)
                 .changePassword(any(), any(ChangePasswordRequest.class));
 
@@ -342,7 +342,7 @@ public class MemberControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(changePasswordRequest)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(PASSWORD_DUPLICATION))
+                .andExpect(jsonPath("$.code").value(DUPLICATED_PASSWORD))
                 .andDo(document("changePassword/fail/password-duplicate",
                         getDocumentResponse(),
                         responseFields(
