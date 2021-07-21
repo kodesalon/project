@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
 
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Modifying(flushAutomatically = true)
     @Query("update Board b set b.deleted = true where b.writer.id = :memberId and b.deleted = false")
     void deleteBoardByMemberId(@Param("memberId") Long memberId);
 }
