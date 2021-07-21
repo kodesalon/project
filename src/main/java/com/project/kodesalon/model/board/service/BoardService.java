@@ -34,8 +34,8 @@ public class BoardService {
     }
 
     @Transactional
-    public void delete(final Long memberId, final BoardDeleteRequest boardDeleteRequest) {
-        Board board = findById(boardDeleteRequest.getBoardId());
+    public void delete(final Long memberId, final Long boardId, final BoardDeleteRequest boardDeleteRequest) {
+        Board board = findById(boardId);
         board.delete(memberId, boardDeleteRequest.getDeletedDateTime());
     }
 

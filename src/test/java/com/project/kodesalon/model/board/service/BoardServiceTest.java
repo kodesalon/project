@@ -54,10 +54,10 @@ public class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 회원 식별 번호, 게시물 식별 번호를 인자로 전달받아 게시물을 삭제한다.")
     void delete() {
-        BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(1L, LocalDateTime.now());
+        BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(LocalDateTime.now());
         given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
 
-        boardService.delete(1L, boardDeleteRequest);
+        boardService.delete(1L, 1L, boardDeleteRequest);
 
         verify(board, times(1)).delete(anyLong(), any(LocalDateTime.class));
     }

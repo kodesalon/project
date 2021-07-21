@@ -7,6 +7,7 @@ import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,9 +31,9 @@ public class BoardController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> delete(@Login Long memberId, @RequestBody @Valid final BoardDeleteRequest boardDeleteRequest) {
-        boardService.delete(memberId, boardDeleteRequest);
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<Void> delete(@Login Long memberId, @PathVariable final Long boardId, @RequestBody @Valid final BoardDeleteRequest boardDeleteRequest) {
+        boardService.delete(memberId, boardId, boardDeleteRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
