@@ -21,7 +21,6 @@ public class RefreshTokenTest {
     @BeforeEach
     void setUp() {
         refreshToken = new RefreshToken(TEST_MEMBER, "token", expiryDate);
-
     }
 
     @Test
