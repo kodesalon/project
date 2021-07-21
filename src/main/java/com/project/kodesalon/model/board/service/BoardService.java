@@ -5,6 +5,7 @@ import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
+import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.memberboard.MemberBoardService;
@@ -31,14 +32,14 @@ public class BoardService {
     public void save(final Long memberId, final BoardCreateRequest boardCreateRequest) {
         Member member = memberBoardService.findById(memberId);
         Board createdBoard = boardCreateRequest.toBoard(member);
-        log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
         boardRepository.save(createdBoard);
+        log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
     }
 
     @Transactional
-    public void delete(Long memberId, Long boardId) {
-        Board board = findById(boardId);
-        board.delete(memberId);
+    public void delete(final Long memberId, final BoardDeleteRequest boardDeleteRequest) {
+        Board board = findById(boardDeleteRequest.getBoardId());
+        board.delete(memberId, boardDeleteRequest.getDeletedDateTime());
     }
 
     private Board findById(final Long boardId) {

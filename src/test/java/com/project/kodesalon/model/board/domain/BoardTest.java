@@ -8,11 +8,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
 import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -54,7 +57,7 @@ public class BoardTest {
     void delete() {
         given(member.getId()).willReturn(1L);
 
-        board.delete(member.getId());
+        board.delete(member.getId(), LocalDateTime.now());
 
         then(board.isDeleted()).isTrue();
     }
@@ -66,8 +69,17 @@ public class BoardTest {
         given(stranger.getId()).willReturn(2L);
 
         thenIllegalArgumentException()
-                .isThrownBy(() -> board.delete(stranger.getId()))
+                .isThrownBy(() -> board.delete(stranger.getId(), LocalDateTime.now()))
                 .withMessage(NOT_AUTHORIZED_MEMBER);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("게시물 삭제 시간이 null일 경우, 예외가 발생한다.")
+    void delete_throw_exception_with_null_deleted_date_time(LocalDateTime InvalidDeletedDateTime) {
+        thenIllegalArgumentException()
+                .isThrownBy(() -> board.delete(stranger.getId(), InvalidDeletedDateTime))
+                .withMessage(INVALID_DATE_TIME);
     }
 
     @Test

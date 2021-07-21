@@ -27,7 +27,7 @@ public class BoardRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
+        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
         testEntityManager.persist(member);
     }
 
@@ -49,6 +49,7 @@ public class BoardRepositoryTest {
         boardRepository.save(secondBoard);
 
         boardRepository.deleteBoardByMemberId(member.getId());
+        testEntityManager.clear();
 
         softly.then(boardRepository.findById(firstBoard.getId())).isEmpty();
         softly.then(boardRepository.findById(secondBoard.getId())).isEmpty();

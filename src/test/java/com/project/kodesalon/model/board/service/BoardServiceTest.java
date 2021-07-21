@@ -5,6 +5,7 @@ import com.project.kodesalon.model.board.domain.vo.Content;
 import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
+import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.memberboard.MemberBoardService;
@@ -60,11 +61,12 @@ public class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 회원 식별 번호, 게시물 식별 번호를 인자로 전달받아 게시물을 삭제한다.")
     void delete() {
+        BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(1L, LocalDateTime.now());
         given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
 
-        boardService.delete(1L, anyLong());
+        boardService.delete(1L, boardDeleteRequest);
 
-        verify(board, times(1)).delete(anyLong());
+        verify(board, times(1)).delete(anyLong(), any(LocalDateTime.class));
     }
 
     @Test

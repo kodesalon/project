@@ -5,6 +5,7 @@ import com.project.kodesalon.model.member.domain.vo.Alias;
 import com.project.kodesalon.model.member.repository.MemberRepository;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
+import com.project.kodesalon.model.member.service.dto.DeleteMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import com.project.kodesalon.model.memberboard.MemberBoardService;
 import lombok.extern.slf4j.Slf4j;
@@ -61,14 +62,14 @@ public class MemberService {
     @Transactional
     public void changePassword(final Long memberId, final ChangePasswordRequest changePasswordRequest) {
         Member member = memberBoardService.findById(memberId);
-        member.changePassword(changePasswordRequest.getPassword());
+        member.changePassword(changePasswordRequest.getPassword(), changePasswordRequest.getLastModifiedDateTime());
     }
 
     @Transactional
-    public void deleteMember(final Long memberId) {
+    public void deleteMember(final Long memberId, final DeleteMemberRequest deleteMemberRequest) {
         Member member = memberBoardService.findById(memberId);
         memberBoardService.deleteBoardByMemberId(memberId);
-        member.delete();
+        member.delete(deleteMemberRequest.getDeletedDateTime());
     }
 
     public Member findMemberByAlias(final String alias) {

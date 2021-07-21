@@ -3,11 +3,11 @@ package com.project.kodesalon.model.board.controller;
 import com.project.kodesalon.common.annotation.Login;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
+import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,9 +32,9 @@ public class BoardController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping("/{boardId}")
-    public ResponseEntity<Void> delete(@Login final Long memberId, @PathVariable final Long boardId) {
-        boardService.delete(memberId, boardId);
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@Login Long memberId, @RequestBody @Valid final BoardDeleteRequest boardDeleteRequest) {
+        boardService.delete(memberId, boardDeleteRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

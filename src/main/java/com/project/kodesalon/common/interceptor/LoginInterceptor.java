@@ -55,7 +55,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         log.info("RESPONSE : [logId : {}] [requestURI : {}] [handler : {}]", logId, requestURI, handler);
         MDC.clear();
         if (ex != null) {
-            log.error("afterCompletion error : ", ex.getMessage());
+            log.error("afterCompletion error : {}", ex.getMessage());
         }
     }
 }
