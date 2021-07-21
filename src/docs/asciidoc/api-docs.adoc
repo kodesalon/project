@@ -240,14 +240,19 @@ include::{snippets}/board/update/success/http-response.adoc[]
 ==== *실패*
 
 - 유효하지 않은 제목
+include::{snippets}/board/update/fail/invalid-title/response-fields.adoc[]
 include::{snippets}/board/update/fail/invalid-title/http-response.adoc[]
 
 - 유효하지 않은 내용
+include::{snippets}/board/update/fail/invalid-content/response-fields.adoc[]
 include::{snippets}/board/update/fail/invalid-content/http-response.adoc[]
 
 - 존재하지 않는 게시물
+include::{snippets}/board/update/fail/no-board/response-fields.adoc[]
 include::{snippets}/board/update/fail/no-board/http-response.adoc[]
 
-
+- 유효하지 않은 수정 시간
+include::{snippets}/board/update/fail/invalid-last-modified-date-time/response-fields.adoc[]
+include::{snippets}/board/update/fail/invalid-last-modified-date-time/http-response.adoc[]
 
 

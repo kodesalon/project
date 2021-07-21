@@ -30,7 +30,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardServiceTest {
-    private final BoardUpdateRequest BOARD_UPDATE_REQUEST = new BoardUpdateRequest("update title", "update content");
+    private final BoardUpdateRequest BOARD_UPDATE_REQUEST = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
 
     @InjectMocks
     private BoardService boardService;
@@ -78,7 +78,7 @@ public class BoardServiceTest {
         boardService.updateBoard(member.getId(), 1L, BOARD_UPDATE_REQUEST);
 
         verify(boardRepository, times(1)).findById(anyLong());
-        verify(board, times(1)).updateTitleAndContent(anyLong(), any(Title.class), any(Content.class));
+        verify(board, times(1)).updateTitleAndContent(anyLong(), any(Title.class), any(Content.class), any(LocalDateTime.class));
     }
 
     @Test

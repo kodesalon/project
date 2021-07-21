@@ -52,10 +52,10 @@ public class BoardService {
 
     @Transactional
     public void updateBoard(Long memberId, final Long boardId, final BoardUpdateRequest boardUpdateRequest) {
-        Title updateTitle = new Title(boardUpdateRequest.getUpdatedTitle());
-        Content updateContent = new Content(boardUpdateRequest.getUpdatedContent());
+        Title updateTitle = new Title(boardUpdateRequest.getTitle());
+        Content updateContent = new Content(boardUpdateRequest.getContent());
         Board updatedBoard = findBoardById(boardId);
-        updatedBoard.updateTitleAndContent(memberId, updateTitle, updateContent);
+        updatedBoard.updateTitleAndContent(memberId, updateTitle, updateContent, boardUpdateRequest.getLastModifiedDateTime());
     }
 
     private Board findBoardById(final Long boardId) {

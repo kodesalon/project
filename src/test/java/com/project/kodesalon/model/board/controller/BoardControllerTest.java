@@ -58,7 +58,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class BoardControllerTest {
     private final BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(1L, LocalDateTime.now());
-    private final BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("update title", "update content");
+    private final BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
     private MockMvc mockMvc;
 
     @InjectMocks
@@ -253,8 +253,9 @@ public class BoardControllerTest {
                                 parameterWithName("boardId").description("수정할 게시물 식별자")
                         ),
                         requestFields(
-                                fieldWithPath("updatedTitle").type(JsonFieldType.STRING).description("수정할 제목"),
-                                fieldWithPath("updatedContent").type(JsonFieldType.STRING).description("수정할 내용"))));
+                                fieldWithPath("title").type(JsonFieldType.STRING).description("수정할 제목"),
+                                fieldWithPath("content").type(JsonFieldType.STRING).description("수정할 내용"),
+                                fieldWithPath("lastModifiedDateTime").type(JsonFieldType.STRING).description("마지막으로 수정된 시간"))));
     }
 
     @ParameterizedTest
@@ -262,7 +263,7 @@ public class BoardControllerTest {
     @DisplayName("제목이 존재하지 않을 경우 400 Http 상태와 예외 코드를 응답합니다")
     public void update_throw_exception_with_invalid_title(String nullAndEmptyTitle) throws Exception {
         BoardUpdateRequest boardUpdateRequest
-                = new BoardUpdateRequest(nullAndEmptyTitle, "update content");
+                = new BoardUpdateRequest(nullAndEmptyTitle, "update content", LocalDateTime.now());
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -280,7 +281,7 @@ public class BoardControllerTest {
     @DisplayName("내용이 존재하지 않을 경우 400 Http 상태와 예외 코드를 응답합니다")
     public void update_throw_exception_with_invalid_content(String nullAndEmptyContent) throws Exception {
         BoardUpdateRequest boardUpdateRequest
-                = new BoardUpdateRequest("update content", nullAndEmptyContent);
+                = new BoardUpdateRequest("update content", nullAndEmptyContent, LocalDateTime.now());
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -291,6 +292,24 @@ public class BoardControllerTest {
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("게시물 수정 시 유효하지 않은 내용에 대한 예외 코드"))));
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("마지막으로 수정된 시간이 유효하지 않은 경우 예외 코드를 응답합니다.")
+    void update_throw_exception_with_invalid_last_modified_date_time(LocalDateTime invalidLastModifiedDateTime) throws Exception {
+        BoardUpdateRequest boardUpdateRequest
+                = new BoardUpdateRequest("updated title", "updated content", invalidLastModifiedDateTime);
+
+        mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
+                .andDo(document("board/update/fail/invalid-last-modified-date-time",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("게시물 수정 시 유효하지 않은 게시물 수정 시간에 대한 예외 코"))));
     }
 
     @Test

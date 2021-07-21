@@ -82,10 +82,12 @@ public class Board extends BaseEntity {
         deleted = true;
     }
 
-    public void updateTitleAndContent(Long memberId, Title updateTitle, Content updateContent) {
+    public void updateTitleAndContent(Long memberId, Title updatedTitle, Content updatedContent, LocalDateTime lastModifiedDateTime) {
         validateAuthorizationOf(memberId);
-        this.title = updateTitle;
-        this.content = updateContent;
+        validateDateTime(lastModifiedDateTime);
+        this.title = updatedTitle;
+        this.content = updatedContent;
+        this.lastModifiedDateTime = lastModifiedDateTime;
     }
 
     private void validateAuthorizationOf(final Long memberId) {
