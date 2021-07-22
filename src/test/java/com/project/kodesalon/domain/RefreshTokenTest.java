@@ -10,11 +10,13 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import static com.project.kodesalon.common.code.ErrorCode.INVALID_JWT_TOKEN;
-import static com.project.kodesalon.domain.MemberTest.TEST_MEMBER;
+import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 class RefreshTokenTest {
+    private static final Member TEST_MEMBER = getTestMember();
+
     private final LocalDateTime expiryDate = LocalDateTime.now();
     private RefreshToken refreshToken;
 

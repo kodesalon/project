@@ -14,14 +14,13 @@ import java.time.LocalDateTime;
 import static com.project.kodesalon.common.code.ErrorCode.DUPLICATED_PASSWORD;
 import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PASSWORD;
-import static com.project.kodesalon.domain.BoardTest.TEST_BOARD;
+import static com.project.kodesalon.utils.TestEntityUtils.getTestBoard;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 class MemberTest {
-    public static final Member TEST_MEMBER
-            = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
+    private static final Board TEST_BOARD = getTestBoard();
 
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
     private Member member;

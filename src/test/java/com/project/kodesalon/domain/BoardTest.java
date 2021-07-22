@@ -16,14 +16,14 @@ import java.time.LocalDateTime;
 
 import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.code.ErrorCode.NOT_AUTHORIZED_MEMBER;
-import static com.project.kodesalon.domain.MemberTest.TEST_MEMBER;
+import static com.project.kodesalon.utils.TestEntityUtils.getTestBoard;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BoardTest {
-    public static final Board TEST_BOARD = new Board("게시물 제목", "게시물 내용", TEST_MEMBER, LocalDateTime.now());
+    private static final Board TEST_BOARD = getTestBoard();
 
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
     private final LocalDateTime createdDateTime = LocalDateTime.now();

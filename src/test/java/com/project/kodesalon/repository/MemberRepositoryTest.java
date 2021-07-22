@@ -13,11 +13,13 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static com.project.kodesalon.common.code.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
-import static com.project.kodesalon.domain.MemberTest.TEST_MEMBER;
+import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @DataJpaTest
 class MemberRepositoryTest {
+
+    private static final Member TEST_MEMBER = getTestMember();
 
     @Autowired
     private MemberRepository memberRepository;

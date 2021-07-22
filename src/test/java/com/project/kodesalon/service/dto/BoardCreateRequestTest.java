@@ -1,6 +1,7 @@
 package com.project.kodesalon.service.dto;
 
 import com.project.kodesalon.domain.Board;
+import com.project.kodesalon.domain.Member;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -19,10 +20,13 @@ import java.util.Set;
 import static com.project.kodesalon.common.code.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.common.code.ErrorCode.INVALID_BOARD_TITLE;
 import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
-import static com.project.kodesalon.domain.MemberTest.TEST_MEMBER;
+import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 
 class BoardCreateRequestTest {
+
+    private static final Member TEST_MEMBER = getTestMember();
+
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();

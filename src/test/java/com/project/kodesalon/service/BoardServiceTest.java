@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.project.kodesalon.common.code.ErrorCode.NOT_EXIST_BOARD;
-import static com.project.kodesalon.domain.MemberTest.TEST_MEMBER;
+import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,6 +36,8 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BoardServiceTest {
+    private static final Member TEST_MEMBER = getTestMember();
+
     private final BoardUpdateRequest BOARD_UPDATE_REQUEST = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
 
     @InjectMocks

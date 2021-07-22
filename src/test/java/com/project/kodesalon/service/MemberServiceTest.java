@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import static com.project.kodesalon.common.code.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.common.code.ErrorCode.NOT_EXIST_MEMBER;
-import static com.project.kodesalon.domain.MemberTest.TEST_MEMBER;
+import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,6 +35,9 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
+
+    private static final Member TEST_MEMBER = getTestMember();
+
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
     private final CreateMemberRequest createMemberRequest
             = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
