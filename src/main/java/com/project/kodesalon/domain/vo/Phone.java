@@ -14,7 +14,7 @@ import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PHONE;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Phone {
-    public static final String PHONE_REGEX = "^01(?:0|1|[6-9])[-](\\d{3}|\\d{4})[-](\\d{4})";
+    public static final String PHONE_REGEX = "^01[016-9][-](\\d{3}|\\d{4})[-](\\d{4})";
     private static final Pattern PHONE_PATTERN = Pattern.compile(PHONE_REGEX);
 
     @Column(name = "phone", length = 20)
