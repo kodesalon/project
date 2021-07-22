@@ -25,7 +25,7 @@ import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PASSWOR
 import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PHONE;
 import static org.assertj.core.api.BDDAssertions.then;
 
-public class CreateMemberRequestTest {
+class CreateMemberRequestTest {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();

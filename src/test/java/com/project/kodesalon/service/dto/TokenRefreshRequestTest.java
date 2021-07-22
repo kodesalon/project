@@ -13,7 +13,7 @@ import java.util.Set;
 import static com.project.kodesalon.common.code.ErrorCode.INVALID_JWT_TOKEN;
 import static org.assertj.core.api.BDDAssertions.then;
 
-public class TokenRefreshRequestTest {
+class TokenRefreshRequestTest {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
 

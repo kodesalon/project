@@ -22,7 +22,7 @@ import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-public class BoardTest {
+class BoardTest {
     public static final Board TEST_BOARD = new Board("게시물 제목", "게시물 내용", TEST_MEMBER, LocalDateTime.now());
 
     private final BDDSoftAssertions softly = new BDDSoftAssertions();

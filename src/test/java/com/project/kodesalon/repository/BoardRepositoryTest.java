@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @DataJpaTest
-public class BoardRepositoryTest {
+class BoardRepositoryTest {
 
     @Autowired
     private BoardRepository boardRepository;

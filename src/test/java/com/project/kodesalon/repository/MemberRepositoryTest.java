@@ -17,7 +17,7 @@ import static com.project.kodesalon.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @DataJpaTest
-public class MemberRepositoryTest {
+class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;

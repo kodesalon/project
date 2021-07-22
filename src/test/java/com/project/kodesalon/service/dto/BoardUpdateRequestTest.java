@@ -22,7 +22,7 @@ import static com.project.kodesalon.domain.vo.Content.CONTENT_LENGTH_MAX_BOUND;
 import static com.project.kodesalon.domain.vo.Title.TITLE_LENGTH_MAX_BOUND;
 import static org.assertj.core.api.BDDAssertions.then;
 
-public class BoardUpdateRequestTest {
+class BoardUpdateRequestTest {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();

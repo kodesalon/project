@@ -10,7 +10,7 @@ import static com.project.kodesalon.common.code.ErrorCode.INVALID_BOARD_TITLE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-public class TitleTest {
+class TitleTest {
     private String titleValue;
     private Title title;
 
@@ -22,28 +22,28 @@ public class TitleTest {
 
     @Test
     @DisplayName("문자열을 입력받아 제목 객체를 생성한다.")
-    public void create() {
+    void create() {
         assertThat(title).isEqualTo(new Title(titleValue));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("null, 공백 또는 아무것도 입력하지 않을 경우, 예외가 발생한다.")
-    public void check_null_or_blank(String input) {
+    void check_null_or_blank(String input) {
         assertThatIllegalArgumentException().isThrownBy(() -> new Title(input))
                 .withMessageContaining(INVALID_BOARD_TITLE);
     }
 
     @Test
     @DisplayName("제목의 길이가 30자를 초과할 경우, 예외가 발생한다.")
-    public void check_length() {
+    void check_length() {
         assertThatIllegalArgumentException().isThrownBy(() -> new Title("this title length is 31        "))
                 .withMessageContaining(INVALID_BOARD_TITLE);
     }
 
     @Test
     @DisplayName("제목의 문자열 값을 반환한다.")
-    public void value() {
+    void value() {
         String value = title.value();
         assertThat(value).isEqualTo(titleValue);
     }

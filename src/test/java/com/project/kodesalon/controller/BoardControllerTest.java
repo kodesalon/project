@@ -63,7 +63,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Import(JacksonConfiguration.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-public class BoardControllerTest {
+class BoardControllerTest {
     private final BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(LocalDateTime.now());
     private final BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
     private MockMvc mockMvc;
@@ -271,7 +271,7 @@ public class BoardControllerTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("제목이 존재하지 않을 경우 400 Http 상태와 예외 코드를 응답합니다")
-    public void update_throw_exception_with_invalid_title(String nullAndEmptyTitle) throws Exception {
+    void update_throw_exception_with_invalid_title(String nullAndEmptyTitle) throws Exception {
         BoardUpdateRequest boardUpdateRequest
                 = new BoardUpdateRequest(nullAndEmptyTitle, "update content", LocalDateTime.now());
 

@@ -16,7 +16,7 @@ import java.util.Set;
 import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
 import static org.assertj.core.api.BDDAssertions.then;
 
-public class BoardDeleteRequestTest {
+class BoardDeleteRequestTest {
 
     private final ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = validatorFactory.getValidator();

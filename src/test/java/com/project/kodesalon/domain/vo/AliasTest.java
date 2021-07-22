@@ -10,7 +10,7 @@ import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_ALIAS;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 
-public class AliasTest {
+class AliasTest {
 
     @Test
     @DisplayName("value 메서드를 호출하면 별명 값을 리턴합니다.")

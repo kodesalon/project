@@ -34,7 +34,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class MemberServiceTest {
+class MemberServiceTest {
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
     private final CreateMemberRequest createMemberRequest
             = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
@@ -114,7 +114,7 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("비밀번호를 변경한다.")
-    public void changePassword() {
+    void changePassword() {
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!", LocalDateTime.now());

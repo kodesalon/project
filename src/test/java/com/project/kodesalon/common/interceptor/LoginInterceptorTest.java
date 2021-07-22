@@ -81,7 +81,7 @@ class LoginInterceptorTest {
 
     @Test
     @DisplayName("Http 요청이 끝난 후에 url, 로그 정보를 확인한다.")
-    public void afterCompletion() {
+    void afterCompletion() {
         loginInterceptor.afterCompletion(request, response, handler, null);
 
         verify(request, times(1)).getRequestURI();

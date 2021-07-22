@@ -14,7 +14,7 @@ import static com.project.kodesalon.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
-public class RefreshTokenTest {
+class RefreshTokenTest {
     private final LocalDateTime expiryDate = LocalDateTime.now();
     private RefreshToken refreshToken;
 

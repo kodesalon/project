@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-public class BoardSelectResponseTest {
+class BoardSelectResponseTest {
 
     @Test
     @DisplayName("제목, 내용, 생성 시간, 작성자 별명을 반환한다.")

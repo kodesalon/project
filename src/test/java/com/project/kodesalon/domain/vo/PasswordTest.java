@@ -10,7 +10,7 @@ import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PASSWOR
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 
-public class PasswordTest {
+class PasswordTest {
     @ParameterizedTest
     @ValueSource(strings = {"!!Pass12", "!!Password123456"})
     @DisplayName("value 메서드를 호출하면 비밀번호를 리턴합니다.")

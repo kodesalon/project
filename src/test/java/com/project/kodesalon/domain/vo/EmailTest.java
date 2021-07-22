@@ -10,7 +10,7 @@ import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_EMAIL;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 
-public class EmailTest {
+class EmailTest {
     @ParameterizedTest
     @ValueSource(strings = {"email@email.com", "email1234@email.com"})
     @DisplayName("value 메서드를 호출하면 이메일 값을 리턴합니다.")

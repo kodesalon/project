@@ -20,7 +20,7 @@ import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static org.assertj.core.api.BDDAssertions.then;
 
-public class ChangePasswordRequestTest {
+class ChangePasswordRequestTest {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();

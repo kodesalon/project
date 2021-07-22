@@ -22,7 +22,7 @@ import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 
-public class BoardCreateRequestTest {
+class BoardCreateRequestTest {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();

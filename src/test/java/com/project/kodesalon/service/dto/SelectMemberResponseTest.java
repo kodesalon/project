@@ -6,7 +6,7 @@ import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class SelectMemberResponseTest {
+class SelectMemberResponseTest {
     @Test
     @DisplayName("생성자를 초기화 하면 필드가 초기화됩니다.")
     void create_constructor_init_filed() {
