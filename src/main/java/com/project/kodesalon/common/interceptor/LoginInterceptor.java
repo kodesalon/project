@@ -1,6 +1,6 @@
 package com.project.kodesalon.common.interceptor;
 
-import com.project.kodesalon.common.JwtManager;
+import com.project.kodesalon.common.manager.JwtManager;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
-import static com.project.kodesalon.common.ErrorCode.INVALID_HEADER;
+import static com.project.kodesalon.common.code.ErrorCode.INVALID_HEADER;
 
 @Slf4j
 @Component

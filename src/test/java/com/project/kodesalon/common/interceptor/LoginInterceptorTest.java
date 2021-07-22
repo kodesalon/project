@@ -1,6 +1,6 @@
 package com.project.kodesalon.common.interceptor;
 
-import com.project.kodesalon.common.JwtManager;
+import com.project.kodesalon.common.manager.JwtManager;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,8 +14,8 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
-import static com.project.kodesalon.common.ErrorCode.INVALID_HEADER;
-import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
+import static com.project.kodesalon.common.code.ErrorCode.INVALID_HEADER;
+import static com.project.kodesalon.common.code.ErrorCode.INVALID_JWT_TOKEN;
 import static com.project.kodesalon.common.interceptor.LoginInterceptor.LOGIN_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
