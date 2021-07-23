@@ -89,7 +89,7 @@ public class BoardRepositoryTest {
             boardRepository.save(board);
         }
 
-        List<Board> boards = boardRepository.selectBoards(1L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(11L, boardToBeSelectedAtOnce);
 
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
         boards.forEach(b -> {
