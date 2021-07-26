@@ -91,7 +91,7 @@ public class BoardRepositoryTest {
         testEntityManager.flush();
         testEntityManager.clear();
 
-        List<Board> boards = boardRepository.selectBoards(11L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(10000L, boardToBeSelectedAtOnce);
 
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
         boards.forEach(b -> {
