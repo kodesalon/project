@@ -72,7 +72,7 @@ public class BoardRepositoryTest {
 
     @Test
     @DisplayName("게시물 식별 번호를 입력받아 게시물을 조회하면 작성자 정보와 함께 조인하여 반환한다.")
-    void selectBoardById() {
+    void selectBoard() {
         Optional<Board> board = boardRepository.selectBoardById(this.board.getId());
 
         softly.then(board).isNotEmpty();
@@ -80,14 +80,16 @@ public class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("마지막 게시물 번호를 입력받아 이후의 10개의 게시물과 작성자의 정보를 조인하여 반환한다.")
-    void findTop10Boards() {
+    @DisplayName("마지막으로 조회한 게시물 번호, 조회할 게시물 수를 입력받아 게시물과 작성자의 정보를 조인하여 반환한다.")
+    void selectBoards() {
         int boardToBeSelectedAtOnce = 10;
 
-        for (int board_number = 0; board_number < boardToBeSelectedAtOnce + 1; board_number++) {
+        for (int board_number = 0; board_number <= boardToBeSelectedAtOnce; board_number++) {
             Board board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
             boardRepository.save(board);
         }
+        testEntityManager.flush();
+        testEntityManager.clear();
 
         List<Board> boards = boardRepository.selectBoards(11L, boardToBeSelectedAtOnce);
 
