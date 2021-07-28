@@ -8,6 +8,7 @@ import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,7 +57,7 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BoardSelectResponse>> selectBoards(@RequestParam final Long lastBoardId, @RequestParam final int size) {
+    public ResponseEntity<List<BoardSelectResponse>> selectBoards(@RequestParam @Nullable final Long lastBoardId, @RequestParam final int size) {
         List<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(lastBoardId, size);
         return ResponseEntity.ok().body(boardSelectMultiResponse);
     }

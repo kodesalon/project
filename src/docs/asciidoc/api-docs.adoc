@@ -210,6 +210,13 @@ include::{snippets}/board/select-single/success/http-response.adoc[]
 
 === Request
 
+==== 최초 조회
+
+include::{snippets}/board/select-multi-first/success/request-parameters.adoc[]
+include::{snippets}/board/select-multi-first/success/http-request.adoc[]
+
+==== 조회
+
 include::{snippets}/board/select-multi/success/request-parameters.adoc[]
 include::{snippets}/board/select-multi/success/http-request.adoc[]
 

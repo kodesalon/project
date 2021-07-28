@@ -35,9 +35,6 @@ public class BoardRepositoryTest {
 
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
 
-    private Member member;
-    private Board board;
-
     @BeforeEach
     void setUp() {
         persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
@@ -104,15 +101,38 @@ public class BoardRepositoryTest {
         Member member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
         entityManager.persist(member);
         int boardToBeSelectedAtOnce = 10;
-
         for (int board_number = 0; board_number <= boardToBeSelectedAtOnce; board_number++) {
             Board board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
             boardRepository.save(board);
+            System.out.println(board.getId());
         }
         entityManager.flush();
         entityManager.clear();
 
-        List<Board> boards = boardRepository.selectBoards(10000L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(11L, boardToBeSelectedAtOnce);
+
+        softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
+        boards.forEach(b -> {
+            softly.then(persistenceUnitUtil.isLoaded(b.getWriter())).isTrue();
+        });
+        softly.assertAll();
+    }
+
+    @Test
+    @DisplayName("가장 처음으로 조회한 게시물의 경우, 조회할 게시물의 크기만 입력으로 받아 가장 마지막의 게시물과 작성자의 정보를 조인하여 반환한다.")
+    void selectBoardsAtFirst() {
+        Member member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
+        entityManager.persist(member);
+        int boardToBeSelectedAtOnce = 10;
+        for (int board_number = 0; board_number <= boardToBeSelectedAtOnce; board_number++) {
+            Board board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
+            boardRepository.save(board);
+            System.out.println(board.getId());
+        }
+        entityManager.flush();
+        entityManager.clear();
+
+        List<Board> boards = boardRepository.selectBoards(null, boardToBeSelectedAtOnce);
 
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
         boards.forEach(b -> {
