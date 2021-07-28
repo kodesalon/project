@@ -17,7 +17,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.project.kodesalon.common.code.ErrorCode.NOT_EXIST_BOARD;
+import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_BOARD;
 
 @Slf4j
 @Service

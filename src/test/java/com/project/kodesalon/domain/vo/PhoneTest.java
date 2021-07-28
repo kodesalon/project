@@ -6,7 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PHONE;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PHONE;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 

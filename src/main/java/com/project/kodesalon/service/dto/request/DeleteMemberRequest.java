@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

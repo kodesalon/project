@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.project.kodesalon.common.code.ErrorCode.NOT_EXIST_BOARD;
+import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_BOARD;
 import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;

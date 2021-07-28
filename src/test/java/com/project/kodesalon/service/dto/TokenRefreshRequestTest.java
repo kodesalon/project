@@ -10,7 +10,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_JWT_TOKEN;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
 import static org.assertj.core.api.BDDAssertions.then;
 
 class TokenRefreshRequestTest {

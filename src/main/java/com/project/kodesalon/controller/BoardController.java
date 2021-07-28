@@ -1,6 +1,6 @@
 package com.project.kodesalon.controller;
 
-import com.project.kodesalon.common.annotation.Login;
+import com.project.kodesalon.config.argumentresolver.annotation.Login;
 import com.project.kodesalon.service.BoardService;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;

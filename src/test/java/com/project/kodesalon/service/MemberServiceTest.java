@@ -21,8 +21,8 @@ import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.project.kodesalon.common.code.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
-import static com.project.kodesalon.common.code.ErrorCode.NOT_EXIST_MEMBER;
+import static com.project.kodesalon.exception.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
+import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER;
 import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;

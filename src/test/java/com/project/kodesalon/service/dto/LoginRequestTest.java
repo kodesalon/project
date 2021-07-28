@@ -14,8 +14,8 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_ALIAS;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PASSWORD;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_ALIAS;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static org.assertj.core.api.BDDAssertions.then;
 
 class LoginRequestTest {

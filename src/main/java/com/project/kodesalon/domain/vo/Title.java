@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_TITLE;
 
 @Embeddable
 @EqualsAndHashCode

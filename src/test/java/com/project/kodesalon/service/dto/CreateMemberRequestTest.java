@@ -17,12 +17,12 @@ import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_ALIAS;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_EMAIL;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_NAME;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PASSWORD;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PHONE;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_ALIAS;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_EMAIL;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_NAME;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PHONE;
 import static org.assertj.core.api.BDDAssertions.then;
 
 class CreateMemberRequestTest {

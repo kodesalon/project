@@ -1,4 +1,4 @@
-package com.project.kodesalon.common.code;
+package com.project.kodesalon.exception;
 
 public class ErrorCode {
 

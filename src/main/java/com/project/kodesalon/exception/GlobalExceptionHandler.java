@@ -1,4 +1,4 @@
-package com.project.kodesalon.common.exception;
+package com.project.kodesalon.exception;
 
 import com.project.kodesalon.service.dto.response.ErrorResponse;
 import io.jsonwebtoken.JwtException;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.persistence.EntityNotFoundException;
 import java.time.format.DateTimeParseException;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 
 @Slf4j
 @RestControllerAdvice

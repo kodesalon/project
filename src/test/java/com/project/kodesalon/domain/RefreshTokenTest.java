@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_JWT_TOKEN;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
 import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;

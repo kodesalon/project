@@ -1,6 +1,6 @@
-package com.project.kodesalon.common.argumentresolver;
+package com.project.kodesalon.config.argumentresolver;
 
-import com.project.kodesalon.common.annotation.Login;
+import com.project.kodesalon.config.argumentresolver.annotation.Login;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -10,7 +10,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static com.project.kodesalon.common.interceptor.LoginInterceptor.LOGIN_MEMBER;
+import static com.project.kodesalon.config.interceptor.LoginInterceptor.LOGIN_MEMBER;
 
 @Component
 public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {

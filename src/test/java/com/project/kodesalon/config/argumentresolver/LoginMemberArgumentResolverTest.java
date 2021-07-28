@@ -1,6 +1,6 @@
-package com.project.kodesalon.common.argumentresolver;
+package com.project.kodesalon.config.argumentresolver;
 
-import com.project.kodesalon.common.annotation.Login;
+import com.project.kodesalon.config.argumentresolver.annotation.Login;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import static com.project.kodesalon.common.interceptor.LoginInterceptor.LOGIN_MEMBER;
+import static com.project.kodesalon.config.interceptor.LoginInterceptor.LOGIN_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;

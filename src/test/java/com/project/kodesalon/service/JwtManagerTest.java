@@ -1,4 +1,4 @@
-package com.project.kodesalon.common.manager;
+package com.project.kodesalon.service;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -13,8 +13,8 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.util.Date;
 
-import static com.project.kodesalon.common.code.ErrorCode.EXPIRED_JWT_TOKEN;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_JWT_TOKEN;
+import static com.project.kodesalon.exception.ErrorCode.EXPIRED_JWT_TOKEN;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 

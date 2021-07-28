@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_ALIAS;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.domain.vo.Alias.ALIAS_REGEX;
 import static com.project.kodesalon.domain.vo.Password.PASSWORD_REGEX;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_ALIAS;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

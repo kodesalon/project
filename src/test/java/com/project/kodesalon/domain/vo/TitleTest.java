@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_TITLE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 

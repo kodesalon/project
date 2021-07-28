@@ -16,8 +16,8 @@ import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PASSWORD;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static org.assertj.core.api.BDDAssertions.then;
 
 class ChangePasswordRequestTest {

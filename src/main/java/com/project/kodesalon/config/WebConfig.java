@@ -1,7 +1,7 @@
-package com.project.kodesalon.common.config;
+package com.project.kodesalon.config;
 
-import com.project.kodesalon.common.argumentresolver.LoginMemberArgumentResolver;
-import com.project.kodesalon.common.interceptor.LoginInterceptor;
+import com.project.kodesalon.config.argumentresolver.LoginMemberArgumentResolver;
+import com.project.kodesalon.config.interceptor.LoginInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

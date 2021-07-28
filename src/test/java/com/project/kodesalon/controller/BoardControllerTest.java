@@ -1,8 +1,8 @@
 package com.project.kodesalon.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.kodesalon.common.exception.GlobalExceptionHandler;
 import com.project.kodesalon.config.JacksonConfiguration;
+import com.project.kodesalon.exception.GlobalExceptionHandler;
 import com.project.kodesalon.service.BoardService;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
@@ -33,12 +33,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.project.kodesalon.common.code.ErrorCode.ALREADY_DELETED_BOARD;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_BOARD_CONTENT;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_BOARD_TITLE;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
-import static com.project.kodesalon.common.code.ErrorCode.NOT_AUTHORIZED_MEMBER;
-import static com.project.kodesalon.common.code.ErrorCode.NOT_EXIST_BOARD;
+import static com.project.kodesalon.exception.ErrorCode.ALREADY_DELETED_BOARD;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_CONTENT;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
+import static com.project.kodesalon.exception.ErrorCode.NOT_AUTHORIZED_MEMBER;
+import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_BOARD;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;

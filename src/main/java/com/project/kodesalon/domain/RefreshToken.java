@@ -16,7 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import java.time.LocalDateTime;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_JWT_TOKEN;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
 
 @Slf4j
 @Getter

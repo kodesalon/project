@@ -19,8 +19,8 @@ import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
-import static com.project.kodesalon.common.code.ErrorCode.NOT_AUTHORIZED_MEMBER;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
+import static com.project.kodesalon.exception.ErrorCode.NOT_AUTHORIZED_MEMBER;
 
 @Slf4j
 @Entity

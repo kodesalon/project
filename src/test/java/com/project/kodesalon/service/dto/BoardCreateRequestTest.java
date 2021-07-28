@@ -17,9 +17,9 @@ import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_BOARD_CONTENT;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_BOARD_TITLE;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_CONTENT;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 

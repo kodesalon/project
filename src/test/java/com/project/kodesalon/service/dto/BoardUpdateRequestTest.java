@@ -15,11 +15,11 @@ import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_BOARD_CONTENT;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_BOARD_TITLE;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.domain.vo.Content.CONTENT_LENGTH_MAX_BOUND;
 import static com.project.kodesalon.domain.vo.Title.TITLE_LENGTH_MAX_BOUND;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_CONTENT;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 import static org.assertj.core.api.BDDAssertions.then;
 
 class BoardUpdateRequestTest {

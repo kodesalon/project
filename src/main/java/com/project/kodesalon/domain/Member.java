@@ -25,9 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.project.kodesalon.common.code.ErrorCode.DUPLICATED_PASSWORD;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PASSWORD;
+import static com.project.kodesalon.exception.ErrorCode.DUPLICATED_PASSWORD;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
 
 @Slf4j
 @Entity

@@ -1,4 +1,4 @@
-package com.project.kodesalon.common.annotation;
+package com.project.kodesalon.config.argumentresolver.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

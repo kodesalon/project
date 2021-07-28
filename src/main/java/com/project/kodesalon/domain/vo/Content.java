@@ -8,7 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_BOARD_CONTENT;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_CONTENT;
 
 @Embeddable
 @EqualsAndHashCode

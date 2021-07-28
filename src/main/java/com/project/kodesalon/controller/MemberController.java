@@ -1,6 +1,6 @@
 package com.project.kodesalon.controller;
 
-import com.project.kodesalon.common.annotation.Login;
+import com.project.kodesalon.config.argumentresolver.annotation.Login;
 import com.project.kodesalon.service.MemberService;
 import com.project.kodesalon.service.dto.request.ChangePasswordRequest;
 import com.project.kodesalon.service.dto.request.CreateMemberRequest;

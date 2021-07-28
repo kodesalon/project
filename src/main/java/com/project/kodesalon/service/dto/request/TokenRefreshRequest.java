@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_JWT_TOKEN;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

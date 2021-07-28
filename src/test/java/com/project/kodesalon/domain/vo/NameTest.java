@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_NAME;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_NAME;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 

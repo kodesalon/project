@@ -1,6 +1,5 @@
 package com.project.kodesalon.service;
 
-import com.project.kodesalon.common.manager.JwtManager;
 import com.project.kodesalon.domain.Member;
 import com.project.kodesalon.domain.RefreshToken;
 import com.project.kodesalon.repository.RefreshTokenRepository;
@@ -20,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_JWT_TOKEN;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;

@@ -11,16 +11,16 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_DATE_TIME;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_ALIAS;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_EMAIL;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_NAME;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PASSWORD;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_MEMBER_PHONE;
 import static com.project.kodesalon.domain.vo.Alias.ALIAS_REGEX;
 import static com.project.kodesalon.domain.vo.Name.NAME_REGEX;
 import static com.project.kodesalon.domain.vo.Password.PASSWORD_REGEX;
 import static com.project.kodesalon.domain.vo.Phone.PHONE_REGEX;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_ALIAS;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_EMAIL;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_NAME;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PHONE;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

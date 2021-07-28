@@ -1,7 +1,7 @@
 package com.project.kodesalon.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.kodesalon.common.exception.GlobalExceptionHandler;
+import com.project.kodesalon.exception.GlobalExceptionHandler;
 import com.project.kodesalon.service.AuthenticationTokenService;
 import com.project.kodesalon.service.dto.request.LoginRequest;
 import com.project.kodesalon.service.dto.request.TokenRefreshRequest;
@@ -25,9 +25,9 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.persistence.EntityNotFoundException;
 
-import static com.project.kodesalon.common.code.ErrorCode.INCORRECT_PASSWORD;
-import static com.project.kodesalon.common.code.ErrorCode.INVALID_JWT_TOKEN;
-import static com.project.kodesalon.common.code.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
+import static com.project.kodesalon.exception.ErrorCode.INCORRECT_PASSWORD;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
+import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
