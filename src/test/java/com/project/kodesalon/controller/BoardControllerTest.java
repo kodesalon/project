@@ -30,7 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_DELETED_BOARD;
@@ -368,7 +368,7 @@ class BoardControllerTest {
     @Test
     @DisplayName("마지막으로 조회한 게시물의 식별 번호와 한번에 조회할 게시물의 크기를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoards() throws Exception {
-        List<BoardSelectResponse> content = new ArrayList<>(Arrays.asList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias")));
+        List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias")));
         given(boardService.selectBoards(anyLong(), anyInt())).willReturn(content);
 
         mockMvc.perform(get("/api/v1/boards")
@@ -381,6 +381,32 @@ class BoardControllerTest {
                         getDocumentResponse(),
                         requestParameters(
                                 parameterWithName("lastBoardId").description("마지막으로 조회한 게시물 식별 번호"),
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")
+                        ),
+                        responseFields(
+                                fieldWithPath("[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
+                                fieldWithPath("[].title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                fieldWithPath("[].content").type(JsonFieldType.STRING).description("게시물 내용"),
+                                fieldWithPath("[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
+                                fieldWithPath("[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
+                                fieldWithPath("[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디")
+                        )));
+    }
+
+    @Test
+    @DisplayName("가장 처음으로 조회한 게시물의 경우, 조회할 게시물의 크기만 입력으로 받아 가장 최근 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
+    void selectBoardsAtFirst() throws Exception {
+        List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias")));
+        given(boardService.selectBoards(any(), anyInt())).willReturn(content);
+
+        mockMvc.perform(get("/api/v1/boards")
+                .param("size", "10")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("board/select-multi-first/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
                                 parameterWithName("size").description("한번에 조회할 게시물 크기")
                         ),
                         responseFields(
