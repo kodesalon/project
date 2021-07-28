@@ -58,6 +58,6 @@ public class RefreshToken {
     }
 
     private boolean isAfter(LocalDateTime now) {
-        return expiryDate.isAfter(now);
+        return now.isAfter(expiryDate);
     }
 }
