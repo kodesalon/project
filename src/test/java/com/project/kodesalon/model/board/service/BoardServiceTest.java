@@ -69,7 +69,7 @@ public class BoardServiceTest {
     @DisplayName("컨트롤러에서 회원 식별 번호, 게시물 식별 번호를 인자로 전달받아 게시물을 삭제한다.")
     void delete() {
         BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(LocalDateTime.now());
-        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.of(board));
 
         boardService.delete(1L, 1L, boardDeleteRequest);
 
@@ -79,19 +79,19 @@ public class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 게시판 수정 요청 Dto를 전달받아 게시판을 수정한다.")
     void update() {
-        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.of(board));
         given(member.getId()).willReturn(1L);
 
         boardService.updateBoard(member.getId(), 1L, BOARD_UPDATE_REQUEST);
 
-        verify(boardRepository, times(1)).findById(anyLong());
+        verify(boardRepository, times(1)).selectBoardById(anyLong());
         verify(board, times(1)).updateTitleAndContent(anyLong(), any(Title.class), any(Content.class), any(LocalDateTime.class));
     }
 
     @Test
     @DisplayName("게시물 수정 요청시 게시물이 존재하지 않으면 예외를 발생시킵니다")
     void update_throws_exception_with_no_board() {
-        given(boardRepository.findById(anyLong())).willReturn(Optional.empty());
+        given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.empty());
 
         thenThrownBy(() -> boardService.updateBoard(member.getId(), 1L, BOARD_UPDATE_REQUEST))
                 .isInstanceOf(EntityNotFoundException.class)
@@ -101,12 +101,14 @@ public class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물을 조회하고 단일 게시물 조회 응답 DTO를 반환한다.")
     void selectBoard() {
-        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.of(board));
         given(board.getWriter()).willReturn(member);
         given(member.getId()).willReturn(1L);
+
         BoardSelectResponse boardSelectResponse = boardService.selectBoard(1L);
+
         then(boardSelectResponse).isNotNull();
-        verify(boardRepository).findById(anyLong());
+        verify(boardRepository).selectBoardById(anyLong());
     }
 
     @Test
