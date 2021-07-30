@@ -1,13 +1,11 @@
 package com.project.kodesalon.model.board.repository;
 
 import com.project.kodesalon.model.board.domain.Board;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
-@Repository
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     @PersistenceContext
