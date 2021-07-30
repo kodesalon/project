@@ -196,6 +196,7 @@ include::{snippets}/board/create/fail/null-created-date-time/http-response.adoc[
 
 === Request
 
+include::{snippets}/board/delete/success/path-parameters.adoc[]
 include::{snippets}/board/delete/success/request-fields.adoc[]
 include::{snippets}/board/delete/success/http-request.adoc[]
 
@@ -215,9 +216,9 @@ include::{snippets}/board/delete/fail/invalid-auth/http-response.adoc[]
 include::{snippets}/board/delete/fail/already-deleted/response-fields.adoc[]
 include::{snippets}/board/delete/fail/already-deleted/http-response.adoc[]
 
-- 유효하지 않은 게시물 번호
-include::{snippets}/board/delete/fail/null-board-id/response-fields.adoc[]
-include::{snippets}/board/delete/fail/null-board-id/http-response.adoc[]
+- 존재하지 않는 게시물
+include::{snippets}/board/delete/fail/not-exist-board/response-fields.adoc[]
+include::{snippets}/board/delete/fail/not-exist-board/http-response.adoc[]
 
 - 유효하지 않은 삭제 시간
 include::{snippets}/board/delete/fail/null-deleted-date-time/response-fields.adoc[]

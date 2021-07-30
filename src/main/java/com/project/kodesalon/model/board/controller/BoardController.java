@@ -33,9 +33,9 @@ public class BoardController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> delete(@Login Long memberId, @RequestBody @Valid final BoardDeleteRequest boardDeleteRequest) {
-        boardService.delete(memberId, boardDeleteRequest);
+    @DeleteMapping("/{boardId}")
+    public ResponseEntity<Void> delete(@Login Long memberId, @PathVariable final Long boardId, @RequestBody @Valid final BoardDeleteRequest boardDeleteRequest) {
+        boardService.delete(memberId, boardId, boardDeleteRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
