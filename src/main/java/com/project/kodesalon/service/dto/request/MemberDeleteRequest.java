@@ -12,13 +12,13 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class DeleteMemberRequest {
+public class MemberDeleteRequest {
 
     @NotNull(message = INVALID_DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime deletedDateTime;
 
-    public DeleteMemberRequest(final LocalDateTime deletedDateTime) {
+    public MemberDeleteRequest(final LocalDateTime deletedDateTime) {
         this.deletedDateTime = deletedDateTime;
     }
 }

@@ -1,6 +1,5 @@
-package com.project.kodesalon.service.dto;
+package com.project.kodesalon.service.dto.request;
 
-import com.project.kodesalon.service.dto.request.TokenRefreshRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

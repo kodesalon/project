@@ -4,10 +4,10 @@ import com.project.kodesalon.domain.Member;
 import com.project.kodesalon.domain.vo.Alias;
 import com.project.kodesalon.repository.BoardRepository;
 import com.project.kodesalon.repository.MemberRepository;
-import com.project.kodesalon.service.dto.request.ChangePasswordRequest;
-import com.project.kodesalon.service.dto.request.CreateMemberRequest;
-import com.project.kodesalon.service.dto.request.DeleteMemberRequest;
-import com.project.kodesalon.service.dto.response.SelectMemberResponse;
+import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
+import com.project.kodesalon.service.dto.request.MemberCreateRequest;
+import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
+import com.project.kodesalon.service.dto.response.MemberSelectResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -31,10 +31,10 @@ public class MemberService {
     }
 
     @Transactional
-    public void join(final CreateMemberRequest createMemberRequest) {
-        String alias = createMemberRequest.getAlias();
+    public void join(final MemberCreateRequest memberCreateRequest) {
+        String alias = memberCreateRequest.getAlias();
         validateDuplicationOf(alias);
-        Member saveMember = saveMember(createMemberRequest);
+        Member saveMember = saveMember(memberCreateRequest);
         log.info("ID : {}, Alias : {} Member가 회원 가입 성공", saveMember.getId(), alias);
     }
 
@@ -46,31 +46,31 @@ public class MemberService {
                 });
     }
 
-    private Member saveMember(CreateMemberRequest createMemberRequest) {
+    private Member saveMember(MemberCreateRequest memberCreateRequest) {
         try {
-            return memberRepository.save(createMemberRequest.toMember());
+            return memberRepository.save(memberCreateRequest.toMember());
         } catch (DataIntegrityViolationException e) {
             throw new IllegalArgumentException(ALREADY_EXIST_MEMBER_ALIAS);
         }
     }
 
     @Transactional(readOnly = true)
-    public SelectMemberResponse selectMember(final Long memberId) {
+    public MemberSelectResponse selectMember(final Long memberId) {
         Member member = findById(memberId);
-        return new SelectMemberResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone());
+        return new MemberSelectResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone());
     }
 
     @Transactional
-    public void changePassword(final Long memberId, final ChangePasswordRequest changePasswordRequest) {
+    public void changePassword(final Long memberId, final MemberChangePasswordRequest memberChangePasswordRequest) {
         Member member = findById(memberId);
-        member.changePassword(changePasswordRequest.getPassword(), changePasswordRequest.getLastModifiedDateTime());
+        member.changePassword(memberChangePasswordRequest.getPassword(), memberChangePasswordRequest.getLastModifiedDateTime());
     }
 
     @Transactional
-    public void deleteMember(final Long memberId, final DeleteMemberRequest deleteMemberRequest) {
+    public void deleteMember(final Long memberId, final MemberDeleteRequest memberDeleteRequest) {
         Member member = findById(memberId);
         boardRepository.deleteBoardByMemberId(memberId);
-        member.delete(deleteMemberRequest.getDeletedDateTime());
+        member.delete(memberDeleteRequest.getDeletedDateTime());
     }
 
     @Transactional(readOnly = true)

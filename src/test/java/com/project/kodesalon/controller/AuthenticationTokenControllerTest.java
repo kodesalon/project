@@ -5,8 +5,8 @@ import com.project.kodesalon.exception.GlobalExceptionHandler;
 import com.project.kodesalon.service.AuthenticationTokenService;
 import com.project.kodesalon.service.dto.request.LoginRequest;
 import com.project.kodesalon.service.dto.request.TokenRefreshRequest;
-import com.project.kodesalon.service.dto.response.JwtResponse;
 import com.project.kodesalon.service.dto.response.LoginResponse;
+import com.project.kodesalon.service.dto.response.TokenResponse;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -46,7 +46,7 @@ class AuthenticationTokenControllerTest {
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final LoginResponse loginResponse = new LoginResponse("access token", "refresh token", 1L, "alias");
     private final TokenRefreshRequest tokenRefreshRequest = new TokenRefreshRequest("refresh token");
-    private final JwtResponse jwtResponse = new JwtResponse("accessToken", "refreshToken");
+    private final TokenResponse tokenResponse = new TokenResponse("accessToken", "refreshToken");
 
     private MockMvc mockMvc;
 
@@ -136,7 +136,7 @@ class AuthenticationTokenControllerTest {
     @Test
     @DisplayName("유효한 refresh token일 경우, 새로 발급받은 access token, refresh token을 DTO에 당마 Http 200으로 응답한다.")
     void refresh_success() throws Exception {
-        given(authenticationTokenService.reissueAccessAndRefreshToken(any(TokenRefreshRequest.class))).willReturn(jwtResponse);
+        given(authenticationTokenService.reissueAccessAndRefreshToken(any(TokenRefreshRequest.class))).willReturn(tokenResponse);
 
         this.mockMvc.perform(post("/api/v1/auth/refreshtoken")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -15,7 +15,7 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class ChangePasswordRequest {
+public class MemberChangePasswordRequest {
 
     @NotNull(message = INVALID_MEMBER_PASSWORD)
     @Pattern(regexp = PASSWORD_REGEX, message = INVALID_MEMBER_PASSWORD)
@@ -25,7 +25,7 @@ public class ChangePasswordRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime lastModifiedDateTime;
 
-    public ChangePasswordRequest(final String password, final LocalDateTime lastModifiedDateTime) {
+    public MemberChangePasswordRequest(final String password, final LocalDateTime lastModifiedDateTime) {
         this.password = password;
         this.lastModifiedDateTime = lastModifiedDateTime;
     }

@@ -1,6 +1,5 @@
-package com.project.kodesalon.service.dto;
+package com.project.kodesalon.service.dto.request;
 
-import com.project.kodesalon.service.dto.request.DeleteMemberRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,7 +15,7 @@ import java.util.Set;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 import static org.assertj.core.api.BDDAssertions.then;
 
-class DeleteMemberRequestTest {
+class MemberDeleteRequestTest {
 
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
@@ -25,17 +24,17 @@ class DeleteMemberRequestTest {
     @DisplayName("회원 탈퇴 시간을 반환한다.")
     void getDeletedDateTime() {
         LocalDateTime deletedDateTime = LocalDateTime.now();
-        DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(deletedDateTime);
+        MemberDeleteRequest memberDeleteRequest = new MemberDeleteRequest(deletedDateTime);
 
-        then(deleteMemberRequest.getDeletedDateTime()).isEqualTo(deletedDateTime);
+        then(memberDeleteRequest.getDeletedDateTime()).isEqualTo(deletedDateTime);
     }
 
     @ParameterizedTest
     @NullSource
     @DisplayName("비밀번호 변경 시간이 없을 경우 예외를 발생시킨다.")
     void create_throws_exception_with_null_last_modified_date_time(LocalDateTime invalidDeletedDateTime) {
-        DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(invalidDeletedDateTime);
-        Set<ConstraintViolation<DeleteMemberRequest>> constraintViolations = validator.validate(deleteMemberRequest);
+        MemberDeleteRequest memberDeleteRequest = new MemberDeleteRequest(invalidDeletedDateTime);
+        Set<ConstraintViolation<MemberDeleteRequest>> constraintViolations = validator.validate(memberDeleteRequest);
 
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)

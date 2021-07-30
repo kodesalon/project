@@ -1,6 +1,5 @@
-package com.project.kodesalon.service.dto;
+package com.project.kodesalon.service.dto.response;
 
-import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

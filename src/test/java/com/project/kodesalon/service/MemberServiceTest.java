@@ -4,10 +4,10 @@ import com.project.kodesalon.domain.Member;
 import com.project.kodesalon.domain.vo.Alias;
 import com.project.kodesalon.repository.BoardRepository;
 import com.project.kodesalon.repository.MemberRepository;
-import com.project.kodesalon.service.dto.request.ChangePasswordRequest;
-import com.project.kodesalon.service.dto.request.CreateMemberRequest;
-import com.project.kodesalon.service.dto.request.DeleteMemberRequest;
-import com.project.kodesalon.service.dto.response.SelectMemberResponse;
+import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
+import com.project.kodesalon.service.dto.request.MemberCreateRequest;
+import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
+import com.project.kodesalon.service.dto.response.MemberSelectResponse;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,8 +39,8 @@ class MemberServiceTest {
     private static final Member TEST_MEMBER = getTestMember();
 
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
-    private final CreateMemberRequest createMemberRequest
-            = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+    private final MemberCreateRequest memberCreateRequest
+            = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
     @InjectMocks
     private MemberService memberService;
@@ -61,7 +61,7 @@ class MemberServiceTest {
         given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.empty());
         given(memberRepository.save(any(Member.class))).willReturn(member);
 
-        memberService.join(createMemberRequest);
+        memberService.join(memberCreateRequest);
 
         verify(memberRepository, times(1)).findMemberByAlias(any(Alias.class));
         verify(memberRepository, times(1)).save(any(Member.class));
@@ -72,7 +72,7 @@ class MemberServiceTest {
     void join_throw_exception_with_already_exist() {
         given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.of(member));
 
-        thenThrownBy(() -> memberService.join(createMemberRequest))
+        thenThrownBy(() -> memberService.join(memberCreateRequest))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage(ALREADY_EXIST_MEMBER_ALIAS);
     }
@@ -82,7 +82,7 @@ class MemberServiceTest {
     void join_throw_exception_with_left_alias_after_delete() {
         given(memberRepository.save(any(Member.class))).willThrow(new DataIntegrityViolationException(ALREADY_EXIST_MEMBER_ALIAS));
 
-        thenThrownBy(() -> memberService.join(createMemberRequest))
+        thenThrownBy(() -> memberService.join(memberCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ALREADY_EXIST_MEMBER_ALIAS);
     }
@@ -96,12 +96,12 @@ class MemberServiceTest {
         given(member.getEmail()).willReturn("email@email.com");
         given(member.getPhone()).willReturn("010-1111-2222");
 
-        SelectMemberResponse selectMemberResponse = memberService.selectMember(anyLong());
+        MemberSelectResponse memberSelectResponse = memberService.selectMember(anyLong());
 
-        softly.then(selectMemberResponse.getAlias()).isEqualTo("alias");
-        softly.then(selectMemberResponse.getName()).isEqualTo("이름");
-        softly.then(selectMemberResponse.getEmail()).isEqualTo("email@email.com");
-        softly.then(selectMemberResponse.getPhone()).isEqualTo("010-1111-2222");
+        softly.then(memberSelectResponse.getAlias()).isEqualTo("alias");
+        softly.then(memberSelectResponse.getName()).isEqualTo("이름");
+        softly.then(memberSelectResponse.getEmail()).isEqualTo("email@email.com");
+        softly.then(memberSelectResponse.getPhone()).isEqualTo("010-1111-2222");
         softly.assertAll();
     }
 
@@ -120,18 +120,18 @@ class MemberServiceTest {
     void changePassword() {
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!", LocalDateTime.now());
-        memberService.changePassword(anyLong(), changePasswordRequest);
+        MemberChangePasswordRequest memberChangePasswordRequest = new MemberChangePasswordRequest("ChangePassword1!", LocalDateTime.now());
+        memberService.changePassword(anyLong(), memberChangePasswordRequest);
         verify(member, times(1)).changePassword(anyString(), any(LocalDateTime.class));
     }
 
     @Test
     @DisplayName("회원 탈퇴에 성공한다.")
     void deleteMember() {
-        DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(LocalDateTime.now());
+        MemberDeleteRequest memberDeleteRequest = new MemberDeleteRequest(LocalDateTime.now());
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
-        memberService.deleteMember(member.getId(), deleteMemberRequest);
+        memberService.deleteMember(member.getId(), memberDeleteRequest);
 
         verify(boardRepository, times(1)).deleteBoardByMemberId(anyLong());
         verify(member, times(1)).delete(any(LocalDateTime.class));
@@ -140,10 +140,10 @@ class MemberServiceTest {
     @Test
     @DisplayName("회원 탈퇴시, 존재하지 않는 회원 식별 번호면 예외를 발생시킨다.")
     void deleteMember_throws_exception() {
-        DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(LocalDateTime.now());
+        MemberDeleteRequest memberDeleteRequest = new MemberDeleteRequest(LocalDateTime.now());
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
-        thenThrownBy(() -> memberService.deleteMember(member.getId(), deleteMemberRequest))
+        thenThrownBy(() -> memberService.deleteMember(member.getId(), memberDeleteRequest))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(NOT_EXIST_MEMBER);
     }

@@ -24,7 +24,7 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PHONE;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CreateMemberRequest {
+public class MemberCreateRequest {
 
     @NotNull(message = INVALID_MEMBER_ALIAS)
     @Pattern(regexp = ALIAS_REGEX, message = INVALID_MEMBER_ALIAS)
@@ -50,7 +50,7 @@ public class CreateMemberRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdDateTime;
 
-    public CreateMemberRequest(final String alias, final String password, final String name, final String email, final String phone, final LocalDateTime createdDateTime) {
+    public MemberCreateRequest(final String alias, final String password, final String name, final String email, final String phone, final LocalDateTime createdDateTime) {
         this.alias = alias;
         this.password = password;
         this.name = name;

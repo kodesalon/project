@@ -5,8 +5,8 @@ import com.project.kodesalon.domain.RefreshToken;
 import com.project.kodesalon.repository.RefreshTokenRepository;
 import com.project.kodesalon.service.dto.request.LoginRequest;
 import com.project.kodesalon.service.dto.request.TokenRefreshRequest;
-import com.project.kodesalon.service.dto.response.JwtResponse;
 import com.project.kodesalon.service.dto.response.LoginResponse;
+import com.project.kodesalon.service.dto.response.TokenResponse;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -111,9 +111,9 @@ class AuthenticationTokenServiceTest {
         given(refreshTokenRepository.findByToken(anyString())).willReturn(Optional.of(refreshToken));
         given(refreshToken.getMember()).willReturn(member);
 
-        JwtResponse jwtResponse = authenticationTokenService.reissueAccessAndRefreshToken(tokenRefreshRequest);
+        TokenResponse tokenResponse = authenticationTokenService.reissueAccessAndRefreshToken(tokenRefreshRequest);
 
-        then(jwtResponse).isNotNull();
+        then(tokenResponse).isNotNull();
         verify(refreshTokenRepository, times(1)).findByToken(anyString());
         verify(jwtManager, times(1)).generateJwtToken(anyLong());
         verify(refreshToken, times(1)).replace(anyString());

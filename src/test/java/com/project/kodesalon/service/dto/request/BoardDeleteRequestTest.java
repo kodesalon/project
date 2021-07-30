@@ -1,6 +1,5 @@
-package com.project.kodesalon.service.dto;
+package com.project.kodesalon.service.dto.request;
 
-import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -3,8 +3,8 @@ package com.project.kodesalon.controller;
 import com.project.kodesalon.service.AuthenticationTokenService;
 import com.project.kodesalon.service.dto.request.LoginRequest;
 import com.project.kodesalon.service.dto.request.TokenRefreshRequest;
-import com.project.kodesalon.service.dto.response.JwtResponse;
 import com.project.kodesalon.service.dto.response.LoginResponse;
+import com.project.kodesalon.service.dto.response.TokenResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,8 +30,8 @@ public class AuthenticationTokenController {
     }
 
     @PostMapping("/refreshtoken")
-    public ResponseEntity<JwtResponse> reissueAccessAndRefreshToken(@RequestBody @Valid final TokenRefreshRequest tokenRefreshRequest) {
-        JwtResponse jwtResponse = authenticationTokenService.reissueAccessAndRefreshToken(tokenRefreshRequest);
-        return ResponseEntity.ok().body(jwtResponse);
+    public ResponseEntity<TokenResponse> reissueAccessAndRefreshToken(@RequestBody @Valid final TokenRefreshRequest tokenRefreshRequest) {
+        TokenResponse tokenResponse = authenticationTokenService.reissueAccessAndRefreshToken(tokenRefreshRequest);
+        return ResponseEntity.ok().body(tokenResponse);
     }
 }

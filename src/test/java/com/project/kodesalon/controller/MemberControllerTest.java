@@ -5,10 +5,10 @@ import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.config.interceptor.LoginInterceptor;
 import com.project.kodesalon.exception.GlobalExceptionHandler;
 import com.project.kodesalon.service.MemberService;
-import com.project.kodesalon.service.dto.request.ChangePasswordRequest;
-import com.project.kodesalon.service.dto.request.CreateMemberRequest;
-import com.project.kodesalon.service.dto.request.DeleteMemberRequest;
-import com.project.kodesalon.service.dto.response.SelectMemberResponse;
+import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
+import com.project.kodesalon.service.dto.request.MemberCreateRequest;
+import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
+import com.project.kodesalon.service.dto.response.MemberSelectResponse;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -67,9 +67,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(JacksonConfiguration.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 class MemberControllerTest {
-    private final CreateMemberRequest createMemberRequest =
-            new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
-    private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!", LocalDateTime.now());
+    private final MemberCreateRequest memberCreateRequest =
+            new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+    private final MemberChangePasswordRequest memberChangePasswordRequest = new MemberChangePasswordRequest("ChangePassword1!", LocalDateTime.now());
 
     private MockMvc mockMvc;
 
@@ -103,7 +103,7 @@ class MemberControllerTest {
     void join_success() throws Exception {
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createMemberRequest)))
+                .content(objectMapper.writeValueAsString(memberCreateRequest)))
                 .andExpect(status().isOk())
                 .andDo(document("member/join/success",
                         getDocumentRequest(),
@@ -123,11 +123,11 @@ class MemberControllerTest {
     void join_fail_with_already_exist() throws Exception {
         willThrow(new IllegalStateException(ALREADY_EXIST_MEMBER_ALIAS))
                 .given(memberService)
-                .join(any(CreateMemberRequest.class));
+                .join(any(MemberCreateRequest.class));
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createMemberRequest)))
+                .content(objectMapper.writeValueAsString(memberCreateRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(ALREADY_EXIST_MEMBER_ALIAS))
                 .andDo(document("member/join/fail/existing-alias",
@@ -139,12 +139,12 @@ class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 아이디(Alias)를 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_alias() throws Exception {
-        CreateMemberRequest createMemberRequestWithInvalidAlias
-                = new CreateMemberRequest("", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequestWithInvalidAlias
+                = new MemberCreateRequest("", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidAlias)))
+                .content(objectMapper.writeValueAsString(memberCreateRequestWithInvalidAlias)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_ALIAS))
                 .andDo(document("member/join/fail/invalid-alias",
@@ -156,12 +156,12 @@ class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 비밀번호를 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_password() throws Exception {
-        CreateMemberRequest createMemberRequestWithInvalidPassword
-                = new CreateMemberRequest("alias", "", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequestWithInvalidPassword
+                = new MemberCreateRequest("alias", "", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidPassword)))
+                .content(objectMapper.writeValueAsString(memberCreateRequestWithInvalidPassword)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PASSWORD))
                 .andDo(document("member/join/fail/invalid-password",
@@ -173,12 +173,12 @@ class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 이름을 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_name() throws Exception {
-        CreateMemberRequest createMemberRequestWithInvalidName
-                = new CreateMemberRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequestWithInvalidName
+                = new MemberCreateRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidName)))
+                .content(objectMapper.writeValueAsString(memberCreateRequestWithInvalidName)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_NAME))
                 .andDo(document("member/join/fail/invalid-name",
@@ -190,12 +190,12 @@ class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 이메일을 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_email() throws Exception {
-        CreateMemberRequest createMemberRequestWithInvalidEmail
-                = new CreateMemberRequest("alias", "Password123!!", "이름", " ", "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequestWithInvalidEmail
+                = new MemberCreateRequest("alias", "Password123!!", "이름", " ", "010-1111-2222", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidEmail)))
+                .content(objectMapper.writeValueAsString(memberCreateRequestWithInvalidEmail)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_EMAIL))
                 .andDo(document("member/join/fail/invalid-email",
@@ -207,12 +207,12 @@ class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 휴대폰 번호를 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_phone() throws Exception {
-        CreateMemberRequest createMemberRequestWithInvalidPhone
-                = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequestWithInvalidPhone
+                = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidPhone)))
+                .content(objectMapper.writeValueAsString(memberCreateRequestWithInvalidPhone)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PHONE))
                 .andDo(document("member/join/fail/invalid-phone",
@@ -226,11 +226,11 @@ class MemberControllerTest {
     void join_fail_with_deleted_member_alias() throws Exception {
         willThrow(new DataIntegrityViolationException(ALREADY_EXIST_MEMBER_ALIAS))
                 .given(memberService)
-                .join(any(CreateMemberRequest.class));
+                .join(any(MemberCreateRequest.class));
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createMemberRequest)))
+                .content(objectMapper.writeValueAsString(memberCreateRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(ALREADY_EXIST_MEMBER_ALIAS))
                 .andDo(document("member/join/fail/deleted-alias",
@@ -243,12 +243,12 @@ class MemberControllerTest {
     @NullSource
     @DisplayName("회원 가입시 회원 가입 시간이 없는 경우 예외 메세지를 반환합니다.")
     void join_fail_with_null_created_date_time(LocalDateTime invalidCreateDateTime) throws Exception {
-        CreateMemberRequest createMemberRequest
-                = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", invalidCreateDateTime);
+        MemberCreateRequest memberCreateRequest
+                = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", invalidCreateDateTime);
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(createMemberRequest)))
+                .content(objectMapper.writeValueAsString(memberCreateRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
                 .andDo(document("member/join/fail/null-created-date-time",
@@ -261,7 +261,7 @@ class MemberControllerTest {
     @DisplayName("존재하는 회원을 조회하면 200 상태를 response 합니다.")
     void select_exist_member_response_success() throws Exception {
         given(memberService.selectMember(any()))
-                .willReturn(new SelectMemberResponse("alias", "이름", "email@email.com", "010-1111-2222"));
+                .willReturn(new MemberSelectResponse("alias", "이름", "email@email.com", "010-1111-2222"));
 
         mockMvc.perform(get("/api/v1/members")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -283,7 +283,7 @@ class MemberControllerTest {
     @DisplayName("비밀번호 변경시, 변경하려는 비밀번호, 회원 식별 번호를 전달받아 비밀번호를 변경하고 200 상태를 반환한다.")
     void changePassword() throws Exception {
         mockMvc.perform(put("/api/v1/members/password")
-                .content(objectMapper.writeValueAsString(changePasswordRequest))
+                .content(objectMapper.writeValueAsString(memberChangePasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("member/change-password/success",
@@ -298,11 +298,11 @@ class MemberControllerTest {
     @Test
     @DisplayName("비밀번호 변경시, 변경하려는 비밀변호가 유효하지 않은 경우 400 상태 + 예외 코드를 반환합니다.")
     void failed_change_password_with_invalid_password() throws Exception {
-        ChangePasswordRequest changePasswordRequestWithInvalidPassword = new ChangePasswordRequest("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.", LocalDateTime.now());
+        MemberChangePasswordRequest memberChangePasswordRequestWithInvalidPassword = new MemberChangePasswordRequest("비밀번호는 영어 소문자, 대문자, 숫자, 특수문자를 포함한 8자리이상 16자리 이하여야 합니다.", LocalDateTime.now());
 
         mockMvc.perform(put("/api/v1/members/password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(changePasswordRequestWithInvalidPassword)))
+                .content(objectMapper.writeValueAsString(memberChangePasswordRequestWithInvalidPassword)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PASSWORD))
                 .andDo(document("member/change-password/fail/invalid-password",
@@ -314,14 +314,14 @@ class MemberControllerTest {
     @Test
     @DisplayName("비밀번호 변경시, 변경하려는 회원 식별 번호가 없는 경우 400 상태 + 예외 코드를 반환합니다.")
     void failed_change_password_with_member_id_not_exist() throws Exception {
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!", LocalDateTime.now());
+        MemberChangePasswordRequest memberChangePasswordRequest = new MemberChangePasswordRequest("Password123!!", LocalDateTime.now());
         willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER))
                 .given(memberService)
-                .changePassword(any(), any(ChangePasswordRequest.class));
+                .changePassword(any(), any(MemberChangePasswordRequest.class));
 
         mockMvc.perform(put("/api/v1/members/password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(changePasswordRequest)))
+                .content(objectMapper.writeValueAsString(memberChangePasswordRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_EXIST_MEMBER))
                 .andDo(document("member/change-password/fail/no-member",
@@ -333,14 +333,14 @@ class MemberControllerTest {
     @Test
     @DisplayName("비밀번호 변경시, 변경하려는 비밀번호가 기존 비밀번호와 일치하는 경우 400 상태 + 예외 코드를 반환합니다")
     void failed_change_password_with_duplicate_password() throws Exception {
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!", LocalDateTime.now());
+        MemberChangePasswordRequest memberChangePasswordRequest = new MemberChangePasswordRequest("Password123!!", LocalDateTime.now());
         willThrow(new IllegalArgumentException(DUPLICATED_PASSWORD))
                 .given(memberService)
-                .changePassword(any(), any(ChangePasswordRequest.class));
+                .changePassword(any(), any(MemberChangePasswordRequest.class));
 
         mockMvc.perform(put("/api/v1/members/password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(changePasswordRequest)))
+                .content(objectMapper.writeValueAsString(memberChangePasswordRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(DUPLICATED_PASSWORD))
                 .andDo(document("member/change-password/fail/password-duplicate",
@@ -353,11 +353,11 @@ class MemberControllerTest {
     @NullSource
     @DisplayName("비밀번호 변경시, 마지막으로 변경된 시간이 없을 경우, 400 상태 + 예외 코드를 반환합니다")
     void failed_change_password_with_invalid_last_modified_date_time(LocalDateTime invalidLastModifiedDateTime) throws Exception {
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!", invalidLastModifiedDateTime);
+        MemberChangePasswordRequest memberChangePasswordRequest = new MemberChangePasswordRequest("Password123!!", invalidLastModifiedDateTime);
 
         mockMvc.perform(put("/api/v1/members/password")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(changePasswordRequest)))
+                .content(objectMapper.writeValueAsString(memberChangePasswordRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
                 .andDo(document("member/change-password/fail/null-last-modified-date-time",
@@ -369,11 +369,11 @@ class MemberControllerTest {
     @Test
     @DisplayName("회원의 식별 번호를 전달받아 회원을 탈퇴하고 200 상태 + 성공 메세지를 반환합니다.")
     void deleteMember() throws Exception {
-        DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(LocalDateTime.now());
+        MemberDeleteRequest memberDeleteRequest = new MemberDeleteRequest(LocalDateTime.now());
 
         mockMvc.perform(delete("/api/v1/members")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deleteMemberRequest)))
+                .content(objectMapper.writeValueAsString(memberDeleteRequest)))
                 .andExpect(status().isOk())
                 .andDo(document("member/delete/success",
                         getDocumentRequest(),
@@ -385,11 +385,11 @@ class MemberControllerTest {
     @NullSource
     @DisplayName("회원 탈퇴 시간이 존재하지 않을 경우 400 상태 + 예외 코드를 반환합니다.")
     void deleteMember_throws_exception_with_null_deleted_date_time(LocalDateTime invalidDeletedDateTime) throws Exception {
-        DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(invalidDeletedDateTime);
+        MemberDeleteRequest memberDeleteRequest = new MemberDeleteRequest(invalidDeletedDateTime);
 
         mockMvc.perform(delete("/api/v1/members")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(deleteMemberRequest)))
+                .content(objectMapper.writeValueAsString(memberDeleteRequest)))
                 .andExpect(status().isBadRequest())
                 .andDo(document("member/delete/fail/null-deleted-date-time",
                         getDocumentResponse(),

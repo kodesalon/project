@@ -6,13 +6,13 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class SelectMemberResponse {
+public class MemberSelectResponse {
     private String alias;
     private String name;
     private String email;
     private String phone;
 
-    public SelectMemberResponse(final String alias, final String name, final String email, final String phone) {
+    public MemberSelectResponse(final String alias, final String name, final String email, final String phone) {
         this.alias = alias;
         this.name = name;
         this.email = email;

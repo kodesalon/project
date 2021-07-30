@@ -2,10 +2,10 @@ package com.project.kodesalon.controller;
 
 import com.project.kodesalon.config.argumentresolver.annotation.Login;
 import com.project.kodesalon.service.MemberService;
-import com.project.kodesalon.service.dto.request.ChangePasswordRequest;
-import com.project.kodesalon.service.dto.request.CreateMemberRequest;
-import com.project.kodesalon.service.dto.request.DeleteMemberRequest;
-import com.project.kodesalon.service.dto.response.SelectMemberResponse;
+import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
+import com.project.kodesalon.service.dto.request.MemberCreateRequest;
+import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
+import com.project.kodesalon.service.dto.response.MemberSelectResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,26 +27,26 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public ResponseEntity<Void> join(@RequestBody @Valid final CreateMemberRequest createMemberRequest) {
-        memberService.join(createMemberRequest);
+    public ResponseEntity<Void> join(@RequestBody @Valid final MemberCreateRequest memberCreateRequest) {
+        memberService.join(memberCreateRequest);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
-    public ResponseEntity<SelectMemberResponse> selectMember(@Login final Long memberId) {
-        SelectMemberResponse selectMemberResponse = memberService.selectMember(memberId);
-        return ResponseEntity.ok().body(selectMemberResponse);
+    public ResponseEntity<MemberSelectResponse> selectMember(@Login final Long memberId) {
+        MemberSelectResponse memberSelectResponse = memberService.selectMember(memberId);
+        return ResponseEntity.ok().body(memberSelectResponse);
     }
 
     @PutMapping("/password")
-    public ResponseEntity<Void> changePassword(@Login final Long memberId, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
-        memberService.changePassword(memberId, changePasswordRequest);
+    public ResponseEntity<Void> changePassword(@Login final Long memberId, @RequestBody @Valid final MemberChangePasswordRequest memberChangePasswordRequest) {
+        memberService.changePassword(memberId, memberChangePasswordRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteMember(@Login final Long memberId, @RequestBody @Valid final DeleteMemberRequest deleteMemberRequest) {
-        memberService.deleteMember(memberId, deleteMemberRequest);
+    public ResponseEntity<Void> deleteMember(@Login final Long memberId, @RequestBody @Valid final MemberDeleteRequest memberDeleteRequest) {
+        memberService.deleteMember(memberId, memberDeleteRequest);
         return ResponseEntity.ok().build();
     }
 }
