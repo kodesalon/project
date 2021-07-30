@@ -2,8 +2,13 @@ package com.project.kodesalon.model.board.repository;
 
 import com.project.kodesalon.model.board.domain.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
-@Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
+
+    @Modifying(flushAutomatically = true)
+    @Query("update Board b set b.deleted = true where b.writer.id = :memberId and b.deleted = false")
+    void deleteBoardByMemberId(@Param("memberId") Long memberId);
 }

@@ -4,6 +4,7 @@ import com.project.kodesalon.common.annotation.Login;
 import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
+import com.project.kodesalon.model.member.service.dto.DeleteMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,20 +33,20 @@ public class MemberController {
     }
 
     @GetMapping
-    public ResponseEntity<SelectMemberResponse> selectMember(@Login Long memberId) {
+    public ResponseEntity<SelectMemberResponse> selectMember(@Login final Long memberId) {
         SelectMemberResponse selectMemberResponse = memberService.selectMember(memberId);
         return ResponseEntity.ok().body(selectMemberResponse);
     }
 
     @PutMapping("/password")
-    public ResponseEntity<Void> changePassword(@Login Long memberId, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
+    public ResponseEntity<Void> changePassword(@Login final Long memberId, @RequestBody @Valid final ChangePasswordRequest changePasswordRequest) {
         memberService.changePassword(memberId, changePasswordRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteMember(@Login Long memberId) {
-        memberService.deleteMember(memberId);
+    public ResponseEntity<Void> deleteMember(@Login final Long memberId, @RequestBody @Valid final DeleteMemberRequest deleteMemberRequest) {
+        memberService.deleteMember(memberId, deleteMemberRequest);
         return ResponseEntity.ok().build();
     }
 }

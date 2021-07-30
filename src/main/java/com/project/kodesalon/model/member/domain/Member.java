@@ -22,18 +22,21 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 
+@Slf4j
 @Entity
+@Where(clause = "deleted = 'false'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member", uniqueConstraints = {
         @UniqueConstraint(name = "member_unique_constraint", columnNames = {"alias"})})
-@Where(clause = "deleted = 'false'")
-@Slf4j
 public class Member extends BaseEntity {
 
     @Id
@@ -59,15 +62,16 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL)
     private List<Board> boards = new ArrayList<>();
 
-    @Column(name = "deleted")
-    private boolean deleted = false;
+    @Column(nullable = false, name = "deleted", columnDefinition = "boolean default false")
+    private boolean deleted;
 
-    public Member(final String alias, final String password, final String name, final String email, final String phone) {
+    public Member(final String alias, final String password, final String name, final String email, final String phone, LocalDateTime createdDateTime) {
         this.alias = new Alias(alias);
         this.password = new Password(password);
         this.email = new Email(email);
         this.name = new Name(name);
         this.phone = new Phone(phone);
+        this.createdDateTime = createdDateTime;
     }
 
     public Long getId() {
@@ -115,21 +119,46 @@ public class Member extends BaseEntity {
         }
     }
 
-    public void changePassword(final String password) {
+    public void changePassword(final String password, final LocalDateTime lastModifiedDateTime) {
         final Password newPassword = new Password(password);
+        validateDuplication(newPassword);
+        validateDateTime(lastModifiedDateTime);
+        this.password = newPassword;
+        this.lastModifiedDateTime = lastModifiedDateTime;
+    }
 
+    private void validateDuplication(final Password newPassword) {
         if (hasSamePassword(newPassword)) {
             throw new IllegalArgumentException(PASSWORD_DUPLICATION);
         }
-
-        this.password = newPassword;
     }
 
-    public void delete() {
+    private void validateDateTime(final LocalDateTime localDateTime) {
+        if (Objects.isNull(localDateTime)) {
+            throw new IllegalArgumentException(INVALID_DATE_TIME);
+        }
+    }
+
+    public void delete(final LocalDateTime deletedDateTime) {
+        validateDateTime(deletedDateTime);
         deleted = true;
+        this.deletedDateTime = deletedDateTime;
     }
 
-    public void addBoard(Board newBoard) {
+    public void addBoard(final Board newBoard) {
         boards.add(newBoard);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return id.equals(member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

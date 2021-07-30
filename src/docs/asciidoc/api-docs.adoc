@@ -19,7 +19,7 @@ include::{snippets}/jwt/expired/http-response.adoc[]
 include::{snippets}/jwt/invalid/response-fields.adoc[]
 include::{snippets}/jwt/invalid/http-response.adoc[]
 
-- Header에 Authorization 속성 값이 없을 경우
+- 유효하지 않은 Authorization 속성 값
 include::{snippets}/jwt/invalid-header/response-fields.adoc[]
 include::{snippets}/jwt/invalid-header/http-response.adoc[]
 
@@ -39,11 +39,11 @@ include::{snippets}/login/success/http-response.adoc[]
 
 ==== *실패*
 
-- Alias가 없는 경우
+- 존재하지 않는 Alias
 include::{snippets}/login/fail/no_alias/response-fields.adoc[]
 include::{snippets}/login/fail/no_alias/http-response.adoc[]
 
-- Password가 일치하지 않는 경우
+- 일치하지 않는 Password
 include::{snippets}/login/fail/mismatch_password/response-fields.adoc[]
 include::{snippets}/login/fail/mismatch_password/http-response.adoc[]
 
@@ -63,7 +63,7 @@ include::{snippets}/refreshtoken/success/http-response.adoc[]
 
 ==== *실패*
 
-- 유효하지 않거나 만료된 토큰일 경우
+- 유효하지 않거나 만료된 토큰
 include::{snippets}/refreshtoken/fail/response-fields.adoc[]
 include::{snippets}/refreshtoken/fail/http-response.adoc[]
 
@@ -81,29 +81,33 @@ include::{snippets}/join/success/http-response.adoc[]
 
 ==== *실패*
 
-- 이미 존재하는 Alias일 경우
-include::{snippets}/join/fail/existing_alias/response-fields.adoc[]
-include::{snippets}/join/fail/existing_alias/http-response.adoc[]
+- 이미 존재하는 Alias
+include::{snippets}/join/fail/existing-alias/response-fields.adoc[]
+include::{snippets}/join/fail/existing-alias/http-response.adoc[]
 
-- Password 형식이 맞지 않을 경우
-include::{snippets}/join/fail/invalid_password/response-fields.adoc[]
-include::{snippets}/join/fail/invalid_password/http-response.adoc[]
+- 유효하지 않은 Password
+include::{snippets}/join/fail/invalid-password/response-fields.adoc[]
+include::{snippets}/join/fail/invalid-password/http-response.adoc[]
 
-- Alias 형식이 맞지 않을 경우
-include::{snippets}/join/fail/invalid_alias/response-fields.adoc[]
-include::{snippets}/join/fail/invalid_alias/http-response.adoc[]
+- 유효하지 않은 Alias
+include::{snippets}/join/fail/invalid-alias/response-fields.adoc[]
+include::{snippets}/join/fail/invalid-alias/http-response.adoc[]
 
-- email이 email 형식이 아닌 경우
-include::{snippets}/join/fail/invalid_email/response-fields.adoc[]
-include::{snippets}/join/fail/invalid_email/http-response.adoc[]
+- 유효하지 않은 Email
+include::{snippets}/join/fail/invalid-email/response-fields.adoc[]
+include::{snippets}/join/fail/invalid-email/http-response.adoc[]
 
-- Name 형식이 맞지 않을 경우
-include::{snippets}/join/fail/invalid_name/response-fields.adoc[]
-include::{snippets}/join/fail/invalid_name/http-response.adoc[]
+- 유효하지 않은 Name
+include::{snippets}/join/fail/invalid-name/response-fields.adoc[]
+include::{snippets}/join/fail/invalid-name/http-response.adoc[]
 
-- Phone이 핸드폰 형식이 아닌 경우
-include::{snippets}/join/fail/invalid_phone/response-fields.adoc[]
-include::{snippets}/join/fail/invalid_phone/http-response.adoc[]
+- 유효하지 않은 Phone
+include::{snippets}/join/fail/invalid-phone/response-fields.adoc[]
+include::{snippets}/join/fail/invalid-phone/http-response.adoc[]
+
+- 유효하지 않은 가입 시간
+include::{snippets}/join/fail/null-created-date-time/response-fields.adoc[]
+include::{snippets}/join/fail/null-created-date-time/http-response.adoc[]
 
 == Select
 
@@ -118,7 +122,7 @@ include::{snippets}/select/success/response-fields.adoc[]
 
 include::{snippets}/select/success/http-response.adoc[]
 
-== Update Password
+== Change Password
 
 === Request
 
@@ -134,13 +138,18 @@ include::{snippets}/changePassword/success/http-response.adoc[]
 ==== *실패*
 
 - 유효하지 않은 비밀번호
-include::{snippets}/changePassword/fail/invalidPassword/response-fields.adoc[]
-include::{snippets}/changePassword/fail/invalidPassword/http-response.adoc[]
+include::{snippets}/changePassword/fail/invalid-password/response-fields.adoc[]
+include::{snippets}/changePassword/fail/invalid-password/http-response.adoc[]
+
+- 유효하지 않은 변경 시간
+include::{snippets}/changePassword/fail/null-last-modified-date-time/response-fields.adoc[]
+include::{snippets}/changePassword/fail/null-last-modified-date-time/http-response.adoc[]
 
 == Delete
 
 === Request
 
+include::{snippets}/delete/success/request-fields.adoc[]
 include::{snippets}/delete/success/http-request.adoc[]
 
 === Response
@@ -148,6 +157,12 @@ include::{snippets}/delete/success/http-request.adoc[]
 ==== *성공*
 
 include::{snippets}/delete/success/http-response.adoc[]
+
+==== *실패*
+
+- 유효하지 않은 탈퇴 시간
+include::{snippets}/delete/fail/null-deleted-date-time/response-fields.adoc[]
+include::{snippets}/delete/fail/null-deleted-date-time/http-response.adoc[]
 
 = Board
 == Save
@@ -157,7 +172,7 @@ include::{snippets}/board/create/success/http-request.adoc[]
 
 === Response
 
-==== **성공**
+==== *성공*
 
 include::{snippets}/board/create/fail/invalid-title/response-fields.adoc[]
 include::{snippets}/board/create/success/http-response.adoc[]
@@ -171,3 +186,40 @@ include::{snippets}/board/create/fail/invalid-title/http-response.adoc[]
 - 유효하지 않은 내용
 include::{snippets}/board/create/fail/invalid-content/response-fields.adoc[]
 include::{snippets}/board/create/fail/invalid-content/http-response.adoc[]
+
+- 유효하지 않은 작성 시간
+include::{snippets}/board/create/fail/null-created-date-time/response-fields.adoc[]
+include::{snippets}/board/create/fail/null-created-date-time/http-response.adoc[]
+
+
+== Delete
+
+=== Request
+
+include::{snippets}/board/delete/success/path-parameters.adoc[]
+include::{snippets}/board/delete/success/request-fields.adoc[]
+include::{snippets}/board/delete/success/http-request.adoc[]
+
+=== Response
+
+==== *성공*
+
+include::{snippets}/board/delete/success/http-response.adoc[]
+
+==== *실패*
+
+- 권한을 가지지 않은 회원
+include::{snippets}/board/delete/fail/invalid-auth/response-fields.adoc[]
+include::{snippets}/board/delete/fail/invalid-auth/http-response.adoc[]
+
+- 이미 삭제된 게시물
+include::{snippets}/board/delete/fail/already-deleted/response-fields.adoc[]
+include::{snippets}/board/delete/fail/already-deleted/http-response.adoc[]
+
+- 존재하지 않는 게시물
+include::{snippets}/board/delete/fail/not-exist-board/response-fields.adoc[]
+include::{snippets}/board/delete/fail/not-exist-board/http-response.adoc[]
+
+- 유효하지 않은 삭제 시간
+include::{snippets}/board/delete/fail/null-deleted-date-time/response-fields.adoc[]
+include::{snippets}/board/delete/fail/null-deleted-date-time/http-response.adoc[]

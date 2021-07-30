@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -16,10 +17,11 @@ import java.util.Set;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
+import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 
-class BoardCreateRequestTest {
+public class BoardCreateRequestTest {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
@@ -28,7 +30,7 @@ class BoardCreateRequestTest {
 
     @Test
     @DisplayName("게시물의 제목, 내용, 생성 시간, 삭제 여부를 반환한다.")
-    public void getter() {
+    void getter() {
         softly.then(boardCreateRequest.getTitle()).isEqualTo("게시물 제목");
         softly.then(boardCreateRequest.getContent()).isEqualTo("게시물 내용");
         softly.then(boardCreateRequest.getCreatedDateTime()).isEqualTo("2021-06-01T23:59:59.999999");
@@ -37,13 +39,13 @@ class BoardCreateRequestTest {
 
     @Test
     @DisplayName("작성자를 입력받아, 멤버 객체를 반환한다.")
-    public void toBoard() {
+    void toBoard() {
         Board board = boardCreateRequest.toBoard(TEST_MEMBER);
 
         softly.then(board.getTitle()).isEqualTo("게시물 제목");
         softly.then(board.getContent()).isEqualTo("게시물 내용");
         softly.then(board.getCreatedDateTime()).isEqualTo("2021-06-01T23:59:59.999999");
-        softly.then(board.getWriter()).isEqualTo("이름");
+        softly.then(board.getWriter()).isEqualTo(TEST_MEMBER);
         softly.assertAll();
     }
 
@@ -95,5 +97,18 @@ class BoardCreateRequestTest {
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
                 .contains(INVALID_BOARD_CONTENT);
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("null 일 경우, 예외가 발생합니다")
+    void create_throw_exception_with_null_created_date_time(LocalDateTime createdDateTime) {
+        BoardCreateRequest boardCreateRequest
+                = new BoardCreateRequest("게시물 제목", "게시물 내용", createdDateTime);
+        Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
+
+        then(constraintViolations)
+                .extracting(ConstraintViolation::getMessage)
+                .contains(INVALID_DATE_TIME);
     }
 }

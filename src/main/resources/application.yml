@@ -35,5 +35,5 @@ spring:
     open-in-view: false
   jwt:
     secret: bG9jYWxUZXN0S2V5
-    accessExpirationMs: 60000
+    accessExpirationMs: 180000
     refreshExpirationWeeks: 2

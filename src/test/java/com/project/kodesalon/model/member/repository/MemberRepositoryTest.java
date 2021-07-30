@@ -13,20 +13,18 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
+import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @DataJpaTest
-class MemberRepositoryTest {
+public class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
 
-    private Member member;
-
     @BeforeEach
     void setUp() {
-        member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444");
-        memberRepository.save(member);
+        memberRepository.save(TEST_MEMBER);
     }
 
     @Test
@@ -36,11 +34,12 @@ class MemberRepositoryTest {
         Member savedMember = memberRepository.findMemberByAlias(new Alias("alias"))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS));
 
-        softly.then(savedMember.getAlias()).isEqualTo(member.getAlias());
-        softly.then(savedMember.getPassword()).isEqualTo(member.getPassword());
-        softly.then(savedMember.getName()).isEqualTo(member.getName());
-        softly.then(savedMember.getEmail()).isEqualTo(member.getEmail());
-        softly.then(savedMember.getPhone()).isEqualTo(member.getPhone());
+        softly.then(savedMember.getAlias()).isEqualTo(TEST_MEMBER.getAlias());
+        softly.then(savedMember.getPassword()).isEqualTo(TEST_MEMBER.getPassword());
+        softly.then(savedMember.getName()).isEqualTo(TEST_MEMBER.getName());
+        softly.then(savedMember.getEmail()).isEqualTo(TEST_MEMBER.getEmail());
+        softly.then(savedMember.getPhone()).isEqualTo(TEST_MEMBER.getPhone());
+        softly.then(savedMember.getCreatedDateTime()).isEqualTo(TEST_MEMBER.getCreatedDateTime());
         softly.assertAll();
     }
 
