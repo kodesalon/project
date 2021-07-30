@@ -19,8 +19,7 @@ public class ErrorCode {
     public static final String INVALID_BOARD_CONTENT = "B002";
     public static final String NOT_EXIST_BOARD = "B003";
     public static final String NOT_AUTHORIZED_MEMBER = "B004";
-    public static final String INVALID_BOARD_ID = "B005";
-    public static final String ALREADY_DELETED_BOARD = "B006";
+    public static final String ALREADY_DELETED_BOARD = "B005";
 
     // JWT
     public static final String EXPIRED_JWT_TOKEN = "J001";
