@@ -7,11 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.NullSource;
 
 import java.time.LocalDateTime;
 
-import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 import static com.project.kodesalon.model.board.domain.BoardTest.TEST_BOARD;
@@ -99,14 +97,5 @@ public class MemberTest {
         softly.then(member.isDeleted()).isTrue();
         softly.then(member.getDeletedDateTime()).isEqualTo(deletedDateTime);
         softly.assertAll();
-    }
-
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("회월 탈퇴 시간이 없으면 예외를 발생시킨다.")
-    void delete_throws_exception_with_null_deleted_date_time(LocalDateTime invalidDeletedTime) {
-        thenIllegalArgumentException()
-                .isThrownBy(() -> member.delete(invalidDeletedTime))
-                .withMessage(INVALID_DATE_TIME);
     }
 }

@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 
@@ -123,7 +122,6 @@ public class Member extends BaseEntity {
     public void changePassword(final String password, final LocalDateTime lastModifiedDateTime) {
         final Password newPassword = new Password(password);
         validateDuplication(newPassword);
-        validateDateTime(lastModifiedDateTime);
         this.password = newPassword;
         this.lastModifiedDateTime = lastModifiedDateTime;
     }
@@ -134,14 +132,7 @@ public class Member extends BaseEntity {
         }
     }
 
-    private void validateDateTime(final LocalDateTime localDateTime) {
-        if (Objects.isNull(localDateTime)) {
-            throw new IllegalArgumentException(INVALID_DATE_TIME);
-        }
-    }
-
     public void delete(final LocalDateTime deletedDateTime) {
-        validateDateTime(deletedDateTime);
         deleted = true;
         this.deletedDateTime = deletedDateTime;
     }
