@@ -73,6 +73,7 @@ public class MemberService {
         member.delete(deleteMemberRequest.getDeletedDateTime());
     }
 
+    @Transactional(readOnly = true)
     public Member findById(final Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> {
@@ -81,6 +82,7 @@ public class MemberService {
                 });
     }
 
+    @Transactional(readOnly = true)
     public Member findMemberByAlias(final String alias) {
         return memberRepository.findMemberByAlias(new Alias(alias))
                 .orElseThrow(() -> {
