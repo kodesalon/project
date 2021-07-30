@@ -51,12 +51,13 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public List<BoardSelectResponse> selectBoards(Long lastBoardId, int size) {
+    public MultiBoardSelectResponse selectBoards(final Long lastBoardId, final int size) {
         List<Board> boards = boardRepository.selectBoards(lastBoardId, size);
-
-        return boards.stream()
+        List<BoardSelectResponse> boardSelectResponses = boards.stream()
                 .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias()))
                 .collect(Collectors.toList());
+
+        return new MultiBoardSelectResponse(boardSelectResponses);
     }
 
     @Transactional
@@ -68,7 +69,7 @@ public class BoardService {
     }
 
     private Board findById(final Long boardId) {
-        return boardRepository.findById(boardId)
+        return boardRepository.selectBoardById(boardId)
                 .orElseThrow(() -> {
                     log.info("존재하지 않는 게시물 식별자 boardId : {}", boardId);
                     throw new EntityNotFoundException(NOT_EXIST_BOARD);

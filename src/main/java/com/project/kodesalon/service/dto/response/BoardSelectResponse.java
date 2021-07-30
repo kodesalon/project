@@ -24,4 +24,8 @@ public class BoardSelectResponse {
         this.writerId = writerId;
         this.writerAlias = writerAlias;
     }
+
+    public boolean checkLast() {
+        return this.getBoardId() == 0L;
+    }
 }

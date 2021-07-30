@@ -366,10 +366,11 @@ class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("마지막으로 조회한 게시물의 식별 번호와 한번에 조회할 게시물의 크기를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
+    @DisplayName("마지막으로 조회한 게시물의 식별 번호와 한번에 조회할 게시물의 크기를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)과 마지막 게시물이 아니라면 다음 게시물 존재 여부를 참으로 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoards() throws Exception {
         List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias")));
-        given(boardService.selectBoards(anyLong(), anyInt())).willReturn(content);
+        MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content);
+        given(boardService.selectBoards(anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards")
                 .param("lastBoardId", "1")
@@ -384,20 +385,53 @@ class BoardControllerTest {
                                 parameterWithName("size").description("한번에 조회할 게시물 크기")
                         ),
                         responseFields(
-                                fieldWithPath("[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
-                                fieldWithPath("[].title").type(JsonFieldType.STRING).description("게시물 제목"),
-                                fieldWithPath("[].content").type(JsonFieldType.STRING).description("게시물 내용"),
-                                fieldWithPath("[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
-                                fieldWithPath("[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
-                                fieldWithPath("[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디")
+                                fieldWithPath("boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
+                                fieldWithPath("boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                fieldWithPath("boards[].content").type(JsonFieldType.STRING).description("게시물 내용"),
+                                fieldWithPath("boards[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
+                                fieldWithPath("boards[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
+                                fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
+                                fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 게시물 존재 여부")
                         )));
     }
 
     @Test
-    @DisplayName("가장 처음으로 조회한 게시물의 경우, 조회할 게시물의 크기만 입력으로 받아 가장 최근 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
-    void selectBoardsAtFirst() throws Exception {
+    @DisplayName("마지막으로 조회한 게시물의 식별 번호와 한번에 조회할 게시물의 크기를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)과 마지막 게시물이 아니라면 다음 게시물 존재 여부를 참으로 담은 Dto객체를 Http 200로 반환한다.")
+    void selectBoards_with_last_board() throws Exception {
+        List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(0L, "title", "content", LocalDateTime.now(), 1L, "alias")));
+        MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content);
+        given(boardService.selectBoards(anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
+
+        mockMvc.perform(get("/api/v1/boards")
+                .param("lastBoardId", "1")
+                .param("size", "10")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("board/select-multi-last/success",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("lastBoardId").description("마지막으로 조회한 게시물 식별 번호"),
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")
+                        ),
+                        responseFields(
+                                fieldWithPath("boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
+                                fieldWithPath("boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                fieldWithPath("boards[].content").type(JsonFieldType.STRING).description("게시물 내용"),
+                                fieldWithPath("boards[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
+                                fieldWithPath("boards[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
+                                fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
+                                fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 게시물 존재 여부")
+                        )));
+    }
+
+
+    @Test
+    @DisplayName("가장 처음으로 조회한 게시물의 경우, 조회할 게시물의 크기만 입력으로 받아 가장 최근 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)와 다음 게시물 존재 여부를 담은 Dto객체를 Http 200로 반환한다.")
+    void selectBoards_at_first() throws Exception {
         List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias")));
-        given(boardService.selectBoards(any(), anyInt())).willReturn(content);
+        MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content);
+        given(boardService.selectBoards(any(), anyInt())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards")
                 .param("size", "10")
@@ -410,12 +444,13 @@ class BoardControllerTest {
                                 parameterWithName("size").description("한번에 조회할 게시물 크기")
                         ),
                         responseFields(
-                                fieldWithPath("[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
-                                fieldWithPath("[].title").type(JsonFieldType.STRING).description("게시물 제목"),
-                                fieldWithPath("[].content").type(JsonFieldType.STRING).description("게시물 내용"),
-                                fieldWithPath("[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
-                                fieldWithPath("[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
-                                fieldWithPath("[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디")
+                                fieldWithPath("boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
+                                fieldWithPath("boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                fieldWithPath("boards[].content").type(JsonFieldType.STRING).description("게시물 내용"),
+                                fieldWithPath("boards[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
+                                fieldWithPath("boards[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
+                                fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
+                                fieldWithPath("hasNext").type(JsonFieldType.BOOLEAN).description("다음 게시물 존재 여부")
                         )));
     }
 }

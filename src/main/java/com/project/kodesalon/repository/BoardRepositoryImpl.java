@@ -1,36 +1,29 @@
 package com.project.kodesalon.repository;
 
 import com.project.kodesalon.domain.Board;
-import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Objects;
 
-@Repository
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final EntityManager entityManager;
+
+    public BoardRepositoryImpl(final EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
-    public List<Board> selectBoards(final Long lastBoardId, final int size) {
-        if (lastBoardId == null) {
-            return selectBoardsAtFirst(size);
+    public List<Board> selectBoards(Long lastBoardId, final int size) {
+        if (Objects.isNull(lastBoardId)) {
+            lastBoardId = Long.MAX_VALUE;
         }
 
         String query = "select b from Board b join fetch b.writer where b.id < :lastBoardId and b.deleted = false order by b.id desc";
 
-        return em.createQuery(query, Board.class)
+        return entityManager.createQuery(query, Board.class)
                 .setParameter("lastBoardId", lastBoardId)
-                .setMaxResults(size)
-                .getResultList();
-    }
-
-    private List<Board> selectBoardsAtFirst(final int size) {
-        String query = "select b from Board b join fetch b.writer where b.deleted = false order by b.id desc";
-
-        return em.createQuery(query, Board.class)
                 .setMaxResults(size)
                 .getResultList();
     }

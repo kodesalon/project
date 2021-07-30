@@ -17,10 +17,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
-import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
-import static com.project.kodesalon.exception.ErrorCode.NOT_AUTHORIZED_MEMBER;
+import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
 
 @Slf4j
 @Entity
@@ -76,13 +74,12 @@ public class Board extends BaseEntity {
 
     public void delete(final Long memberId, final LocalDateTime deletedDateTime) {
         validateAuthorizationOf(memberId);
-        validateDateTime(deletedDateTime);
         deleted = true;
+        this.deletedDateTime = deletedDateTime;
     }
 
     public void updateTitleAndContent(final Long memberId, final Title updatedTitle, final Content updatedContent, final LocalDateTime lastModifiedDateTime) {
         validateAuthorizationOf(memberId);
-        validateDateTime(lastModifiedDateTime);
         this.title = updatedTitle;
         this.content = updatedContent;
         this.lastModifiedDateTime = lastModifiedDateTime;
@@ -92,12 +89,6 @@ public class Board extends BaseEntity {
         if (!isSameWriterId(memberId)) {
             log.info("{}가 {}에 관한 권한이 없음.", memberId, id);
             throw new IllegalArgumentException(NOT_AUTHORIZED_MEMBER);
-        }
-    }
-
-    private void validateDateTime(final LocalDateTime deletedDateTime) {
-        if (Objects.isNull(deletedDateTime)) {
-            throw new IllegalArgumentException(INVALID_DATE_TIME);
         }
     }
 

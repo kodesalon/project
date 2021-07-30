@@ -7,8 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -72,15 +70,6 @@ class BoardTest {
                 .withMessage(NOT_AUTHORIZED_MEMBER);
     }
 
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("게시물 삭제 시간이 null일 경우, 예외가 발생한다.")
-    void delete_throw_exception_with_null_deleted_date_time(LocalDateTime InvalidDeletedDateTime) {
-        thenIllegalArgumentException()
-                .isThrownBy(() -> board.delete(stranger.getId(), InvalidDeletedDateTime))
-                .withMessage(INVALID_DATE_TIME);
-    }
-
     @Test
     @DisplayName("게시물의 제목과 내용을 전달받아 board의 제목과 내용을 변경한다.")
     void update_board() {
@@ -96,20 +85,6 @@ class BoardTest {
         softly.then(board.getLastModifiedDateTime()).isEqualTo(lastModifiedDateTime);
         softly.assertAll();
     }
-
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("게시물 수정 시간이 null일 경우, 예외가 발생한다.")
-    void update_throw_exception_with_null_last_modified_date_time(LocalDateTime invalidLastModifiedDateTime) {
-        Title updatedTitle = new Title("update title");
-        Content updatedContent = new Content("update content");
-        given(member.getId()).willReturn(1L);
-
-        thenIllegalArgumentException()
-                .isThrownBy(() -> board.updateTitleAndContent(member.getId(), updatedTitle, updatedContent, invalidLastModifiedDateTime))
-                .withMessage(INVALID_DATE_TIME);
-    }
-
 
     @Test
     @DisplayName("다른 회원이 게시물 삭제를 시도할 경우, 예외가 발생한다.")

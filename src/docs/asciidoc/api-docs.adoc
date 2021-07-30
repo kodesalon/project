@@ -223,7 +223,14 @@ include::{snippets}/board/select-multi/success/http-request.adoc[]
 ==== *성공*
 
 include::{snippets}/board/select-multi/success/response-fields.adoc[]
+
+===== 마지막 게시물 미포함
+
 include::{snippets}/board/select-multi/success/http-response.adoc[]
+
+===== 마지막 게시물 포함
+
+include::{snippets}/board/select-multi-last/success/http-response.adoc[]
 
 == Delete
 
