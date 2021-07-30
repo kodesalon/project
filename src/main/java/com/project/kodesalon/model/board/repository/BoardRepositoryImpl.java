@@ -3,13 +3,15 @@ package com.project.kodesalon.model.board.repository;
 import com.project.kodesalon.model.board.domain.Board;
 
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
-    @PersistenceContext
-    private EntityManager em;
+    private final EntityManager entityManager;
+
+    public BoardRepositoryImpl(final EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
     @Override
     public List<Board> selectBoards(final Long lastBoardId, final int size) {
@@ -19,7 +21,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
         String query = "select b from Board b join fetch b.writer where b.id < :lastBoardId and b.deleted = false order by b.id desc";
 
-        return em.createQuery(query, Board.class)
+        return entityManager.createQuery(query, Board.class)
                 .setParameter("lastBoardId", lastBoardId)
                 .setMaxResults(size)
                 .getResultList();
@@ -28,7 +30,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     private List<Board> selectBoardsAtFirst(final int size) {
         String query = "select b from Board b join fetch b.writer where b.deleted = false order by b.id desc";
 
-        return em.createQuery(query, Board.class)
+        return entityManager.createQuery(query, Board.class)
                 .setMaxResults(size)
                 .getResultList();
     }
