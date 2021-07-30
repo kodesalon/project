@@ -8,11 +8,14 @@ import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
+import com.project.kodesalon.model.board.service.dto.MultiBoardSelectResponse;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,7 +28,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
-import static com.project.kodesalon.model.member.domain.MemberTest.TEST_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -111,15 +113,22 @@ public class BoardServiceTest {
         verify(boardRepository).selectBoardById(anyLong());
     }
 
-    @Test
-    @DisplayName("마지막 게시물 식별번호를 전달받아 복수 게시물을 조회하고 복수 게시물 조회 응답 DTO를 반환한다.")
-    void selectBoards() {
-        List<Board> boards = new ArrayList<>(Arrays.asList(new Board("title", "content", TEST_MEMBER, LocalDateTime.now())));
+    @ParameterizedTest
+    @CsvSource(value = {"1,true", "0,false"})
+    @DisplayName("마지막 게시물 식별 번호를 전달 받아 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
+    void selectBoards2(Long boardId, boolean hasNext) {
+        List<Board> boards = new ArrayList<>(Arrays.asList(board));
+        given(board.getId()).willReturn(boardId);
+        given(board.getTitle()).willReturn("게시물 제목");
+        given(board.getContent()).willReturn("게시물 내용");
+        given(board.getWriter()).willReturn(member);
+        given(member.getId()).willReturn(1L);
+        given(member.getAlias()).willReturn("alias");
         given(boardRepository.selectBoards(anyLong(), anyInt())).willReturn(boards);
 
-        List<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(1L, 10);
+        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectBoards(1L, 10);
 
-        then(boardSelectMultiResponse).isNotNull();
-        verify(boardRepository, times(1)).selectBoards(anyLong(), anyInt());
+        then(multiBoardSelectResponse.getBoards()).isNotNull();
+        then(multiBoardSelectResponse.isHasNext()).isEqualTo(hasNext);
     }
 }

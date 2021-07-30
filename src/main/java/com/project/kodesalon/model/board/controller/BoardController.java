@@ -6,6 +6,7 @@ import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
+import com.project.kodesalon.model.board.service.dto.MultiBoardSelectResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/boards")
@@ -57,8 +57,8 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BoardSelectResponse>> selectBoards(@RequestParam @Nullable final Long lastBoardId, @RequestParam final int size) {
-        List<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(lastBoardId, size);
+    public ResponseEntity<MultiBoardSelectResponse> selectBoards(@RequestParam @Nullable final Long lastBoardId, @RequestParam final int size) {
+        MultiBoardSelectResponse boardSelectMultiResponse = boardService.selectBoards(lastBoardId, size);
         return ResponseEntity.ok().body(boardSelectMultiResponse);
     }
 }

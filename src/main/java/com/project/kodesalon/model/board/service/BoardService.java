@@ -8,6 +8,7 @@ import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
 import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
+import com.project.kodesalon.model.board.service.dto.MultiBoardSelectResponse;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -52,12 +53,13 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public List<BoardSelectResponse> selectBoards(Long lastBoardId, int size) {
+    public MultiBoardSelectResponse selectBoards(final Long lastBoardId, final int size) {
         List<Board> boards = boardRepository.selectBoards(lastBoardId, size);
-
-        return boards.stream()
+        List<BoardSelectResponse> boardSelectResponses = boards.stream()
                 .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias()))
                 .collect(Collectors.toList());
+
+        return new MultiBoardSelectResponse(boardSelectResponses);
     }
 
     @Transactional
