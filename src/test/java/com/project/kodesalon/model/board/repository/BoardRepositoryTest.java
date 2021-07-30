@@ -135,9 +135,7 @@ public class BoardRepositoryTest {
         List<Board> boards = boardRepository.selectBoards(null, boardToBeSelectedAtOnce);
 
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
-        boards.forEach(b -> {
-            softly.then(persistenceUnitUtil.isLoaded(b.getWriter())).isTrue();
-        });
+        boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getWriter())).isTrue());
         softly.assertAll();
     }
 }
