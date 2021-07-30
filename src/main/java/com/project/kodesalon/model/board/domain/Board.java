@@ -51,6 +51,7 @@ public class Board extends BaseEntity {
         this.content = new Content(content);
         this.writer = writer;
         this.createdDateTime = createdDateTime;
+        this.lastModifiedDateTime = createdDateTime;
         this.writer.addBoard(this);
     }
 

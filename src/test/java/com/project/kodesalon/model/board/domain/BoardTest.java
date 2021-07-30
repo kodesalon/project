@@ -46,6 +46,7 @@ public class BoardTest {
         softly.then(board.getContent()).isEqualTo("게시물 내용");
         softly.then(board.getWriter()).isEqualTo(member);
         softly.then(board.getCreatedDateTime()).isEqualTo(createdDateTime);
+        softly.then(board.getLastModifiedDateTime()).isEqualTo(createdDateTime);
         softly.then(board.isDeleted()).isFalse();
         softly.assertAll();
     }

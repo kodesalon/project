@@ -40,6 +40,7 @@ public class MemberTest {
         softly.then(member.getEmail()).isEqualTo("email@email.com");
         softly.then(member.getPhone()).isEqualTo("010-1234-4444");
         softly.then(member.getCreatedDateTime()).isEqualTo(LocalDateTime.of(2021, 7, 16, 23, 59));
+        softly.then(member.getLastModifiedDateTime()).isEqualTo(LocalDateTime.of(2021, 7, 16, 23, 59));
         softly.then(member.isDeleted()).isFalse();
         softly.assertAll();
     }

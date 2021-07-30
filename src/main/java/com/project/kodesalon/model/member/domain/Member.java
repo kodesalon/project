@@ -72,6 +72,7 @@ public class Member extends BaseEntity {
         this.name = new Name(name);
         this.phone = new Phone(phone);
         this.createdDateTime = createdDateTime;
+        this.lastModifiedDateTime = createdDateTime;
     }
 
     public Long getId() {
