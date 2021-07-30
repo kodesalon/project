@@ -13,8 +13,8 @@ import java.time.format.DateTimeParseException;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 
-@RestControllerAdvice
 @Slf4j
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({IllegalArgumentException.class, EntityNotFoundException.class, IllegalStateException.class, DataIntegrityViolationException.class})

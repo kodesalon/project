@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-@RequestMapping("/api/v1/auth")
 @RestController
+@RequestMapping("/api/v1/auth")
 public class AuthenticationTokenController {
 
     private final AuthenticationTokenService authenticationTokenService;

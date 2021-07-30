@@ -31,12 +31,12 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 
+@Slf4j
 @Entity
+@Where(clause = "deleted = 'false'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member", uniqueConstraints = {
         @UniqueConstraint(name = "member_unique_constraint", columnNames = {"alias"})})
-@Where(clause = "deleted = 'false'")
-@Slf4j
 public class Member extends BaseEntity {
 
     @Id
@@ -62,8 +62,8 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "writer", cascade = CascadeType.ALL)
     private List<Board> boards = new ArrayList<>();
 
-    @Column(name = "deleted")
-    private boolean deleted = false;
+    @Column(nullable = false, name = "deleted", columnDefinition = "boolean default false")
+    private boolean deleted;
 
     public Member(final String alias, final String password, final String name, final String email, final String phone, LocalDateTime createdDateTime) {
         this.alias = new Alias(alias);
@@ -145,7 +145,20 @@ public class Member extends BaseEntity {
         this.deletedDateTime = deletedDateTime;
     }
 
-    public void addBoard(Board newBoard) {
+    public void addBoard(final Board newBoard) {
         boards.add(newBoard);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return id.equals(member.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

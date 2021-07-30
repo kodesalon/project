@@ -2,8 +2,6 @@ package com.project.kodesalon.model.board.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.kodesalon.model.board.domain.Board;
-import com.project.kodesalon.model.board.domain.vo.Content;
-import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -43,7 +41,7 @@ public class BoardCreateRequest {
     }
 
     public Board toBoard(Member writer) {
-        return new Board(new Title(title), new Content(content), writer, createdDateTime);
+        return new Board(title, content, writer, createdDateTime);
     }
 }
 

@@ -7,6 +7,7 @@ import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.DeleteMemberRequest;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
+import com.project.kodesalon.model.memberboard.MemberBoardService;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,9 @@ public class MemberServiceTest {
 
     @Mock
     private MemberRepository memberRepository;
+
+    @Mock
+    private MemberBoardService memberBoardService;
 
     @Mock
     private Member member;
@@ -81,7 +85,7 @@ public class MemberServiceTest {
     @Test
     @DisplayName("회원정보 조회 성공 시, 회원 별명, 이름, 이메일, 전화 번호를 반환합니다.")
     void exist_id_response_member() {
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+        given(memberBoardService.findById(anyLong())).willReturn(member);
         given(member.getAlias()).willReturn("alias");
         given(member.getName()).willReturn("이름");
         given(member.getEmail()).willReturn("email@email.com");
@@ -99,7 +103,7 @@ public class MemberServiceTest {
     @Test
     @DisplayName("회원 정보 조회 시 찾으려는 회원이 없으면 예외를 반환합니다.")
     void select_not_exist_id_throws_exception() {
-        given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
+        given(memberBoardService.findById(anyLong())).willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER));
 
         thenThrownBy(() -> memberService.selectMember(1L))
                 .isInstanceOf(EntityNotFoundException.class)
@@ -108,8 +112,8 @@ public class MemberServiceTest {
 
     @Test
     @DisplayName("비밀번호를 변경한다.")
-    void changePassword() {
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+    public void changePassword() {
+        given(memberBoardService.findById(anyLong())).willReturn(member);
 
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!", LocalDateTime.now());
         memberService.changePassword(anyLong(), changePasswordRequest);
@@ -120,7 +124,7 @@ public class MemberServiceTest {
     @DisplayName("회원 탈퇴에 성공한다.")
     void deleteMember() {
         DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(LocalDateTime.now());
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+        given(memberBoardService.findById(anyLong())).willReturn(member);
 
         memberService.deleteMember(member.getId(), deleteMemberRequest);
 
@@ -131,7 +135,7 @@ public class MemberServiceTest {
     @DisplayName("회원 탈퇴시, 존재하지 않는 회원 식별자면 예외를 발생시킨다.")
     void deleteMember_throws_exception() {
         DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(LocalDateTime.now());
-        given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
+        given(memberBoardService.findById(anyLong())).willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER));
 
         thenThrownBy(() -> memberService.deleteMember(member.getId(), deleteMemberRequest))
                 .isInstanceOf(EntityNotFoundException.class)
