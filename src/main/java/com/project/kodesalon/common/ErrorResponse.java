@@ -4,12 +4,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorResponse {
-    private String message;
+    private String code;
 
-    public ErrorResponse(String message) {
-        this.message = message;
+    public ErrorResponse(String code) {
+        this.code = code;
     }
 }

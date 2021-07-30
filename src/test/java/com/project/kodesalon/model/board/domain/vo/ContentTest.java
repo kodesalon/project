@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
+import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_CONTENT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -30,14 +31,14 @@ public class ContentTest {
     @DisplayName("공백 또는 아무것도 입력하지 않을 경우, 예외가 발생한다.")
     public void checkNullOrBlank(String input) {
         assertThatIllegalArgumentException().isThrownBy(() -> new Content(input))
-                .withMessageContaining("내용에 공백 아닌 1자 이상의 문자를 입력");
+                .withMessage(INVALID_BOARD_CONTENT);
     }
 
     @Test
     @DisplayName("500자를 초과할 경우, 예외가 발생한다.")
     public void checkLength() {
         assertThatIllegalArgumentException().isThrownBy(() -> new Content("1".repeat(501)))
-                .withMessageContaining("내용이 500자를 초과");
+                .withMessage(INVALID_BOARD_CONTENT);
     }
 
     @Test

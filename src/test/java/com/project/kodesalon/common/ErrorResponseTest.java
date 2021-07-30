@@ -12,6 +12,6 @@ class ErrorResponseTest {
     void create_error_response_init_message() {
         ErrorResponse errorResponse = new ErrorResponse("error message");
 
-        then(errorResponse.getMessage()).isEqualTo("error message");
+        then(errorResponse.getCode()).isEqualTo("error message");
     }
 }

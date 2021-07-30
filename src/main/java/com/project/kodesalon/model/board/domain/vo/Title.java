@@ -7,15 +7,13 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import static java.lang.String.format;
+import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
 
 @Embeddable
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @EqualsAndHashCode
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Title {
-    private static final String CHECK_TITLE_IS_BLANK = "제목에 공백 아닌 1자 이상의 문자를 입력하였는지 확인해주세요.";
-    private static final String CHECK_TITLE_LENGTH = "제목 글자 수가 %d을 초과하였는지 확인해주세요.";
-    private static final int TITLE_LENGTH_MAX_BOUND = 30;
+    public static final int TITLE_LENGTH_MAX_BOUND = 30;
 
     @Column(length = TITLE_LENGTH_MAX_BOUND, nullable = false)
     private String title;
@@ -25,20 +23,20 @@ public class Title {
         this.title = title;
     }
 
-    private void validate(String title) {
+    private void validate(final String title) {
         checkNullOrBlank(title);
         checkLength(title);
     }
 
-    private void checkNullOrBlank(String title) {
+    private void checkNullOrBlank(final String title) {
         if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException(CHECK_TITLE_IS_BLANK);
+            throw new IllegalArgumentException(INVALID_BOARD_TITLE);
         }
     }
 
-    private void checkLength(String title) {
+    private void checkLength(final String title) {
         if (title.length() > TITLE_LENGTH_MAX_BOUND) {
-            throw new IllegalArgumentException(format(CHECK_TITLE_LENGTH, TITLE_LENGTH_MAX_BOUND));
+            throw new IllegalArgumentException(INVALID_BOARD_TITLE);
         }
     }
 

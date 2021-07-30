@@ -8,8 +8,8 @@ import javax.validation.constraints.NotNull;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TokenRefreshRequest {
 
     @NotNull(message = INVALID_JWT_TOKEN)

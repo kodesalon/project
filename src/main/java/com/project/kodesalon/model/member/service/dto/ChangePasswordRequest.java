@@ -1,24 +1,32 @@
 package com.project.kodesalon.model.member.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.time.LocalDateTime;
 
-import static com.project.kodesalon.model.member.domain.vo.Password.PASSWORD_EXCEPTION_MESSAGE;
+import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
+import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.model.member.domain.vo.Password.PASSWORD_REGEX;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ChangePasswordRequest {
 
-    @NotNull(message = "null이 아닌 8자리 이상의 비밀번호를 입력해주세요.")
-    @Pattern(regexp = PASSWORD_REGEX, message = PASSWORD_EXCEPTION_MESSAGE)
+    @NotNull(message = INVALID_MEMBER_PASSWORD)
+    @Pattern(regexp = PASSWORD_REGEX, message = INVALID_MEMBER_PASSWORD)
     private String password;
 
-    public ChangePasswordRequest(final String password) {
+    @NotNull(message = INVALID_DATE_TIME)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime lastModifiedDateTime;
+
+    public ChangePasswordRequest(final String password, final LocalDateTime lastModifiedDateTime) {
         this.password = password;
+        this.lastModifiedDateTime = lastModifiedDateTime;
     }
 }

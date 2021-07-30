@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.model.authentication.service.AuthenticationTokenService;
 import com.project.kodesalon.model.authentication.service.dto.JwtResponse;
+import com.project.kodesalon.model.authentication.service.dto.LoginRequest;
+import com.project.kodesalon.model.authentication.service.dto.LoginResponse;
 import com.project.kodesalon.model.authentication.service.dto.TokenRefreshRequest;
-import com.project.kodesalon.model.member.service.dto.LoginRequest;
-import com.project.kodesalon.model.member.service.dto.LoginResponse;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,9 +23,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 
 import static com.project.kodesalon.common.ErrorCode.INVALID_JWT_TOKEN;
+import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
+import static com.project.kodesalon.common.ErrorCode.PASSWORD_NOT_CORRECT;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
@@ -80,55 +82,55 @@ public class AuthenticationTokenControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("alias").type(JsonFieldType.STRING).description("로그인 할 alias"),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("로그인 할 패스워드")
+                                fieldWithPath("alias").type(JsonFieldType.STRING).description("로그인 할 아이디"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("로그인 할 비밀번호")
                         ),
                         responseFields(
-                                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("jwt access token"),
-                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("jwt refresh token"),
-                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("member 식별자"),
-                                fieldWithPath("alias").type(JsonFieldType.STRING).description("member alias"))));
+                                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("JWT access 토큰"),
+                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("refresh 토큰"),
+                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 식별 번호"),
+                                fieldWithPath("alias").type(JsonFieldType.STRING).description("회원 아이디"))));
     }
 
     @Test
     @DisplayName("로그인 시 비밀번호 틀렸을 경우, 예외 메세지를 담은 DTO을 Http 400으로 응답합니다.")
     void login_fail_with_invalid_password() throws Exception {
         given(authenticationTokenService.login(any(LoginRequest.class)))
-                .willThrow(new IllegalArgumentException("비밀 번호가 일치하지 않습니다."));
+                .willThrow(new IllegalArgumentException(PASSWORD_NOT_CORRECT));
 
         this.mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("비밀 번호가 일치하지 않습니다."))
+                .andExpect(jsonPath("$.code").value(PASSWORD_NOT_CORRECT))
                 .andDo(document("login/fail/mismatch_password",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("alias").type(JsonFieldType.STRING).description("로그인 할 alias"),
-                                fieldWithPath("password").type(JsonFieldType.STRING).description("로그인 할 password")
+                                fieldWithPath("alias").type(JsonFieldType.STRING).description("로그인 할 아이디"),
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("로그인 할 비밀번호")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("비밀번호 불일치 에러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("비밀번호가 일치하지 않는 경우에 대한 예외 코드"))));
     }
 
     @Test
     @DisplayName("로그인 시 존재하지 않는 아이디(Alias)일 경우, 예외 메세지를 담은 DTO을 Http 400으로 응답합니다.")
     void login_fail_with_invalid_alias() throws Exception {
         given(authenticationTokenService.login(any(LoginRequest.class)))
-                .willThrow(new NoSuchElementException("존재하는 아이디를 입력해주세요."));
+                .willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS));
 
         this.mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("존재하는 아이디를 입력해주세요."))
+                .andExpect(jsonPath("$.code").value(NOT_EXIST_MEMBER_ALIAS))
                 .andDo(document("login/fail/no_alias",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("존재하지 않는 아이디(Alias) 예러 메세지"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 아이디에 대한 예외 코드"))));
     }
 
     @Test
@@ -147,11 +149,11 @@ public class AuthenticationTokenControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("jwt refresh token")
+                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("refresh 토큰")
                         ),
                         responseFields(
-                                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("새로 발급받은 jwt access token"),
-                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("새로 발급받은 jwt refresh token"))));
+                                fieldWithPath("accessToken").type(JsonFieldType.STRING).description("새로 발급받은 JWT access 토큰"),
+                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("새로 발급받은 refresh 토큰"))));
     }
 
     @Test
@@ -168,9 +170,9 @@ public class AuthenticationTokenControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("유효하지 않거나 만료된 jwt refresh token")
+                                fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("유효하지 않거나 만료된 refresh 토큰")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("유효하지 않은 refresh token 에러 코드"))));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 refresh 토큰 에러 코드"))));
     }
 }

@@ -1,11 +1,11 @@
-package com.project.kodesalon.model.member.service.dto;
+package com.project.kodesalon.model.authentication.service.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginResponse {
     private String accessToken;
     private String refreshToken;
