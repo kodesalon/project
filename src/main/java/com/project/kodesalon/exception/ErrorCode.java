@@ -29,4 +29,7 @@ public class ErrorCode {
 
     // Date Time
     public static final String INVALID_DATE_TIME = "D001";
+
+    // File
+    public static final String INVALID_MULTIPART_FILE = "F001";
 }
