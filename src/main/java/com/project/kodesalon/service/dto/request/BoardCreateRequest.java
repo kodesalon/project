@@ -1,8 +1,8 @@
 package com.project.kodesalon.service.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.project.kodesalon.domain.Board;
-import com.project.kodesalon.domain.Member;
+import com.project.kodesalon.domain.board.Board;
+import com.project.kodesalon.domain.member.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,8 +12,8 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-import static com.project.kodesalon.domain.vo.Content.CONTENT_LENGTH_MAX_BOUND;
-import static com.project.kodesalon.domain.vo.Title.TITLE_LENGTH_MAX_BOUND;
+import static com.project.kodesalon.domain.board.vo.Content.CONTENT_LENGTH_MAX_BOUND;
+import static com.project.kodesalon.domain.board.vo.Title.TITLE_LENGTH_MAX_BOUND;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_TITLE;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;

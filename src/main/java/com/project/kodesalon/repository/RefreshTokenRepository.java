@@ -1,7 +1,7 @@
 package com.project.kodesalon.repository;
 
-import com.project.kodesalon.domain.Member;
-import com.project.kodesalon.domain.RefreshToken;
+import com.project.kodesalon.domain.authentication.RefreshToken;
+import com.project.kodesalon.domain.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

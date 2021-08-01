@@ -1,6 +1,6 @@
 package com.project.kodesalon.repository;
 
-import com.project.kodesalon.domain.Board;
+import com.project.kodesalon.domain.board.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

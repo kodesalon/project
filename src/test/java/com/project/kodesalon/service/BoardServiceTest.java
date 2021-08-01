@@ -1,9 +1,9 @@
 package com.project.kodesalon.service;
 
-import com.project.kodesalon.domain.Board;
-import com.project.kodesalon.domain.Member;
-import com.project.kodesalon.domain.vo.Content;
-import com.project.kodesalon.domain.vo.Title;
+import com.project.kodesalon.domain.board.Board;
+import com.project.kodesalon.domain.board.vo.Content;
+import com.project.kodesalon.domain.board.vo.Title;
+import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.repository.BoardRepository;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;

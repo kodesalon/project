@@ -1,4 +1,4 @@
-package com.project.kodesalon.domain.vo;
+package com.project.kodesalon.domain.board.vo;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

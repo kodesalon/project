@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
-import static com.project.kodesalon.domain.vo.Password.PASSWORD_REGEX;
+import static com.project.kodesalon.domain.member.vo.Password.PASSWORD_REGEX;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
 

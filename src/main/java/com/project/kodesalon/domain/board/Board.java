@@ -1,7 +1,9 @@
-package com.project.kodesalon.domain;
+package com.project.kodesalon.domain.board;
 
-import com.project.kodesalon.domain.vo.Content;
-import com.project.kodesalon.domain.vo.Title;
+import com.project.kodesalon.domain.BaseEntity;
+import com.project.kodesalon.domain.board.vo.Content;
+import com.project.kodesalon.domain.board.vo.Title;
+import com.project.kodesalon.domain.member.Member;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

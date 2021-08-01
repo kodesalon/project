@@ -1,7 +1,8 @@
-package com.project.kodesalon.domain;
+package com.project.kodesalon.domain.board;
 
-import com.project.kodesalon.domain.vo.Content;
-import com.project.kodesalon.domain.vo.Title;
+import com.project.kodesalon.domain.board.vo.Content;
+import com.project.kodesalon.domain.board.vo.Title;
+import com.project.kodesalon.domain.member.Member;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 
-import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.exception.ErrorCode.NOT_AUTHORIZED_MEMBER;
 import static com.project.kodesalon.utils.TestEntityUtils.getTestBoard;
 import static org.assertj.core.api.BDDAssertions.then;

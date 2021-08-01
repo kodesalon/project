@@ -1,6 +1,6 @@
 package com.project.kodesalon.service.dto.request;
 
-import com.project.kodesalon.domain.Member;
+import com.project.kodesalon.domain.member.Member;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

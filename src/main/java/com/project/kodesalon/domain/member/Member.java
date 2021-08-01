@@ -1,10 +1,12 @@
-package com.project.kodesalon.domain;
+package com.project.kodesalon.domain.member;
 
-import com.project.kodesalon.domain.vo.Alias;
-import com.project.kodesalon.domain.vo.Email;
-import com.project.kodesalon.domain.vo.Name;
-import com.project.kodesalon.domain.vo.Password;
-import com.project.kodesalon.domain.vo.Phone;
+import com.project.kodesalon.domain.BaseEntity;
+import com.project.kodesalon.domain.board.Board;
+import com.project.kodesalon.domain.member.vo.Alias;
+import com.project.kodesalon.domain.member.vo.Email;
+import com.project.kodesalon.domain.member.vo.Name;
+import com.project.kodesalon.domain.member.vo.Password;
+import com.project.kodesalon.domain.member.vo.Phone;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

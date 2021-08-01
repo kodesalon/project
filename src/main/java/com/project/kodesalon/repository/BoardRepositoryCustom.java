@@ -1,6 +1,6 @@
 package com.project.kodesalon.repository;
 
-import com.project.kodesalon.domain.Board;
+import com.project.kodesalon.domain.board.Board;
 
 import java.util.List;
 

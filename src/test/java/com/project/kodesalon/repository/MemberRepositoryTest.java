@@ -1,7 +1,7 @@
 package com.project.kodesalon.repository;
 
-import com.project.kodesalon.domain.Member;
-import com.project.kodesalon.domain.vo.Alias;
+import com.project.kodesalon.domain.member.Member;
+import com.project.kodesalon.domain.member.vo.Alias;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

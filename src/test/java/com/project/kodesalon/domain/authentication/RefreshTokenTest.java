@@ -1,5 +1,6 @@
-package com.project.kodesalon.domain;
+package com.project.kodesalon.domain.authentication;
 
+import com.project.kodesalon.domain.member.Member;
 import io.jsonwebtoken.JwtException;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;

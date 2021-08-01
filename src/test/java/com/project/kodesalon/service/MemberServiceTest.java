@@ -1,7 +1,7 @@
 package com.project.kodesalon.service;
 
-import com.project.kodesalon.domain.Member;
-import com.project.kodesalon.domain.vo.Alias;
+import com.project.kodesalon.domain.member.Member;
+import com.project.kodesalon.domain.member.vo.Alias;
 import com.project.kodesalon.repository.BoardRepository;
 import com.project.kodesalon.repository.MemberRepository;
 import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;

@@ -1,7 +1,7 @@
 package com.project.kodesalon.service.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.project.kodesalon.domain.Member;
+import com.project.kodesalon.domain.member.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,10 +11,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
-import static com.project.kodesalon.domain.vo.Alias.ALIAS_REGEX;
-import static com.project.kodesalon.domain.vo.Name.NAME_REGEX;
-import static com.project.kodesalon.domain.vo.Password.PASSWORD_REGEX;
-import static com.project.kodesalon.domain.vo.Phone.PHONE_REGEX;
+import static com.project.kodesalon.domain.member.vo.Alias.ALIAS_REGEX;
+import static com.project.kodesalon.domain.member.vo.Name.NAME_REGEX;
+import static com.project.kodesalon.domain.member.vo.Password.PASSWORD_REGEX;
+import static com.project.kodesalon.domain.member.vo.Phone.PHONE_REGEX;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_ALIAS;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_EMAIL;

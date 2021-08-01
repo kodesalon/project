@@ -14,8 +14,8 @@ import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import static com.project.kodesalon.domain.vo.Content.CONTENT_LENGTH_MAX_BOUND;
-import static com.project.kodesalon.domain.vo.Title.TITLE_LENGTH_MAX_BOUND;
+import static com.project.kodesalon.domain.board.vo.Content.CONTENT_LENGTH_MAX_BOUND;
+import static com.project.kodesalon.domain.board.vo.Title.TITLE_LENGTH_MAX_BOUND;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_CONTENT;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_TITLE;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;

@@ -1,7 +1,7 @@
 package com.project.kodesalon.service;
 
-import com.project.kodesalon.domain.Member;
-import com.project.kodesalon.domain.RefreshToken;
+import com.project.kodesalon.domain.authentication.RefreshToken;
+import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.repository.RefreshTokenRepository;
 import com.project.kodesalon.service.dto.request.LoginRequest;
 import com.project.kodesalon.service.dto.request.TokenRefreshRequest;

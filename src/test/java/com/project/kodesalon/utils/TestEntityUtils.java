@@ -1,7 +1,7 @@
 package com.project.kodesalon.utils;
 
-import com.project.kodesalon.domain.Board;
-import com.project.kodesalon.domain.Member;
+import com.project.kodesalon.domain.board.Board;
+import com.project.kodesalon.domain.member.Member;
 
 import java.time.LocalDateTime;
 

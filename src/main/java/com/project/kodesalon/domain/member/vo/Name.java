@@ -1,4 +1,4 @@
-package com.project.kodesalon.domain.vo;
+package com.project.kodesalon.domain.member.vo;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

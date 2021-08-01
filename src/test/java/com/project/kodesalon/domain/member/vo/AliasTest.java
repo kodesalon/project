@@ -1,4 +1,4 @@
-package com.project.kodesalon.domain.vo;
+package com.project.kodesalon.domain.member.vo;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

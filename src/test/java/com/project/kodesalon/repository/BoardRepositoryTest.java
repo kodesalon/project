@@ -1,7 +1,7 @@
 package com.project.kodesalon.repository;
 
-import com.project.kodesalon.domain.Board;
-import com.project.kodesalon.domain.Member;
+import com.project.kodesalon.domain.board.Board;
+import com.project.kodesalon.domain.member.Member;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
