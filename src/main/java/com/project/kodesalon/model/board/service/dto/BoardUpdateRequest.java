@@ -1,8 +1,6 @@
 package com.project.kodesalon.model.board.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.project.kodesalon.model.board.domain.Board;
-import com.project.kodesalon.model.member.domain.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +18,7 @@ import static com.project.kodesalon.model.board.domain.vo.Title.TITLE_LENGTH_MAX
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class BoardCreateRequest {
+public class BoardUpdateRequest {
 
     @NotEmpty(message = INVALID_BOARD_TITLE)
     @Length(max = TITLE_LENGTH_MAX_BOUND, message = INVALID_BOARD_TITLE)
@@ -32,16 +30,11 @@ public class BoardCreateRequest {
 
     @NotNull(message = INVALID_DATE_TIME)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime createdDateTime;
+    private LocalDateTime lastModifiedDateTime;
 
-    public BoardCreateRequest(String title, String content, LocalDateTime createdDateTime) {
-        this.title = title;
-        this.content = content;
-        this.createdDateTime = createdDateTime;
-    }
-
-    public Board toBoard(Member writer) {
-        return new Board(title, content, writer, createdDateTime);
+    public BoardUpdateRequest(String updatedTitle, String updatedContent, LocalDateTime lastModifiedDateTime) {
+        this.title = updatedTitle;
+        this.content = updatedContent;
+        this.lastModifiedDateTime = lastModifiedDateTime;
     }
 }
-

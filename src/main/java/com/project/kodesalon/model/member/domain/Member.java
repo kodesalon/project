@@ -27,9 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.project.kodesalon.common.ErrorCode.DUPLICATED_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
-import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 
 @Slf4j
 @Entity
@@ -129,7 +129,7 @@ public class Member extends BaseEntity {
 
     private void validateDuplication(final Password newPassword) {
         if (hasSamePassword(newPassword)) {
-            throw new IllegalArgumentException(PASSWORD_DUPLICATION);
+            throw new IllegalArgumentException(DUPLICATED_PASSWORD);
         }
     }
 
