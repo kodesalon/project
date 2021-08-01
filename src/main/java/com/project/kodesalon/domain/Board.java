@@ -18,7 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
-import static com.project.kodesalon.common.ErrorCode.NOT_AUTHORIZED_MEMBER;
+import static com.project.kodesalon.exception.ErrorCode.NOT_AUTHORIZED_MEMBER;
 
 @Slf4j
 @Entity
