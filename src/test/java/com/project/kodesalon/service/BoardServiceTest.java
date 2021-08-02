@@ -39,6 +39,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BoardServiceTest {
+
     private static final Member TEST_MEMBER = getTestMember();
 
     private final BoardUpdateRequest BOARD_UPDATE_REQUEST = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
@@ -116,10 +117,10 @@ class BoardServiceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"1,true", "0,false"})
+    @CsvSource(value = {"1, 1, false", "2, 10, true"})
     @DisplayName("마지막 게시물 식별 번호를 전달 받아 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
-    void selectBoards2(Long boardId, boolean hasNext) {
-        List<Board> boards = new ArrayList<>(Arrays.asList(board));
+    void selectBoards(Long boardId, int size, boolean last) {
+        List<Board> boards = new ArrayList<>(Arrays.asList(board, board));
         given(board.getId()).willReturn(boardId);
         given(board.getTitle()).willReturn("게시물 제목");
         given(board.getContent()).willReturn("게시물 내용");
@@ -128,9 +129,9 @@ class BoardServiceTest {
         given(member.getAlias()).willReturn("alias");
         given(boardRepository.selectBoards(anyLong(), anyInt())).willReturn(boards);
 
-        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectBoards(1L, 10);
+        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectBoards(10L, size);
 
         then(multiBoardSelectResponse.getBoards()).isNotNull();
-        then(multiBoardSelectResponse.isHasNext()).isEqualTo(hasNext);
+        then(multiBoardSelectResponse.isLast()).isEqualTo(last);
     }
 }

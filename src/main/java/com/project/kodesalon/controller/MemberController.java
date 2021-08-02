@@ -20,6 +20,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/members")
 public class MemberController {
+
     private final MemberService memberService;
 
     public MemberController(final MemberService memberService) {

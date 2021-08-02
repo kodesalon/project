@@ -16,6 +16,7 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_HEADER;
 @Slf4j
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
+
     public static final String LOGIN_MEMBER = "loginMember";
     private static final int BEARER_LENGTH = 7;
     private static final String LOG_ID = "logId";

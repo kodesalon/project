@@ -21,6 +21,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BoardTest {
+
     private static final Board TEST_BOARD = getTestBoard();
 
     private final BDDSoftAssertions softly = new BDDSoftAssertions();

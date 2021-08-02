@@ -22,6 +22,7 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
 @Slf4j
 @Service
 public class AuthenticationTokenService {
+
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberService memberService;
     private final JwtManager jwtManager;

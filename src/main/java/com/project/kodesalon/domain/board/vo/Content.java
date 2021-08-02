@@ -14,6 +14,7 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_CONTENT;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Content {
+
     public static final int CONTENT_LENGTH_MAX_BOUND = 500;
 
     @Lob

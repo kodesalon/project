@@ -1,6 +1,8 @@
 package com.project.kodesalon.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.kodesalon.common.GlobalExceptionHandler;
+import com.project.kodesalon.common.interceptor.LoginInterceptor;
 import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.config.interceptor.LoginInterceptor;
 import com.project.kodesalon.exception.GlobalExceptionHandler;
@@ -67,6 +69,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(JacksonConfiguration.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 class MemberControllerTest {
+
     private final MemberCreateRequest memberCreateRequest =
             new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
     private final MemberChangePasswordRequest memberChangePasswordRequest = new MemberChangePasswordRequest("ChangePassword1!", LocalDateTime.now());

@@ -1091,7 +1091,7 @@ Host: localhost:8080
   "name" : "이름",
   "email" : "email@email.com",
   "phone" : "010-1111-2222",
-  "createdDateTime" : "2021-07-31T01:07:12"
+  "createdDateTime" : "2021-08-02T15:03:01"
 }</code></pre>
 </div>
 </div>
@@ -1496,7 +1496,7 @@ Host: localhost:8080
 
 {
   "password" : "ChangePassword1!",
-  "lastModifiedDateTime" : "2021-07-31T01:07:13"
+  "lastModifiedDateTime" : "2021-08-02T15:03:01"
 }</code></pre>
 </div>
 </div>
@@ -1629,7 +1629,7 @@ Content-Length: 47
 Host: localhost:8080
 
 {
-  "deletedDateTime" : "2021-07-31T01:07:12"
+  "deletedDateTime" : "2021-08-02T15:03:01"
 }</code></pre>
 </div>
 </div>
@@ -1736,7 +1736,7 @@ Host: localhost:8080
 {
   "title" : "게시물 제목",
   "content" : "게시물 내용",
-  "createdDateTime" : "2021-07-31T01:07:13"
+  "createdDateTime" : "2021-08-02T15:03:00"
 }</code></pre>
 </div>
 </div>
@@ -1994,13 +1994,13 @@ Host: localhost:8080</code></pre>
                         <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 190
+Content-Length: 189
 
 {
   "boardId" : 1,
   "title" : "게시물 제목",
   "content" : "게시물 내용",
-  "createdDateTime" : [ 2021, 7, 31, 1, 7, 13, 477251000 ],
+  "createdDateTime" : [ 2021, 8, 2, 15, 3, 0, 152132000 ],
   "writerId" : 1,
   "writerAlias" : "alias"
 }</code></pre>
@@ -2073,7 +2073,7 @@ Host: localhost:8080</code></pre>
                     </table>
                     <div class="listingblock">
                         <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/boards?lastBoardId=1&amp;size=10 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/boards?lastBoardId=1&amp;size=1 HTTP/1.1
 Content-Type: application/json
 Host: localhost:8080</code></pre>
                         </div>
@@ -2138,11 +2138,11 @@ Host: localhost:8080</code></pre>
                             <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 작성자 아이디</p></td>
                         </tr>
                         <tr>
-                            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>hasNext</code></p>
+                            <td class="tableblock halign-left valign-top"><p class="tableblock"><code>last</code></p>
                             </td>
                             <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p>
                             </td>
-                            <td class="tableblock halign-left valign-top"><p class="tableblock">다음 게시물 존재 여부</p></td>
+                            <td class="tableblock halign-left valign-top"><p class="tableblock">마지막 게시물 여부</p></td>
                         </tr>
                         </tbody>
                     </table>
@@ -2152,18 +2152,18 @@ Host: localhost:8080</code></pre>
                             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 225
+Content-Length: 222
 
 {
   "boards" : [ {
     "boardId" : 1,
     "title" : "title",
     "content" : "content",
-    "createdDateTime" : [ 2021, 7, 31, 1, 7, 13, 762413000 ],
+    "createdDateTime" : [ 2021, 8, 2, 15, 3, 0, 379709000 ],
     "writerId" : 1,
     "writerAlias" : "alias"
   } ],
-  "hasNext" : true
+  "last" : false
 }</code></pre>
                             </div>
                         </div>
@@ -2174,18 +2174,18 @@ Content-Length: 225
                             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 226
+Content-Length: 221
 
 {
   "boards" : [ {
     "boardId" : 0,
     "title" : "title",
     "content" : "content",
-    "createdDateTime" : [ 2021, 7, 31, 1, 7, 13, 791585000 ],
+    "createdDateTime" : [ 2021, 8, 2, 15, 3, 0, 404526000 ],
     "writerId" : 1,
     "writerAlias" : "alias"
   } ],
-  "hasNext" : false
+  "last" : true
 }</code></pre>
                             </div>
                         </div>
@@ -2249,7 +2249,7 @@ Content-Length: 47
 Host: localhost:8080
 
 {
-  "deletedDateTime" : "2021-07-31T01:07:13"
+  "deletedDateTime" : "2021-08-02T15:02:59"
 }</code></pre>
                     </div>
                 </div>
@@ -2506,7 +2506,7 @@ Host: localhost:8080
 {
   "title" : "update title",
   "content" : "update content",
-  "lastModifiedDateTime" : "2021-07-31T01:07:13"
+  "lastModifiedDateTime" : "2021-08-02T15:03:00"
 }</code></pre>
                     </div>
                 </div>
@@ -2699,7 +2699,7 @@ Content-Length: 21
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-    Last updated 2021-07-31 00:33:37 +0900
+    Last updated 2021-07-30 19:13:54 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
