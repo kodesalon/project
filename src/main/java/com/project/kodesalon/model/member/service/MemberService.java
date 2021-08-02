@@ -22,6 +22,7 @@ import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 @Slf4j
 @Service
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
 

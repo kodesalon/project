@@ -4,7 +4,6 @@ import com.project.kodesalon.model.board.domain.Board;
 
 import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Objects;
 
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
@@ -15,11 +14,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     @Override
-    public List<Board> selectBoards(Long lastBoardId, final int size) {
-        if (Objects.isNull(lastBoardId)) {
-            lastBoardId = Long.MAX_VALUE;
-        }
-
+    public List<Board> selectBoards(final Long lastBoardId, final int size) {
         String query = "select b from Board b join fetch b.writer where b.id < :lastBoardId and b.deleted = false order by b.id desc";
 
         return entityManager.createQuery(query, Board.class)

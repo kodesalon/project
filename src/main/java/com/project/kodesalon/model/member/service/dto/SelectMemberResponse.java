@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SelectMemberResponse {
+
     private String alias;
     private String name;
     private String email;

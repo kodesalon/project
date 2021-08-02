@@ -35,6 +35,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
+
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
     private final CreateMemberRequest createMemberRequest
             = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());

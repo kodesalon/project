@@ -22,6 +22,7 @@ import static com.project.kodesalon.model.board.domain.vo.Title.TITLE_LENGTH_MAX
 import static org.assertj.core.api.BDDAssertions.then;
 
 public class BoardUpdateRequestTest {
+
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();

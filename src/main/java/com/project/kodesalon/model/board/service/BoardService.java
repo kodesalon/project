@@ -24,6 +24,7 @@ import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
 @Slf4j
 @Service
 public class BoardService {
+
     private final BoardRepository boardRepository;
     private final MemberService memberService;
 

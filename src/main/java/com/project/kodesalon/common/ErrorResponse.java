@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorResponse {
+
     private String code;
 
     public ErrorResponse(String code) {

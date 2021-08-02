@@ -20,6 +20,7 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static org.assertj.core.api.BDDAssertions.then;
 
 public class ChangePasswordRequestTest {
+
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();

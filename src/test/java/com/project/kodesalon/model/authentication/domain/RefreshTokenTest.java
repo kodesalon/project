@@ -15,6 +15,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 public class RefreshTokenTest {
+
     private final LocalDateTime expiryDate = LocalDateTime.now();
     private RefreshToken refreshToken;
 

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BoardSelectResponse {
+
     private Long boardId;
     private String title;
     private String content;

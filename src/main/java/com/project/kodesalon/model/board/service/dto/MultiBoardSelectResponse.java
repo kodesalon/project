@@ -9,6 +9,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MultiBoardSelectResponse {
+
     private List<BoardSelectResponse> boards;
     private boolean hasNext;
 

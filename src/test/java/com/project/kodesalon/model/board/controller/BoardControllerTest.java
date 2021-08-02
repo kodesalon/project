@@ -65,6 +65,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(JacksonConfiguration.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 public class BoardControllerTest {
+
     private final BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(LocalDateTime.now());
     private final BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
     private MockMvc mockMvc;
