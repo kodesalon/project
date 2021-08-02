@@ -1,8 +1,6 @@
 package com.project.kodesalon.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.kodesalon.common.GlobalExceptionHandler;
-import com.project.kodesalon.common.interceptor.LoginInterceptor;
 import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.config.interceptor.LoginInterceptor;
 import com.project.kodesalon.exception.GlobalExceptionHandler;

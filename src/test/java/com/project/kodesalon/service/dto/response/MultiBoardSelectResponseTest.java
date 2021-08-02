@@ -1,4 +1,4 @@
-package com.project.kodesalon.model.board.service.dto;
+package com.project.kodesalon.service.dto.response;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
