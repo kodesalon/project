@@ -11,9 +11,9 @@ import org.junit.jupiter.params.provider.NullSource;
 
 import java.time.LocalDateTime;
 
+import static com.project.kodesalon.common.ErrorCode.DUPLICATED_PASSWORD;
 import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
-import static com.project.kodesalon.common.ErrorCode.PASSWORD_DUPLICATION;
 import static com.project.kodesalon.model.board.domain.BoardTest.TEST_BOARD;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
@@ -86,7 +86,7 @@ public class MemberTest {
         String password = member.getPassword();
         thenIllegalArgumentException()
                 .isThrownBy(() -> member.changePassword(password, LocalDateTime.now()))
-                .withMessage(PASSWORD_DUPLICATION);
+                .withMessage(DUPLICATED_PASSWORD);
     }
 
     @Test
