@@ -25,7 +25,7 @@ import javax.validation.Valid;
 @RequestMapping(value = "/api/v1/boards")
 public class BoardController {
 
-    public static final String BOARD_ID_MAX = "0x7fffffffffffffffL";
+    public static final String BOARD_ID_MAX = "9223372036854775807";
 
     private final BoardService boardService;
 

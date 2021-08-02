@@ -7,6 +7,7 @@ import java.util.List;
 
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
+    private static final int CHECK_NEXT_BOARD = 1;
     private final EntityManager entityManager;
 
     public BoardRepositoryImpl(final EntityManager entityManager) {
@@ -19,7 +20,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
         return entityManager.createQuery(query, Board.class)
                 .setParameter("lastBoardId", lastBoardId)
-                .setMaxResults(size)
+                .setMaxResults(size + CHECK_NEXT_BOARD)
                 .getResultList();
     }
 }

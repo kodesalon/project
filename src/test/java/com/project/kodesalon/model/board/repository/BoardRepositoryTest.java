@@ -96,15 +96,14 @@ public class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("마지막으로 조회한 게시물 번호, 조회할 게시물 수를 입력받아 게시물과 작성자의 정보를 조인하여 반환한다.")
-    void selectBoards() {
+    @DisplayName("마지막으로 조회한 게시물 번호, 조회할 게시물 수를 입력받아 다음 게시물이 존재할 경우 입력 크기보다 하나 많은 게시물과 입력 작성자의 정보를 조인하여 반환한다.")
+    void selectBoards_has_next() {
         Member member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
         entityManager.persist(member);
         int boardToBeSelectedAtOnce = 10;
         for (int board_number = 0; board_number <= boardToBeSelectedAtOnce; board_number++) {
             Board board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
             boardRepository.save(board);
-            System.out.println(board.getId());
         }
         entityManager.flush();
         entityManager.clear();
@@ -119,22 +118,21 @@ public class BoardRepositoryTest {
     }
 
     @Test
-    @DisplayName("가장 처음으로 조회한 게시물의 경우, 조회할 게시물의 크기만 입력으로 받아 가장 마지막의 게시물과 작성자의 정보를 조인하여 반환한다.")
-    void selectBoardsAtFirst() {
+    @DisplayName("마지막으로 조회한 게시물 번호, 조회할 게시물 수를 입력받아 다음이 게시물이 존재하지 않을 경우 조회한 게시물과 작성자의 정보를 조인하여 반환한다.")
+    void selectBoards_doesnt_have_next() {
         Member member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
         entityManager.persist(member);
         int boardToBeSelectedAtOnce = 10;
-        for (int board_number = 0; board_number <= boardToBeSelectedAtOnce; board_number++) {
+        for (int board_number = 0; board_number < boardToBeSelectedAtOnce - 1; board_number++) {
             Board board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
             boardRepository.save(board);
-            System.out.println(board.getId());
         }
         entityManager.flush();
         entityManager.clear();
 
-        List<Board> boards = boardRepository.selectBoards(null, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(Long.MAX_VALUE, boardToBeSelectedAtOnce);
 
-        softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
+        softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce - 1);
         boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getWriter())).isTrue());
         softly.assertAll();
     }

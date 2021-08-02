@@ -60,7 +60,7 @@ public class BoardService {
                 .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias()))
                 .collect(Collectors.toList());
 
-        return new MultiBoardSelectResponse(boardSelectResponses);
+        return new MultiBoardSelectResponse(boardSelectResponses, size);
     }
 
     @Transactional
