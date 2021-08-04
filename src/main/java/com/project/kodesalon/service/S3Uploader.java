@@ -13,12 +13,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.project.kodesalon.exception.ErrorCode.INVALID_MULTIPART_FILE;
 
 @Slf4j
 @Component
 public class S3Uploader {
+
     private static final String DIRECTORY_DELIMITER = "/";
     private static final char EXTENSION_SEPARATOR = '.';
 
@@ -40,8 +42,10 @@ public class S3Uploader {
         return upload(uploadFile, directoryName);
     }
 
-    private String upload(File uploadFile, String dirName) {
-        String fileName = dirName + DIRECTORY_DELIMITER + uploadFile.getName();
+    private String upload(final File uploadFile, final String directoryName) {
+        String uuid = UUID.randomUUID().toString();
+        String extension = extractedExtension(uploadFile.getName());
+        String fileName = directoryName + DIRECTORY_DELIMITER + uuid + extension;
         String uploadImageUrl = putS3(uploadFile, fileName);
         removeNewFile(uploadFile);
         return uploadImageUrl;
@@ -66,7 +70,7 @@ public class S3Uploader {
         log.info("{} 파일이 삭제되지 못했습니다.", targetFile.getName());
     }
 
-    private Optional<File> convert(MultipartFile file) throws IOException {
+    private Optional<File> convert(final MultipartFile file) throws IOException {
         File convertFile = new File(file.getOriginalFilename());
 
         if (convertFile.createNewFile()) {
