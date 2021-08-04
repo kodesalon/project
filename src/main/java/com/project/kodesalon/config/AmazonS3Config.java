@@ -16,7 +16,7 @@ public class AmazonS3Config {
     private final String secretKey;
     private final String region;
 
-    public AmazonS3Config(@Value("${cloud.aws.credentials.access-key}") final String accessKey, @Value("${cloud.aws.credentials.secret-key}") final String secretKey, @Value("${cloud.aws.credentails.region.static}") final String region) {
+    public AmazonS3Config(@Value("${cloud.aws.credentials.access-key}") final String accessKey, @Value("${cloud.aws.credentials.secret-key}") final String secretKey, @Value("${cloud.aws.region.static}") final String region) {
         this.accessKey = accessKey;
         this.secretKey = secretKey;
         this.region = region;

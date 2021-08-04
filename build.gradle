@@ -29,6 +29,7 @@ dependencies {
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.5.RELEASE'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.11'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+    testImplementation group: 'io.findify', name: 's3mock_2.13', version: '0.2.6'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

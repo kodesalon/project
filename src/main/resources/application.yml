@@ -37,3 +37,18 @@ spring:
     secret: bG9jYWxUZXN0S2V5
     accessExpirationMs: 180000
     refreshExpirationWeeks: 2
+  main:
+    allow-bean-definition-overriding: true
+
+cloud:
+  aws:
+    credentials:
+      access-key: accesskey
+      secret-key: secretkey
+    s3:
+      image:
+        bucket: kodesalon
+      stack:
+        auto: false
+    region:
+      static: ap-northeast-2

@@ -2,6 +2,7 @@ package com.project.kodesalon.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,16 +20,17 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_MULTIPART_FILE;
 @Component
 public class S3Uploader {
     private static final String DIRECTORY_DELIMITER = "/";
+    private static final char EXTENSION_SEPARATOR = '.';
 
     private final AmazonS3 amazonS3;
     private final String bucket;
 
-    public S3Uploader(final AmazonS3 amazonS3, @Value("${aws.s3.image.bucket}") final String bucket) {
+    public S3Uploader(final AmazonS3 amazonS3, @Value("${cloud.aws.s3.image.bucket}") final String bucket) {
         this.amazonS3 = amazonS3;
         this.bucket = bucket;
     }
 
-    public String upload(MultipartFile multipartFile, String directoryName) throws IOException {
+    public String upload(final MultipartFile multipartFile, final String directoryName) throws IOException {
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> {
                     log.info("파일로 변환할 수 없습니다. : {}", multipartFile.getOriginalFilename());
@@ -45,21 +47,28 @@ public class S3Uploader {
         return uploadImageUrl;
     }
 
-    private String putS3(File uploadFile, String fileName) {
+    private String extractedExtension(final String uploadFile) {
+        int index = uploadFile.lastIndexOf(EXTENSION_SEPARATOR);
+        return uploadFile.substring(index);
+    }
+
+    private String putS3(final File uploadFile, final String fileName) {
         amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
-    private void removeNewFile(File targetFile) {
+    private void removeNewFile(final File targetFile) {
         if (targetFile.delete()) {
-            log.info("파일이 삭제되었습니다.");
-        } else {
-            log.info("파일이 삭제되지 못했습니다.");
+            log.info("{} 파일이 삭제되었습니다.", targetFile.getName());
+            return;
         }
+
+        log.info("{} 파일이 삭제되지 못했습니다.", targetFile.getName());
     }
 
     private Optional<File> convert(MultipartFile file) throws IOException {
         File convertFile = new File(file.getOriginalFilename());
+
         if (convertFile.createNewFile()) {
             try (FileOutputStream fos = new FileOutputStream(convertFile)) {
                 fos.write(file.getBytes());
@@ -70,4 +79,15 @@ public class S3Uploader {
         return Optional.empty();
     }
 
+    public void delete(final String fileUrl) {
+        String key = extractKey(fileUrl);
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, key));
+    }
+
+    private String extractKey(String fileUrl) {
+        int indexOfFileName = fileUrl.lastIndexOf("/");
+        String fileUrlWithoutFileName = fileUrl.substring(0, indexOfFileName);
+        int indexOfDirectoryName = fileUrlWithoutFileName.lastIndexOf("/");
+        return fileUrl.substring(indexOfDirectoryName + 1);
+    }
 }
