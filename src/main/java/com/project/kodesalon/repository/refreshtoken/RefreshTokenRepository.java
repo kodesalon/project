@@ -1,4 +1,4 @@
-package com.project.kodesalon.repository;
+package com.project.kodesalon.repository.refreshtoken;
 
 import com.project.kodesalon.domain.authentication.RefreshToken;
 import com.project.kodesalon.domain.member.Member;

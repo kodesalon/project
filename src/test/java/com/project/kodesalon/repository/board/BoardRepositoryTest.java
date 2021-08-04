@@ -1,4 +1,4 @@
-package com.project.kodesalon.repository;
+package com.project.kodesalon.repository.board;
 
 import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.member.Member;
@@ -111,9 +111,7 @@ class BoardRepositoryTest {
         List<Board> boards = boardRepository.selectBoards(11L, boardToBeSelectedAtOnce);
 
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
-        boards.forEach(b -> {
-            softly.then(persistenceUnitUtil.isLoaded(b.getWriter())).isTrue();
-        });
+        boards.forEach(b -> softly.then(persistenceUnitUtil.isLoaded(b.getWriter())).isTrue());
         softly.assertAll();
     }
 

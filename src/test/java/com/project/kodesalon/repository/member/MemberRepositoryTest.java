@@ -1,4 +1,4 @@
-package com.project.kodesalon.repository;
+package com.project.kodesalon.repository.member;
 
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.domain.member.vo.Alias;

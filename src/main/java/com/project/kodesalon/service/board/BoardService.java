@@ -1,15 +1,16 @@
-package com.project.kodesalon.service;
+package com.project.kodesalon.service.board;
 
 import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.board.vo.Content;
 import com.project.kodesalon.domain.board.vo.Title;
 import com.project.kodesalon.domain.member.Member;
-import com.project.kodesalon.repository.BoardRepository;
+import com.project.kodesalon.repository.board.BoardRepository;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
+import com.project.kodesalon.service.member.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

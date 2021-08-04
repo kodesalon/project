@@ -1,4 +1,4 @@
-package com.project.kodesalon.repository;
+package com.project.kodesalon.repository.board;
 
 import com.project.kodesalon.domain.board.Board;
 

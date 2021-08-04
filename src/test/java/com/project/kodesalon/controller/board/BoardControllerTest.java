@@ -1,9 +1,9 @@
-package com.project.kodesalon.controller;
+package com.project.kodesalon.controller.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.exception.GlobalExceptionHandler;
-import com.project.kodesalon.service.BoardService;
+import com.project.kodesalon.service.board.BoardService;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
