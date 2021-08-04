@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.project.kodesalon.common.ErrorCode.DUPLICATED_PASSWORD;
-import static com.project.kodesalon.common.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.common.ErrorCode.INVALID_MEMBER_PASSWORD;
 
 @Slf4j
@@ -41,7 +40,7 @@ public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
+    @Column(name = "member_id", updatable = false)
     private Long id;
 
     @Embedded
@@ -72,6 +71,7 @@ public class Member extends BaseEntity {
         this.name = new Name(name);
         this.phone = new Phone(phone);
         this.createdDateTime = createdDateTime;
+        this.lastModifiedDateTime = createdDateTime;
     }
 
     public Long getId() {
@@ -122,7 +122,6 @@ public class Member extends BaseEntity {
     public void changePassword(final String password, final LocalDateTime lastModifiedDateTime) {
         final Password newPassword = new Password(password);
         validateDuplication(newPassword);
-        validateDateTime(lastModifiedDateTime);
         this.password = newPassword;
         this.lastModifiedDateTime = lastModifiedDateTime;
     }
@@ -133,14 +132,7 @@ public class Member extends BaseEntity {
         }
     }
 
-    private void validateDateTime(final LocalDateTime localDateTime) {
-        if (Objects.isNull(localDateTime)) {
-            throw new IllegalArgumentException(INVALID_DATE_TIME);
-        }
-    }
-
     public void delete(final LocalDateTime deletedDateTime) {
-        validateDateTime(deletedDateTime);
         deleted = true;
         this.deletedDateTime = deletedDateTime;
     }
