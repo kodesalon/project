@@ -49,7 +49,12 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public BoardSelectResponse selectBoard(final Long boardId) {
-        Board board = findById(boardId);
+        Board board = boardRepository.selectBoardById(boardId)
+                .orElseThrow(() -> {
+                    log.info("존재하지 않는 게시물 식별자 boardId : {}", boardId);
+                    throw new EntityNotFoundException(NOT_EXIST_BOARD);
+                });
+
         return new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias());
     }
 
@@ -72,7 +77,7 @@ public class BoardService {
     }
 
     private Board findById(final Long boardId) {
-        return boardRepository.selectBoardById(boardId)
+        return boardRepository.findById(boardId)
                 .orElseThrow(() -> {
                     log.info("존재하지 않는 게시물 식별자 boardId : {}", boardId);
                     throw new EntityNotFoundException(NOT_EXIST_BOARD);
