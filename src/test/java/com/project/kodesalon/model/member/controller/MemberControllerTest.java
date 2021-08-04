@@ -139,8 +139,8 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 아이디(Alias)를 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_alias() throws Exception {
-        CreateMemberRequest createMemberRequestWithInvalidAlias
-                = new CreateMemberRequest("", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+        CreateMemberRequest createMemberRequestWithInvalidAlias =
+                new CreateMemberRequest("", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -156,8 +156,8 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 비밀번호를 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_password() throws Exception {
-        CreateMemberRequest createMemberRequestWithInvalidPassword
-                = new CreateMemberRequest("alias", "", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+        CreateMemberRequest createMemberRequestWithInvalidPassword =
+                new CreateMemberRequest("alias", "", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -173,8 +173,8 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 이름을 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_name() throws Exception {
-        CreateMemberRequest createMemberRequestWithInvalidName
-                = new CreateMemberRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222", LocalDateTime.now());
+        CreateMemberRequest createMemberRequestWithInvalidName =
+                new CreateMemberRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -190,8 +190,8 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 이메일을 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_email() throws Exception {
-        CreateMemberRequest createMemberRequestWithInvalidEmail
-                = new CreateMemberRequest("alias", "Password123!!", "이름", " ", "010-1111-2222", LocalDateTime.now());
+        CreateMemberRequest createMemberRequestWithInvalidEmail =
+                new CreateMemberRequest("alias", "Password123!!", "이름", " ", "010-1111-2222", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -207,8 +207,8 @@ public class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 휴대폰 번호를 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_phone() throws Exception {
-        CreateMemberRequest createMemberRequestWithInvalidPhone
-                = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "", LocalDateTime.now());
+        CreateMemberRequest createMemberRequestWithInvalidPhone =
+                new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -243,8 +243,8 @@ public class MemberControllerTest {
     @NullSource
     @DisplayName("회원 가입시 회원 가입 시간이 없는 경우 예외 메세지를 반환합니다.")
     void join_fail_with_null_created_date_time(LocalDateTime invalidCreateDateTime) throws Exception {
-        CreateMemberRequest createMemberRequest
-                = new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", invalidCreateDateTime);
+        CreateMemberRequest createMemberRequest =
+                new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", invalidCreateDateTime);
 
         mockMvc.perform(post("/api/v1/members/join")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public abstract class BaseEntity {
 
-    @Column(name = "created_date_time", nullable = false)
+    @Column(name = "created_date_time", nullable = false, updatable = false)
     protected LocalDateTime createdDateTime;
 
-    @Column(name = "last_modified_date_time")
+    @Column(name = "last_modified_date_time", nullable = false)
     protected LocalDateTime lastModifiedDateTime;
 
-    @Column(name = "deleted_date_time")
+    @Column(name = "deleted_date_time", updatable = false)
     protected LocalDateTime deletedDateTime;
 }

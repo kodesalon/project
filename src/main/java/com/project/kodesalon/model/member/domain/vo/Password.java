@@ -30,8 +30,4 @@ public class Password {
     public String value() {
         return password;
     }
-
-    public boolean isSame(String password) {
-        return this.password.equals(password);
-    }
 }
