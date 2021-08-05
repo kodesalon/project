@@ -2,9 +2,9 @@ package com.project.kodesalon.model.board.repository;
 
 import com.project.kodesalon.model.board.domain.Board;
 
-import java.util.List;
+import java.util.Deque;
 
 public interface BoardRepositoryCustom {
 
-    List<Board> selectBoards(final Long lastBoardId, final int size);
+    Deque<Board> selectBoards(final Long lastBoardId, final int size);
 }
