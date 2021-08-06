@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.time.format.DateTimeParseException;
 
 import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_MULTIPART_FILE;
 
 @Slf4j
 @RestControllerAdvice
@@ -40,5 +42,11 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<ErrorResponse> handleDateTimeParseException(DateTimeParseException e) {
         log.info(INVALID_DATE_TIME);
         return ResponseEntity.badRequest().body(new ErrorResponse(INVALID_DATE_TIME));
+    }
+
+    @ExceptionHandler(IOException.class)
+    protected ResponseEntity<ErrorResponse> handleIOException(IOException e) {
+        log.info(INVALID_MULTIPART_FILE);
+        return ResponseEntity.badRequest().body(new ErrorResponse(INVALID_MULTIPART_FILE));
     }
 }
