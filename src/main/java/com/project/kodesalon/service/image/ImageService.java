@@ -1,8 +1,9 @@
-package com.project.kodesalon.service;
+package com.project.kodesalon.service.image;
 
-import com.project.kodesalon.domain.Image;
 import com.project.kodesalon.domain.board.Board;
-import com.project.kodesalon.repository.ImageRepository;
+import com.project.kodesalon.domain.image.Image;
+import com.project.kodesalon.repository.image.ImageRepository;
+import com.project.kodesalon.service.S3Uploader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

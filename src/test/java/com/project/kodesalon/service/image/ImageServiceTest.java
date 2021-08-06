@@ -1,8 +1,9 @@
-package com.project.kodesalon.service;
+package com.project.kodesalon.service.image;
 
-import com.project.kodesalon.domain.Image;
 import com.project.kodesalon.domain.board.Board;
-import com.project.kodesalon.repository.ImageRepository;
+import com.project.kodesalon.domain.image.Image;
+import com.project.kodesalon.repository.image.ImageRepository;
+import com.project.kodesalon.service.S3Uploader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class ImageServiceTest {
+class ImageServiceTest {
 
     private ImageService imageService;
 

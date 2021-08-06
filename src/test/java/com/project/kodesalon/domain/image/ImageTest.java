@@ -1,4 +1,4 @@
-package com.project.kodesalon.domain;
+package com.project.kodesalon.domain.image;
 
 import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.member.Member;
@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-public class ImageTest {
+class ImageTest {
 
     @Test
     @DisplayName("이미지 저장 경로와 게시물 작성자를 인자로 받아 이미지 객체를 생성한다.")

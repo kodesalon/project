@@ -1,4 +1,4 @@
-package com.project.kodesalon.domain;
+package com.project.kodesalon.domain.image;
 
 import com.project.kodesalon.domain.board.Board;
 import lombok.AccessLevel;
