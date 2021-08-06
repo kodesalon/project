@@ -33,31 +33,31 @@ public class S3Uploader {
     }
 
     public String upload(final MultipartFile multipartFile, final String directoryName) throws IOException {
-        File uploadFile = convert(multipartFile)
+        File file = convert(multipartFile)
                 .orElseThrow(() -> {
                     log.info("파일로 변환할 수 없습니다. : {}", multipartFile.getOriginalFilename());
                     throw new IllegalArgumentException(INVALID_MULTIPART_FILE);
                 });
 
-        return upload(uploadFile, directoryName);
+        return upload(file, directoryName);
     }
 
-    private String upload(final File uploadFile, final String directoryName) {
+    private String upload(final File file, final String directoryName) {
         String uuid = UUID.randomUUID().toString();
-        String extension = extractedExtension(uploadFile.getName());
+        String extension = extractExtension(file.getName());
         String fileName = directoryName + DIRECTORY_DELIMITER + uuid + extension;
-        String uploadImageUrl = putS3(uploadFile, fileName);
-        removeNewFile(uploadFile);
-        return uploadImageUrl;
+        String imageUrl = putS3(file, fileName);
+        removeNewFile(file);
+        return imageUrl;
     }
 
-    private String extractedExtension(final String uploadFile) {
-        int index = uploadFile.lastIndexOf(EXTENSION_SEPARATOR);
-        return uploadFile.substring(index);
+    private String extractExtension(final String file) {
+        int index = file.lastIndexOf(EXTENSION_SEPARATOR);
+        return file.substring(index);
     }
 
-    private String putS3(final File uploadFile, final String fileName) {
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
+    private String putS3(final File file, final String fileName) {
+        amazonS3.putObject(new PutObjectRequest(bucket, fileName, file).withCannedAcl(CannedAccessControlList.PublicRead));
         return amazonS3.getUrl(bucket, fileName).toString();
     }
 
@@ -83,15 +83,7 @@ public class S3Uploader {
         return Optional.empty();
     }
 
-    public void delete(final String fileUrl) {
-        String key = extractKey(fileUrl);
+    public void delete(final String key) {
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, key));
-    }
-
-    private String extractKey(String fileUrl) {
-        int indexOfFileName = fileUrl.lastIndexOf("/");
-        String fileUrlWithoutFileName = fileUrl.substring(0, indexOfFileName);
-        int indexOfDirectoryName = fileUrlWithoutFileName.lastIndexOf("/");
-        return fileUrl.substring(indexOfDirectoryName + 1);
     }
 }

@@ -74,7 +74,7 @@ public class S3UploaderTest {
         int indexOfDirectoryName = fileUrlWithoutFileName.lastIndexOf("/");
         String key = fileUrl.substring(indexOfDirectoryName + 1);
 
-        s3Uploader.delete(fileUrl);
+        s3Uploader.delete(key);
 
         thenThrownBy(() -> client.getObject(BUCKET, key))
                 .isInstanceOf(AmazonS3Exception.class);
