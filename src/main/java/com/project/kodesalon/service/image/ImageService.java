@@ -36,7 +36,7 @@ public class ImageService {
         }
     }
 
-    public void delete(Long imageId) {
+    public void delete(final Long imageId) {
         Image image = findById(imageId);
         String key = image.getKey();
         s3Uploader.delete(key);
