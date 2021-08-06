@@ -1,6 +1,7 @@
 package com.project.kodesalon.domain.board;
 
 import com.project.kodesalon.domain.BaseEntity;
+import com.project.kodesalon.domain.Image;
 import com.project.kodesalon.domain.board.vo.Content;
 import com.project.kodesalon.domain.board.vo.Title;
 import com.project.kodesalon.domain.member.Member;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -18,7 +20,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.project.kodesalon.exception.ErrorCode.NOT_AUTHORIZED_MEMBER;
 
@@ -45,6 +50,9 @@ public class Board extends BaseEntity {
 
     @Column(nullable = false, name = "deleted", columnDefinition = "boolean default false")
     private boolean deleted;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    private List<Image> images = new ArrayList<>();
 
     public Board(final String title, final String content, final Member writer, final LocalDateTime createdDateTime) {
         this.title = new Title(title);
@@ -74,6 +82,10 @@ public class Board extends BaseEntity {
         return deleted;
     }
 
+    public List<Image> getImages() {
+        return images;
+    }
+
     public void delete(final Long memberId, final LocalDateTime deletedDateTime) {
         validateAuthorizationOf(memberId);
         deleted = true;
@@ -96,5 +108,9 @@ public class Board extends BaseEntity {
 
     private boolean isSameWriterId(final Long memberId) {
         return writer.getId().equals(memberId);
+    }
+
+    public void addImage(final Image image) {
+        images.add(image);
     }
 }
