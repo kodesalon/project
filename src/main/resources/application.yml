@@ -48,7 +48,8 @@ cloud:
     s3:
       image:
         bucket: kodesalon
-      stack:
-        auto: false
+        directory: image
+    stack:
+      auto: false
     region:
       static: ap-northeast-2
