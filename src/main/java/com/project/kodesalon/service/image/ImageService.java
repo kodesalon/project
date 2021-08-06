@@ -25,10 +25,6 @@ public class ImageService {
     }
 
     public void save(final List<MultipartFile> multipartFiles, final Board board) throws IOException {
-        if (multipartFiles == null) {
-            return;
-        }
-
         for (MultipartFile multipartFile : multipartFiles) {
             String url = s3Uploader.upload(multipartFile, directory);
             Image image = new Image(url, board);
