@@ -35,4 +35,16 @@ public class ImageService {
             imageRepository.save(image);
         }
     }
+
+    public void delete(Long imageId) {
+        Image image = findById(imageId);
+        String key = image.getKey();
+        s3Uploader.delete(key);
+        imageRepository.delete(image);
+    }
+
+    private Image findById(Long imageId) {
+        return imageRepository.findById(imageId)
+                .orElseThrow(() -> new IllegalArgumentException(""));
+    }
 }
