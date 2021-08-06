@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.project.kodesalon.exception.ErrorCode.INVALID_MULTIPART_FILE;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_IMAGE;
 
 @Slf4j
 @Component
@@ -36,7 +36,7 @@ public class S3Uploader {
         File file = convert(multipartFile)
                 .orElseThrow(() -> {
                     log.info("파일로 변환할 수 없습니다. : {}", multipartFile.getOriginalFilename());
-                    throw new IllegalArgumentException(INVALID_MULTIPART_FILE);
+                    throw new IllegalArgumentException(INVALID_IMAGE);
                 });
 
         return upload(file, directoryName);

@@ -65,12 +65,14 @@ class ImageServiceTest {
     @Test
     @DisplayName("삭제하려는 게시물의 식별 번호를 입력 받아 이미지를 삭제한다.")
     void delete() {
+        List<Long> imageIds = Arrays.asList(1L, 2L);
+        int imageSize = imageIds.size();
         given(imageRepository.findById(anyLong())).willReturn(Optional.of(image));
         given(image.getKey()).willReturn("/static/imageUrl.png");
 
-        imageService.delete(1L);
+        imageService.delete(imageIds);
 
-        verify(imageRepository, times(1)).delete(image);
-        verify(s3Uploader, times(1)).delete(anyString());
+        verify(imageRepository, times(imageSize)).delete(image);
+        verify(s3Uploader, times(imageSize)).delete(anyString());
     }
 }

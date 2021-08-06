@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_IMAGE;
+
 @Service
 public class ImageService {
     private final ImageRepository imageRepository;
@@ -32,15 +34,17 @@ public class ImageService {
         }
     }
 
-    public void delete(final Long imageId) {
-        Image image = findById(imageId);
-        String key = image.getKey();
-        s3Uploader.delete(key);
-        imageRepository.delete(image);
+    public void delete(final List<Long> imageIds) {
+        for (Long imageId : imageIds) {
+            Image image = findById(imageId);
+            String key = image.getKey();
+            s3Uploader.delete(key);
+            imageRepository.delete(image);
+        }
     }
 
-    private Image findById(Long imageId) {
+    private Image findById(final Long imageId) {
         return imageRepository.findById(imageId)
-                .orElseThrow(() -> new IllegalArgumentException(""));
+                .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_IMAGE));
     }
 }
