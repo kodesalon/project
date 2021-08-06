@@ -14,6 +14,7 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_ALIAS;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Alias {
+
     public static final String ALIAS_REGEX = "^[a-zA-Z]{1}[a-zA-Z0-9]{3,14}$";
     private static final Pattern ALIAS_PATTERN = Pattern.compile(ALIAS_REGEX);
 

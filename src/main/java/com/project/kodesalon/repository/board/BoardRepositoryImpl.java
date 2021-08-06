@@ -1,13 +1,14 @@
-package com.project.kodesalon.repository;
+package com.project.kodesalon.repository.board;
 
 import com.project.kodesalon.domain.board.Board;
 
 import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.Objects;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
+    private static final int CHECK_NEXT_BOARD = 1;
     private final EntityManager entityManager;
 
     public BoardRepositoryImpl(final EntityManager entityManager) {
@@ -15,16 +16,12 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     @Override
-    public List<Board> selectBoards(Long lastBoardId, final int size) {
-        if (Objects.isNull(lastBoardId)) {
-            lastBoardId = Long.MAX_VALUE;
-        }
-
+    public Deque<Board> selectBoards(Long lastBoardId, int size) {
         String query = "select b from Board b join fetch b.writer where b.id < :lastBoardId and b.deleted = false order by b.id desc";
 
-        return entityManager.createQuery(query, Board.class)
+        return new ArrayDeque<>(entityManager.createQuery(query, Board.class)
                 .setParameter("lastBoardId", lastBoardId)
-                .setMaxResults(size)
-                .getResultList();
+                .setMaxResults(size + CHECK_NEXT_BOARD)
+                .getResultList());
     }
 }

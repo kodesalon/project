@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BoardSelectResponse {
+
     private Long boardId;
     private String title;
     private String content;
@@ -23,9 +24,5 @@ public class BoardSelectResponse {
         this.createdDateTime = createdDateTime;
         this.writerId = writerId;
         this.writerAlias = writerAlias;
-    }
-
-    public boolean checkLast() {
-        return this.getBoardId() == 0L;
     }
 }

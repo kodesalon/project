@@ -1,8 +1,8 @@
-package com.project.kodesalon.controller;
+package com.project.kodesalon.controller.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.exception.GlobalExceptionHandler;
-import com.project.kodesalon.service.AuthenticationTokenService;
+import com.project.kodesalon.service.authentication.AuthenticationTokenService;
 import com.project.kodesalon.service.dto.request.LoginRequest;
 import com.project.kodesalon.service.dto.request.TokenRefreshRequest;
 import com.project.kodesalon.service.dto.response.LoginResponse;
@@ -43,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 class AuthenticationTokenControllerTest {
+
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final LoginResponse loginResponse = new LoginResponse("access token", "refresh token", 1L, "alias");
     private final TokenRefreshRequest tokenRefreshRequest = new TokenRefreshRequest("refresh token");

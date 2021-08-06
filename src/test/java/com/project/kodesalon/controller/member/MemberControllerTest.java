@@ -1,14 +1,14 @@
-package com.project.kodesalon.controller;
+package com.project.kodesalon.controller.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.config.interceptor.LoginInterceptor;
 import com.project.kodesalon.exception.GlobalExceptionHandler;
-import com.project.kodesalon.service.MemberService;
 import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
 import com.project.kodesalon.service.dto.request.MemberCreateRequest;
 import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
 import com.project.kodesalon.service.dto.response.MemberSelectResponse;
+import com.project.kodesalon.service.member.MemberService;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -67,6 +67,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Import(JacksonConfiguration.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 class MemberControllerTest {
+
     private final MemberCreateRequest memberCreateRequest =
             new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
     private final MemberChangePasswordRequest memberChangePasswordRequest = new MemberChangePasswordRequest("ChangePassword1!", LocalDateTime.now());
