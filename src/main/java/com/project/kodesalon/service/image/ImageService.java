@@ -31,10 +31,6 @@ public class ImageService {
         this.directory = directory;
     }
 
-    public void save(final List<MultipartFile> multipartFiles, final Board board) throws IOException {
-        uploadImages(multipartFiles, board);
-    }
-
     public void add(final List<MultipartFile> multipartFiles, final Long boardId) throws IOException {
         Board board = findBoardById(boardId);
         uploadImages(multipartFiles, board);

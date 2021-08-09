@@ -55,20 +55,7 @@ class ImageServiceTest {
     }
 
     @Test
-    @DisplayName("파일을 전달받아 이미지를 저장한다.")
-    void save() throws IOException {
-        given(s3Uploader.upload(any(MultipartFile.class), anyString())).willReturn(IMAGE_UPLOAD_URL);
-        List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile);
-        int imageSize = multipartFiles.size();
-
-        imageService.save(multipartFiles, board);
-
-        verify(s3Uploader, times(imageSize)).upload(any(MultipartFile.class), anyString());
-        verify(imageRepository, times(imageSize)).save(any(Image.class));
-    }
-
-    @Test
-    @DisplayName("이미지를 전달받아 이미지를 추가한다.")
+    @DisplayName("이미지와 게시물 식별 번호를 전달받아 이미지를 추가한다.")
     void add() throws IOException {
         Long boardId = 1L;
         List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile);

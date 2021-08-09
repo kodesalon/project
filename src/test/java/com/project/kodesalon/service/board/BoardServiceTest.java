@@ -3,28 +3,35 @@ package com.project.kodesalon.service.board;
 import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.board.vo.Content;
 import com.project.kodesalon.domain.board.vo.Title;
+import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.repository.board.BoardRepository;
+import com.project.kodesalon.repository.image.ImageRepository;
+import com.project.kodesalon.service.S3Uploader;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import com.project.kodesalon.service.member.MemberService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_BOARD;
@@ -34,6 +41,7 @@ import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,7 +53,6 @@ class BoardServiceTest {
 
     private final BoardUpdateRequest BOARD_UPDATE_REQUEST = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
 
-    @InjectMocks
     private BoardService boardService;
 
     @Mock
@@ -55,20 +62,37 @@ class BoardServiceTest {
     private BoardRepository boardRepository;
 
     @Mock
+    private ImageRepository imageRepository;
+
+    @Mock
+    private S3Uploader s3Uploader;
+
+    @Mock
     private Member member;
 
     @Mock
     private Board board;
 
+    @BeforeEach
+    void setUp() {
+        boardService
+                = new BoardService(boardRepository, memberService, imageRepository, s3Uploader, "static");
+    }
+
     @Test
     @DisplayName("컨트롤러에서 게시판 생성 요청 Dto를 전달받아 게시판을 생성한다.")
-    void save() {
+    void save() throws IOException {
         given(memberService.findById(anyLong())).willReturn(member);
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 작성", LocalDateTime.now());
+        List<MultipartFile> images = Arrays.asList(new MockMultipartFile("image.png", "test".getBytes()),
+                new MockMultipartFile("image2.png", "test".getBytes()));
+        int imageSize = images.size();
 
-        boardService.save(anyLong(), boardCreateRequest);
+        boardService.save(anyLong(), boardCreateRequest, images);
 
         verify(boardRepository, times(1)).save(any(Board.class));
+        verify(s3Uploader, times(imageSize)).upload(any(MockMultipartFile.class), anyString());
+        verify(imageRepository, times(imageSize)).save(any(Image.class));
     }
 
     @Test
