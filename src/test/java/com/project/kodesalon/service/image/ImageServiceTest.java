@@ -2,9 +2,9 @@ package com.project.kodesalon.service.image;
 
 import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.image.Image;
-import com.project.kodesalon.repository.board.BoardRepository;
 import com.project.kodesalon.repository.image.ImageRepository;
 import com.project.kodesalon.service.S3Uploader;
+import com.project.kodesalon.service.board.BoardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ class ImageServiceTest {
     private ImageRepository imageRepository;
 
     @Mock
-    private BoardRepository boardRepository;
+    private BoardService boardService;
 
     @Mock
     private S3Uploader s3Uploader;
@@ -51,7 +51,7 @@ class ImageServiceTest {
 
     @BeforeEach
     void setUp() {
-        imageService = new ImageService(imageRepository, s3Uploader, boardRepository, "directory");
+        imageService = new ImageService(imageRepository, s3Uploader, boardService, "directory");
     }
 
     @Test
@@ -59,7 +59,7 @@ class ImageServiceTest {
     void add() throws IOException {
         Long boardId = 1L;
         List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile);
-        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        given(boardService.findById(anyLong())).willReturn(board);
         given(s3Uploader.upload(any(MultipartFile.class), anyString())).willReturn(IMAGE_UPLOAD_URL);
         int imageSize = multipartFiles.size();
 

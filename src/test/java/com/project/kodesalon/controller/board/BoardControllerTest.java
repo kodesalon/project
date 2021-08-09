@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
@@ -51,6 +52,7 @@ import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.fileUpload;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
@@ -89,12 +91,17 @@ class BoardControllerTest {
     }
 
     @Test
-    @DisplayName("제목, 내용, 생성 날짜를 json으로 전달받아 게시물을 생성하고 HTTP 200을 반환한다.")
+    @DisplayName("제목, 내용, 생성 날짜, 게시물 사진을 전달받아 게시물을 생성하고 HTTP 200을 반환한다.")
     void save_success() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 내용", LocalDateTime.now());
-        mockMvc.perform(post("/api/v1/boards")
-                .content(objectMapper.writeValueAsString(boardCreateRequest))
-                .contentType(MediaType.APPLICATION_JSON))
+        MockMultipartFile images1 = new MockMultipartFile("images", "image1.png", "image/png", "test".getBytes());
+        MockMultipartFile images2 = new MockMultipartFile("images", "image1.png", "image/png", "test".getBytes());
+
+        mockMvc.perform(fileUpload("/api/v1/boards")
+                        .file(images1)
+                        .file(images2)
+                        .content(objectMapper.writeValueAsString(boardCreateRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("board/create/success",
                         getDocumentRequest(),
@@ -111,8 +118,8 @@ class BoardControllerTest {
     void save_fail_with_invalid_title() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("", "게시물 내용", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
-                .content(objectMapper.writeValueAsString(boardCreateRequest))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(boardCreateRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/create/fail/invalid-title",
                         getDocumentRequest(),
@@ -127,8 +134,8 @@ class BoardControllerTest {
     void save_fail_with_invalid_content() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
-                .content(objectMapper.writeValueAsString(boardCreateRequest))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(boardCreateRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/create/fail/invalid-content",
                         getDocumentRequest(),
@@ -143,8 +150,8 @@ class BoardControllerTest {
     void save_fail_with_invalid_created_date_time() throws Exception {
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 내용", null);
         mockMvc.perform(post("/api/v1/boards")
-                .content(objectMapper.writeValueAsString(boardCreateRequest))
-                .contentType(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(boardCreateRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/create/fail/null-created-date-time",
                         getDocumentRequest(),
@@ -160,8 +167,8 @@ class BoardControllerTest {
         BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(LocalDateTime.now());
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(boardDeleteRequest)))
                 .andExpect(status().isOk())
                 .andDo(document("board/delete/success",
                         getDocumentRequest(),
@@ -181,8 +188,8 @@ class BoardControllerTest {
                 .delete(any(), anyLong(), any(BoardDeleteRequest.class));
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(boardDeleteRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_AUTHORIZED_MEMBER))
                 .andDo(document("board/delete/fail/invalid-auth",
@@ -201,8 +208,8 @@ class BoardControllerTest {
                 .delete(any(), anyLong(), any(BoardDeleteRequest.class));
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(boardDeleteRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(ALREADY_DELETED_BOARD))
                 .andDo(document("board/delete/fail/already-deleted",
@@ -221,8 +228,8 @@ class BoardControllerTest {
                 .delete(any(), anyLong(), any(BoardDeleteRequest.class));
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(boardDeleteRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_EXIST_BOARD))
                 .andDo(document("board/delete/fail/not-exist-board",
@@ -240,8 +247,8 @@ class BoardControllerTest {
         BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(deletedDateTime);
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(boardDeleteRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
                 .andDo(document("board/delete/fail/null-deleted-date-time",
@@ -256,8 +263,8 @@ class BoardControllerTest {
     @DisplayName("회원 식별 번호, 수정할 게시물의 제목과 내용을 요청받아 성공시 200을 응답합니다")
     void update() throws Exception {
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isOk())
                 .andDo(document("board/update/success",
                         getDocumentRequest(),
@@ -279,8 +286,8 @@ class BoardControllerTest {
                 = new BoardUpdateRequest(nullAndEmptyTitle, "update content", LocalDateTime.now());
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_BOARD_TITLE))
                 .andDo(document("board/update/fail/invalid-title",
@@ -297,8 +304,8 @@ class BoardControllerTest {
                 = new BoardUpdateRequest("update content", nullAndEmptyContent, LocalDateTime.now());
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_BOARD_CONTENT))
                 .andDo(document("board/update/fail/invalid-content",
@@ -315,8 +322,8 @@ class BoardControllerTest {
                 = new BoardUpdateRequest("updated title", "updated content", invalidLastModifiedDateTime);
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
                 .andDo(document("board/update/fail/invalid-last-modified-date-time",
@@ -333,8 +340,8 @@ class BoardControllerTest {
                 .updateBoard(any(), anyLong(), any(BoardUpdateRequest.class));
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_EXIST_BOARD))
                 .andDo(document("board/update/fail/no-board",
@@ -350,7 +357,7 @@ class BoardControllerTest {
         given(boardService.selectBoard(anyLong())).willReturn(boardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards/{boardId}", 1L)
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("board/select-single/success",
                         getDocumentRequest(),
@@ -378,9 +385,9 @@ class BoardControllerTest {
         given(boardService.selectBoards(anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards")
-                .param("lastBoardId", "1")
-                .param("size", "1")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .param("lastBoardId", "1")
+                        .param("size", "1")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("board/select-multi/success",
                         getDocumentRequest(),
@@ -408,9 +415,9 @@ class BoardControllerTest {
         given(boardService.selectBoards(anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards")
-                .param("lastBoardId", "1")
-                .param("size", "10")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .param("lastBoardId", "1")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("board/select-multi-last/success",
                         getDocumentRequest(),
@@ -438,8 +445,8 @@ class BoardControllerTest {
         given(boardService.selectBoards(any(), anyInt())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards")
-                .param("size", "10")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("board/select-multi-first/success",
                         getDocumentRequest(),

@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_BOARD;
-import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -48,8 +47,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BoardServiceTest {
-
-    private static final Member TEST_MEMBER = getTestMember();
+    private static final String IMAGE_UPLOAD_URL = "localhost:8080/bucket/directory/image.jpeg";
 
     private final BoardUpdateRequest BOARD_UPDATE_REQUEST = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
 
@@ -84,9 +82,10 @@ class BoardServiceTest {
     void save() throws IOException {
         given(memberService.findById(anyLong())).willReturn(member);
         BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 작성", LocalDateTime.now());
-        List<MultipartFile> images = Arrays.asList(new MockMultipartFile("image.png", "test".getBytes()),
-                new MockMultipartFile("image2.png", "test".getBytes()));
+        MockMultipartFile image = new MockMultipartFile("images", "image.png", "image/png", "test".getBytes());
+        List<MultipartFile> images = Arrays.asList(image, image);
         int imageSize = images.size();
+        given(s3Uploader.upload(any(MockMultipartFile.class), anyString())).willReturn(IMAGE_UPLOAD_URL);
 
         boardService.save(anyLong(), boardCreateRequest, images);
 

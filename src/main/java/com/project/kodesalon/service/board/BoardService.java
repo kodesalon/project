@@ -103,7 +103,7 @@ public class BoardService {
         updatedBoard.updateTitleAndContent(memberId, updateTitle, updateContent, boardUpdateRequest.getLastModifiedDateTime());
     }
 
-    private Board findById(final Long boardId) {
+    public Board findById(final Long boardId) {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> {
                     log.info("존재하지 않는 게시물 식별자 boardId : {}", boardId);
