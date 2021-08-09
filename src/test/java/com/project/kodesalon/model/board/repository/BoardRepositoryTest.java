@@ -14,7 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
 import java.time.LocalDateTime;
-import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.BDDAssertions.then;
@@ -108,7 +108,7 @@ public class BoardRepositoryTest {
         entityManager.flush();
         entityManager.clear();
 
-        Deque<Board> boards = boardRepository.selectBoards(11L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(11L, boardToBeSelectedAtOnce);
 
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
         boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getWriter())).isTrue());
@@ -128,7 +128,7 @@ public class BoardRepositoryTest {
         entityManager.flush();
         entityManager.clear();
 
-        Deque<Board> boards = boardRepository.selectBoards(Long.MAX_VALUE, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(Long.MAX_VALUE, boardToBeSelectedAtOnce);
 
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce - 1);
         boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getWriter())).isTrue());

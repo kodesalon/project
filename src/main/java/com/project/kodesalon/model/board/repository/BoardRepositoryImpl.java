@@ -3,8 +3,7 @@ package com.project.kodesalon.model.board.repository;
 import com.project.kodesalon.model.board.domain.Board;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.util.List;
 
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
@@ -16,12 +15,12 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     @Override
-    public Deque<Board> selectBoards(Long lastBoardId, int size) {
+    public List<Board> selectBoards(Long lastBoardId, int size) {
         String query = "select b from Board b join fetch b.writer where b.id < :lastBoardId and b.deleted = false order by b.id desc";
 
-        return new ArrayDeque<>(entityManager.createQuery(query, Board.class)
+        return entityManager.createQuery(query, Board.class)
                 .setParameter("lastBoardId", lastBoardId)
                 .setMaxResults(size + CHECK_NEXT_BOARD)
-                .getResultList());
+                .getResultList();
     }
 }

@@ -1091,7 +1091,7 @@ Host: localhost:8080
   "name" : "이름",
   "email" : "email@email.com",
   "phone" : "010-1111-2222",
-  "createdDateTime" : "2021-08-02T15:03:01"
+  "createdDateTime" : "2021-08-09T23:04:54"
 }</code></pre>
 </div>
 </div>
@@ -1496,7 +1496,7 @@ Host: localhost:8080
 
 {
   "password" : "ChangePassword1!",
-  "lastModifiedDateTime" : "2021-08-02T15:03:01"
+  "lastModifiedDateTime" : "2021-08-09T23:04:55"
 }</code></pre>
 </div>
 </div>
@@ -1629,7 +1629,7 @@ Content-Length: 47
 Host: localhost:8080
 
 {
-  "deletedDateTime" : "2021-08-02T15:03:01"
+  "deletedDateTime" : "2021-08-09T23:04:54"
 }</code></pre>
 </div>
 </div>
@@ -1736,7 +1736,7 @@ Host: localhost:8080
 {
   "title" : "게시물 제목",
   "content" : "게시물 내용",
-  "createdDateTime" : "2021-08-02T15:03:00"
+  "createdDateTime" : "2021-08-09T23:04:52"
 }</code></pre>
 </div>
 </div>
@@ -1994,13 +1994,13 @@ Host: localhost:8080</code></pre>
                         <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 189
+Content-Length: 190
 
 {
   "boardId" : 1,
   "title" : "게시물 제목",
   "content" : "게시물 내용",
-  "createdDateTime" : [ 2021, 8, 2, 15, 3, 0, 152132000 ],
+  "createdDateTime" : [ 2021, 8, 9, 23, 4, 52, 624412000 ],
   "writerId" : 1,
   "writerAlias" : "alias"
 }</code></pre>
@@ -2125,14 +2125,16 @@ Host: localhost:8080</code></pre>
                         </tr>
                         <tr>
                             <td class="tableblock halign-left valign-top"><p class="tableblock">
-                                <code>boards[].writerId</code></p></td>
+                                <code>boards[].writerId</code></p>
+                            </td>
                             <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p>
                             </td>
                             <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 작성자 식별 번호</p></td>
                         </tr>
                         <tr>
                             <td class="tableblock halign-left valign-top"><p class="tableblock"><code>boards[].writerAlias</code>
-                            </p></td>
+                            </p>
+                            </td>
                             <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p>
                             </td>
                             <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 작성자 아이디</p></td>
@@ -2152,14 +2154,14 @@ Host: localhost:8080</code></pre>
                             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 222
+Content-Length: 223
 
 {
   "boards" : [ {
     "boardId" : 1,
     "title" : "title",
     "content" : "content",
-    "createdDateTime" : [ 2021, 8, 2, 15, 3, 0, 379709000 ],
+    "createdDateTime" : [ 2021, 8, 9, 23, 4, 52, 969099000 ],
     "writerId" : 1,
     "writerAlias" : "alias"
   } ],
@@ -2174,14 +2176,14 @@ Content-Length: 222
                             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 221
+Content-Length: 220
 
 {
   "boards" : [ {
     "boardId" : 0,
     "title" : "title",
     "content" : "content",
-    "createdDateTime" : [ 2021, 8, 2, 15, 3, 0, 404526000 ],
+    "createdDateTime" : [ 2021, 8, 9, 23, 4, 53, 8122000 ],
     "writerId" : 1,
     "writerAlias" : "alias"
   } ],
@@ -2249,7 +2251,7 @@ Content-Length: 47
 Host: localhost:8080
 
 {
-  "deletedDateTime" : "2021-08-02T15:02:59"
+  "deletedDateTime" : "2021-08-09T23:04:52"
 }</code></pre>
                     </div>
                 </div>
@@ -2490,7 +2492,8 @@ Content-Length: 21
                     </tr>
                     <tr>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">
-                            <code>lastModifiedDateTime</code></p></td>
+                            <code>lastModifiedDateTime</code></p>
+                        </td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
                         <td class="tableblock halign-left valign-top"><p class="tableblock">마지막으로 수정된 시간</p></td>
                     </tr>
@@ -2506,7 +2509,7 @@ Host: localhost:8080
 {
   "title" : "update title",
   "content" : "update content",
-  "lastModifiedDateTime" : "2021-08-02T15:03:00"
+  "lastModifiedDateTime" : "2021-08-09T23:04:52"
 }</code></pre>
                     </div>
                 </div>
@@ -2676,7 +2679,8 @@ Content-Length: 21
                             <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p>
                             </td>
                             <td class="tableblock halign-left valign-top"><p class="tableblock">게시물 수정 시 유효하지 않은 게시물 수정
-                                시간에 대한 예외 코</p></td>
+                                시간에 대한 예외
+                                코</p></td>
                         </tr>
                         </tbody>
                     </table>
@@ -2699,7 +2703,7 @@ Content-Length: 21
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-    Last updated 2021-07-30 19:13:54 +0900
+    Last updated 2021-08-04 17:05:59 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

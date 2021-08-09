@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,18 +60,13 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public MultiBoardSelectResponse selectBoards(final Long lastBoardId, final int size) {
-        Deque<Board> boards = boardRepository.selectBoards(lastBoardId, size);
-        boolean isLast = boards.size() <= size;
-
-        if (!isLast) {
-            boards.pop();
-        }
+        List<Board> boards = boardRepository.selectBoards(lastBoardId, size);
 
         List<BoardSelectResponse> boardSelectResponses = boards.stream()
                 .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias()))
                 .collect(Collectors.toList());
 
-        return new MultiBoardSelectResponse(boardSelectResponses, isLast);
+        return new MultiBoardSelectResponse(boardSelectResponses, size);
     }
 
     @Transactional
