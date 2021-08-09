@@ -10,10 +10,10 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MultiBoardSelectResponse {
     private List<BoardSelectResponse> boards;
-    private boolean last;
+    private boolean isLast;
 
-    public MultiBoardSelectResponse(List<BoardSelectResponse> boards, boolean last) {
+    public MultiBoardSelectResponse(List<BoardSelectResponse> boards, boolean isLast) {
         this.boards = boards;
-        this.last = last;
+        this.isLast = isLast;
     }
 }
