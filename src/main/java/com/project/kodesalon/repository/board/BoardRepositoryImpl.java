@@ -16,7 +16,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     @Override
     public List<Board> selectBoards(final Long lastBoardId, final int size) {
-        String query = "select b from Board b join fetch b.writer where b.id < :lastBoardId and b.deleted = false order by b.id desc";
+        String query = "select b from Board b join fetch b.writer left outer join b.images where b.id < :lastBoardId and b.deleted = false order by b.id desc";
 
         return entityManager.createQuery(query, Board.class)
                 .setParameter("lastBoardId", lastBoardId)

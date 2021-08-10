@@ -1,6 +1,7 @@
 package com.project.kodesalon.repository.board;
 
 import com.project.kodesalon.domain.board.Board;
+import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.AfterEach;
@@ -86,6 +87,7 @@ class BoardRepositoryTest {
         entityManager.persist(member);
         Board board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
         boardRepository.save(board);
+        Image image = new Image("localhost:8080/bucket/image/file.png", board);
         entityManager.flush();
         entityManager.clear();
 
