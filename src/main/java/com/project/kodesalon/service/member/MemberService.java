@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER;
@@ -57,8 +59,14 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberSelectResponse selectMember(final Long memberId) {
-        Member member = findById(memberId);
-        return new MemberSelectResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone());
+        Member member = memberRepository.selectMemberById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException(NOT_EXIST_MEMBER));
+        List<SelectMemberOwnBoardResponse> ownBoard = member.getBoards()
+                .stream()
+                .map(board -> new SelectMemberOwnBoardResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime()))
+                .collect(Collectors.toList());
+
+        return new MemberSelectResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone(), ownBoard);
     }
 
     @Transactional

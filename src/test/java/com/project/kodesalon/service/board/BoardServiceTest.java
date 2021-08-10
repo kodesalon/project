@@ -22,9 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.Deque;
+import java.util.List;
 import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_BOARD;
@@ -121,7 +120,7 @@ class BoardServiceTest {
     @CsvSource(value = {"1, false", "10, true"})
     @DisplayName("마지막 게시물 식별 번호를 전달 받아 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
     void selectBoards(int size, boolean last) {
-        Deque<Board> boards = new ArrayDeque<>(Arrays.asList(board, board));
+        List<Board> boards = Arrays.asList(board, board);
         given(board.getId()).willReturn(1L);
         given(board.getTitle()).willReturn("게시물 제목");
         given(board.getContent()).willReturn("게시물 내용");

@@ -19,6 +19,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
@@ -88,13 +89,15 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("회원정보 조회 성공 시, 회원 별명, 이름, 이메일, 전화 번호를 반환합니다.")
+    @DisplayName("회원정보 조회 성공 시, 회원 별명, 이름, 이메일, 전화 번호, 회원이 올린 게시물들을 반환합니다.")
     void exist_id_response_member() {
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
+        Board board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
+        given(memberRepository.selectMemberById(anyLong())).willReturn(Optional.of(member));
         given(member.getAlias()).willReturn("alias");
         given(member.getName()).willReturn("이름");
         given(member.getEmail()).willReturn("email@email.com");
         given(member.getPhone()).willReturn("010-1111-2222");
+        given(member.getBoards()).willReturn(Collections.singletonList(board));
 
         MemberSelectResponse memberSelectResponse = memberService.selectMember(anyLong());
 
@@ -102,13 +105,14 @@ class MemberServiceTest {
         softly.then(memberSelectResponse.getName()).isEqualTo("이름");
         softly.then(memberSelectResponse.getEmail()).isEqualTo("email@email.com");
         softly.then(memberSelectResponse.getPhone()).isEqualTo("010-1111-2222");
+        softly.then(memberSelectResponse.getOwnBoards().size())
         softly.assertAll();
     }
 
     @Test
     @DisplayName("회원 정보 조회 시 찾으려는 회원이 없으면 예외를 반환합니다.")
     void select_not_exist_id_throws_exception() {
-        given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
+        given(memberRepository.selectMemberById(anyLong())).willReturn(Optional.empty());
 
         thenThrownBy(() -> memberService.selectMember(1L))
                 .isInstanceOf(EntityNotFoundException.class)
