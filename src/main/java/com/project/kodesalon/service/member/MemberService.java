@@ -7,6 +7,7 @@ import com.project.kodesalon.repository.member.MemberRepository;
 import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
 import com.project.kodesalon.service.dto.request.MemberCreateRequest;
 import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
+import com.project.kodesalon.service.dto.response.MemberOwnBoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MemberSelectResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -61,9 +62,9 @@ public class MemberService {
     public MemberSelectResponse selectMember(final Long memberId) {
         Member member = memberRepository.selectMemberById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException(NOT_EXIST_MEMBER));
-        List<SelectMemberOwnBoardResponse> ownBoard = member.getBoards()
+        List<MemberOwnBoardSelectResponse> ownBoard = member.getBoards()
                 .stream()
-                .map(board -> new SelectMemberOwnBoardResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime()))
+                .map(board -> new MemberOwnBoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime()))
                 .collect(Collectors.toList());
 
         return new MemberSelectResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone(), ownBoard);

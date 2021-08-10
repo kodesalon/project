@@ -1,5 +1,6 @@
 package com.project.kodesalon.service.member;
 
+import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.domain.member.vo.Alias;
 import com.project.kodesalon.repository.board.BoardRepository;
@@ -105,7 +106,7 @@ class MemberServiceTest {
         softly.then(memberSelectResponse.getName()).isEqualTo("이름");
         softly.then(memberSelectResponse.getEmail()).isEqualTo("email@email.com");
         softly.then(memberSelectResponse.getPhone()).isEqualTo("010-1111-2222");
-        softly.then(memberSelectResponse.getOwnBoards().size())
+        softly.then(memberSelectResponse.getOwnBoards().size());
         softly.assertAll();
     }
 

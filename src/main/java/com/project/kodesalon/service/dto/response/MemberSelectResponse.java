@@ -14,9 +14,9 @@ public class MemberSelectResponse {
     private String name;
     private String email;
     private String phone;
-    private List<SelectMemberOwnBoardResponse> ownBoards;
+    private List<MemberOwnBoardSelectResponse> ownBoards;
 
-    public MemberSelectResponse(final String alias, final String name, final String email, final String phone, final List<SelectMemberOwnBoardResponse> ownBoards) {
+    public MemberSelectResponse(final String alias, final String name, final String email, final String phone, final List<MemberOwnBoardSelectResponse> ownBoards) {
         this.alias = alias;
         this.name = name;
         this.email = email;

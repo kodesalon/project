@@ -1,5 +1,6 @@
 package com.project.kodesalon.repository.member;
 
+import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.domain.member.vo.Alias;
 import org.assertj.core.api.BDDSoftAssertions;
