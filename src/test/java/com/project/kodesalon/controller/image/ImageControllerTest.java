@@ -74,8 +74,8 @@ class ImageControllerTest {
     }
 
     @Test
-    @DisplayName("저장할 여러 개의 이미지 파일을 인자로 요청받아, 이미지를 추가하고 HTTP 200 상태를 반환한다.")
-    void save_throw_exception_with_invalid_() throws Exception {
+    @DisplayName("추가하려는 이미지가 유효하지 않을 경우, HTTP 400 상태와 예외 코드를 반환한다.")
+    void save_throw_exception_with_invalid_image() throws Exception {
         Long boardId = 1L;
         MockMultipartFile image1 = new MockMultipartFile("images", "image1.png", "image/png", "<<png data>>".getBytes());
         MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
@@ -103,7 +103,7 @@ class ImageControllerTest {
     }
 
     @Test
-    @DisplayName("삭제할 이미지의 리스트를 요청받아, 이미지를 삭제하고 HTTP 200 상태를 반환한다.")
+    @DisplayName("삭제할 이미지가 존재하지 않을 경우, 이미지를 삭제하고 HTTP 400 상태와 예외 코드를 반환한다.")
     void remove_throw_exception_with_not_exist_image() throws Exception {
         Object[] deleteIds = {1L, 2L, 3L};
 
