@@ -11,6 +11,7 @@ import com.project.kodesalon.service.S3Uploader;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
+import com.project.kodesalon.service.dto.response.BoardImageResponse;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import com.project.kodesalon.service.member.MemberService;
@@ -74,7 +75,11 @@ public class BoardService {
                     throw new EntityNotFoundException(NOT_EXIST_BOARD);
                 });
 
-        return new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias());
+        List<BoardImageResponse> boardImages = board.getImages().stream()
+                .map(image -> new BoardImageResponse(image.getId(), image.getUrl()))
+                .collect(Collectors.toList());
+
+        return new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias(), boardImages);
     }
 
     @Transactional(readOnly = true)
@@ -82,7 +87,8 @@ public class BoardService {
         List<Board> boards = boardRepository.selectBoards(lastBoardId, size);
 
         List<BoardSelectResponse> boardSelectResponses = boards.stream()
-                .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias()))
+                .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias(),
+                        board.getImages().stream().map(image -> new BoardImageResponse(image.getId(), image.getUrl())).collect(Collectors.toList())))
                 .collect(Collectors.toList());
 
         return new MultiBoardSelectResponse(boardSelectResponses, size);

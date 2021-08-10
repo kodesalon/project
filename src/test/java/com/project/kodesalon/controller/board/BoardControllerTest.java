@@ -7,6 +7,7 @@ import com.project.kodesalon.service.board.BoardService;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
+import com.project.kodesalon.service.dto.response.BoardImageResponse;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -353,7 +354,8 @@ class BoardControllerTest {
     @Test
     @DisplayName("게시물 식별 번호를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)을 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoard() throws Exception {
-        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "게시물 제목", "게시물 내용", LocalDateTime.now(), 1L, "alias");
+        List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
+        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "게시물 제목", "게시물 내용", LocalDateTime.now(), 1L, "alias", boardImages);
         given(boardService.selectBoard(anyLong())).willReturn(boardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards/{boardId}", 1L)
@@ -371,15 +373,19 @@ class BoardControllerTest {
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("게시물 내용"),
                                 fieldWithPath("createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
                                 fieldWithPath("writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
-                                fieldWithPath("writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디")
+                                fieldWithPath("writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
+                                fieldWithPath("boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
+                                fieldWithPath("boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL")
                         )));
     }
 
     @Test
-    @DisplayName("마지막으로 조회한 게시물의 식별 번호와 한번에 조회할 게시물의 크기를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)과 마지막 게시물이 아니라면 마지막 게시물 여부를 거짓으로 담은 Dto객체를 Http 200로 반환한다.")
+    @DisplayName("마지막으로 조회한 게시물의 식별 번호와 한번에 조회할 게시물의 크기를 전달받아 해당 게시물을 조회 후, " +
+            "(제목 + 내용 + 생성 시간 + 작성자 별명 + 게시물 이미지들의 식별 번호 + 게시물 이미지들의 URL)과 마지막 게시물이 아니라면 마지막 게시물 여부를 거짓으로 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoards() throws Exception {
-        BoardSelectResponse boardSelectResponse1 = new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias");
-        BoardSelectResponse boardSelectResponse2 = new BoardSelectResponse(2L, "title", "content", LocalDateTime.now(), 1L, "alias");
+        List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
+        BoardSelectResponse boardSelectResponse1 = new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages);
+        BoardSelectResponse boardSelectResponse2 = new BoardSelectResponse(2L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages);
         List<BoardSelectResponse> content = Arrays.asList(boardSelectResponse1, boardSelectResponse2);
         MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content, 1);
         given(boardService.selectBoards(anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
@@ -403,14 +409,18 @@ class BoardControllerTest {
                                 fieldWithPath("boards[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
                                 fieldWithPath("boards[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
                                 fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
+                                fieldWithPath("boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
+                                fieldWithPath("boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
                                 fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부")
                         )));
     }
 
     @Test
-    @DisplayName("마지막으로 조회한 게시물의 식별 번호와 한번에 조회할 게시물의 크기를 전달받아 해당 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)과 마지막 게시물이라면 마지막 게시물 여부를 참으로 담은 Dto객체를 Http 200로 반환한다.")
+    @DisplayName("마지막으로 조회한 게시물의 식별 번호와 한번에 조회할 게시물의 크기를 전달받아 해당 게시물을 조회 후, " +
+            "(제목 + 내용 + 생성 시간 + 작성자 별명 + 게시물 이미지들의 식별 번호 + 게시물 이미지들의 URL)과 마지막 게시물이라면 마지막 게시물 여부를 참으로 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoards_with_last_board() throws Exception {
-        List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(0L, "title", "content", LocalDateTime.now(), 1L, "alias")));
+        List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
+        List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(0L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages)));
         MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content, 10);
         given(boardService.selectBoards(anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
 
@@ -433,14 +443,18 @@ class BoardControllerTest {
                                 fieldWithPath("boards[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
                                 fieldWithPath("boards[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
                                 fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
+                                fieldWithPath("boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
+                                fieldWithPath("boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
                                 fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부")
                         )));
     }
 
     @Test
-    @DisplayName("가장 처음으로 조회한 게시물의 경우, 조회할 게시물의 크기만 입력으로 받아 가장 최근 게시물을 조회 후, (제목 + 내용 + 생성 시간 + 작성자 별명)와 마지막 게시물이라면 마지막 게시물 여부를 참으로 담은 Dto객체를 Http 200로 반환한다.")
+    @DisplayName("가장 처음으로 조회한 게시물의 경우, 조회할 게시물의 크기만 입력으로 받아 가장 최근 게시물을 조회 후, " +
+            "(제목 + 내용 + 생성 시간 + 작성자 별명 + 게시물 이미지들의 식별 번호 + 게시물 이미지들의 URL)과 마지막 게시물이라면 마지막 게시물 여부를 참으로 담은 Dto객체를 Http 200로 반환한다.")
     void selectBoards_at_first() throws Exception {
-        List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias")));
+        List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
+        List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages)));
         MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content, 10);
         given(boardService.selectBoards(any(), anyInt())).willReturn(multiBoardSelectResponse);
 
@@ -461,6 +475,8 @@ class BoardControllerTest {
                                 fieldWithPath("boards[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
                                 fieldWithPath("boards[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
                                 fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
+                                fieldWithPath("boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
+                                fieldWithPath("boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
                                 fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부")
                         )));
     }

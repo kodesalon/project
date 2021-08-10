@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/v1/boards")
@@ -37,8 +39,9 @@ public class BoardController {
 
     @PostMapping
     public ResponseEntity<Void> save(@Login final Long memberId, @RequestBody @Valid final BoardCreateRequest boardCreateRequest,
-                                     @RequestParam(required = false, defaultValue = "") final List<MultipartFile> images) {
-        boardService.save(memberId, boardCreateRequest, images);
+                                     @RequestParam(required = false) final Optional<List<MultipartFile>> images) {
+        List<MultipartFile> boardImages = images.orElseGet(ArrayList::new);
+        boardService.save(memberId, boardCreateRequest, boardImages);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

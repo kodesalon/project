@@ -5,6 +5,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 class BoardSelectResponseTest {
 
@@ -13,7 +15,8 @@ class BoardSelectResponseTest {
     void getter() {
         BDDSoftAssertions softly = new BDDSoftAssertions();
         LocalDateTime createdDateTime = LocalDateTime.now();
-        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "제목", "내용", createdDateTime, 1L, "alias");
+        List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
+        BoardSelectResponse boardSelectResponse = new BoardSelectResponse(1L, "제목", "내용", createdDateTime, 1L, "alias", boardImages);
 
         softly.then(boardSelectResponse.getBoardId()).isEqualTo(1L);
         softly.then(boardSelectResponse.getTitle()).isEqualTo("제목");

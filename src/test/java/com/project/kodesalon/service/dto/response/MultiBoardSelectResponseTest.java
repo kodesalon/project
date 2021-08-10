@@ -7,6 +7,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 class MultiBoardSelectResponseTest {
@@ -16,9 +17,9 @@ class MultiBoardSelectResponseTest {
     @DisplayName("조회된 게시물 DTO의 수가 조회되야할 게시물 수보다 클 경우, 조회되야할 게시물 수만큼 게시물 DTO를 반환한다.")
     void getBoards(int size, boolean expect) {
         BDDSoftAssertions softly = new BDDSoftAssertions();
-        BoardSelectResponse boardSelectResponse1 = new BoardSelectResponse(1L, "게시물 제목", "게시물 내용", LocalDateTime.now(), 1L, "alias");
-        BoardSelectResponse boardSelectResponse2 = new BoardSelectResponse(2L, "게시물 제목", "게시물 내용", LocalDateTime.now(), 1L, "alias");
-        BoardSelectResponse boardSelectResponse3 = new BoardSelectResponse(3L, "게시물 제목", "게시물 내용", LocalDateTime.now(), 1L, "alias");
+        BoardSelectResponse boardSelectResponse1 = new BoardSelectResponse(1L, "게시물 제목", "게시물 내용", LocalDateTime.now(), 1L, "alias", Collections.emptyList());
+        BoardSelectResponse boardSelectResponse2 = new BoardSelectResponse(2L, "게시물 제목", "게시물 내용", LocalDateTime.now(), 1L, "alias", Collections.emptyList());
+        BoardSelectResponse boardSelectResponse3 = new BoardSelectResponse(3L, "게시물 제목", "게시물 내용", LocalDateTime.now(), 1L, "alias", Collections.emptyList());
         MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(Arrays.asList(boardSelectResponse1, boardSelectResponse2, boardSelectResponse3), size);
 
         List<BoardSelectResponse> boards = multiBoardSelectResponse.getBoards();
