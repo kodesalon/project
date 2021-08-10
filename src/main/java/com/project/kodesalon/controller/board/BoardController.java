@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -38,7 +37,7 @@ public class BoardController {
 
     @PostMapping
     public ResponseEntity<Void> save(@Login final Long memberId, @RequestBody @Valid final BoardCreateRequest boardCreateRequest,
-                                     @RequestParam(required = false, defaultValue = "") final List<MultipartFile> images) throws IOException {
+                                     @RequestParam(required = false, defaultValue = "") final List<MultipartFile> images) {
         boardService.save(memberId, boardCreateRequest, images);
         return new ResponseEntity<>(HttpStatus.OK);
     }

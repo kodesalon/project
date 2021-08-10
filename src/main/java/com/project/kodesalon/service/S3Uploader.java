@@ -32,7 +32,7 @@ public class S3Uploader {
         this.bucket = bucket;
     }
 
-    public String upload(final MultipartFile multipartFile, final String directoryName) throws IOException {
+    public String upload(final MultipartFile multipartFile, final String directoryName) {
         File file = convert(multipartFile)
                 .orElseThrow(() -> {
                     log.info("파일로 변환할 수 없습니다. : {}", multipartFile.getOriginalFilename());
@@ -70,17 +70,35 @@ public class S3Uploader {
         log.info("{} 파일이 삭제되지 못했습니다.", targetFile.getName());
     }
 
-    private Optional<File> convert(final MultipartFile file) throws IOException {
+    private Optional<File> convert(final MultipartFile file) {
         File convertFile = new File(file.getOriginalFilename());
 
-        if (convertFile.createNewFile()) {
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) {
-                fos.write(file.getBytes());
-            }
+        return createFile(file, convertFile);
+    }
+
+    private Optional<File> createFile(final MultipartFile file, final File convertFile) {
+        if (canConvertNewFile(convertFile)) {
+            createFileOutputStream(file, convertFile);
             return Optional.of(convertFile);
         }
 
         return Optional.empty();
+    }
+
+    private boolean canConvertNewFile(final File convertFile) {
+        try {
+            return convertFile.createNewFile();
+        } catch (IOException e) {
+            throw new IllegalArgumentException(INVALID_IMAGE);
+        }
+    }
+
+    private void createFileOutputStream(final MultipartFile file, final File convertFile) {
+        try (FileOutputStream fos = new FileOutputStream(convertFile)) {
+            fos.write(file.getBytes());
+        } catch (IOException e) {
+            throw new IllegalArgumentException(INVALID_IMAGE);
+        }
     }
 
     public void delete(final String key) {

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -24,7 +23,7 @@ public class ImageController {
     }
 
     @PostMapping("/{boardId}")
-    public ResponseEntity<Void> add(@RequestParam final List<MultipartFile> images, @PathVariable final Long boardId) throws IOException {
+    public ResponseEntity<Void> add(@RequestParam final List<MultipartFile> images, @PathVariable final Long boardId) {
         imageService.add(images, boardId);
         return ResponseEntity.ok().build();
     }

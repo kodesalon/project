@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_IMAGE;
@@ -29,12 +28,12 @@ public class ImageService {
         this.directory = directory;
     }
 
-    public void add(final List<MultipartFile> multipartFiles, final Long boardId) throws IOException {
+    public void add(final List<MultipartFile> multipartFiles, final Long boardId) {
         Board board = boardService.findById(boardId);
         uploadImages(multipartFiles, board);
     }
 
-    private void uploadImages(final List<MultipartFile> multipartFiles, final Board board) throws IOException {
+    private void uploadImages(final List<MultipartFile> multipartFiles, final Board board) {
         for (MultipartFile multipartFile : multipartFiles) {
             String url = s3Uploader.upload(multipartFile, directory);
             Image image = new Image(url, board);

@@ -15,8 +15,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.io.IOException;
-
 import static com.project.kodesalon.exception.ErrorCode.INVALID_IMAGE;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_IMAGE;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
@@ -79,7 +77,7 @@ class ImageControllerTest {
         Long boardId = 1L;
         MockMultipartFile image1 = new MockMultipartFile("images", "image1.png", "image/png", "<<png data>>".getBytes());
         MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
-        willThrow(new IOException(INVALID_IMAGE)).given(imageService).add(anyList(), any());
+        willThrow(new IllegalArgumentException(INVALID_IMAGE)).given(imageService).add(anyList(), any());
 
         mockMvc.perform(fileUpload("/api/v1/images/{boardId}", boardId).file(image1).file(image2))
                 .andExpect(status().isBadRequest())

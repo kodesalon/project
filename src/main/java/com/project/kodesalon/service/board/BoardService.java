@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
-import java.io.IOException;
 import java.util.Deque;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,7 +47,7 @@ public class BoardService {
     }
 
     @Transactional
-    public void save(final Long memberId, final BoardCreateRequest boardCreateRequest, List<MultipartFile> images) throws IOException {
+    public void save(final Long memberId, final BoardCreateRequest boardCreateRequest, List<MultipartFile> images) {
         Member member = memberService.findById(memberId);
         Board createdBoard = boardCreateRequest.toBoard(member);
         boardRepository.save(createdBoard);
