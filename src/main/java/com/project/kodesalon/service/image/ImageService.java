@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_IMAGE;
@@ -28,6 +29,7 @@ public class ImageService {
         this.directory = directory;
     }
 
+    @Transactional
     public void add(final List<MultipartFile> multipartFiles, final Long boardId) {
         Board board = boardService.findById(boardId);
         uploadImages(multipartFiles, board);
@@ -41,6 +43,7 @@ public class ImageService {
         }
     }
 
+    @Transactional
     public void delete(final List<Long> imageIds) {
         for (Long imageId : imageIds) {
             Image image = findById(imageId);
