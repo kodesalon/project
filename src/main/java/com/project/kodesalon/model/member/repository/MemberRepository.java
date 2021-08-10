@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    Optional<Member> findMemberByAlias(Alias alias);
+    Optional<Member> findMemberByAlias(final Alias alias);
 }
