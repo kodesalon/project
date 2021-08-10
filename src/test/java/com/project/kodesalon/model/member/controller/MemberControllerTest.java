@@ -8,6 +8,7 @@ import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.DeleteMemberRequest;
+import com.project.kodesalon.model.member.service.dto.SelectMemberOwnBoardResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +35,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.common.ErrorCode.DUPLICATED_PASSWORD;
@@ -261,11 +264,13 @@ public class MemberControllerTest {
     @Test
     @DisplayName("존재하는 회원을 조회하면 200 상태를 response 합니다.")
     void select_exist_member_response_success() throws Exception {
+        List<SelectMemberOwnBoardResponse> ownBoards =
+                Collections.singletonList(new SelectMemberOwnBoardResponse(1L, "게시물 제목", "게시물 내용", LocalDateTime.now()));
         given(memberService.selectMember(any()))
-                .willReturn(new SelectMemberResponse("alias", "이름", "email@email.com", "010-1111-2222"));
+                .willReturn(new SelectMemberResponse("alias", "이름", "email@email.com", "010-1111-2222", ownBoards));
 
         mockMvc.perform(get("/api/v1/members")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.alias").value("alias"))
                 .andExpect(jsonPath("$.name").value("이름"))
@@ -277,7 +282,12 @@ public class MemberControllerTest {
                                 fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 회원의 아이디"),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("조회한 회원의 이름"),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("조회한 회원의 이메일"),
-                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 회원의 핸드폰 번호"))));
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 회원의 핸드폰 번호"),
+                                fieldWithPath("ownBoards[].boardId").type(JsonFieldType.NUMBER).description("회원이 올린 게시물 식별 번호"),
+                                fieldWithPath("ownBoards[].title").type(JsonFieldType.STRING).description("회원이 올린 게시물 제목"),
+                                fieldWithPath("ownBoards[].content").type(JsonFieldType.STRING).description("회원이 올린 게시물 내용"),
+                                fieldWithPath("ownBoards[].createdDateTime").type(JsonFieldType.ARRAY).description("회원이 올린 게시물 생성 날짜")
+                        )));
     }
 
     @Test
