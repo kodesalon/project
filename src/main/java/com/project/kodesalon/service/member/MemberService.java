@@ -1,12 +1,13 @@
-package com.project.kodesalon.service;
+package com.project.kodesalon.service.member;
 
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.domain.member.vo.Alias;
-import com.project.kodesalon.repository.BoardRepository;
-import com.project.kodesalon.repository.MemberRepository;
+import com.project.kodesalon.repository.board.BoardRepository;
+import com.project.kodesalon.repository.member.MemberRepository;
 import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
 import com.project.kodesalon.service.dto.request.MemberCreateRequest;
 import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
+import com.project.kodesalon.service.dto.response.MemberOwnBoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MemberSelectResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER;
@@ -22,6 +25,7 @@ import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 @Slf4j
 @Service
 public class MemberService {
+
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
 
@@ -56,8 +60,14 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberSelectResponse selectMember(final Long memberId) {
-        Member member = findById(memberId);
-        return new MemberSelectResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone());
+        Member member = memberRepository.selectMemberById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException(NOT_EXIST_MEMBER));
+        List<MemberOwnBoardSelectResponse> ownBoard = member.getBoards()
+                .stream()
+                .map(board -> new MemberOwnBoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime()))
+                .collect(Collectors.toList());
+
+        return new MemberSelectResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone(), ownBoard);
     }
 
     @Transactional

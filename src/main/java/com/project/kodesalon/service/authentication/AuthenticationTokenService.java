@@ -1,12 +1,14 @@
-package com.project.kodesalon.service;
+package com.project.kodesalon.service.authentication;
 
 import com.project.kodesalon.domain.authentication.RefreshToken;
 import com.project.kodesalon.domain.member.Member;
-import com.project.kodesalon.repository.RefreshTokenRepository;
+import com.project.kodesalon.repository.refreshtoken.RefreshTokenRepository;
+import com.project.kodesalon.service.JwtManager;
 import com.project.kodesalon.service.dto.request.LoginRequest;
 import com.project.kodesalon.service.dto.request.TokenRefreshRequest;
 import com.project.kodesalon.service.dto.response.LoginResponse;
 import com.project.kodesalon.service.dto.response.TokenResponse;
+import com.project.kodesalon.service.member.MemberService;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +24,7 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
 @Slf4j
 @Service
 public class AuthenticationTokenService {
+
     private final RefreshTokenRepository refreshTokenRepository;
     private final MemberService memberService;
     private final JwtManager jwtManager;

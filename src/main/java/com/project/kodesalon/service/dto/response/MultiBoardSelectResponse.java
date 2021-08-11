@@ -4,24 +4,31 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class MultiBoardSelectResponse {
     private List<BoardSelectResponse> boards;
-    private boolean hasNext;
+    private boolean isLast;
 
-    public MultiBoardSelectResponse(final List<BoardSelectResponse> boards) {
-        this.boards = boards;
-        this.hasNext = hasNextBoard(lastBoard());
+    public MultiBoardSelectResponse(final List<BoardSelectResponse> boards, final int size) {
+        this.isLast = checkLast(boards, size);
+        this.boards = removeLastIfOverloaded(boards);
     }
 
-    private BoardSelectResponse lastBoard() {
-        return boards.get(boards.size() - 1);
+    private boolean checkLast(final List<BoardSelectResponse> boards, final int size) {
+        return boards.size() <= size;
     }
 
-    private boolean hasNextBoard(final BoardSelectResponse boardSelectResponse) {
-        return !boardSelectResponse.checkLast();
+    private List<BoardSelectResponse> removeLastIfOverloaded(final List<BoardSelectResponse> boards) {
+        LinkedList<BoardSelectResponse> boardSelectResponses = new LinkedList<>(boards);
+
+        if (!isLast) {
+            boardSelectResponses.removeLast();
+        }
+
+        return boardSelectResponses;
     }
 }

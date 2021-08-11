@@ -11,6 +11,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 
 class PhoneTest {
+
     @ParameterizedTest
     @ValueSource(strings = {"010-2222-3333", "011-222-4444"})
     @DisplayName("value 메서드를 호출하면 휴대폰 번호를 리턴합니다.")

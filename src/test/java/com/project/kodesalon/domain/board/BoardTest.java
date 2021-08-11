@@ -14,12 +14,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 
 import static com.project.kodesalon.exception.ErrorCode.NOT_AUTHORIZED_MEMBER;
+import static com.project.kodesalon.utils.TestEntityUtils.getTestBoard;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class BoardTest {
+
+    private static final Board TEST_BOARD = getTestBoard();
 
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
     private final LocalDateTime createdDateTime = LocalDateTime.now();

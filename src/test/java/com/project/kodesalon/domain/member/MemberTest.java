@@ -21,6 +21,7 @@ import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 class MemberTest {
+
     private static final Board TEST_BOARD = getTestBoard();
 
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
