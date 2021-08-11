@@ -87,11 +87,18 @@ public class BoardService {
         List<Board> boards = boardRepository.selectBoards(lastBoardId, size);
 
         List<BoardSelectResponse> boardSelectResponses = boards.stream()
-                .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias(),
-                        board.getImages().stream().map(image -> new BoardImageResponse(image.getId(), image.getUrl())).collect(Collectors.toList())))
+                .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(),
+                        board.getWriter().getId(), board.getWriter().getAlias(), getBoardImageResponses(board)))
                 .collect(Collectors.toList());
 
         return new MultiBoardSelectResponse(boardSelectResponses, size);
+    }
+
+    private List<BoardImageResponse> getBoardImageResponses(final Board board) {
+        return board.getImages()
+                .stream()
+                .map(image -> new BoardImageResponse(image.getId(), image.getUrl()))
+                .collect(Collectors.toList());
     }
 
     @Transactional

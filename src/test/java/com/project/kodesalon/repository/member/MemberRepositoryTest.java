@@ -1,6 +1,5 @@
 package com.project.kodesalon.repository.member;
 
-import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.domain.member.vo.Alias;
 import org.assertj.core.api.BDDSoftAssertions;
@@ -10,12 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceUnitUtil;
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
@@ -31,18 +25,9 @@ class MemberRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private EntityManager entityManager;
-
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
-
-    private PersistenceUnitUtil persistenceUnitUtil;
-
     @BeforeEach
     void setUp() {
         memberRepository.save(TEST_MEMBER);
-        persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
     }
 
     @Test
@@ -66,27 +51,5 @@ class MemberRepositoryTest {
         Optional<Member> notPresentMember = memberRepository.findMemberByAlias(new Alias("notAlias"));
 
         then(notPresentMember).isEmpty();
-    }
-
-    @Test
-    @DisplayName("회원 식별 번호를 입력받아 회원 정보와 회원이 올린 게시물 정보와 조인하여 반환한다")
-    void findMemberById() {
-        int size = 5;
-        Member member
-                = new Member("alias1", "Password123!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
-        memberRepository.save(member);
-        for (int i = 0; i < size; i++) {
-            Board myBoard = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
-            entityManager.persist(myBoard);
-        }
-        entityManager.flush();
-        entityManager.clear();
-
-        Member selectMember = memberRepository.selectMemberById(member.getId()).get();
-
-        List<Board> boards = selectMember.getBoards();
-
-        boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board)).isTrue());
-        softly.assertAll();
     }
 }

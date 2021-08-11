@@ -7,7 +7,6 @@ import com.project.kodesalon.exception.GlobalExceptionHandler;
 import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
 import com.project.kodesalon.service.dto.request.MemberCreateRequest;
 import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
-import com.project.kodesalon.service.dto.response.MemberOwnBoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MemberSelectResponse;
 import com.project.kodesalon.service.member.MemberService;
 import io.jsonwebtoken.JwtException;
@@ -35,8 +34,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
 
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.exception.ErrorCode.DUPLICATED_PASSWORD;
@@ -264,10 +261,8 @@ class MemberControllerTest {
     @Test
     @DisplayName("존재하는 회원을 조회하면 200 상태를 response 합니다.")
     void select_exist_member_response_success() throws Exception {
-        List<MemberOwnBoardSelectResponse> ownBoards =
-                Collections.singletonList(new MemberOwnBoardSelectResponse(1L, "게시물 제목", "게시물 내용", LocalDateTime.now()));
         given(memberService.selectMember(any()))
-                .willReturn(new MemberSelectResponse("alias", "이름", "email@email.com", "010-1111-2222", ownBoards));
+                .willReturn(new MemberSelectResponse("alias", "이름", "email@email.com", "010-1111-2222"));
 
         mockMvc.perform(get("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -282,11 +277,7 @@ class MemberControllerTest {
                                 fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 회원의 아이디"),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("조회한 회원의 이름"),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("조회한 회원의 이메일"),
-                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 회원의 핸드폰 번호"),
-                                fieldWithPath("ownBoards[].boardId").type(JsonFieldType.NUMBER).description("회원이 올린 게시물 식별 번호"),
-                                fieldWithPath("ownBoards[].title").type(JsonFieldType.STRING).description("회원이 올린 게시물 제목"),
-                                fieldWithPath("ownBoards[].content").type(JsonFieldType.STRING).description("회원이 올린 게시물 내용"),
-                                fieldWithPath("ownBoards[].createdDateTime").type(JsonFieldType.ARRAY).description("회원이 올린 게시물 생성 날짜")
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 회원의 핸드폰 번호")
                         )));
     }
 
