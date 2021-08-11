@@ -1,8 +1,8 @@
 package com.project.kodesalon.repository.member;
 
 
-import com.project.kodesalon.model.member.domain.Member;
-import com.project.kodesalon.model.member.domain.vo.Alias;
+import com.project.kodesalon.domain.member.Member;
+import com.project.kodesalon.domain.member.vo.Alias;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
