@@ -191,7 +191,6 @@ include::{snippets}/board/create/fail/invalid-content/http-response.adoc[]
 include::{snippets}/board/create/fail/null-created-date-time/response-fields.adoc[]
 include::{snippets}/board/create/fail/null-created-date-time/http-response.adoc[]
 
-
 == Select Single
 
 === Request
@@ -212,25 +211,51 @@ include::{snippets}/board/select-single/success/http-response.adoc[]
 
 ==== 최초 조회
 
-include::{snippets}/board/select-multi-first/success/request-parameters.adoc[]
-include::{snippets}/board/select-multi-first/success/http-request.adoc[]
+include::{snippets}/board/select-multi/success/first/request-parameters.adoc[]
+include::{snippets}/board/select-multi/success/first/http-request.adoc[]
 
 ==== 조회
 
-include::{snippets}/board/select-multi/success/request-parameters.adoc[]
-include::{snippets}/board/select-multi/success/http-request.adoc[]
+include::{snippets}/board/select-multi/success/not-last/request-parameters.adoc[]
+include::{snippets}/board/select-multi/success/not-last/request-parameters.adoc[]
 
 ==== *성공*
 
-include::{snippets}/board/select-multi/success/response-fields.adoc[]
+include::{snippets}/board/select-multi/success/not-last/response-fields.adoc[]
 
 ===== 마지막 게시물 미포함
 
-include::{snippets}/board/select-multi/success/http-response.adoc[]
+include::{snippets}/board/select-multi/success/not-last/http-response.adoc[]
 
 ===== 마지막 게시물 포함
 
-include::{snippets}/board/select-multi-last/success/http-response.adoc[]
+include::{snippets}/board/select-multi/success/last/http-response.adoc[]
+
+== Select My Board
+
+=== Request
+
+==== 회원 게시물 최초 조회
+
+include::{snippets}/board/select-my-board/success/first/request-parameters.adoc[]
+include::{snippets}/board/select-my-board/success/first/http-request.adoc[]
+
+==== 회원 게시물 조회
+
+include::{snippets}/board/select-my-board/success/not-last/request-parameters.adoc[]
+include::{snippets}/board/select-my-board/success/not-last/http-request.adoc[]
+
+==== *성공*
+
+include::{snippets}/board/select-my-board/success/not-last/response-fields.adoc[]
+
+===== 회원 마지막 게시물 미포함
+
+include::{snippets}/board/select-my-board/success/not-last/http-response.adoc[]
+
+===== 회원 마지막 게시물 포함
+
+include::{snippets}/board/select-my-board/success/last/http-response.adoc[]
 
 == Delete
 
@@ -296,4 +321,39 @@ include::{snippets}/board/update/fail/no-board/http-response.adoc[]
 include::{snippets}/board/update/fail/invalid-last-modified-date-time/response-fields.adoc[]
 include::{snippets}/board/update/fail/invalid-last-modified-date-time/http-response.adoc[]
 
+= Image
+
+== create
+
+=== Request
+
+include::{snippets}/image/create/success/path-parameters.adoc[]
+include::{snippets}/image/create/success/request-parts.adoc[]
+include::{snippets}/image/create/success/http-request.adoc[]
+
+==== *성공*
+
+include::{snippets}/image/create/success/http-response.adoc[]
+
+==== *실패*
+
+- 유효하지 않은 이미지 파일
+include::{snippets}/image/create/fail/invalid-file/response-fields.adoc[]
+include::{snippets}/image/create/fail/invalid-file/http-response.adoc[]
+
+== Delete
+
+=== Request
+
+include::{snippets}/image/delete/success/path-parameters.adoc[]
+include::{snippets}/image/delete/success/http-request.adoc[]
+
+==== *성공*
+
+include::{snippets}/image/delete/success/http-response.adoc[]
+
+==== *실패*
+
+include::{snippets}/image/delete/fail/not-exist-image/response-fields.adoc[]
+include::{snippets}/image/delete/fail/not-exist-image/http-response.adoc[]
 
