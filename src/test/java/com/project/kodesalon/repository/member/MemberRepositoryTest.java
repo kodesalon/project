@@ -20,8 +20,8 @@ import static org.assertj.core.api.BDDAssertions.then;
 class MemberRepositoryTest {
 
     private static final Member TEST_MEMBER = getTestMember();
-
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
+
     @Autowired
     private MemberRepository memberRepository;
 

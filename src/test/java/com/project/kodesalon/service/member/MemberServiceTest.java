@@ -102,7 +102,6 @@ class MemberServiceTest {
         softly.then(memberSelectResponse.getName()).isEqualTo("이름");
         softly.then(memberSelectResponse.getEmail()).isEqualTo("email@email.com");
         softly.then(memberSelectResponse.getPhone()).isEqualTo("010-1111-2222");
-        softly.then(memberSelectResponse.getOwnBoards().size());
         softly.assertAll();
     }
 
