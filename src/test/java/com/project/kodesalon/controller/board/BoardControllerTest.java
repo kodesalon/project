@@ -2,6 +2,7 @@ package com.project.kodesalon.controller.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.config.JacksonConfiguration;
+import com.project.kodesalon.config.argumentresolver.LoginMemberArgumentResolver;
 import com.project.kodesalon.exception.GlobalExceptionHandler;
 import com.project.kodesalon.service.board.BoardService;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
@@ -55,6 +56,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.fileUpload;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -62,7 +64,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -86,6 +87,7 @@ class BoardControllerTest {
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.standaloneSetup(boardController)
+                .setCustomArgumentResolvers(new LoginMemberArgumentResolver())
                 .apply(documentationConfiguration(restDocumentation))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
@@ -395,7 +397,7 @@ class BoardControllerTest {
                         .param("size", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("board/select-multi/success",
+                .andDo(document("board/select-multi/success/not-last",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
@@ -429,7 +431,7 @@ class BoardControllerTest {
                         .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("board/select-multi-last/success",
+                .andDo(document("board/select-multi/success/last",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
@@ -451,7 +453,7 @@ class BoardControllerTest {
 
     @Test
     @DisplayName("가장 처음으로 조회한 게시물의 경우, 조회할 게시물의 크기만 입력으로 받아 가장 최근 게시물을 조회 후, " +
-            "(제목 + 내용 + 생성 시간 + 작성자 별명 + 게시물 이미지들의 식별 번호 + 게시물 이미지들의 URL)과 마지막 게시물이라면 마지막 게시물 여부를 참으로 담은 Dto객체를 Http 200로 반환한다.")
+            "(제목 + 내용 + 생성 시간 + 작성자 별명 + 게시물 이미지들의 식별 번호 + 게시물 이미지들의 URL)과 마지막 게시물이라면 마지막 게시물 여부를 참으로 담은 Dto객체와 Http 200을 반환한다.")
     void selectBoards_at_first() throws Exception {
         List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
         List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages)));
@@ -462,7 +464,7 @@ class BoardControllerTest {
                         .param("size", "10")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("board/select-multi-first/success",
+                .andDo(document("board/select-multi/success/first",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
@@ -479,5 +481,106 @@ class BoardControllerTest {
                                 fieldWithPath("boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
                                 fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부")
                         )));
+    }
+
+    @Test
+    @DisplayName("회원 식별 번호, 마지막으로 조회한 게시물의 식별 번호, 한번에 조회할 게시물의 크기를 전달받아 회원이 올린 게시물을 조회 후, " +
+            "(제목 + 내용 + 생성 시간 + 작성자 별명 + 게시물 이미지들의 식별 번호 + 게시물 이미지들의 URL)과 마지막 게시물이 아니라면 마지막 게시물 여부를 거짓으로 담은 Dto객체를 Http 200로 반환한다.")
+    void selectMyBoards() throws Exception {
+        List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
+        BoardSelectResponse boardSelectResponse1 = new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages);
+        BoardSelectResponse boardSelectResponse2 = new BoardSelectResponse(2L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages);
+        List<BoardSelectResponse> content = Arrays.asList(boardSelectResponse1, boardSelectResponse2);
+        MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content, 1);
+        given(boardService.selectMyBoards(any(), anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
+
+        mockMvc.perform(get("/api/v1/boards/my-boards")
+                        .param("lastBoardId", "1")
+                        .param("size", "1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("board/select-my-board/success/not-last",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("lastBoardId").description("마지막으로 조회한 게시물 식별 번호"),
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")
+                        ),
+                        responseFields(
+                                fieldWithPath("boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
+                                fieldWithPath("boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                fieldWithPath("boards[].content").type(JsonFieldType.STRING).description("게시물 내용"),
+                                fieldWithPath("boards[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
+                                fieldWithPath("boards[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
+                                fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
+                                fieldWithPath("boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
+                                fieldWithPath("boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
+                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부")
+                        )));
+    }
+
+    @Test
+    @DisplayName("회원 식별 번호, 마지막으로 조회한 게시물의 식별 번호, 한번에 조회할 게시물의 크기를 전달받아 회원이 올린 게시물을 조회 후, " +
+            "(제목 + 내용 + 생성 시간 + 작성자 별명 + 게시물 이미지들의 식별 번호 + 게시물 이미지들의 URL)과 마지막 게시물이라면 마지막 게시물 여부를 참으로 담은 Dto객체를 Http 200로 반환한다.")
+    void selectMyBoards_with_last_board() throws Exception {
+        List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
+        List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(0L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages)));
+        MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content, 10);
+        given(boardService.selectMyBoards(any(), anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
+
+        mockMvc.perform(get("/api/v1/boards/my-boards")
+                        .param("lastBoardId", "1")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("board/select-my-board/success/last",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("lastBoardId").description("마지막으로 조회한 게시물 식별 번호"),
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")
+                        ),
+                        responseFields(
+                                fieldWithPath("boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
+                                fieldWithPath("boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                fieldWithPath("boards[].content").type(JsonFieldType.STRING).description("게시물 내용"),
+                                fieldWithPath("boards[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
+                                fieldWithPath("boards[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
+                                fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
+                                fieldWithPath("boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
+                                fieldWithPath("boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
+                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부")
+                        )));
+    }
+
+    @Test
+    @DisplayName("회원이 자신이 올린 게시물을 가장 처음으로 조회할 경우, 조회할 게시물의 크기만 입력으로 받아 가장 최근 게시물을 조회 후, " +
+            "(제목 + 내용 + 생성 시간 + 작성자 별명 + 게시물 이미지들의 식별 번호 + 게시물 이미지들의 URL)과 마지막 게시물이라면 마지막 게시물 여부를 참으로 담은 Dto객체와 Http 200을 반환한다.")
+    void selectMyBoard() throws Exception {
+        List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
+        List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages)));
+        MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content, 10);
+        given(boardService.selectMyBoards(any(), anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
+
+        mockMvc.perform(get("/api/v1/boards/my-boards")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("board/select-my-board/success/first",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")
+                        ),
+                        responseFields(
+                                fieldWithPath("boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
+                                fieldWithPath("boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                fieldWithPath("boards[].content").type(JsonFieldType.STRING).description("게시물 내용"),
+                                fieldWithPath("boards[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
+                                fieldWithPath("boards[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
+                                fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
+                                fieldWithPath("boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
+                                fieldWithPath("boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
+                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부"))));
     }
 }

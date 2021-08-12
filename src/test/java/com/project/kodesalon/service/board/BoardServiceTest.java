@@ -44,7 +44,6 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BoardServiceTest {
-    private static final String IMAGE_UPLOAD_URL = "localhost:8080/bucket/directory/image.jpeg";
 
     private final BoardUpdateRequest BOARD_UPDATE_REQUEST = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
 
@@ -82,7 +81,7 @@ class BoardServiceTest {
         MockMultipartFile image = new MockMultipartFile("images", "image.png", "image/png", "test".getBytes());
         List<MultipartFile> images = Arrays.asList(image, image);
         int imageSize = images.size();
-        given(s3Uploader.upload(any(MockMultipartFile.class), anyString())).willReturn(IMAGE_UPLOAD_URL);
+        given(s3Uploader.upload(any(MockMultipartFile.class), anyString())).willReturn("localhost:8080/bucket/directory/image.jpeg");
 
         boardService.save(anyLong(), boardCreateRequest, images);
 
@@ -139,7 +138,7 @@ class BoardServiceTest {
 
     @ParameterizedTest
     @CsvSource(value = {"1, false", "10, true"})
-    @DisplayName("마지막 게시물 식별 번호를 전달 받아 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
+    @DisplayName("마지막 게시물 식별 번호, 조회할 게시물 크기를 전달 받아 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
     void selectBoards(int size, boolean last) {
         List<Board> boards = Arrays.asList(board, board);
         given(board.getId()).willReturn(1L);
@@ -151,6 +150,25 @@ class BoardServiceTest {
         given(boardRepository.selectBoards(anyLong(), anyInt())).willReturn(boards);
 
         MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectBoards(10L, size);
+
+        then(multiBoardSelectResponse.getBoards()).isNotNull();
+        then(multiBoardSelectResponse.isLast()).isEqualTo(last);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"1, false", "10, true"})
+    @DisplayName("회원 식별 번호, 마지막 게시물 식별 번호, 조회할 게시물 크기 전달 받아 회원 자신이 올린 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
+    void selectMyBoard(int size, boolean last) {
+        List<Board> boards = Arrays.asList(board, board);
+        given(board.getId()).willReturn(1L);
+        given(board.getTitle()).willReturn("게시물 제목");
+        given(board.getContent()).willReturn("게시물 내용");
+        given(board.getWriter()).willReturn(member);
+        given(member.getId()).willReturn(1L);
+        given(member.getAlias()).willReturn("alias");
+        given(boardRepository.selectMyBoards(anyLong(), anyLong(), anyInt())).willReturn(boards);
+
+        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectMyBoards(1L, 10L, size);
 
         then(multiBoardSelectResponse.getBoards()).isNotNull();
         then(multiBoardSelectResponse.isLast()).isEqualTo(last);

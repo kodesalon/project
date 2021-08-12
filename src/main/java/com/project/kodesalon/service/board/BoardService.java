@@ -116,4 +116,15 @@ public class BoardService {
                     throw new EntityNotFoundException(NOT_EXIST_BOARD);
                 });
     }
+
+    public MultiBoardSelectResponse selectMyBoards(final Long memberId, final Long lastBoardId, final int size) {
+        List<Board> myBoards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
+
+        List<BoardSelectResponse> boardSelectResponses = myBoards.stream()
+                .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(),
+                        board.getWriter().getId(), board.getWriter().getAlias(), getBoardImageResponses(board)))
+                .collect(Collectors.toList());
+
+        return new MultiBoardSelectResponse(boardSelectResponses, size);
+    }
 }

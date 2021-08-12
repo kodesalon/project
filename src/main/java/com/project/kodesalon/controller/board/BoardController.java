@@ -46,7 +46,7 @@ public class BoardController {
     }
 
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<Void> delete(@Login Long memberId, @PathVariable final Long boardId, @RequestBody @Valid final BoardDeleteRequest boardDeleteRequest) {
+    public ResponseEntity<Void> delete(@Login final Long memberId, @PathVariable final Long boardId, @RequestBody @Valid final BoardDeleteRequest boardDeleteRequest) {
         boardService.delete(memberId, boardId, boardDeleteRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -67,5 +67,11 @@ public class BoardController {
     public ResponseEntity<MultiBoardSelectResponse> selectBoards(@RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final int size) {
         MultiBoardSelectResponse boardSelectMultiResponse = boardService.selectBoards(lastBoardId, size);
         return ResponseEntity.ok().body(boardSelectMultiResponse);
+    }
+
+    @GetMapping("/my-boards")
+    public ResponseEntity<MultiBoardSelectResponse> selectMyBoard(@Login final Long memberId, @RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final int size) {
+        MultiBoardSelectResponse myBoardSelectResponse = boardService.selectMyBoards(memberId, lastBoardId, size);
+        return ResponseEntity.ok().body(myBoardSelectResponse);
     }
 }
