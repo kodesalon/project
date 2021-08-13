@@ -1,5 +1,7 @@
 package com.project.kodesalon.controller.image;
 
+import com.project.kodesalon.config.argumentresolver.LoginMemberArgumentResolver;
+import com.project.kodesalon.config.interceptor.LoginInterceptor;
 import com.project.kodesalon.exception.GlobalExceptionHandler;
 import com.project.kodesalon.service.image.ImageService;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,12 +10,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.core.MethodParameter;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.ModelAndViewContainer;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import static com.project.kodesalon.exception.ErrorCode.INVALID_IMAGE;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_IMAGE;
@@ -21,6 +30,7 @@ import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
@@ -45,12 +55,26 @@ class ImageControllerTest {
     @Mock
     private ImageService imageService;
 
+    @Mock
+    private LoginInterceptor loginInterceptor;
+
+    @Mock
+    private LoginMemberArgumentResolver loginMemberArgumentResolver;
+
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation) {
         mockMvc = MockMvcBuilders.standaloneSetup(imageController)
+                .setCustomArgumentResolvers(loginMemberArgumentResolver)
+                .addInterceptors(loginInterceptor)
                 .apply(documentationConfiguration(restDocumentation))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
+
+        given(loginInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any()))
+                .willReturn(true);
+        given(loginMemberArgumentResolver.supportsParameter(any(MethodParameter.class))).willReturn(true);
+        given(loginMemberArgumentResolver.resolveArgument(any(MethodParameter.class), any(ModelAndViewContainer.class),
+                any(NativeWebRequest.class), any(WebDataBinderFactory.class))).willReturn(1L);
     }
 
     @Test

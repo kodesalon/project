@@ -3,6 +3,7 @@ package com.project.kodesalon.controller.board;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.config.argumentresolver.LoginMemberArgumentResolver;
+import com.project.kodesalon.config.interceptor.LoginInterceptor;
 import com.project.kodesalon.exception.GlobalExceptionHandler;
 import com.project.kodesalon.service.board.BoardService;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
@@ -22,6 +23,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -30,8 +32,13 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,16 +88,29 @@ class BoardControllerTest {
     @Mock
     private BoardService boardService;
 
+    @Mock
+    private LoginInterceptor loginInterceptor;
+
+    @Mock
+    private LoginMemberArgumentResolver loginMemberArgumentResolver;
+
     @Autowired
     private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation) {
         this.mockMvc = MockMvcBuilders.standaloneSetup(boardController)
-                .setCustomArgumentResolvers(new LoginMemberArgumentResolver())
+                .setCustomArgumentResolvers(loginMemberArgumentResolver)
+                .addInterceptors(loginInterceptor)
                 .apply(documentationConfiguration(restDocumentation))
                 .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
+
+        given(loginInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any()))
+                .willReturn(true);
+        given(loginMemberArgumentResolver.supportsParameter(any(MethodParameter.class))).willReturn(true);
+        given(loginMemberArgumentResolver.resolveArgument(any(MethodParameter.class), any(ModelAndViewContainer.class),
+                any(NativeWebRequest.class), any(WebDataBinderFactory.class))).willReturn(1L);
     }
 
     @Test
@@ -188,7 +208,7 @@ class BoardControllerTest {
     void delete_fail_with_invalid_authorization() throws Exception {
         willThrow(new IllegalArgumentException(NOT_AUTHORIZED_MEMBER))
                 .given(boardService)
-                .delete(any(), anyLong(), any(BoardDeleteRequest.class));
+                .delete(anyLong(), anyLong(), any(BoardDeleteRequest.class));
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -208,7 +228,7 @@ class BoardControllerTest {
     void delete_fail_with_already_deleted() throws Exception {
         willThrow(new IllegalArgumentException(ALREADY_DELETED_BOARD))
                 .given(boardService)
-                .delete(any(), anyLong(), any(BoardDeleteRequest.class));
+                .delete(anyLong(), anyLong(), any(BoardDeleteRequest.class));
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -228,7 +248,7 @@ class BoardControllerTest {
     void delete_fail_with_not_exist_board() throws Exception {
         willThrow(new EntityNotFoundException(NOT_EXIST_BOARD))
                 .given(boardService)
-                .delete(any(), anyLong(), any(BoardDeleteRequest.class));
+                .delete(anyLong(), anyLong(), any(BoardDeleteRequest.class));
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -340,7 +360,7 @@ class BoardControllerTest {
     void update_throw_exception_with_not_exist_board_id() throws Exception {
         willThrow(new EntityNotFoundException(NOT_EXIST_BOARD))
                 .given(boardService)
-                .updateBoard(any(), anyLong(), any(BoardUpdateRequest.class));
+                .updateBoard(anyLong(), anyLong(), any(BoardUpdateRequest.class));
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -458,7 +478,7 @@ class BoardControllerTest {
         List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
         List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages)));
         MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content, 10);
-        given(boardService.selectBoards(any(), anyInt())).willReturn(multiBoardSelectResponse);
+        given(boardService.selectBoards(anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards")
                         .param("size", "10")
@@ -492,7 +512,7 @@ class BoardControllerTest {
         BoardSelectResponse boardSelectResponse2 = new BoardSelectResponse(2L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages);
         List<BoardSelectResponse> content = Arrays.asList(boardSelectResponse1, boardSelectResponse2);
         MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content, 1);
-        given(boardService.selectMyBoards(any(), anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
+        given(boardService.selectMyBoards(anyLong(), anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards/my-boards")
                         .param("lastBoardId", "1")
@@ -526,7 +546,7 @@ class BoardControllerTest {
         List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
         List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(0L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages)));
         MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content, 10);
-        given(boardService.selectMyBoards(any(), anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
+        given(boardService.selectMyBoards(anyLong(), anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards/my-boards")
                         .param("lastBoardId", "1")
@@ -560,7 +580,7 @@ class BoardControllerTest {
         List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
         List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages)));
         MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content, 10);
-        given(boardService.selectMyBoards(any(), anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
+        given(boardService.selectMyBoards(anyLong(), anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards/my-boards")
                         .param("size", "10")
