@@ -2,12 +2,12 @@ package com.project.kodesalon.controller.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.config.JacksonConfiguration;
+import com.project.kodesalon.config.argumentresolver.LoginMemberArgumentResolver;
 import com.project.kodesalon.config.interceptor.LoginInterceptor;
 import com.project.kodesalon.exception.GlobalExceptionHandler;
 import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
 import com.project.kodesalon.service.dto.request.MemberCreateRequest;
 import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
-import com.project.kodesalon.service.dto.response.MemberOwnBoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MemberSelectResponse;
 import com.project.kodesalon.service.member.MemberService;
 import io.jsonwebtoken.JwtException;
@@ -21,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.MethodParameter;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -29,14 +30,14 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
 
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.exception.ErrorCode.DUPLICATED_PASSWORD;
@@ -53,6 +54,7 @@ import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -84,15 +86,18 @@ class MemberControllerTest {
     private MemberService memberService;
 
     @Mock
-    LoginInterceptor loginInterceptor;
+    private LoginInterceptor loginInterceptor;
+
+    @Mock
+    private LoginMemberArgumentResolver loginMemberArgumentResolver;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation) {
         mockMvc = MockMvcBuilders.standaloneSetup(memberController)
-                .addFilter(new CharacterEncodingFilter("UTF-8", true))
+                .setCustomArgumentResolvers(loginMemberArgumentResolver)
                 .addInterceptors(loginInterceptor)
                 .apply(documentationConfiguration(restDocumentation))
                 .setControllerAdvice(new GlobalExceptionHandler())
@@ -100,6 +105,9 @@ class MemberControllerTest {
 
         given(loginInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any()))
                 .willReturn(true);
+        given(loginMemberArgumentResolver.supportsParameter(any(MethodParameter.class))).willReturn(true);
+        given(loginMemberArgumentResolver.resolveArgument(any(MethodParameter.class), any(ModelAndViewContainer.class),
+                any(NativeWebRequest.class), any(WebDataBinderFactory.class))).willReturn(1L);
     }
 
     @Test
@@ -264,10 +272,8 @@ class MemberControllerTest {
     @Test
     @DisplayName("존재하는 회원을 조회하면 200 상태를 response 합니다.")
     void select_exist_member_response_success() throws Exception {
-        List<MemberOwnBoardSelectResponse> ownBoards =
-                Collections.singletonList(new MemberOwnBoardSelectResponse(1L, "게시물 제목", "게시물 내용", LocalDateTime.now()));
-        given(memberService.selectMember(any()))
-                .willReturn(new MemberSelectResponse("alias", "이름", "email@email.com", "010-1111-2222", ownBoards));
+        given(memberService.selectMember(anyLong()))
+                .willReturn(new MemberSelectResponse("alias", "이름", "email@email.com", "010-1111-2222"));
 
         mockMvc.perform(get("/api/v1/members")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -282,11 +288,7 @@ class MemberControllerTest {
                                 fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 회원의 아이디"),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("조회한 회원의 이름"),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("조회한 회원의 이메일"),
-                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 회원의 핸드폰 번호"),
-                                fieldWithPath("ownBoards[].boardId").type(JsonFieldType.NUMBER).description("회원이 올린 게시물 식별 번호"),
-                                fieldWithPath("ownBoards[].title").type(JsonFieldType.STRING).description("회원이 올린 게시물 제목"),
-                                fieldWithPath("ownBoards[].content").type(JsonFieldType.STRING).description("회원이 올린 게시물 내용"),
-                                fieldWithPath("ownBoards[].createdDateTime").type(JsonFieldType.ARRAY).description("회원이 올린 게시물 생성 날짜")
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 회원의 핸드폰 번호")
                         )));
     }
 
@@ -328,7 +330,7 @@ class MemberControllerTest {
         MemberChangePasswordRequest memberChangePasswordRequest = new MemberChangePasswordRequest("Password123!!", LocalDateTime.now());
         willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER))
                 .given(memberService)
-                .changePassword(any(), any(MemberChangePasswordRequest.class));
+                .changePassword(anyLong(), any(MemberChangePasswordRequest.class));
 
         mockMvc.perform(put("/api/v1/members/password")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -347,7 +349,7 @@ class MemberControllerTest {
         MemberChangePasswordRequest memberChangePasswordRequest = new MemberChangePasswordRequest("Password123!!", LocalDateTime.now());
         willThrow(new IllegalArgumentException(DUPLICATED_PASSWORD))
                 .given(memberService)
-                .changePassword(any(), any(MemberChangePasswordRequest.class));
+                .changePassword(anyLong(), any(MemberChangePasswordRequest.class));
 
         mockMvc.perform(put("/api/v1/members/password")
                         .contentType(MediaType.APPLICATION_JSON)

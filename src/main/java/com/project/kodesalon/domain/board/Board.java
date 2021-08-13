@@ -1,9 +1,9 @@
 package com.project.kodesalon.domain.board;
 
 import com.project.kodesalon.domain.BaseEntity;
-import com.project.kodesalon.domain.Image;
 import com.project.kodesalon.domain.board.vo.Content;
 import com.project.kodesalon.domain.board.vo.Title;
+import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

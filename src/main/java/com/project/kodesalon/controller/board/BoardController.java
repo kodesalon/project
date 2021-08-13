@@ -18,8 +18,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/v1/boards")
@@ -34,13 +38,15 @@ public class BoardController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> save(@Login final Long memberId, @RequestBody @Valid final BoardCreateRequest boardCreateRequest) {
-        boardService.save(memberId, boardCreateRequest);
+    public ResponseEntity<Void> save(@Login final Long memberId, @RequestBody @Valid final BoardCreateRequest boardCreateRequest,
+                                     @RequestParam(required = false) final Optional<List<MultipartFile>> images) {
+        List<MultipartFile> boardImages = images.orElseGet(ArrayList::new);
+        boardService.save(memberId, boardCreateRequest, boardImages);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<Void> delete(@Login Long memberId, @PathVariable final Long boardId, @RequestBody @Valid final BoardDeleteRequest boardDeleteRequest) {
+    public ResponseEntity<Void> delete(@Login final Long memberId, @PathVariable final Long boardId, @RequestBody @Valid final BoardDeleteRequest boardDeleteRequest) {
         boardService.delete(memberId, boardId, boardDeleteRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -61,5 +67,11 @@ public class BoardController {
     public ResponseEntity<MultiBoardSelectResponse> selectBoards(@RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final int size) {
         MultiBoardSelectResponse boardSelectMultiResponse = boardService.selectBoards(lastBoardId, size);
         return ResponseEntity.ok().body(boardSelectMultiResponse);
+    }
+
+    @GetMapping("/my-boards")
+    public ResponseEntity<MultiBoardSelectResponse> selectMyBoard(@Login final Long memberId, @RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final int size) {
+        MultiBoardSelectResponse myBoardSelectResponse = boardService.selectMyBoards(memberId, lastBoardId, size);
+        return ResponseEntity.ok().body(myBoardSelectResponse);
     }
 }

@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.time.format.DateTimeParseException;
 
 import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
-import static com.project.kodesalon.exception.ErrorCode.INVALID_MULTIPART_FILE;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_IMAGE;
 
 @Slf4j
 @RestControllerAdvice
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IOException.class)
     protected ResponseEntity<ErrorResponse> handleIOException(IOException e) {
-        log.info(INVALID_MULTIPART_FILE);
-        return ResponseEntity.badRequest().body(new ErrorResponse(INVALID_MULTIPART_FILE));
+        log.info(INVALID_IMAGE);
+        return ResponseEntity.badRequest().body(new ErrorResponse(INVALID_IMAGE));
     }
 }
