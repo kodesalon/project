@@ -6,16 +6,15 @@ import com.project.kodesalon.domain.board.vo.Title;
 import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.repository.board.BoardRepository;
-import com.project.kodesalon.service.S3Uploader;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardImageResponse;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
+import com.project.kodesalon.service.image.ImageService;
 import com.project.kodesalon.service.member.MemberService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,15 +31,12 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final MemberService memberService;
-    private final S3Uploader s3Uploader;
-    private final String directory;
+    private final ImageService imageService;
 
-    public BoardService(final BoardRepository boardRepository, final MemberService memberService, final S3Uploader s3Uploader,
-                        @Value("${cloud.aws.s3.image.directory}") final String directory) {
+    public BoardService(final BoardRepository boardRepository, final MemberService memberService, final ImageService imageService) {
         this.boardRepository = boardRepository;
         this.memberService = memberService;
-        this.s3Uploader = s3Uploader;
-        this.directory = directory;
+        this.imageService = imageService;
     }
 
     @Transactional
@@ -48,14 +44,16 @@ public class BoardService {
         Member member = memberService.findById(memberId);
         Board createdBoard = boardCreateRequest.toBoard(member);
         log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
-
-        for (MultipartFile multipartFile : boardCreateRequest.getImages()) {
-            String url = s3Uploader.upload(multipartFile, directory);
-            Image image = new Image(url, createdBoard);
-            log.info("image id : {}", image.getId());
-        }
-
+        List<String> urls = imageService.add(boardCreateRequest.getImages());
+        urls.forEach(url -> new Image(url, createdBoard));
         boardRepository.save(createdBoard);
+    }
+
+    @Transactional
+    public void addImage(final Long boardId, final List<MultipartFile> images) {
+        Board board = findById(boardId);
+        List<String> urls = imageService.add(images);
+        urls.forEach(url -> new Image(url, board));
     }
 
     @Transactional

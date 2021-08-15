@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -51,22 +50,31 @@ class ImageServiceTest {
 
     @BeforeEach
     void setUp() {
-        imageService = new ImageService(imageRepository, s3Uploader, boardService, "directory");
+        imageService = new ImageService(imageRepository, s3Uploader, "directory");
     }
 
     @Test
     @DisplayName("이미지와 게시물 식별 번호를 전달받아 이미지를 추가한다.")
-    void add() throws IOException {
-        Long boardId = 1L;
+    void add() {
         List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile);
-        given(boardService.findById(anyLong())).willReturn(board);
         given(s3Uploader.upload(any(MultipartFile.class), anyString())).willReturn(IMAGE_UPLOAD_URL);
         int imageSize = multipartFiles.size();
 
-        imageService.add(multipartFiles, boardId);
+        imageService.add(multipartFiles);
 
         verify(s3Uploader, times(imageSize)).upload(any(MultipartFile.class), anyString());
-        verify(imageRepository, times(imageSize)).save(any(Image.class));
+    }
+
+    @Test
+    @DisplayName("이미지와 게시물 식별 번호를 전달받아 이미지를 추가한다.")
+    void add2() {
+        List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile);
+        given(s3Uploader.upload(any(MultipartFile.class), anyString())).willReturn(IMAGE_UPLOAD_URL);
+        int imageSize = multipartFiles.size();
+
+        imageService.add(multipartFiles);
+
+        verify(s3Uploader, times(imageSize)).upload(any(MultipartFile.class), anyString());
     }
 
     @Test
