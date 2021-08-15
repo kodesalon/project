@@ -6,7 +6,6 @@ import com.project.kodesalon.config.argumentresolver.LoginMemberArgumentResolver
 import com.project.kodesalon.config.interceptor.LoginInterceptor;
 import com.project.kodesalon.exception.GlobalExceptionHandler;
 import com.project.kodesalon.service.board.BoardService;
-import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardImageResponse;
@@ -69,8 +68,11 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -116,72 +118,91 @@ class BoardControllerTest {
     @Test
     @DisplayName("제목, 내용, 생성 날짜, 게시물 사진을 전달받아 게시물을 생성하고 HTTP 200을 반환한다.")
     void save_success() throws Exception {
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 내용", LocalDateTime.now());
+        mockMvc.perform(fileUpload("/api/v1/boards")
+                        .param("title", "게시물 제목")
+                        .param("content", "게시물 내용")
+                        .param("createdDateTime", "2021-07-18T17:48:25")
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isOk())
+                .andDo(document("board/create/success/with-images",
+                        getDocumentRequest(),
+                        requestParameters(
+                                parameterWithName("title").description("게시물 제목"),
+                                parameterWithName("content").description("게시물 내용"),
+                                parameterWithName("createdDateTime").description("게시물 생성 시간"))));
+    }
+
+    @Test
+    @DisplayName("제목, 내용, 생성 날짜, 게시물 사진을 전달받아 게시물을 생성하고 HTTP 200을 반환한다.")
+    void save_success_with_images() throws Exception {
         MockMultipartFile images1 = new MockMultipartFile("images", "image1.png", "image/png", "test".getBytes());
         MockMultipartFile images2 = new MockMultipartFile("images", "image1.png", "image/png", "test".getBytes());
 
         mockMvc.perform(fileUpload("/api/v1/boards")
                         .file(images1)
                         .file(images2)
-                        .content(objectMapper.writeValueAsString(boardCreateRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .param("title", "게시물 제목")
+                        .param("content", "게시물 내용")
+                        .param("createdDateTime", "2021-07-18T17:48:25")
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
-                .andDo(document("board/create/success",
+                .andDo(document("board/create/success/with-images",
                         getDocumentRequest(),
-                        requestFields(
-                                fieldWithPath("title").type(JsonFieldType.STRING).description("생성할 게시물 제목"),
-                                fieldWithPath("content").type(JsonFieldType.STRING).description("생성할 게시물 내용"),
-                                fieldWithPath("createdDateTime").type(JsonFieldType.STRING).description("생성할 게시물 작성 날짜")
-                        ))
-                );
+                        requestParameters(
+                                parameterWithName("title").description("게시물 제목"),
+                                parameterWithName("content").description("게시물 내용"),
+                                parameterWithName("createdDateTime").description("게시물 생성 시간")),
+                        requestParts(
+                                partWithName("images").description("게시물 이미지"))));
     }
 
     @Test
     @DisplayName("제목이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
     void save_fail_with_invalid_title() throws Exception {
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("", "게시물 내용", LocalDateTime.now());
-        mockMvc.perform(post("/api/v1/boards")
-                        .content(objectMapper.writeValueAsString(boardCreateRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(fileUpload("/api/v1/boards")
+                        .param("title", "0123456789012345678901234567890123456")
+                        .param("content", "게시물 내용")
+                        .param("createdDateTime", "2021-07-18T17:48:25")
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/create/fail/invalid-title",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 제목에 대한 예외 코드")
-                        )));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 제목에 대한 예외 코드"))));
     }
 
     @Test
     @DisplayName("내용이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
     void save_fail_with_invalid_content() throws Exception {
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "", LocalDateTime.now());
         mockMvc.perform(post("/api/v1/boards")
-                        .content(objectMapper.writeValueAsString(boardCreateRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .param("title", "게시물 제목")
+                        .param("content", "")
+                        .param("createdDateTime", "2021-07-18T17:48:25")
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/create/fail/invalid-content",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 내용에 대한 예외 코드")
-                        )));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 내용에 대한 예외 코드"))));
     }
 
     @Test
     @DisplayName("생성 시간이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
     void save_fail_with_invalid_created_date_time() throws Exception {
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 내용", null);
         mockMvc.perform(post("/api/v1/boards")
-                        .content(objectMapper.writeValueAsString(boardCreateRequest))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .param("title", "게시물 제목")
+                        .param("content", "게시물 내용")
+                        .param("createdDateTime", "")
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/create/fail/null-created-date-time",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("게시물 생성 시간이 없을 경우에 대한 예외 코드")
-                        )));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("게시물 생성 시간이 없을 경우에 대한 예외 코드"))));
     }
 
     @Test
@@ -197,8 +218,7 @@ class BoardControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("boardId").description("삭제하려는 게시물 번호")
-                        ),
+                                parameterWithName("boardId").description("삭제하려는 게시물 번호")),
                         requestFields(
                                 fieldWithPath("deletedDateTime").type(JsonFieldType.STRING).description("삭제 시간"))));
     }
@@ -219,8 +239,7 @@ class BoardControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("권한이 없는 경우에 대한 예외 코드")
-                        )));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("권한이 없는 경우에 대한 예외 코드"))));
     }
 
     @Test
@@ -239,8 +258,7 @@ class BoardControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("이미 삭제된 게시물에 재삭제 요청에 대한 예외 코드")
-                        )));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("이미 삭제된 게시물에 재삭제 요청에 대한 예외 코드"))));
     }
 
     @Test
@@ -259,8 +277,7 @@ class BoardControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 게시물 삭제 요청에 대한 예외 코드")
-                        )));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 게시물 삭제 요청에 대한 예외 코드"))));
     }
 
     @ParameterizedTest
@@ -278,8 +295,7 @@ class BoardControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 삭제 시간에 대한 예외 코드")
-                        )));
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 삭제 시간에 대한 예외 코드"))));
     }
 
     @Test
@@ -293,8 +309,7 @@ class BoardControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("boardId").description("수정할 게시물 식별 번호")
-                        ),
+                                parameterWithName("boardId").description("수정할 게시물 식별 번호")),
                         requestFields(
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("수정할 제목"),
                                 fieldWithPath("content").type(JsonFieldType.STRING).description("수정할 내용"),
@@ -387,8 +402,7 @@ class BoardControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("boardId").description("게시물 식별 번호")
-                        ),
+                                parameterWithName("boardId").description("게시물 식별 번호")),
                         responseFields(
                                 fieldWithPath("boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("게시물 제목"),
@@ -397,8 +411,7 @@ class BoardControllerTest {
                                 fieldWithPath("writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
                                 fieldWithPath("writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
                                 fieldWithPath("boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
-                                fieldWithPath("boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL")
-                        )));
+                                fieldWithPath("boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"))));
     }
 
     @Test
@@ -422,8 +435,7 @@ class BoardControllerTest {
                         getDocumentResponse(),
                         requestParameters(
                                 parameterWithName("lastBoardId").description("마지막으로 조회한 게시물 식별 번호"),
-                                parameterWithName("size").description("한번에 조회할 게시물 크기")
-                        ),
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")),
                         responseFields(
                                 fieldWithPath("boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
                                 fieldWithPath("boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
@@ -433,8 +445,7 @@ class BoardControllerTest {
                                 fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
                                 fieldWithPath("boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
                                 fieldWithPath("boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
-                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부")
-                        )));
+                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부"))));
     }
 
     @Test
@@ -456,8 +467,7 @@ class BoardControllerTest {
                         getDocumentResponse(),
                         requestParameters(
                                 parameterWithName("lastBoardId").description("마지막으로 조회한 게시물 식별 번호"),
-                                parameterWithName("size").description("한번에 조회할 게시물 크기")
-                        ),
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")),
                         responseFields(
                                 fieldWithPath("boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
                                 fieldWithPath("boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
@@ -467,8 +477,7 @@ class BoardControllerTest {
                                 fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
                                 fieldWithPath("boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
                                 fieldWithPath("boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
-                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부")
-                        )));
+                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부"))));
     }
 
     @Test
@@ -488,8 +497,7 @@ class BoardControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
-                                parameterWithName("size").description("한번에 조회할 게시물 크기")
-                        ),
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")),
                         responseFields(
                                 fieldWithPath("boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
                                 fieldWithPath("boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
@@ -499,8 +507,7 @@ class BoardControllerTest {
                                 fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
                                 fieldWithPath("boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
                                 fieldWithPath("boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
-                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부")
-                        )));
+                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부"))));
     }
 
     @Test
@@ -524,8 +531,7 @@ class BoardControllerTest {
                         getDocumentResponse(),
                         requestParameters(
                                 parameterWithName("lastBoardId").description("마지막으로 조회한 게시물 식별 번호"),
-                                parameterWithName("size").description("한번에 조회할 게시물 크기")
-                        ),
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")),
                         responseFields(
                                 fieldWithPath("boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
                                 fieldWithPath("boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
@@ -535,8 +541,7 @@ class BoardControllerTest {
                                 fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
                                 fieldWithPath("boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
                                 fieldWithPath("boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
-                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부")
-                        )));
+                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부"))));
     }
 
     @Test
@@ -558,8 +563,7 @@ class BoardControllerTest {
                         getDocumentResponse(),
                         requestParameters(
                                 parameterWithName("lastBoardId").description("마지막으로 조회한 게시물 식별 번호"),
-                                parameterWithName("size").description("한번에 조회할 게시물 크기")
-                        ),
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")),
                         responseFields(
                                 fieldWithPath("boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
                                 fieldWithPath("boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
@@ -569,8 +573,7 @@ class BoardControllerTest {
                                 fieldWithPath("boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
                                 fieldWithPath("boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
                                 fieldWithPath("boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
-                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부")
-                        )));
+                                fieldWithPath("last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부"))));
     }
 
     @Test
@@ -590,8 +593,7 @@ class BoardControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
-                                parameterWithName("size").description("한번에 조회할 게시물 크기")
-                        ),
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")),
                         responseFields(
                                 fieldWithPath("boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
                                 fieldWithPath("boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),

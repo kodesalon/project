@@ -47,13 +47,13 @@ public class BoardService {
     }
 
     @Transactional
-    public void save(final Long memberId, final BoardCreateRequest boardCreateRequest, List<MultipartFile> images) {
+    public void save(final Long memberId, final BoardCreateRequest boardCreateRequest) {
         Member member = memberService.findById(memberId);
         Board createdBoard = boardCreateRequest.toBoard(member);
+
         boardRepository.save(createdBoard);
         log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
-
-        for (MultipartFile multipartFile : images) {
+        for (MultipartFile multipartFile : boardCreateRequest.getImages()) {
             String url = s3Uploader.upload(multipartFile, directory);
             Image image = new Image(url, createdBoard);
             imageRepository.save(image);
@@ -117,6 +117,7 @@ public class BoardService {
                 });
     }
 
+    @Transactional(readOnly = true)
     public MultiBoardSelectResponse selectMyBoards(final Long memberId, final Long lastBoardId, final int size) {
         List<Board> myBoards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
 

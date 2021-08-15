@@ -77,13 +77,13 @@ class BoardServiceTest {
     @DisplayName("컨트롤러에서 게시판 생성 요청 Dto를 전달받아 게시판을 생성한다.")
     void save() {
         given(memberService.findById(anyLong())).willReturn(member);
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 작성", LocalDateTime.now());
         MockMultipartFile image = new MockMultipartFile("images", "image.png", "image/png", "test".getBytes());
         List<MultipartFile> images = Arrays.asList(image, image);
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 작성", LocalDateTime.now(), Optional.of(images));
         int imageSize = images.size();
         given(s3Uploader.upload(any(MockMultipartFile.class), anyString())).willReturn("localhost:8080/bucket/directory/image.jpeg");
 
-        boardService.save(anyLong(), boardCreateRequest, images);
+        boardService.save(anyLong(), boardCreateRequest);
 
         verify(boardRepository, times(1)).save(any(Board.class));
         verify(s3Uploader, times(imageSize)).upload(any(MockMultipartFile.class), anyString());

@@ -8,9 +8,12 @@ import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,12 +21,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/v1/boards")
@@ -37,11 +36,15 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    @PostMapping
-    public ResponseEntity<Void> save(@Login final Long memberId, @RequestBody @Valid final BoardCreateRequest boardCreateRequest,
-                                     @RequestParam(required = false) final Optional<List<MultipartFile>> images) {
-        List<MultipartFile> boardImages = images.orElseGet(ArrayList::new);
-        boardService.save(memberId, boardCreateRequest, boardImages);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Void> save(@Login final Long memberId, @ModelAttribute @Valid final BoardCreateRequest boardCreateRequest,
+                                     BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            String code = bindingResult.getAllErrors().get(0).getDefaultMessage();
+            throw new IllegalArgumentException(code);
+        }
+
+        boardService.save(memberId, boardCreateRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
