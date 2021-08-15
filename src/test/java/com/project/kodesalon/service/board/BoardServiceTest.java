@@ -3,10 +3,8 @@ package com.project.kodesalon.service.board;
 import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.board.vo.Content;
 import com.project.kodesalon.domain.board.vo.Title;
-import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.repository.board.BoardRepository;
-import com.project.kodesalon.repository.image.ImageRepository;
 import com.project.kodesalon.service.S3Uploader;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
@@ -56,9 +54,6 @@ class BoardServiceTest {
     private BoardRepository boardRepository;
 
     @Mock
-    private ImageRepository imageRepository;
-
-    @Mock
     private S3Uploader s3Uploader;
 
     @Mock
@@ -70,7 +65,7 @@ class BoardServiceTest {
     @BeforeEach
     void setUp() {
         boardService
-                = new BoardService(boardRepository, memberService, imageRepository, s3Uploader, "static");
+                = new BoardService(boardRepository, memberService, s3Uploader, "static");
     }
 
     @Test
@@ -87,7 +82,6 @@ class BoardServiceTest {
 
         verify(boardRepository, times(1)).save(any(Board.class));
         verify(s3Uploader, times(imageSize)).upload(any(MockMultipartFile.class), anyString());
-        verify(imageRepository, times(imageSize)).save(any(Image.class));
     }
 
     @Test

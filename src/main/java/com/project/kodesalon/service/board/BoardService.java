@@ -6,7 +6,6 @@ import com.project.kodesalon.domain.board.vo.Title;
 import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.repository.board.BoardRepository;
-import com.project.kodesalon.repository.image.ImageRepository;
 import com.project.kodesalon.service.S3Uploader;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
@@ -33,15 +32,13 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final MemberService memberService;
-    private final ImageRepository imageRepository;
     private final S3Uploader s3Uploader;
     private final String directory;
 
-    public BoardService(final BoardRepository boardRepository, final MemberService memberService, final ImageRepository imageRepository, final S3Uploader s3Uploader,
+    public BoardService(final BoardRepository boardRepository, final MemberService memberService, final S3Uploader s3Uploader,
                         @Value("${cloud.aws.s3.image.directory}") final String directory) {
         this.boardRepository = boardRepository;
         this.memberService = memberService;
-        this.imageRepository = imageRepository;
         this.s3Uploader = s3Uploader;
         this.directory = directory;
     }
@@ -50,15 +47,15 @@ public class BoardService {
     public void save(final Long memberId, final BoardCreateRequest boardCreateRequest) {
         Member member = memberService.findById(memberId);
         Board createdBoard = boardCreateRequest.toBoard(member);
-
-        boardRepository.save(createdBoard);
         log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
+
         for (MultipartFile multipartFile : boardCreateRequest.getImages()) {
             String url = s3Uploader.upload(multipartFile, directory);
             Image image = new Image(url, createdBoard);
-            imageRepository.save(image);
             log.info("image id : {}", image.getId());
         }
+
+        boardRepository.save(createdBoard);
     }
 
     @Transactional
