@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.project.kodesalon.config.S3MockConfiguration;
 import io.findify.s3mock.S3Mock;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,11 @@ class S3UploaderTest {
         s3Mock.start();
         amazonS3.createBucket("testbucket");
         s3Uploader = new S3Uploader(amazonS3, "testbucket");
+    }
+
+    @AfterEach
+    void tearDown() {
+        s3Mock.stop();
     }
 
     @Test

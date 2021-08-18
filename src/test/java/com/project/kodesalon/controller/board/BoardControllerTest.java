@@ -160,7 +160,7 @@ class BoardControllerTest {
     @DisplayName("제목이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
     void save_fail_with_invalid_title() throws Exception {
         mockMvc.perform(fileUpload("/api/v1/boards")
-                        .param("title", "0123456789012345678901234567890123456")
+                        .param("title", "")
                         .param("content", "게시물 내용")
                         .param("createdDateTime", "2021-07-18T17:48:25")
                         .contentType(MediaType.MULTIPART_FORM_DATA))

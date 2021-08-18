@@ -10,7 +10,6 @@ import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -37,13 +36,7 @@ public class BoardController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> save(@Login final Long memberId, @ModelAttribute @Valid final BoardCreateRequest boardCreateRequest,
-                                     BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String code = bindingResult.getAllErrors().get(0).getDefaultMessage();
-            throw new IllegalArgumentException(code);
-        }
-
+    public ResponseEntity<Void> save(@Login final Long memberId, @ModelAttribute @Valid final BoardCreateRequest boardCreateRequest) {
         boardService.save(memberId, boardCreateRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
