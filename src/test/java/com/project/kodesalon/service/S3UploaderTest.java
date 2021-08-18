@@ -34,6 +34,8 @@ class S3UploaderTest {
 
     @BeforeEach
     void setUp() {
+        s3Mock.start();
+        amazonS3.createBucket("testbucket");
         s3Uploader = new S3Uploader(amazonS3, "testbucket");
     }
 

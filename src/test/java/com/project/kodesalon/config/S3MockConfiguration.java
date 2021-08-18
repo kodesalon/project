@@ -8,7 +8,6 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import io.findify.s3mock.S3Mock;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 
 @TestConfiguration
 public class S3MockConfiguration {
@@ -19,21 +18,14 @@ public class S3MockConfiguration {
     }
 
     @Bean
-    @Primary
-    public AmazonS3 amazonS3(final S3Mock s3Mock) {
-        s3Mock.start();
-
+    public AmazonS3 amazonS3() {
         AwsClientBuilder.EndpointConfiguration endpoint = new AwsClientBuilder.EndpointConfiguration("http://localhost:8001", "ap-northeast-2");
 
-        AmazonS3 client = AmazonS3ClientBuilder
+        return AmazonS3ClientBuilder
                 .standard()
                 .withPathStyleAccessEnabled(true)
                 .withEndpointConfiguration(endpoint)
                 .withCredentials(new AWSStaticCredentialsProvider(new AnonymousAWSCredentials()))
                 .build();
-
-        client.createBucket("testbucket");
-
-        return client;
     }
 }
