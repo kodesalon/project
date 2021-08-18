@@ -25,8 +25,8 @@ public class ImageController {
         this.boardService = boardService;
     }
 
-    @PostMapping("/{boardId}")
-    public ResponseEntity<Void> add(@RequestParam final List<MultipartFile> images, @PathVariable final Long boardId) {
+    @PostMapping
+    public ResponseEntity<Void> add(@RequestParam final List<MultipartFile> images, @RequestParam final Long boardId) {
         boardService.addImage(boardId, images);
         return ResponseEntity.ok().build();
     }

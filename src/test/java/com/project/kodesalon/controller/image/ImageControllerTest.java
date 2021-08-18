@@ -42,6 +42,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -84,15 +85,17 @@ class ImageControllerTest {
     @Test
     @DisplayName("저장할 여러 개의 이미지 파일을 인자로 요청받아, 이미지를 추가하고 HTTP 200 상태를 반환한다.")
     void save() throws Exception {
-        Long boardId = 1L;
         MockMultipartFile image1 = new MockMultipartFile("images", "image1.png", "image/png", "<<png data>>".getBytes());
         MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
 
-        mockMvc.perform(fileUpload("/api/v1/images/{boardId}", boardId).file(image1).file(image2))
+        mockMvc.perform(fileUpload("/api/v1/images")
+                        .file(image1)
+                        .file(image2)
+                        .param("boardId", "1"))
                 .andExpect(status().isOk())
                 .andDo(document("image/create/success",
                         getDocumentRequest(),
-                        pathParameters(
+                        requestParameters(
                                 parameterWithName("boardId").description("이미지를 추가할 게시물의 식별 번호")
                         ),
                         requestParts(
@@ -102,12 +105,14 @@ class ImageControllerTest {
     @Test
     @DisplayName("추가하려는 이미지가 유효하지 않을 경우, HTTP 400 상태와 예외 코드를 반환한다.")
     void save_throw_exception_with_invalid_image() throws Exception {
-        Long boardId = 1L;
         MockMultipartFile image1 = new MockMultipartFile("images", "image1.png", "image/png", "<<png data>>".getBytes());
         MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
         willThrow(new IllegalArgumentException(INVALID_IMAGE)).given(boardService).addImage(any(), anyList());
 
-        mockMvc.perform(fileUpload("/api/v1/images/{boardId}", boardId).file(image1).file(image2))
+        mockMvc.perform(fileUpload("/api/v1/images")
+                        .file(image1)
+                        .file(image2)
+                        .param("boardId", "1"))
                 .andExpect(status().isBadRequest())
                 .andDo(document("image/create/fail/invalid-file",
                         getDocumentResponse(),
