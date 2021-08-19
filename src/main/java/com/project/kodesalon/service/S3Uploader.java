@@ -21,6 +21,7 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_IMAGE;
 @Component
 public class S3Uploader {
 
+    private static final String IMAGE_RESOURCE_DIRECTORY = "src/main/resources/images/";
     private static final String DIRECTORY_DELIMITER = "/";
     private static final char EXTENSION_SEPARATOR = '.';
 
@@ -42,37 +43,11 @@ public class S3Uploader {
         return upload(file, directoryName);
     }
 
-    private String upload(final File file, final String directoryName) {
-        String uuid = UUID.randomUUID().toString();
-        String extension = extractExtension(file.getName());
-        String fileName = directoryName + DIRECTORY_DELIMITER + uuid + extension;
-        String imageUrl = putS3(file, fileName);
-        removeNewFile(file);
-        return imageUrl;
-    }
-
-    private String extractExtension(final String file) {
-        int index = file.lastIndexOf(EXTENSION_SEPARATOR);
-        return file.substring(index);
-    }
-
-    private String putS3(final File file, final String fileName) {
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, file).withCannedAcl(CannedAccessControlList.PublicRead));
-        return amazonS3.getUrl(bucket, fileName).toString();
-    }
-
-    private void removeNewFile(final File targetFile) {
-        if (targetFile.delete()) {
-            log.info("{} 파일이 삭제되었습니다.", targetFile.getName());
-            return;
-        }
-
-        log.info("{} 파일이 삭제되지 못했습니다.", targetFile.getName());
-    }
-
     private Optional<File> convert(final MultipartFile file) {
-        File convertFile = new File(file.getOriginalFilename());
-
+        String uuid = UUID.randomUUID().toString();
+        String extension = extractExtension(file.getOriginalFilename());
+        String fileName = IMAGE_RESOURCE_DIRECTORY + uuid + extension;
+        File convertFile = new File(fileName);
         return createFile(file, convertFile);
     }
 
@@ -99,6 +74,32 @@ public class S3Uploader {
         } catch (IOException e) {
             throw new IllegalArgumentException(INVALID_IMAGE);
         }
+    }
+
+    private String upload(final File file, final String directoryName) {
+        String fileName = directoryName + DIRECTORY_DELIMITER + file.getName();
+        String imageUrl = putS3(file, fileName);
+        removeNewFile(file);
+        return imageUrl;
+    }
+
+    private String extractExtension(final String file) {
+        int index = file.lastIndexOf(EXTENSION_SEPARATOR);
+        return file.substring(index);
+    }
+
+    private String putS3(final File file, final String fileName) {
+        amazonS3.putObject(new PutObjectRequest(bucket, fileName, file).withCannedAcl(CannedAccessControlList.PublicRead));
+        return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
+    private void removeNewFile(final File targetFile) {
+        if (targetFile.delete()) {
+            log.info("{} 파일이 삭제되었습니다.", targetFile.getName());
+            return;
+        }
+
+        log.info("{} 파일이 삭제되지 못했습니다.", targetFile.getName());
     }
 
     public void delete(final String key) {
