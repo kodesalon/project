@@ -1,10 +1,8 @@
 package com.project.kodesalon.service.image;
 
-import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.repository.image.ImageRepository;
 import com.project.kodesalon.service.S3Uploader;
-import com.project.kodesalon.service.board.BoardService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_IMAGES_SIZE;
+import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -34,13 +34,7 @@ class ImageServiceTest {
     private ImageRepository imageRepository;
 
     @Mock
-    private BoardService boardService;
-
-    @Mock
     private S3Uploader s3Uploader;
-
-    @Mock
-    private Board board;
 
     @Mock
     private MultipartFile multipartFile;
@@ -54,7 +48,7 @@ class ImageServiceTest {
     }
 
     @Test
-    @DisplayName("이미지와 게시물 식별 번호를 전달받아 이미지를 추가한다.")
+    @DisplayName("이미지를 전달받아 이미지를 추가한다.")
     void add() {
         List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile);
         given(s3Uploader.upload(any(MultipartFile.class), anyString())).willReturn(IMAGE_UPLOAD_URL);
@@ -66,15 +60,12 @@ class ImageServiceTest {
     }
 
     @Test
-    @DisplayName("이미지와 게시물 식별 번호를 전달받아 이미지를 추가한다.")
-    void add2() {
-        List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile);
-        given(s3Uploader.upload(any(MultipartFile.class), anyString())).willReturn(IMAGE_UPLOAD_URL);
-        int imageSize = multipartFiles.size();
-
-        imageService.add(multipartFiles);
-
-        verify(s3Uploader, times(imageSize)).upload(any(MultipartFile.class), anyString());
+    @DisplayName("이미지의 개수가 6개 이상이면 예외를 발생시킨다")
+    void add_throws_exception_with_invalid_board_images_size() {
+        List<MultipartFile> multipartFiles
+                = Arrays.asList(multipartFile, multipartFile, multipartFile, multipartFile, multipartFile, multipartFile);
+        thenIllegalArgumentException().isThrownBy(() -> imageService.add(multipartFiles))
+                .withMessage(INVALID_BOARD_IMAGES_SIZE);
     }
 
     @Test

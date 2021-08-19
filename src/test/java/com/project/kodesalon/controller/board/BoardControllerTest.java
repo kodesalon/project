@@ -135,12 +135,14 @@ class BoardControllerTest {
     @Test
     @DisplayName("제목, 내용, 생성 날짜, 게시물 사진을 전달받아 게시물을 생성하고 HTTP 200을 반환한다.")
     void save_success_with_images() throws Exception {
-        MockMultipartFile images1 = new MockMultipartFile("images", "image1.png", "image/png", "test".getBytes());
-        MockMultipartFile images2 = new MockMultipartFile("images", "image1.png", "image/png", "test".getBytes());
+        MockMultipartFile images = new MockMultipartFile("images", "image1.png", "image/png", "test".getBytes());
 
         mockMvc.perform(fileUpload("/api/v1/boards")
-                        .file(images1)
-                        .file(images2)
+                        .file(images)
+                        .file(images)
+                        .file(images)
+                        .file(images)
+                        .file(images)
                         .param("title", "게시물 제목")
                         .param("content", "게시물 내용")
                         .param("createdDateTime", "2021-07-18T17:48:25")
@@ -191,7 +193,7 @@ class BoardControllerTest {
     @Test
     @DisplayName("생성 시간이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
     void save_fail_with_invalid_created_date_time() throws Exception {
-        mockMvc.perform(post("/api/v1/boards")
+        mockMvc.perform(fileUpload("/api/v1/boards")
                         .param("title", "게시물 제목")
                         .param("content", "게시물 내용")
                         .param("createdDateTime", "")
@@ -203,6 +205,31 @@ class BoardControllerTest {
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("게시물 생성 시간이 없을 경우에 대한 예외 코드"))));
+    }
+
+    @Test
+    @DisplayName("6개 이상의 게시물 이미지 생성을 요청할 경우 HTTP 400과 예외 코드를 반환한다.")
+    void save_fail_with_invalid_board_images_size() throws Exception {
+        MockMultipartFile images = new MockMultipartFile("images", "image1.png", "image/png", "test".getBytes());
+
+        mockMvc.perform(fileUpload("/api/v1/boards")
+                        .file(images)
+                        .file(images)
+                        .file(images)
+                        .file(images)
+                        .file(images)
+                        .file(images)
+                        .param("title", "게시물 제목")
+                        .param("content", "게시물 내용")
+                        .param("createdDateTime", "")
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andDo(document("board/create/fail/invalid-board-images-size",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").type(JsonFieldType.STRING).description("게시물 이미지 초과 생성에 대한 예외 코드"))));
     }
 
     @Test

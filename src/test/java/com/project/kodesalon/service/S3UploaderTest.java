@@ -14,8 +14,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.io.IOException;
-
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
@@ -47,7 +45,7 @@ class S3UploaderTest {
 
     @Test
     @DisplayName("S3 bucket에 이미지 파일을 저장하고, 저장한 경로를 반환한다.")
-    void upload() throws IOException {
+    void upload() {
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
 
         String result = s3Uploader.upload(mockMultipartFile, "static");
@@ -57,7 +55,7 @@ class S3UploaderTest {
 
     @Test
     @DisplayName("S3 bucket에 있는 이미지 파일을 삭제한다.")
-    void delete() throws IOException {
+    void delete() {
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
         String fileUrl = s3Uploader.upload(mockMultipartFile, "static");
         int indexOfFileName = fileUrl.lastIndexOf("/");

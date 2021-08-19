@@ -11,10 +11,14 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_IMAGES_SIZE;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_IMAGE;
 
 @Service
 public class ImageService {
+
+    public static final int MAX_BOARD_IMAGES_SIZE = 5;
+
     private final ImageRepository imageRepository;
     private final S3Uploader s3Uploader;
     private final String directory;
@@ -28,6 +32,10 @@ public class ImageService {
 
     @Transactional
     public List<String> add(final List<MultipartFile> multipartFiles) {
+        if (multipartFiles.size() > MAX_BOARD_IMAGES_SIZE) {
+            throw new IllegalArgumentException(INVALID_BOARD_IMAGES_SIZE);
+        }
+
         return multipartFiles.stream()
                 .map(multipartFile -> s3Uploader.upload(multipartFile, directory))
                 .collect(Collectors.toList());

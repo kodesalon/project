@@ -32,6 +32,7 @@ import static com.project.kodesalon.exception.ErrorCode.NOT_AUTHORIZED_MEMBER;
 @Where(clause = "deleted = 'false'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board extends BaseEntity {
+    public static final int BOARD_IMAGE_LENGTH_MAX_BOUND = 5;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

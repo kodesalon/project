@@ -8,16 +8,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_CONTENT;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_IMAGES_SIZE;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_TITLE;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
@@ -115,5 +120,20 @@ class BoardCreateRequestTest {
         then(constraintViolations)
                 .extracting(ConstraintViolation::getMessage)
                 .contains(INVALID_DATE_TIME);
+    }
+
+    @Test
+    @DisplayName("등록하려는 이미지가 6개 이상일 경우 에외가 발생한다.")
+    void create_throw_exception_with_invalid_board_images_size() {
+        MultipartFile image = new MockMultipartFile("images", "test".getBytes());
+        List<MultipartFile> images = Arrays.asList(image, image, image, image, image, image);
+
+        BoardCreateRequest boardCreateRequest
+                = new BoardCreateRequest("게시물 제목", "게시물 내용", LocalDateTime.now(), Optional.of(images));
+        Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
+
+        then(constraintViolations)
+                .extracting(ConstraintViolation::getMessage)
+                .contains(INVALID_BOARD_IMAGES_SIZE);
     }
 }
