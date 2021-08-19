@@ -80,13 +80,22 @@ public class BoardService {
     @Transactional(readOnly = true)
     public MultiBoardSelectResponse selectBoards(final Long lastBoardId, final int size) {
         List<Board> boards = boardRepository.selectBoards(lastBoardId, size);
+        List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(boards);
+        return new MultiBoardSelectResponse(boardSelectResponses, size);
+    }
 
-        List<BoardSelectResponse> boardSelectResponses = boards.stream()
+    @Transactional(readOnly = true)
+    public MultiBoardSelectResponse selectMyBoards(final Long memberId, final Long lastBoardId, final int size) {
+        List<Board> myBoards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
+        List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(myBoards);
+        return new MultiBoardSelectResponse(boardSelectResponses, size);
+    }
+
+    private List<BoardSelectResponse> mapToBoardSelectResponse(final List<Board> boards) {
+        return boards.stream()
                 .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(),
                         board.getWriter().getId(), board.getWriter().getAlias(), getBoardImageResponses(board)))
                 .collect(Collectors.toList());
-
-        return new MultiBoardSelectResponse(boardSelectResponses, size);
     }
 
     private List<BoardImageResponse> getBoardImageResponses(final Board board) {
@@ -110,17 +119,5 @@ public class BoardService {
                     log.info("존재하지 않는 게시물 식별자 boardId : {}", boardId);
                     throw new EntityNotFoundException(NOT_EXIST_BOARD);
                 });
-    }
-
-    @Transactional(readOnly = true)
-    public MultiBoardSelectResponse selectMyBoards(final Long memberId, final Long lastBoardId, final int size) {
-        List<Board> myBoards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
-
-        List<BoardSelectResponse> boardSelectResponses = myBoards.stream()
-                .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(),
-                        board.getWriter().getId(), board.getWriter().getAlias(), getBoardImageResponses(board)))
-                .collect(Collectors.toList());
-
-        return new MultiBoardSelectResponse(boardSelectResponses, size);
     }
 }
