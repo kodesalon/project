@@ -109,7 +109,7 @@ public class S3Uploader {
             return;
         }
 
-        log.info("{} 파일이 삭제되지 못했습니다.", targetFile.getName());
+        log.warn("{} 파일이 삭제되지 못했습니다.", targetFile.getName());
     }
 
     public void delete(final String key) {
