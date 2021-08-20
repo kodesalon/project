@@ -14,6 +14,7 @@ public class BoardTest {
     private final String title = "게시물 제목";
     private final String content = "게시물 내용";
     private final String writer = "작성자";
+
     private final LocalDateTime createdDateTime = LocalDateTime.now();
     private final Board TEST_BOARD = new Board(new Title(title), new Content(content), writer, createdDateTime);
 
