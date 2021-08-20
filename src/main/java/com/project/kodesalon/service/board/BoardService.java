@@ -43,10 +43,10 @@ public class BoardService {
     public void save(final Long memberId, final BoardCreateRequest boardCreateRequest) {
         Member member = memberService.findById(memberId);
         Board createdBoard = boardCreateRequest.toBoard(member);
-        log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
         List<String> urls = imageService.add(boardCreateRequest.getImages());
         urls.forEach(url -> new Image(url, createdBoard));
         boardRepository.save(createdBoard);
+        log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
     }
 
     @Transactional
