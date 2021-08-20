@@ -35,8 +35,8 @@ class BoardCreateRequestTest {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
-    private final BoardCreateRequest boardCreateRequest
-            = new BoardCreateRequest("게시물 제목", "게시물 내용", LocalDateTime.parse("2021-06-01T23:59:59.999999"), Optional.empty());
+    private final BoardCreateRequest boardCreateRequest =
+            new BoardCreateRequest("게시물 제목", "게시물 내용", LocalDateTime.parse("2021-06-01T23:59:59.999999"), Optional.empty());
 
     @Test
     @DisplayName("게시물의 제목, 내용, 생성 시간, 삭제 여부를 반환한다.")
