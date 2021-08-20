@@ -1,5 +1,6 @@
 package com.project.kodesalon.service;
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
@@ -51,6 +52,11 @@ public class S3Uploader {
         return createFile(file, convertFile);
     }
 
+    private String extractExtension(final String file) {
+        int index = file.lastIndexOf(EXTENSION_SEPARATOR);
+        return file.substring(index);
+    }
+
     private Optional<File> createFile(final MultipartFile file, final File convertFile) {
         if (canConvertNewFile(convertFile)) {
             createFileOutputStream(file, convertFile);
@@ -72,25 +78,29 @@ public class S3Uploader {
         try (FileOutputStream fos = new FileOutputStream(convertFile)) {
             fos.write(file.getBytes());
         } catch (IOException e) {
+            removeNewFile(convertFile);
             throw new IllegalArgumentException(INVALID_IMAGE);
         }
     }
 
     private String upload(final File file, final String directoryName) {
         String fileName = directoryName + DIRECTORY_DELIMITER + file.getName();
-        String imageUrl = putS3(file, fileName);
-        removeNewFile(file);
-        return imageUrl;
+        return getS3Url(file, fileName);
     }
 
-    private String extractExtension(final String file) {
-        int index = file.lastIndexOf(EXTENSION_SEPARATOR);
-        return file.substring(index);
-    }
-
-    private String putS3(final File file, final String fileName) {
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, file).withCannedAcl(CannedAccessControlList.PublicRead));
+    private String getS3Url(final File file, final String fileName) {
+        putS3(file, fileName);
         return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
+    private void putS3(final File file, final String fileName) {
+        try {
+            amazonS3.putObject(new PutObjectRequest(bucket, fileName, file).withCannedAcl(CannedAccessControlList.PublicRead));
+        } catch (AmazonClientException e) {
+            throw new IllegalStateException(INVALID_IMAGE);
+        } finally {
+            removeNewFile(file);
+        }
     }
 
     private void removeNewFile(final File targetFile) {
