@@ -93,6 +93,16 @@ class BoardServiceTest {
     }
 
     @Test
+    @DisplayName("게시물 식별자와 이미지를 요청받아 게시물 이미지를 추가한다.")
+    void addImage() {
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        MockMultipartFile image = new MockMultipartFile("images", "image.png", "image/png", "test".getBytes());
+        List<MultipartFile> images = Arrays.asList(image, image);
+        boardService.addImage(1L, images);
+        verify(imageService, times(1)).add(anyList());
+    }
+
+    @Test
     @DisplayName("컨트롤러에서 게시판 수정 요청 Dto를 전달받아 게시판을 수정한다.")
     void update() {
         given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
