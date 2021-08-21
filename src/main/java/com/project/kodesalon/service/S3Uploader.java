@@ -13,8 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.project.kodesalon.exception.ErrorCode.INVALID_IMAGE;
 
@@ -32,6 +34,12 @@ public class S3Uploader {
     public S3Uploader(final AmazonS3 amazonS3, @Value("${cloud.aws.s3.image.bucket}") final String bucket) {
         this.amazonS3 = amazonS3;
         this.bucket = bucket;
+    }
+
+    public List<String> upload(final List<MultipartFile> multipartFiles, final String directoryName) {
+        return multipartFiles.stream()
+                .map(multipartFile -> upload(multipartFile, directoryName))
+                .collect(Collectors.toList());
     }
 
     public String upload(final MultipartFile multipartFile, final String directoryName) {
@@ -110,6 +118,10 @@ public class S3Uploader {
         }
 
         log.warn("{} 파일이 삭제되지 못했습니다.", targetFile.getName());
+    }
+
+    public void delete(final List<String> keys) {
+        keys.forEach(this::delete);
     }
 
     public void delete(final String key) {

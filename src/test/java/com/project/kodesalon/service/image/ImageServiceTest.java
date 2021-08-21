@@ -17,7 +17,7 @@ import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_IMAGES_SIZE;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -51,12 +51,11 @@ class ImageServiceTest {
     @DisplayName("이미지를 전달받아 이미지를 추가한다.")
     void add() {
         List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile);
-        given(s3Uploader.upload(any(MultipartFile.class), anyString())).willReturn(IMAGE_UPLOAD_URL);
-        int imageSize = multipartFiles.size();
+        given(s3Uploader.upload(anyList(), anyString())).willReturn(Arrays.asList(IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL));
 
         imageService.add(multipartFiles);
 
-        verify(s3Uploader, times(imageSize)).upload(any(MultipartFile.class), anyString());
+        verify(s3Uploader, times(1)).upload(anyList(), anyString());
     }
 
     @Test

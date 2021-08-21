@@ -13,6 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
@@ -46,26 +50,31 @@ class S3UploaderTest {
     @Test
     @DisplayName("S3 bucket에 이미지 파일을 저장하고, 저장한 경로를 반환한다.")
     void upload() {
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
+        MultipartFile multipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
+        List<MultipartFile> multipartFiles = Collections.singletonList(multipartFile);
 
-        String result = s3Uploader.upload(mockMultipartFile, "static");
+        List<String> results = s3Uploader.upload(multipartFiles, "static");
 
-        then(result).isNotNull();
+        then(results).isNotNull();
     }
 
     @Test
-    @DisplayName("S3 bucket에 있는 이미지 파일을 삭제한다.")
+    @DisplayName("s3 bucket에 있는 이미지 파일을 삭제한다.")
     void delete() {
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
-        String fileUrl = s3Uploader.upload(mockMultipartFile, "static");
-        int indexOfFileName = fileUrl.lastIndexOf("/");
-        String fileUrlWithoutFileName = fileUrl.substring(0, indexOfFileName);
-        int indexOfDirectoryName = fileUrlWithoutFileName.lastIndexOf("/");
-        String key = fileUrl.substring(indexOfDirectoryName + 1);
+        MultipartFile multipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
+        String fileUrl = s3Uploader.upload(multipartFile, "static");
+        String key = extractKey(fileUrl);
 
         s3Uploader.delete(key);
 
         thenThrownBy(() -> amazonS3.getObject(BUCKET, key))
                 .isInstanceOf(AmazonS3Exception.class);
+    }
+
+    private String extractKey(String url) {
+        int indexOfImageName = url.lastIndexOf("/");
+        String urlWithoutImageName = url.substring(0, indexOfImageName);
+        int indexOfDirectoryName = urlWithoutImageName.lastIndexOf("/");
+        return url.substring(indexOfDirectoryName + 1);
     }
 }

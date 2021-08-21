@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_IMAGES_SIZE;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_IMAGE;
@@ -36,9 +35,7 @@ public class ImageService {
             throw new IllegalArgumentException(INVALID_BOARD_IMAGES_SIZE);
         }
 
-        return multipartFiles.stream()
-                .map(multipartFile -> s3Uploader.upload(multipartFile, directory))
-                .collect(Collectors.toList());
+        return s3Uploader.upload(multipartFiles, directory);
     }
 
     @Transactional
