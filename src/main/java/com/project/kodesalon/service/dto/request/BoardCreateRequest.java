@@ -1,16 +1,20 @@
 package com.project.kodesalon.service.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.member.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static com.project.kodesalon.domain.board.vo.Content.CONTENT_LENGTH_MAX_BOUND;
 import static com.project.kodesalon.domain.board.vo.Title.TITLE_LENGTH_MAX_BOUND;
@@ -31,13 +35,16 @@ public class BoardCreateRequest {
     private String content;
 
     @NotNull(message = INVALID_DATE_TIME)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdDateTime;
 
-    public BoardCreateRequest(String title, String content, LocalDateTime createdDateTime) {
+    private List<MultipartFile> images;
+
+    public BoardCreateRequest(final String title, final String content, final LocalDateTime createdDateTime, final Optional<List<MultipartFile>> images) {
         this.title = title;
         this.content = content;
         this.createdDateTime = createdDateTime;
+        this.images = images.orElseGet(ArrayList::new);
     }
 
     public Board toBoard(Member writer) {

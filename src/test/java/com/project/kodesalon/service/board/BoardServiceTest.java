@@ -3,16 +3,14 @@ package com.project.kodesalon.service.board;
 import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.board.vo.Content;
 import com.project.kodesalon.domain.board.vo.Title;
-import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.repository.board.BoardRepository;
-import com.project.kodesalon.repository.image.ImageRepository;
-import com.project.kodesalon.service.S3Uploader;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
+import com.project.kodesalon.service.image.ImageService;
 import com.project.kodesalon.service.member.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,8 +34,8 @@ import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -56,10 +54,7 @@ class BoardServiceTest {
     private BoardRepository boardRepository;
 
     @Mock
-    private ImageRepository imageRepository;
-
-    @Mock
-    private S3Uploader s3Uploader;
+    private ImageService imageService;
 
     @Mock
     private Member member;
@@ -69,25 +64,21 @@ class BoardServiceTest {
 
     @BeforeEach
     void setUp() {
-        boardService
-                = new BoardService(boardRepository, memberService, imageRepository, s3Uploader, "static");
+        boardService = new BoardService(boardRepository, memberService, imageService);
     }
 
     @Test
     @DisplayName("컨트롤러에서 게시판 생성 요청 Dto를 전달받아 게시판을 생성한다.")
     void save() {
         given(memberService.findById(anyLong())).willReturn(member);
-        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 작성", LocalDateTime.now());
         MockMultipartFile image = new MockMultipartFile("images", "image.png", "image/png", "test".getBytes());
         List<MultipartFile> images = Arrays.asList(image, image);
-        int imageSize = images.size();
-        given(s3Uploader.upload(any(MockMultipartFile.class), anyString())).willReturn("localhost:8080/bucket/directory/image.jpeg");
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 작성", LocalDateTime.now(), Optional.of(images));
 
-        boardService.save(anyLong(), boardCreateRequest, images);
+        boardService.save(anyLong(), boardCreateRequest);
 
         verify(boardRepository, times(1)).save(any(Board.class));
-        verify(s3Uploader, times(imageSize)).upload(any(MockMultipartFile.class), anyString());
-        verify(imageRepository, times(imageSize)).save(any(Image.class));
+        verify(imageService, times(1)).add(anyList());
     }
 
     @Test

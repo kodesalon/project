@@ -3,6 +3,7 @@ package com.project.kodesalon.controller.image;
 import com.project.kodesalon.config.argumentresolver.LoginMemberArgumentResolver;
 import com.project.kodesalon.config.interceptor.LoginInterceptor;
 import com.project.kodesalon.exception.GlobalExceptionHandler;
+import com.project.kodesalon.service.board.BoardService;
 import com.project.kodesalon.service.image.ImageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -56,6 +57,9 @@ class ImageControllerTest {
     private ImageService imageService;
 
     @Mock
+    private BoardService boardService;
+
+    @Mock
     private LoginInterceptor loginInterceptor;
 
     @Mock
@@ -101,7 +105,7 @@ class ImageControllerTest {
         Long boardId = 1L;
         MockMultipartFile image1 = new MockMultipartFile("images", "image1.png", "image/png", "<<png data>>".getBytes());
         MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
-        willThrow(new IllegalArgumentException(INVALID_IMAGE)).given(imageService).add(anyList(), any());
+        willThrow(new IllegalArgumentException(INVALID_IMAGE)).given(boardService).addImage(any(), anyList());
 
         mockMvc.perform(fileUpload("/api/v1/images/{boardId}", boardId).file(image1).file(image2))
                 .andExpect(status().isBadRequest())
