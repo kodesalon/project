@@ -4,7 +4,6 @@ import com.project.kodesalon.config.argumentresolver.LoginMemberArgumentResolver
 import com.project.kodesalon.config.interceptor.LoginInterceptor;
 import com.project.kodesalon.exception.GlobalExceptionHandler;
 import com.project.kodesalon.service.board.BoardService;
-import com.project.kodesalon.service.image.ImageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -53,9 +52,6 @@ class ImageControllerTest {
 
     @InjectMocks
     private ImageController imageController;
-
-    @Mock
-    private ImageService imageService;
 
     @Mock
     private BoardService boardService;
@@ -107,7 +103,7 @@ class ImageControllerTest {
     void save_throw_exception_with_invalid_image() throws Exception {
         MockMultipartFile image1 = new MockMultipartFile("images", "image1.png", "image/png", "<<png data>>".getBytes());
         MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
-        willThrow(new IllegalArgumentException(INVALID_IMAGE)).given(boardService).addImage(any(), anyList());
+        willThrow(new IllegalArgumentException(INVALID_IMAGE)).given(boardService).addImages(any(), anyList());
 
         mockMvc.perform(fileUpload("/api/v1/images")
                         .file(image1)
@@ -138,7 +134,7 @@ class ImageControllerTest {
     void remove_throw_exception_with_not_exist_image() throws Exception {
         Object[] deleteIds = {1L, 2L, 3L};
 
-        willThrow(new IllegalArgumentException(NOT_EXIST_IMAGE)).given(imageService).delete(anyList());
+        willThrow(new IllegalArgumentException(NOT_EXIST_IMAGE)).given(boardService).deleteImages(anyList());
 
         mockMvc.perform(delete("/api/v1/images/{imageIds}", deleteIds))
                 .andExpect(status().isBadRequest())

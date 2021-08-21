@@ -120,10 +120,6 @@ public class S3Uploader {
         log.warn("{} 파일이 삭제되지 못했습니다.", targetFile.getName());
     }
 
-    public void delete(final List<String> keys) {
-        keys.forEach(this::delete);
-    }
-
     public void delete(final String key) {
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, key));
     }

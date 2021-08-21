@@ -1,7 +1,6 @@
 package com.project.kodesalon.controller.image;
 
 import com.project.kodesalon.service.board.BoardService;
-import com.project.kodesalon.service.image.ImageService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,23 +16,21 @@ import java.util.List;
 @RequestMapping("/api/v1/images")
 public class ImageController {
 
-    private final ImageService imageService;
     private final BoardService boardService;
 
-    public ImageController(final ImageService imageService, final BoardService boardService) {
-        this.imageService = imageService;
+    public ImageController(final BoardService boardService) {
         this.boardService = boardService;
     }
 
     @PostMapping
     public ResponseEntity<Void> add(@RequestParam final List<MultipartFile> images, @RequestParam final Long boardId) {
-        boardService.addImage(boardId, images);
+        boardService.addImages(boardId, images);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{imageIds}")
     public ResponseEntity<Void> delete(@PathVariable final List<Long> imageIds) {
-        imageService.delete(imageIds);
+        boardService.deleteImages(imageIds);
         return ResponseEntity.ok().build();
     }
 }

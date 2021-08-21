@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_IMAGES_SIZE;
 import static com.project.kodesalon.exception.ErrorCode.NOT_AUTHORIZED_MEMBER;
 
 @Slf4j
@@ -112,6 +113,10 @@ public class Board extends BaseEntity {
     }
 
     public void addImage(final Image image) {
+        if (images.size() >= BOARD_IMAGE_LENGTH_MAX_BOUND) {
+            throw new IllegalArgumentException(INVALID_BOARD_IMAGES_SIZE);
+        }
+
         images.add(image);
     }
 }
