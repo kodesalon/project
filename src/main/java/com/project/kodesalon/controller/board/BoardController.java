@@ -55,8 +55,8 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/add-images")
-    public ResponseEntity<Void> addImages(@RequestParam final List<MultipartFile> images, @RequestParam final Long boardId) {
+    @PostMapping("/add-images/{boardId}")
+    public ResponseEntity<Void> addImages(@RequestParam final List<MultipartFile> images, @PathVariable final Long boardId) {
         boardService.addImages(boardId, images);
         return ResponseEntity.ok().build();
     }

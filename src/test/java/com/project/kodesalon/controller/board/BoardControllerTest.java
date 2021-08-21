@@ -128,7 +128,7 @@ class BoardControllerTest {
                         .param("createdDateTime", "2021-07-18T17:48:25")
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
-                .andDo(document("board/create/success/with-images",
+                .andDo(document("board/create/success/without-images",
                         getDocumentRequest(),
                         requestParameters(
                                 parameterWithName("title").description("게시물 제목"),
@@ -242,14 +242,14 @@ class BoardControllerTest {
         MockMultipartFile image1 = new MockMultipartFile("images", "image1.png", "image/png", "<<png data>>".getBytes());
         MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
 
-        mockMvc.perform(fileUpload("/api/v1/boards/add-images")
+        mockMvc.perform(fileUpload("/api/v1/boards/add-images/{boardId}", 1)
                         .file(image1)
                         .file(image2)
                         .param("boardId", "1"))
                 .andExpect(status().isOk())
                 .andDo(document("board/add-images/success",
                         getDocumentRequest(),
-                        requestParameters(
+                        pathParameters(
                                 parameterWithName("boardId").description("이미지를 추가할 게시물의 식별 번호")
                         ),
                         requestParts(
@@ -263,10 +263,9 @@ class BoardControllerTest {
         MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
         willThrow(new IllegalArgumentException(INVALID_IMAGE)).given(boardService).addImages(any(), anyList());
 
-        mockMvc.perform(fileUpload("/api/v1/boards/add-images")
+        mockMvc.perform(fileUpload("/api/v1/boards/add-images/{boardId}", 1)
                         .file(image1)
-                        .file(image2)
-                        .param("boardId", "1"))
+                        .file(image2))
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/add-images/fail/invalid-file",
                         getDocumentResponse(),
@@ -281,10 +280,9 @@ class BoardControllerTest {
         MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
         willThrow(new IllegalArgumentException(INVALID_BOARD_IMAGES_SIZE)).given(boardService).addImages(any(), anyList());
 
-        mockMvc.perform(fileUpload("/api/v1/boards/add-images")
+        mockMvc.perform(fileUpload("/api/v1/boards/add-images/{boardId}", 1)
                         .file(image1)
-                        .file(image2)
-                        .param("boardId", "1"))
+                        .file(image2))
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/add-images/fail/invalid-image-size",
                         getDocumentResponse(),
