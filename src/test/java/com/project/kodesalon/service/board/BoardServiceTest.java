@@ -162,7 +162,7 @@ class BoardServiceTest {
         given(imageRepository.findById(anyLong())).willReturn(Optional.of(image));
         given(image.getKey()).willReturn("/static/imageUrl.png");
 
-        boardService.deleteImages(imageIds);
+        boardService.removeImages(imageIds);
 
         verify(imageRepository, times(imageSize)).delete(image);
         verify(s3Uploader, times(imageSize)).delete(anyString());

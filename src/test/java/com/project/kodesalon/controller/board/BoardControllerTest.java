@@ -46,14 +46,18 @@ import java.util.List;
 
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_DELETED_BOARD;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_CONTENT;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_IMAGES_SIZE;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_TITLE;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_IMAGE;
 import static com.project.kodesalon.exception.ErrorCode.NOT_AUTHORIZED_MEMBER;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_BOARD;
+import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_IMAGE;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
@@ -230,6 +234,90 @@ class BoardControllerTest {
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("게시물 이미지 초과 생성에 대한 예외 코드"))));
+    }
+
+    @Test
+    @DisplayName("저장할 여러 개의 이미지 파일을 인자로 요청받아, 이미지를 추가하고 HTTP 200 상태를 반환한다.")
+    void save() throws Exception {
+        MockMultipartFile image1 = new MockMultipartFile("images", "image1.png", "image/png", "<<png data>>".getBytes());
+        MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
+
+        mockMvc.perform(fileUpload("/api/v1/boards/add-images")
+                        .file(image1)
+                        .file(image2)
+                        .param("boardId", "1"))
+                .andExpect(status().isOk())
+                .andDo(document("board/add-images/success",
+                        getDocumentRequest(),
+                        requestParameters(
+                                parameterWithName("boardId").description("이미지를 추가할 게시물의 식별 번호")
+                        ),
+                        requestParts(
+                                partWithName("images").description("추가 하려는 이미지"))));
+    }
+
+    @Test
+    @DisplayName("추가하려는 이미지가 유효하지 않을 경우, HTTP 400 상태와 예외 코드를 반환한다.")
+    void save_throw_exception_with_invalid_image() throws Exception {
+        MockMultipartFile image1 = new MockMultipartFile("images", "image1.png", "image/png", "<<png data>>".getBytes());
+        MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
+        willThrow(new IllegalArgumentException(INVALID_IMAGE)).given(boardService).addImages(any(), anyList());
+
+        mockMvc.perform(fileUpload("/api/v1/boards/add-images")
+                        .file(image1)
+                        .file(image2)
+                        .param("boardId", "1"))
+                .andExpect(status().isBadRequest())
+                .andDo(document("board/add-images/fail/invalid-file",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").description("유효하지 않은 이미지 파일에 대한 예외 코드"))));
+    }
+
+    @Test
+    @DisplayName("이미지 추가시 게시물의 이미지가 6이상일 경우, HTTP 400 상태와 예외 코드를 반환한다.")
+    void save_throw_exception_with_invalid_image_size() throws Exception {
+        MockMultipartFile image1 = new MockMultipartFile("images", "image1.png", "image/png", "<<png data>>".getBytes());
+        MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
+        willThrow(new IllegalArgumentException(INVALID_BOARD_IMAGES_SIZE)).given(boardService).addImages(any(), anyList());
+
+        mockMvc.perform(fileUpload("/api/v1/boards/add-images")
+                        .file(image1)
+                        .file(image2)
+                        .param("boardId", "1"))
+                .andExpect(status().isBadRequest())
+                .andDo(document("board/add-images/fail/invalid-image-size",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").description("게시물 이미지 초과에 대한 예외 코드"))));
+    }
+
+    @Test
+    @DisplayName("삭제할 이미지의 리스트를 요청받아, 이미지를 삭제하고 HTTP 200 상태를 반환한다.")
+    void remove() throws Exception {
+        Object[] deleteIds = {1L, 2L, 3L};
+
+        mockMvc.perform(delete("/api/v1/boards/remove-images/{imageIds}", deleteIds))
+                .andExpect(status().isOk())
+                .andDo(document("board/remove-images/success",
+                        getDocumentRequest(),
+                        pathParameters(
+                                parameterWithName("imageIds").description("삭제할 이미지 리스트"))));
+    }
+
+    @Test
+    @DisplayName("삭제할 이미지가 존재하지 않을 경우, 이미지를 삭제하고 HTTP 400 상태와 예외 코드를 반환한다.")
+    void remove_throw_exception_with_not_exist_image() throws Exception {
+        Object[] deleteIds = {1L, 2L, 3L};
+
+        willThrow(new IllegalArgumentException(NOT_EXIST_IMAGE)).given(boardService).removeImages(anyList());
+
+        mockMvc.perform(delete("/api/v1/boards/remove-images/{imageIds}", deleteIds))
+                .andExpect(status().isBadRequest())
+                .andDo(document("board/remove-images/fail/not-exist-image",
+                        getDocumentResponse(),
+                        responseFields(
+                                fieldWithPath("code").description("존재하지 않는 이미지에 대한 예외 코드"))));
     }
 
     @Test

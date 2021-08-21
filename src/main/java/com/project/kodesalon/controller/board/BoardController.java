@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/boards")
@@ -50,6 +52,18 @@ public class BoardController {
     @PutMapping("/{boardId}")
     public ResponseEntity<Void> updateBoard(@Login final Long memberId, @PathVariable final Long boardId, @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
         boardService.updateBoard(memberId, boardId, boardUpdateRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/add-images")
+    public ResponseEntity<Void> addImages(@RequestParam final List<MultipartFile> images, @RequestParam final Long boardId) {
+        boardService.addImages(boardId, images);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/remove-images/{imageIds}")
+    public ResponseEntity<Void> removeImages(@PathVariable final List<Long> imageIds) {
+        boardService.removeImages(imageIds);
         return ResponseEntity.ok().build();
     }
 

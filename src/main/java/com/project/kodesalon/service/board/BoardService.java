@@ -66,7 +66,7 @@ public class BoardService {
     }
 
     @Transactional
-    public void deleteImages(final List<Long> imageIds) {
+    public void removeImages(final List<Long> imageIds) {
         imageIds.stream()
                 .map(this::findBoardImageById)
                 .forEach(image -> {
