@@ -167,15 +167,23 @@ include::{snippets}/member/delete/fail/null-deleted-date-time/http-response.adoc
 = Board
 == Save
 === Request
-include::{snippets}/board/create/success/request-fields.adoc[]
-include::{snippets}/board/create/success/http-request.adoc[]
+include::{snippets}/board/create/success/with-images/request-parameters.adoc[]
+include::{snippets}/board/create/success/with-images/request-parts.adoc[]
+
+==== *With Images*
+
+include::{snippets}/board/create/success/with-images/http-request.adoc[]
+
+==== *Without Images*
+
+include::{snippets}/board/create/success/without-images/http-request.adoc[]
 
 === Response
 
 ==== *성공*
 
 include::{snippets}/board/create/fail/invalid-title/response-fields.adoc[]
-include::{snippets}/board/create/success/http-response.adoc[]
+include::{snippets}/board/create/success/with-images/http-response.adoc[]
 
 ==== *실패*
 
@@ -321,39 +329,37 @@ include::{snippets}/board/update/fail/no-board/http-response.adoc[]
 include::{snippets}/board/update/fail/invalid-last-modified-date-time/response-fields.adoc[]
 include::{snippets}/board/update/fail/invalid-last-modified-date-time/http-response.adoc[]
 
-= Image
-
-== create
+== Add Images
 
 === Request
 
-include::{snippets}/image/create/success/path-parameters.adoc[]
-include::{snippets}/image/create/success/request-parts.adoc[]
-include::{snippets}/image/create/success/http-request.adoc[]
+include::{snippets}/board/add-images/success/path-parameters.adoc[]
+include::{snippets}/board/add-images/success/request-parts.adoc[]
+include::{snippets}/board/add-images/success/http-request.adoc[]
 
 ==== *성공*
 
-include::{snippets}/image/create/success/http-response.adoc[]
+include::{snippets}/board/add-images/success/http-response.adoc[]
 
 ==== *실패*
 
 - 유효하지 않은 이미지 파일
-include::{snippets}/image/create/fail/invalid-file/response-fields.adoc[]
-include::{snippets}/image/create/fail/invalid-file/http-response.adoc[]
+include::{snippets}/board/add-images/fail/invalid-file/response-fields.adoc[]
+include::{snippets}/board/add-images/fail/invalid-file/http-response.adoc[]
 
-== Delete
+== Remove Images
 
 === Request
 
-include::{snippets}/image/delete/success/path-parameters.adoc[]
-include::{snippets}/image/delete/success/http-request.adoc[]
+include::{snippets}/board/remove-images/success/path-parameters.adoc[]
+include::{snippets}/board/remove-images/success/http-request.adoc[]
 
 ==== *성공*
 
-include::{snippets}/image/delete/success/http-response.adoc[]
+include::{snippets}/board/remove-images/success/http-response.adoc[]
 
 ==== *실패*
 
-include::{snippets}/image/delete/fail/not-exist-image/response-fields.adoc[]
-include::{snippets}/image/delete/fail/not-exist-image/http-response.adoc[]
+include::{snippets}/board/remove-images/fail/not-exist-image/response-fields.adoc[]
+include::{snippets}/board/remove-images/fail/not-exist-image/http-response.adoc[]
 

@@ -11,14 +11,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.project.kodesalon.domain.board.Board.BOARD_IMAGE_LENGTH_MAX_BOUND;
 import static com.project.kodesalon.domain.board.vo.Content.CONTENT_LENGTH_MAX_BOUND;
 import static com.project.kodesalon.domain.board.vo.Title.TITLE_LENGTH_MAX_BOUND;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_CONTENT;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_IMAGES_SIZE;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_TITLE;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 
@@ -38,6 +41,7 @@ public class BoardCreateRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createdDateTime;
 
+    @Size(max = BOARD_IMAGE_LENGTH_MAX_BOUND, message = INVALID_BOARD_IMAGES_SIZE)
     private List<MultipartFile> images;
 
     public BoardCreateRequest(final String title, final String content, final LocalDateTime createdDateTime, final Optional<List<MultipartFile>> images) {

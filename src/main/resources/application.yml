@@ -39,6 +39,10 @@ spring:
     refreshExpirationWeeks: 2
   main:
     allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 15MB
 
 cloud:
   aws:
