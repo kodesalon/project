@@ -39,6 +39,8 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
         @UniqueConstraint(name = "member_unique_constraint", columnNames = {"alias"})})
 public class Member extends BaseEntity {
 
+    private static final String PHONE_EMPTY = "";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -65,12 +67,22 @@ public class Member extends BaseEntity {
     @Column(nullable = false, name = "deleted", columnDefinition = "boolean default false")
     private boolean deleted;
 
-    public Member(final String alias, final String password, final String name, final String email, final String phone, LocalDateTime createdDateTime) {
+    public Member(final String alias, final String password, final String name, final String email, final String phone, final LocalDateTime createdDateTime) {
         this.alias = new Alias(alias);
         this.password = new Password(password);
         this.email = new Email(email);
         this.name = new Name(name);
-        this.phone = new Phone(phone);
+        this.createdDateTime = createdDateTime;
+        if (phone != null) {
+            this.phone = new Phone(phone);
+        }
+    }
+
+    public Member(final String alias, final String password, final String name, final String email, final LocalDateTime createdDateTime) {
+        this.alias = new Alias(alias);
+        this.password = new Password(password);
+        this.email = new Email(email);
+        this.name = new Name(name);
         this.createdDateTime = createdDateTime;
     }
 
@@ -95,6 +107,10 @@ public class Member extends BaseEntity {
     }
 
     public String getPhone() {
+        if (phone == null) {
+            return PHONE_EMPTY;
+        }
+
         return phone.value();
     }
 

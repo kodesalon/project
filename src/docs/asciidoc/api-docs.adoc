@@ -72,6 +72,7 @@ include::{snippets}/auth/refreshtoken/fail/http-response.adoc[]
 === Request
 include::{snippets}/member/join/success/request-fields.adoc[]
 include::{snippets}/member/join/success/http-request.adoc[]
+include::{snippets}/member/join/success-phone-null/http-request.adoc[]
 
 === Response
 
@@ -100,10 +101,6 @@ include::{snippets}/member/join/fail/invalid-email/http-response.adoc[]
 - 유효하지 않은 Name
 include::{snippets}/member/join/fail/invalid-name/response-fields.adoc[]
 include::{snippets}/member/join/fail/invalid-name/http-response.adoc[]
-
-- 유효하지 않은 Phone
-include::{snippets}/member/join/fail/invalid-phone/response-fields.adoc[]
-include::{snippets}/member/join/fail/invalid-phone/http-response.adoc[]
 
 - 유효하지 않은 가입 시간
 include::{snippets}/member/join/fail/null-created-date-time/response-fields.adoc[]

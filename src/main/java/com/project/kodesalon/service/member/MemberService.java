@@ -47,7 +47,7 @@ public class MemberService {
                 });
     }
 
-    private Member saveMember(MemberCreateRequest memberCreateRequest) {
+    private Member saveMember(final MemberCreateRequest memberCreateRequest) {
         try {
             return memberRepository.save(memberCreateRequest.toMember());
         } catch (DataIntegrityViolationException e) {
