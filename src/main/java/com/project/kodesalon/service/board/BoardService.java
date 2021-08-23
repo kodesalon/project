@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_BOARD;
-import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_IMAGE;
 
 @Slf4j
 @Service
@@ -67,18 +66,12 @@ public class BoardService {
 
     @Transactional
     public void removeImages(final List<Long> imageIds) {
-        imageIds.stream()
-                .map(this::findBoardImageById)
-                .forEach(image -> {
-                    String key = image.getKey();
-                    s3Uploader.delete(key);
-                    imageRepository.delete(image);
-                });
-    }
-
-    private Image findBoardImageById(final Long imageId) {
-        return imageRepository.findById(imageId)
-                .orElseThrow(() -> new EntityNotFoundException(NOT_EXIST_IMAGE));
+        List<Image> images = imageRepository.findAllById(imageIds);
+        List<String> imageKeys = images.stream()
+                .map(Image::getKey)
+                .collect(Collectors.toList());
+        imageRepository.deleteAll(images);
+        s3Uploader.delete(imageKeys);
     }
 
     @Transactional

@@ -15,8 +15,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
@@ -69,6 +71,24 @@ class S3UploaderTest {
 
         thenThrownBy(() -> amazonS3.getObject(BUCKET, key))
                 .isInstanceOf(AmazonS3Exception.class);
+    }
+
+
+    @Test
+    @DisplayName("s3 bucket에 있는 여러 개의 이미지 파일을 삭제한다.")
+    void delete_multiple_images() {
+        MultipartFile multipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
+        List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile, multipartFile);
+        List<String> imageUrls = s3Uploader.upload(multipartFiles, "static");
+        List<String> imageKeys = imageUrls.stream()
+                .map(this::extractKey)
+                .collect(Collectors.toList());
+
+        s3Uploader.delete(imageKeys);
+
+        imageKeys.forEach(imageKey ->
+                thenThrownBy(() -> amazonS3.getObject(BUCKET, imageKey))
+                        .isInstanceOf(AmazonS3Exception.class));
     }
 
     private String extractKey(String url) {
