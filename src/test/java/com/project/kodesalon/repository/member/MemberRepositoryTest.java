@@ -10,16 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
-import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @DataJpaTest
 class MemberRepositoryTest {
 
-    private static final Member TEST_MEMBER = getTestMember();
+    private static final Member member = new Member("alias", "Password!!123", "이름", "email@email.com",
+            "010-1234-4444", LocalDateTime.of(2021, 7, 16, 23, 59));
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
 
     @Autowired
@@ -27,7 +28,7 @@ class MemberRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        memberRepository.save(TEST_MEMBER);
+        memberRepository.save(member);
     }
 
     @Test
@@ -36,12 +37,12 @@ class MemberRepositoryTest {
         Member savedMember = memberRepository.findMemberByAlias(new Alias("alias"))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS));
 
-        softly.then(savedMember.getAlias()).isEqualTo(TEST_MEMBER.getAlias());
-        softly.then(savedMember.getPassword()).isEqualTo(TEST_MEMBER.getPassword());
-        softly.then(savedMember.getName()).isEqualTo(TEST_MEMBER.getName());
-        softly.then(savedMember.getEmail()).isEqualTo(TEST_MEMBER.getEmail());
-        softly.then(savedMember.getPhone()).isEqualTo(TEST_MEMBER.getPhone());
-        softly.then(savedMember.getCreatedDateTime()).isEqualTo(TEST_MEMBER.getCreatedDateTime());
+        softly.then(savedMember.getAlias()).isEqualTo(member.getAlias());
+        softly.then(savedMember.getPassword()).isEqualTo(member.getPassword());
+        softly.then(savedMember.getName()).isEqualTo(member.getName());
+        softly.then(savedMember.getEmail()).isEqualTo(member.getEmail());
+        softly.then(savedMember.getPhone()).isEqualTo(member.getPhone());
+        softly.then(savedMember.getCreatedDateTime()).isEqualTo(member.getCreatedDateTime());
         softly.assertAll();
     }
 

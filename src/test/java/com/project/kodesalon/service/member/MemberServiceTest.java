@@ -23,24 +23,20 @@ import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER;
-import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
 
-    private static final Member TEST_MEMBER = getTestMember();
-
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
-    private final MemberCreateRequest memberCreateRequest
-            = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
     @InjectMocks
     private MemberService memberService;
@@ -55,8 +51,10 @@ class MemberServiceTest {
     private Member member;
 
     @Test
-    @DisplayName("회원가입이 성공하면 repository에 회원 객체를 저장합니다.")
+    @DisplayName("회원가입이 성공하면 DB에 회원 객체를 저장합니다.")
     void join() {
+        MemberCreateRequest memberCreateRequest
+                = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1234-5678", LocalDateTime.now());
         given(member.getId()).willReturn(1L);
         given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.empty());
         given(memberRepository.save(any(Member.class))).willReturn(member);
@@ -70,6 +68,8 @@ class MemberServiceTest {
     @Test
     @DisplayName("회원가입 시 이미 존재하는 아이디(Alias)일 경우, 예외 메세지를 반환합니다.")
     void join_throw_exception_with_already_exist() {
+        MemberCreateRequest memberCreateRequest
+                = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1234-5678", LocalDateTime.now());
         given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.of(member));
 
         thenThrownBy(() -> memberService.join(memberCreateRequest))
@@ -80,6 +80,8 @@ class MemberServiceTest {
     @Test
     @DisplayName("회원 가입시 삭제한 회원이 다시 가입했을 경우에는 예외를 발생시킵니다")
     void join_throw_exception_with_left_alias_after_delete() {
+        MemberCreateRequest memberCreateRequest
+                = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1234-5678", LocalDateTime.now());
         given(memberRepository.save(any(Member.class))).willThrow(new DataIntegrityViolationException(ALREADY_EXIST_MEMBER_ALIAS));
 
         thenThrownBy(() -> memberService.join(memberCreateRequest))
@@ -151,11 +153,12 @@ class MemberServiceTest {
     @Test
     @DisplayName("회원 식별 번호를 인자로 받아, 해당 식별 번호를 가진 회원을 DB로 조회한다.")
     void findById() {
-        given(memberRepository.findById(anyLong())).willReturn(Optional.of(TEST_MEMBER));
+        Member member = mock(Member.class);
+        given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
 
-        Member member = memberService.findById(anyLong());
+        Member foundMember = memberService.findById(anyLong());
 
-        then(member).isEqualTo(TEST_MEMBER);
+        then(foundMember).isEqualTo(foundMember);
     }
 
     @Test
