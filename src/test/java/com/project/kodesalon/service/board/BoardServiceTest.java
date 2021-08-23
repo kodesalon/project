@@ -3,14 +3,16 @@ package com.project.kodesalon.service.board;
 import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.board.vo.Content;
 import com.project.kodesalon.domain.board.vo.Title;
+import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.repository.board.BoardRepository;
+import com.project.kodesalon.repository.image.ImageRepository;
+import com.project.kodesalon.service.S3Uploader;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
-import com.project.kodesalon.service.image.ImageService;
 import com.project.kodesalon.service.member.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,20 +31,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_IMAGES_SIZE;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_BOARD;
 import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class BoardServiceTest {
 
+    private static final String IMAGE_UPLOAD_URL = "localhost:8080/bucket/directory/image.jpeg";
     private final BoardUpdateRequest BOARD_UPDATE_REQUEST = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
 
     private BoardService boardService;
@@ -54,7 +61,10 @@ class BoardServiceTest {
     private BoardRepository boardRepository;
 
     @Mock
-    private ImageService imageService;
+    private ImageRepository imageRepository;
+
+    @Mock
+    private S3Uploader s3Uploader;
 
     @Mock
     private Member member;
@@ -62,9 +72,15 @@ class BoardServiceTest {
     @Mock
     private Board board;
 
+    @Mock
+    private Image image;
+
+    @Mock
+    MultipartFile multipartFile;
+
     @BeforeEach
     void setUp() {
-        boardService = new BoardService(boardRepository, memberService, imageService);
+        boardService = new BoardService(boardRepository, memberService, imageRepository, s3Uploader, "images");
     }
 
     @Test
@@ -78,7 +94,7 @@ class BoardServiceTest {
         boardService.save(anyLong(), boardCreateRequest);
 
         verify(boardRepository, times(1)).save(any(Board.class));
-        verify(imageService, times(1)).add(anyList());
+        verify(s3Uploader, times(1)).upload(anyList(), anyString());
     }
 
     @Test
@@ -93,6 +109,16 @@ class BoardServiceTest {
     }
 
     @Test
+    @DisplayName("게시물 식별자와 이미지를 요청받아 게시물 이미지를 추가한다.")
+    void addImage() {
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        MockMultipartFile image = new MockMultipartFile("images", "image.png", "image/png", "test".getBytes());
+        List<MultipartFile> images = Arrays.asList(image, image);
+        boardService.addImages(1L, images);
+        verify(s3Uploader, times(1)).upload(anyList(), anyString());
+    }
+
+    @Test
     @DisplayName("컨트롤러에서 게시판 수정 요청 Dto를 전달받아 게시판을 수정한다.")
     void update() {
         given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
@@ -102,6 +128,44 @@ class BoardServiceTest {
 
         verify(boardRepository, times(1)).findById(anyLong());
         verify(board, times(1)).updateTitleAndContent(anyLong(), any(Title.class), any(Content.class), any(LocalDateTime.class));
+    }
+
+    @Test
+    @DisplayName("이미지를 전달받아 이미지를 추가한다.")
+    void addImages() {
+        List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile);
+        given(s3Uploader.upload(anyList(), anyString())).willReturn(Arrays.asList(IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL));
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        boardService.addImages(1L, multipartFiles);
+
+        verify(s3Uploader, times(1)).upload(anyList(), anyString());
+    }
+
+    @Test
+    @DisplayName("이미지의 개수가 6개 이상이면 예외를 발생시킨다")
+    void add_throws_exception_with_invalid_board_images_size() {
+        List<MultipartFile> multipartFiles
+                = Arrays.asList(multipartFile, multipartFile, multipartFile, multipartFile, multipartFile, multipartFile);
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        given(s3Uploader.upload(anyList(), anyString())).willReturn(Arrays.asList(IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL,
+                IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL));
+        willThrow(new IllegalArgumentException(INVALID_BOARD_IMAGES_SIZE)).given(board).addImage(any(Image.class));
+        thenIllegalArgumentException().isThrownBy(() -> boardService.addImages(1L, multipartFiles))
+                .withMessage(INVALID_BOARD_IMAGES_SIZE);
+    }
+
+    @Test
+    @DisplayName("삭제하려는 게시물의 식별 번호를 입력 받아 이미지를 삭제한다.")
+    void deleteImages() {
+        List<Long> imageIds = Arrays.asList(1L, 2L);
+        int imageSize = imageIds.size();
+        given(imageRepository.findById(anyLong())).willReturn(Optional.of(image));
+        given(image.getKey()).willReturn("/static/imageUrl.png");
+
+        boardService.removeImages(imageIds);
+
+        verify(imageRepository, times(imageSize)).delete(image);
+        verify(s3Uploader, times(imageSize)).delete(anyString());
     }
 
     @Test

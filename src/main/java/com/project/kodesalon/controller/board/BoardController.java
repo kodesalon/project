@@ -10,7 +10,6 @@ import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/boards")
@@ -37,13 +38,7 @@ public class BoardController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<Void> save(@Login final Long memberId, @ModelAttribute @Valid final BoardCreateRequest boardCreateRequest,
-                                     BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String code = bindingResult.getAllErrors().get(0).getDefaultMessage();
-            throw new IllegalArgumentException(code);
-        }
-
+    public ResponseEntity<Void> save(@Login final Long memberId, @ModelAttribute @Valid final BoardCreateRequest boardCreateRequest) {
         boardService.save(memberId, boardCreateRequest);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -57,6 +52,18 @@ public class BoardController {
     @PutMapping("/{boardId}")
     public ResponseEntity<Void> updateBoard(@Login final Long memberId, @PathVariable final Long boardId, @RequestBody @Valid final BoardUpdateRequest boardUpdateRequest) {
         boardService.updateBoard(memberId, boardId, boardUpdateRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/add-images/{boardId}")
+    public ResponseEntity<Void> addImages(@RequestParam final List<MultipartFile> images, @PathVariable final Long boardId) {
+        boardService.addImages(boardId, images);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/remove-images/{imageIds}")
+    public ResponseEntity<Void> removeImages(@PathVariable final List<Long> imageIds) {
+        boardService.removeImages(imageIds);
         return ResponseEntity.ok().build();
     }
 
