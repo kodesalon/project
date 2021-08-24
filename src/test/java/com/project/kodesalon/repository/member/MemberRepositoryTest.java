@@ -1,5 +1,6 @@
 package com.project.kodesalon.repository.member;
 
+import com.project.kodesalon.config.QuerydslTestConfiguration;
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.domain.member.vo.Alias;
 import org.assertj.core.api.BDDSoftAssertions;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
@@ -17,6 +19,7 @@ import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @DataJpaTest
+@Import(QuerydslTestConfiguration.class)
 class MemberRepositoryTest {
 
     private static final Member TEST_MEMBER = getTestMember();

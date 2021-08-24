@@ -1,5 +1,6 @@
 package com.project.kodesalon.repository.board;
 
+import com.project.kodesalon.config.QuerydslTestConfiguration;
 import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -22,6 +24,7 @@ import java.util.UUID;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @DataJpaTest
+@Import(QuerydslTestConfiguration.class)
 class BoardRepositoryTest {
 
     @Autowired
@@ -134,9 +137,9 @@ class BoardRepositoryTest {
         entityManager.flush();
         entityManager.clear();
 
-        List<Board> boards = boardRepository.selectBoards(Long.MAX_VALUE, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(Long.MAX_VALUE - 1, boardToBeSelectedAtOnce);
 
-        softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce - 1);
+        softly.then(boards.size()).isEqualTo(9);
         boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue());
         softly.assertAll();
     }

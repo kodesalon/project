@@ -1,40 +1,62 @@
 package com.project.kodesalon.repository.board;
 
 import com.project.kodesalon.domain.board.Board;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.Optional;
+
+import static com.project.kodesalon.domain.board.QBoard.board;
 
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     private static final int CHECK_NEXT_BOARD = 1;
 
-    private final EntityManager entityManager;
+    private final JPAQueryFactory jpaQueryFactory;
 
-    public BoardRepositoryImpl(final EntityManager entityManager) {
-        this.entityManager = entityManager;
+    public BoardRepositoryImpl(final JPAQueryFactory jpaQueryFactory) {
+        this.jpaQueryFactory = jpaQueryFactory;
     }
 
     @Override
     public List<Board> selectBoards(final Long lastBoardId, final int size) {
-        String query = "select distinct b from Board b left outer join fetch b.images " +
-                "where b.id < :lastBoardId and b.deleted = false order by b.id desc";
-
-        return entityManager.createQuery(query, Board.class)
-                .setParameter("lastBoardId", lastBoardId)
-                .setMaxResults(size + CHECK_NEXT_BOARD)
-                .getResultList();
+        return jpaQueryFactory.selectDistinct(board)
+                .from(board)
+                .leftJoin(board.images).fetchJoin()
+                .where(board.id.lt(lastBoardId))
+                .orderBy(board.id.desc())
+                .limit(size + CHECK_NEXT_BOARD)
+                .fetch();
     }
 
     @Override
     public List<Board> selectMyBoards(final Long memberId, final Long lastBoardId, final int size) {
-        String query = "select distinct b from Board b left outer join fetch b.images " +
-                "where b.id < :lastBoardId and b.writer.id = :memberId order by b.id desc";
+        return jpaQueryFactory.selectDistinct(board)
+                .from(board)
+                .leftJoin(board.images).fetchJoin()
+                .where(
+                        board.id.lt(lastBoardId),
+                        board.writer.id.eq(memberId)
+                )
+                .orderBy(board.id.desc())
+                .limit(size + CHECK_NEXT_BOARD)
+                .fetch();
+    }
 
-        return entityManager.createQuery(query, Board.class)
-                .setParameter("lastBoardId", lastBoardId)
-                .setParameter("memberId", memberId)
-                .setMaxResults(size + CHECK_NEXT_BOARD)
-                .getResultList();
+    @Override
+    public void deleteBoardByMemberId(final Long memberId) {
+        jpaQueryFactory.update(board)
+                .set(board.deleted, true)
+                .where(board.writer.id.eq(memberId))
+                .execute();
+    }
+
+    @Override
+    public Optional<Board> selectBoardById(final Long boardId) {
+        return Optional.ofNullable(jpaQueryFactory
+                .select(board)
+                .from(board)
+                .where(board.id.eq(boardId))
+                .fetchOne());
     }
 }
