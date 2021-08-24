@@ -25,12 +25,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation "org.flywaydb:flyway-core:7.14.0"
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.11'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.h2database:h2:1.4.199'
     runtimeOnly 'mysql:mysql-connector-java'
     implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.3'
     annotationProcessor 'org.projectlombok:lombok'
