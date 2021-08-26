@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
@@ -25,6 +26,7 @@ import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 import static org.assertj.core.api.BDDAssertions.then;
 
 @DataJpaTest
+@ActiveProfiles(profiles = "test")
 @Import(DBUnitTestConfiguration.class)
 @DbUnitConfiguration(databaseConnection = "dbUnitDatabaseConnection")
 @DatabaseSetup(value = "classpath:member.xml", type = DatabaseOperation.CLEAN_INSERT)

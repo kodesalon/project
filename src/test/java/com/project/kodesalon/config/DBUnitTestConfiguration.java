@@ -5,10 +5,12 @@ import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 
 import javax.sql.DataSource;
 
 
+@Profile("test")
 @TestConfiguration
 public class DBUnitTestConfiguration {
 
