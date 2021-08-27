@@ -48,13 +48,12 @@ spring:
     activate:
       on-profile: test
   datasource:
-    url: jdbc:h2:mem:test_mem
+    url: jdbc:h2:mem:test_mem;MODE=MySQL;DATABASE_TO_LOWER=TRUE
     driver-class-name: org.h2.Driver
     username: sa
     password:
   jpa:
     show-sql: true
-    database-platform: H2
     hibernate:
       ddl-auto: create
     properties:
