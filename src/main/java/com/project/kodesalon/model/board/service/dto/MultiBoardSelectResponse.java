@@ -14,11 +14,11 @@ public class MultiBoardSelectResponse {
     private boolean isLast;
 
     public MultiBoardSelectResponse(final List<BoardSelectResponse> boards, final int size) {
-        this.isLast = checkLast(boards, size);
+        this.isLast = hasLast(boards, size);
         this.boards = removeLastIfOverloaded(boards);
     }
 
-    private boolean checkLast(final List<BoardSelectResponse> boards, final int size) {
+    private boolean hasLast(final List<BoardSelectResponse> boards, final int size) {
         return boards.size() <= size;
     }
 
