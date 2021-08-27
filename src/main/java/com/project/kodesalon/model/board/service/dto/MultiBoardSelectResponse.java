@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,6 +30,6 @@ public class MultiBoardSelectResponse {
             boardSelectResponses.removeLast();
         }
 
-        return boardSelectResponses;
+        return Collections.unmodifiableList(boardSelectResponses);
     }
 }

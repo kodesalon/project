@@ -24,6 +24,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -103,7 +104,7 @@ public class Member extends BaseEntity {
     }
 
     public List<Board> getBoards() {
-        return boards;
+        return Collections.unmodifiableList(boards);
     }
 
     public boolean hasSamePassword(final Password password) {
