@@ -55,7 +55,7 @@ class S3UploaderTest {
         MultipartFile multipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
         List<MultipartFile> multipartFiles = Collections.singletonList(multipartFile);
 
-        List<String> results = s3Uploader.upload(multipartFiles, "static");
+        List<String> results = s3Uploader.uploadFiles(multipartFiles, "static");
 
         then(results).isNotNull();
     }
@@ -64,7 +64,7 @@ class S3UploaderTest {
     @DisplayName("s3 bucket에 있는 이미지 파일을 삭제한다.")
     void delete() {
         MultipartFile multipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
-        String fileUrl = s3Uploader.upload(multipartFile, "static");
+        String fileUrl = s3Uploader.uploadFile(multipartFile, "static");
         String key = extractKey(fileUrl);
 
         s3Uploader.delete(key);
@@ -79,7 +79,7 @@ class S3UploaderTest {
     void delete_multiple_images() {
         MultipartFile multipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
         List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile, multipartFile);
-        List<String> imageUrls = s3Uploader.upload(multipartFiles, "static");
+        List<String> imageUrls = s3Uploader.uploadFiles(multipartFiles, "static");
         List<String> imageKeys = imageUrls.stream()
                 .map(this::extractKey)
                 .collect(Collectors.toList());

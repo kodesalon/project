@@ -51,7 +51,7 @@ public class BoardService {
     public void save(final Long memberId, final BoardCreateRequest boardCreateRequest) {
         Member member = memberService.findById(memberId);
         Board createdBoard = boardCreateRequest.toBoard(member);
-        List<String> urls = s3Uploader.upload(boardCreateRequest.getImages(), directory);
+        List<String> urls = s3Uploader.uploadFiles(boardCreateRequest.getImages(), directory);
         urls.forEach(url -> new Image(url, createdBoard));
         boardRepository.save(createdBoard);
         log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
@@ -60,7 +60,7 @@ public class BoardService {
     @Transactional
     public void addImages(final Long boardId, final List<MultipartFile> images) {
         Board board = findById(boardId);
-        List<String> urls = s3Uploader.upload(images, directory);
+        List<String> urls = s3Uploader.uploadFiles(images, directory);
         urls.forEach(url -> new Image(url, board));
     }
 

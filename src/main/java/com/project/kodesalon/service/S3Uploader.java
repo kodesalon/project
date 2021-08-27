@@ -36,13 +36,13 @@ public class S3Uploader {
         this.bucket = bucket;
     }
 
-    public List<String> upload(final List<MultipartFile> multipartFiles, final String directoryName) {
+    public List<String> uploadFiles(final List<MultipartFile> multipartFiles, final String directoryName) {
         return multipartFiles.stream()
-                .map(multipartFile -> upload(multipartFile, directoryName))
+                .map(multipartFile -> uploadFile(multipartFile, directoryName))
                 .collect(Collectors.toList());
     }
 
-    public String upload(final MultipartFile multipartFile, final String directoryName) {
+    public String uploadFile(final MultipartFile multipartFile, final String directoryName) {
         File file = convert(multipartFile)
                 .orElseThrow(() -> {
                     log.info("파일로 변환할 수 없습니다. : {}", multipartFile.getOriginalFilename());

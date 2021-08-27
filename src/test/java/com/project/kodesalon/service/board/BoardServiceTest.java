@@ -94,7 +94,7 @@ class BoardServiceTest {
         boardService.save(anyLong(), boardCreateRequest);
 
         verify(boardRepository, times(1)).save(any(Board.class));
-        verify(s3Uploader, times(1)).upload(anyList(), anyString());
+        verify(s3Uploader, times(1)).uploadFiles(anyList(), anyString());
     }
 
     @Test
@@ -115,7 +115,7 @@ class BoardServiceTest {
         MockMultipartFile image = new MockMultipartFile("images", "image.png", "image/png", "test".getBytes());
         List<MultipartFile> images = Arrays.asList(image, image);
         boardService.addImages(1L, images);
-        verify(s3Uploader, times(1)).upload(anyList(), anyString());
+        verify(s3Uploader, times(1)).uploadFiles(anyList(), anyString());
     }
 
     @Test
@@ -134,11 +134,11 @@ class BoardServiceTest {
     @DisplayName("이미지를 전달받아 이미지를 추가한다.")
     void addImages() {
         List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile);
-        given(s3Uploader.upload(anyList(), anyString())).willReturn(Arrays.asList(IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL));
+        given(s3Uploader.uploadFiles(anyList(), anyString())).willReturn(Arrays.asList(IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL));
         given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
         boardService.addImages(1L, multipartFiles);
 
-        verify(s3Uploader, times(1)).upload(anyList(), anyString());
+        verify(s3Uploader, times(1)).uploadFiles(anyList(), anyString());
     }
 
     @Test
@@ -147,7 +147,7 @@ class BoardServiceTest {
         List<MultipartFile> multipartFiles
                 = Arrays.asList(multipartFile, multipartFile, multipartFile, multipartFile, multipartFile, multipartFile);
         given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
-        given(s3Uploader.upload(anyList(), anyString())).willReturn(Arrays.asList(IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL,
+        given(s3Uploader.uploadFiles(anyList(), anyString())).willReturn(Arrays.asList(IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL,
                 IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL));
         willThrow(new IllegalArgumentException(INVALID_BOARD_IMAGES_SIZE)).given(board).addImage(any(Image.class));
         thenIllegalArgumentException().isThrownBy(() -> boardService.addImages(1L, multipartFiles))
