@@ -64,6 +64,7 @@ public class BoardService {
         urls.forEach(url -> new Image(url, board));
     }
 
+    /*이미지에서 게시물에 Cascade 설정이 들어가는 순간 문제가 발생할수 있음*/
     @Transactional
     public void removeImages(final List<Long> imageIds) {
         List<Image> images = imageRepository.findAllById(imageIds);
