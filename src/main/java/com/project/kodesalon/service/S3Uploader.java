@@ -124,7 +124,7 @@ public class S3Uploader {
         keys.forEach(this::delete);
     }
 
-    public void delete(final String key) {
+    private void delete(final String key) {
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, key));
     }
 }

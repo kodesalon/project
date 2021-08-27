@@ -61,20 +61,6 @@ class S3UploaderTest {
     }
 
     @Test
-    @DisplayName("s3 bucket에 있는 이미지 파일을 삭제한다.")
-    void delete() {
-        MultipartFile multipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
-        String fileUrl = s3Uploader.uploadFile(multipartFile, "static");
-        String key = extractKey(fileUrl);
-
-        s3Uploader.delete(key);
-
-        thenThrownBy(() -> amazonS3.getObject(BUCKET, key))
-                .isInstanceOf(AmazonS3Exception.class);
-    }
-
-
-    @Test
     @DisplayName("s3 bucket에 있는 여러 개의 이미지 파일을 삭제한다.")
     void delete_multiple_images() {
         MultipartFile multipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
