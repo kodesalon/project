@@ -4,10 +4,38 @@ spring:
 ---
 
 spring:
-  group:
-    prod:
-      - prod-db
+  profiles:
+    group:
+      test: common
+---
 
+spring:
+  profiles:
+    group:
+      local: common
+---
+
+spring:
+  profiles:
+    group:
+      prod: common
+---
+
+spring:
+  config:
+    activate:
+      on-profile: common
+  datasource:
+    hikari:
+      auto-commit: false
+  jpa:
+    properties:
+      hibernate:
+        default_batch_fetch_size: 50
+        query:
+          in_clause_parameter_padding: true
+        format_sql: true
+    open-in-view: false
 ---
 
 spring:
@@ -18,28 +46,19 @@ spring:
     url: jdbc:mysql://localhost:3306/kodesalon?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: kodesalon
-    password: kodesalon!
-    hikari:
-      auto-commit: false
+    password: kodesalon2021!
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: validate
-    properties:
-      hibernate:
-        default_batch_fetch_size: 50
-        query:
-          in_clause_parameter_padding: true
-        format_sql: true
-    open-in-view: false
   jwt:
     secret: bG9jYWxUZXN0S2V5
     accessExpirationMs: 180000
     refreshExpirationWeeks: 2
   flyway:
     baseline-on-migrate: true
-    locations: classpath:db/migration/{vendor}
     baseline-version: 0
+    locations: classpath:db/migration/{vendor}
 
 ---
 
@@ -48,7 +67,7 @@ spring:
     activate:
       on-profile: test
   datasource:
-    url: jdbc:h2:mem:test_mem;MODE=MySQL;DATABASE_TO_LOWER=TRUE
+    url: jdbc:h2:mem:test_mem;MODE=Mysql;DATABASE_TO_LOWER=TRUE;
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -56,8 +75,9 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create
-    properties:
-      hibernate:
-        format_sql: true
+  jwt:
+    secret: bG9jYWxUZXN0S2V5
+    accessExpirationMs: 180000
+    refreshExpirationWeeks: 2
   flyway:
     enabled: false
