@@ -36,4 +36,8 @@ public class ErrorCode {
     // Image
     public static final String INVALID_IMAGE = "I001";
     public static final String NOT_EXIST_IMAGE = "I002";
+
+    // External
+    public static final String CLOUD_ERROR = "E001";
+    public static final String INVALID_FILE = "E002";
 }

@@ -37,6 +37,8 @@ spring:
     secret: bG9jYWxUZXN0S2V5
     accessExpirationMs: 180000
     refreshExpirationWeeks: 2
+  file:
+    directory: src/main/resources/images/
   main:
     allow-bean-definition-overriding: true
   servlet:
@@ -52,7 +54,7 @@ cloud:
     s3:
       image:
         bucket: kodesalon
-        directory: image
+        directory: image/
     stack:
       auto: false
     region:
