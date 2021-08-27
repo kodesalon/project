@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.DUPLICATED_PASSWORD;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
@@ -78,14 +79,6 @@ public class Member extends BaseEntity {
         }
     }
 
-    public Member(final String alias, final String password, final String name, final String email, final LocalDateTime createdDateTime) {
-        this.alias = new Alias(alias);
-        this.password = new Password(password);
-        this.email = new Email(email);
-        this.name = new Name(name);
-        this.createdDateTime = createdDateTime;
-    }
-
     public Long getId() {
         return id;
     }
@@ -107,11 +100,9 @@ public class Member extends BaseEntity {
     }
 
     public String getPhone() {
-        if (phone == null) {
-            return PHONE_EMPTY;
-        }
-
-        return phone.value();
+        return Optional.ofNullable(phone)
+                .map(Phone::value)
+                .orElse(PHONE_EMPTY);
     }
 
     public boolean isDeleted() {

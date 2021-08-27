@@ -28,8 +28,6 @@ class MemberCreateRequestTest {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
-    private final MemberCreateRequest memberCreateRequest
-            = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1234-5678", LocalDateTime.now());
 
     @Test
     @DisplayName("별명, 비밀번호, 이름, 이메일, 휴대폰 번호를 반환한다.")
