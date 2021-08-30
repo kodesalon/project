@@ -56,9 +56,7 @@ spring:
     accessExpirationMs: 180000
     refreshExpirationWeeks: 2
   flyway:
-    baseline-on-migrate: true
-    baseline-version: 0
-    locations: classpath:db/migration/{vendor}
+    locations: classpath:db/migration/local/{vendor}
 
 ---
 
