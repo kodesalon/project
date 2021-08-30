@@ -2,6 +2,7 @@ package com.project.kodesalon.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.MultiObjectDeleteException;
 import com.project.kodesalon.config.S3MockConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,6 +65,15 @@ class S3UploaderTest {
         imageKeys.forEach(imageKey ->
                 thenThrownBy(() -> amazonS3.getObject(BUCKET, imageKey))
                         .isInstanceOf(AmazonS3Exception.class));
+    }
+
+    @Test
+    @DisplayName("존재하지 않은 이미지 Key를 삭제할 경우 예외가 발생한다.")
+    void delete_images_throws_exception_with_not_exist_image_keys() {
+        String imageKey = "bucket/image.png";
+        List<String> keys = Collections.singletonList(imageKey);
+
+        thenThrownBy(() -> s3Uploader.delete(keys)).isInstanceOf(MultiObjectDeleteException.class);
     }
 
     private String extractKey(String url) {
