@@ -20,8 +20,8 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 @ActiveProfiles("test")
 @Import(DBUnitTestConfiguration.class)
 @DbUnitConfiguration(databaseConnection = "dbUnitDatabaseConnection")
-@DatabaseSetup(value = {"classpath:member.xml", "classpath:board.xml"}, type = DatabaseOperation.CLEAN_INSERT)
-@DatabaseTearDown(value = {"classpath:member.xml", "classpath:board.xml"}, type = DatabaseOperation.DELETE_ALL)
+@DatabaseSetup(value = "classpath:boardRepositoryTestDataSet.xml", type = DatabaseOperation.CLEAN_INSERT)
+@DatabaseTearDown(value = "classpath:boardRepositoryTestDataSet.xml", type = DatabaseOperation.DELETE_ALL)
 @TestExecutionListeners({DbUnitTestExecutionListener.class, DependencyInjectionTestExecutionListener.class})
 public class BoardRepositoryTest {
 

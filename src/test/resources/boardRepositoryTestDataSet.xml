@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
+    <member member_id="1" alias="alias1" password="Password123!" name="이름" email="email@email.com" phone="010-1111-2222"
+            created_date_time="2021-07-18 17:48:22" last_modified_date_time="2021-07-18 17:48:22"
+            deleted="false"/>
+    <member member_id="2" alias="alias2" password="Password123!" name="이름" email="email@email.com" phone="010-1111-2222"
+            created_date_time="2021-07-18 17:48:22" last_modified_date_time="2021-07-18 17:48:22"
+            deleted="false"/>
     <board board_id="1" title="title" content="content" created_date_time="2021-07-18 17:48:22"
            last_modified_date_time="2021-07-18 17:48:22" deleted="false" member_id="1"/>
     <board board_id="2" title="title" content="content" created_date_time="2021-07-18 17:48:22"

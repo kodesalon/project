@@ -29,8 +29,8 @@ import static org.assertj.core.api.BDDAssertions.then;
 @ActiveProfiles(profiles = "test")
 @Import(DBUnitTestConfiguration.class)
 @DbUnitConfiguration(databaseConnection = "dbUnitDatabaseConnection")
-@DatabaseSetup(value = "classpath:member.xml", type = DatabaseOperation.CLEAN_INSERT)
-@DatabaseTearDown(value = "classpath:member.xml", type = DatabaseOperation.DELETE_ALL)
+@DatabaseSetup(value = "classpath:memberRepositoryDataSet.xml", type = DatabaseOperation.CLEAN_INSERT)
+@DatabaseTearDown(value = "classpath:memberRepositoryDataSet.xml", type = DatabaseOperation.DELETE_ALL)
 @TestExecutionListeners({DbUnitTestExecutionListener.class, DependencyInjectionTestExecutionListener.class})
 public class MemberRepositoryTest {
 
