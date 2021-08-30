@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -62,6 +63,7 @@ public class S3Uploader {
         }
     }
 
+    @Async
     public void delete(final List<String> keys) {
         List<KeyVersion> keyVersions = convertKeyVersionsFrom(keys);
         DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(bucket);

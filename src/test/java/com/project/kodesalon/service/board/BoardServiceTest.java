@@ -161,7 +161,7 @@ class BoardServiceTest {
 
         boardService.removeImages(imageIds);
 
-        verify(imageRepository, times(1)).deleteAll(anyList());
+        verify(imageRepository, times(1)).deleteInBatch(anyList());
         verify(s3Uploader, times(1)).delete(anyList());
     }
 
