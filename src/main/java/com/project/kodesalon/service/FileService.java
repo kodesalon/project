@@ -16,8 +16,10 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_IMAGE;
 @Slf4j
 @Component
 public class FileService {
-    private final String imageResourceDirectory;
+
     private static final char EXTENSION_SEPARATOR = '.';
+
+    private final String imageResourceDirectory;
 
     public FileService(@Value("spring.file.directory") final String imageResourceDirectory) {
         this.imageResourceDirectory = imageResourceDirectory;
