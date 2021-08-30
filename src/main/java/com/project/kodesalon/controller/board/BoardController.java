@@ -8,7 +8,6 @@ import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +36,7 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping
     public ResponseEntity<Void> save(@Login final Long memberId, @ModelAttribute @Valid final BoardCreateRequest boardCreateRequest) {
         boardService.save(memberId, boardCreateRequest);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -55,13 +54,13 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/add-images/{boardId}")
+    @PostMapping("/images/{boardId}")
     public ResponseEntity<Void> addImages(@RequestParam final List<MultipartFile> images, @PathVariable final Long boardId) {
         boardService.addImages(boardId, images);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/remove-images/{imageIds}")
+    @DeleteMapping("/images/{imageIds}")
     public ResponseEntity<Void> removeImages(@PathVariable final List<Long> imageIds) {
         boardService.removeImages(imageIds);
         return ResponseEntity.ok().build();
