@@ -3,7 +3,7 @@ package com.project.kodesalon.service;
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +14,7 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.amazonaws.services.s3.model.DeleteObjectsRequest.KeyVersion;
 import static com.project.kodesalon.exception.ErrorCode.CLOUD_ERROR;
 
 @Slf4j
@@ -62,10 +63,15 @@ public class S3Uploader {
     }
 
     public void delete(final List<String> keys) {
-        keys.forEach(this::delete);
+        List<KeyVersion> keyVersions = convertKeyVersionsFrom(keys);
+        DeleteObjectsRequest deleteObjectsRequest = new DeleteObjectsRequest(bucket);
+        deleteObjectsRequest.setKeys(keyVersions);
+        amazonS3.deleteObjects(deleteObjectsRequest);
     }
 
-    private void delete(final String key) {
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, key));
+    private List<KeyVersion> convertKeyVersionsFrom(final List<String> keys) {
+        return keys.stream()
+                .map(KeyVersion::new)
+                .collect(Collectors.toList());
     }
 }

@@ -64,14 +64,18 @@ public class BoardService {
         urls.forEach(url -> new Image(url, board));
     }
 
-    /*이미지에서 게시물에 Cascade 설정이 들어가는 순간 문제가 발생할수 있음*/
+    /**
+     * 이미지에서 게시물에 Cascade 설정이 들어가는 순간 문제가 발생할수 있음
+     *
+     * @param imageIds
+     */
     @Transactional
     public void removeImages(final List<Long> imageIds) {
         List<Image> images = imageRepository.findAllById(imageIds);
         List<String> imageKeys = images.stream()
                 .map(Image::getKey)
                 .collect(Collectors.toList());
-        imageRepository.deleteAll(images);
+        imageRepository.deleteInBatch(images);
         s3Uploader.delete(imageKeys);
     }
 
