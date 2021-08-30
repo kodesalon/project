@@ -73,9 +73,6 @@ class BoardServiceTest {
     private Board board;
 
     @Mock
-    private Image image;
-
-    @Mock
     MultipartFile multipartFile;
 
     @BeforeEach
