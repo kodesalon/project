@@ -1,31 +1,42 @@
 package com.project.kodesalon.model.board.repository;
 
-import com.project.kodesalon.model.board.domain.Board;
-import com.project.kodesalon.model.board.domain.vo.Content;
-import com.project.kodesalon.model.board.domain.vo.Title;
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DatabaseOperation;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
+import com.github.springtestdbunit.annotation.DatabaseTearDown;
+import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+import com.project.kodesalon.config.DBUnitTestConfiguration;
+import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 @DataJpaTest
+@ActiveProfiles("test")
+@Import(DBUnitTestConfiguration.class)
+@DbUnitConfiguration(databaseConnection = "dbUnitDatabaseConnection")
+@DatabaseSetup(value = "classpath:boardRepositoryTestDataSet.xml", type = DatabaseOperation.CLEAN_INSERT)
+@DatabaseTearDown(value = "classpath:boardRepositoryTestDataSet.xml", type = DatabaseOperation.DELETE_ALL)
+@TestExecutionListeners({DbUnitTestExecutionListener.class, DependencyInjectionTestExecutionListener.class})
 public class BoardRepositoryTest {
 
     @Autowired
     private BoardRepository boardRepository;
 
     @Test
-    @DisplayName("게시판 객체를 DB에 저장한다.")
-    public void save() {
-        Board board = new Board(new Title("게시물 제목"), new Content("게시물 내용"), "작성자", LocalDateTime.now());
-        boardRepository.save(board);
-        Optional<Board> possibleBoard = boardRepository.findById(board.getId());
-        assertThat(possibleBoard).isNotEmpty();
-        assertThat(possibleBoard.get().getId()).isEqualTo(1);
+    @DisplayName("회원 식별 번호를 입력받으면 해당 작성 식별 번호를 가진 게시물의 deleted를 true로 변환한다.")
+    void deleteBoardByMemberId() {
+        BDDSoftAssertions softly = new BDDSoftAssertions();
+        boardRepository.deleteBoardByMemberId(1L);
+
+        softly.then(boardRepository.findById(1L)).isEmpty();
+        softly.then(boardRepository.findById(3L)).isEmpty();
+        softly.assertAll();
     }
 }
+
