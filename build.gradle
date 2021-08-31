@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'org.asciidoctor.jvm.convert' version '3.2.0'
+    id 'jacoco'
 }
 
 group = 'com.project'
@@ -45,6 +46,10 @@ ext {
     snippetsDir = file('build/generated-snippets')
 }
 
+jacoco {
+    toolVersion = "0.8.7"
+}
+
 asciidoctor {
     configurations 'asciidoctorExtension'
     inputs.dir snippetsDir
@@ -53,8 +58,49 @@ asciidoctor {
 }
 
 test {
+    finalizedBy jacocoTestReport
     outputs.dir snippetsDir
     useJUnitPlatform()
+}
+
+jacocoTestReport {
+    finalizedBy jacocoTestCoverageVerification
+
+    reports {
+        csv.required = false
+        xml.required = true
+        html.required = true
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.80
+            }
+        }
+
+        rule {
+            element = 'CLASS'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+
+            excludes = ['com.project.kodesalon.common.config.WebConfig',
+                        'com.project.kodesalon.common.ErrorCode',
+                        'com.project.kodesalon.KodesalonApplication']
+        }
+    }
 }
 
 task copyHTMLDocument(type: Copy) {
