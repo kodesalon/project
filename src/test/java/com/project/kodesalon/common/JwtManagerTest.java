@@ -25,7 +25,7 @@ class JwtManagerTest {
     private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;
     private static final Key SIGN_KEY = new SecretKeySpec(SECRET_KEY_BYTES, SIGNATURE_ALGORITHM.getJcaName());
     private static final Long MEMBER_ID = 1L;
-    private static final int EXPIRATION_MS = 10000;
+    private static final int EXPIRATION_MS = 100000;
     private static final Date ISSUE_TIME = new Date();
     private JwtManager jwtManager;
 
@@ -104,6 +104,7 @@ class JwtManagerTest {
         thenThrownBy(() -> jwtManager.validateToken(unSupportedJwtToken))
                 .isInstanceOf(JwtException.class)
                 .hasMessage(INVALID_JWT_TOKEN);
+
     }
 
     @ParameterizedTest
