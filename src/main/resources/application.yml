@@ -6,12 +6,6 @@ spring:
 spring:
   profiles:
     group:
-      test: common
----
-
-spring:
-  profiles:
-    group:
       local: common
 ---
 
@@ -19,6 +13,12 @@ spring:
   profiles:
     group:
       prod: common
+
+---
+spring:
+  profiles:
+    group:
+      test: common, local
 ---
 
 spring:
@@ -56,8 +56,7 @@ spring:
     accessExpirationMs: 1800000
     refreshExpirationWeeks: 2
   flyway:
-    locations: classpath:db/migration/local/{vendor}
-
+    locations: classpath:db/migration/{vendor}
 ---
 
 spring:
@@ -65,17 +64,6 @@ spring:
     activate:
       on-profile: test
   datasource:
-    url: jdbc:h2:mem:test_mem;MODE=Mysql;DATABASE_TO_LOWER=TRUE;
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: create
-  jwt:
-    secret: bG9jYWxUZXN0S2V5
-    accessExpirationMs: 1800000
-    refreshExpirationWeeks: 2
-  flyway:
-    enabled: false
+    hikari:
+      auto-commit: true
+
