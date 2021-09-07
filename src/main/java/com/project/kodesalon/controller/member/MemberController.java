@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -20,6 +21,8 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/members")
 public class MemberController {
+
+    public static final String BOARD_ID_MAX = "9223372036854775807";
 
     private final MemberService memberService;
 
@@ -34,9 +37,9 @@ public class MemberController {
     }
 
     @GetMapping
-    public ResponseEntity<MemberSelectResponse> selectMember(@Login final Long memberId) {
-        MemberSelectResponse memberSelectResponse = memberService.selectMember(memberId);
-        return ResponseEntity.ok().body(memberSelectResponse);
+    public ResponseEntity<MemberSelectResponse> selectMyBoard(@Login final Long memberId, @RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final int size) {
+        MemberSelectResponse myBoardSelectResponse = memberService.selectMember(memberId, lastBoardId, size);
+        return ResponseEntity.ok().body(myBoardSelectResponse);
     }
 
     @PutMapping("/password")
