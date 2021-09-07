@@ -1070,7 +1070,7 @@ Host: localhost:8080
   "name" : "이름",
   "email" : "email@email.com",
   "phone" : "010-1111-2222",
-  "createdDateTime" : "2021-08-04T14:10:49"
+  "createdDateTime" : "2021-08-31T16:15:21"
 }</code></pre>
 </div>
 </div>
@@ -1475,7 +1475,7 @@ Host: localhost:8080
 
 {
   "password" : "ChangePassword1!",
-  "lastModifiedDateTime" : "2021-08-04T14:10:50"
+  "lastModifiedDateTime" : "2021-08-31T16:15:22"
 }</code></pre>
 </div>
 </div>
@@ -1608,7 +1608,7 @@ Content-Length: 47
 Host: localhost:8080
 
 {
-  "deletedDateTime" : "2021-08-04T14:10:50"
+  "deletedDateTime" : "2021-08-31T16:15:21"
 }</code></pre>
 </div>
 </div>
@@ -1708,14 +1708,14 @@ Content-Length: 21
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/boards HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: localhost:8080
 
 {
   "title" : "게시물 제목",
   "content" : "게시물 내용",
-  "createdDateTime" : "2021-08-04T14:10:47"
+  "createdDateTime" : "2021-08-31T16:15:19"
 }</code></pre>
 </div>
 </div>
@@ -1784,7 +1784,7 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -1823,7 +1823,7 @@ Content-Length: 21
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -1831,13 +1831,13 @@ Content-Length: 21
 }</code></pre>
 </div>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>유효하지 않은 작성 시간</p>
-</li>
-</ul>
-</div>
+    <div class="ulist">
+        <ul>
+            <li>
+                <p>유효하지 않은 작성 시간</p>
+            </li>
+        </ul>
+    </div>
     <table class="tableblock frame-all grid-all stretch">
         <colgroup>
             <col style="width: 33.3333%;">
@@ -1862,7 +1862,7 @@ Content-Length: 21
     <div class="listingblock">
         <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -1924,12 +1924,12 @@ Content-Length: 21
                 <div class="listingblock">
                     <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/boards/1 HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 47
 Host: localhost:8080
 
 {
-  "deletedDateTime" : "2021-08-04T14:10:46"
+  "deletedDateTime" : "2021-08-31T16:15:18"
 }</code></pre>
                     </div>
                 </div>
@@ -1980,7 +1980,7 @@ Host: localhost:8080
                     <div class="listingblock">
                         <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2022,7 +2022,7 @@ Content-Length: 21
                     <div class="listingblock">
                         <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2064,7 +2064,7 @@ Content-Length: 21
                     <div class="listingblock">
                         <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2106,7 +2106,7 @@ Content-Length: 21
                     <div class="listingblock">
                         <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2179,14 +2179,14 @@ Content-Length: 21
                 <div class="listingblock">
                     <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/v1/boards/1 HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 112
 Host: localhost:8080
 
 {
   "title" : "update title",
   "content" : "update content",
-  "lastModifiedDateTime" : "2021-08-04T14:10:47"
+  "lastModifiedDateTime" : "2021-08-31T16:15:19"
 }</code></pre>
                     </div>
                 </div>
@@ -2237,7 +2237,7 @@ Host: localhost:8080
                     <div class="listingblock">
                         <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2279,7 +2279,7 @@ Content-Length: 21
                     <div class="listingblock">
                         <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2321,7 +2321,7 @@ Content-Length: 21
                     <div class="listingblock">
                         <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2363,7 +2363,7 @@ Content-Length: 21
                     <div class="listingblock">
                         <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2379,7 +2379,7 @@ Content-Length: 21
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-    Last updated 2021-08-04 14:06:15 +0900
+    Last updated 2021-08-30 11:06:18 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

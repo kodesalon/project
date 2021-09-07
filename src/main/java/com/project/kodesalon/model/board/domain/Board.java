@@ -43,7 +43,7 @@ public class Board extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false, updatable = false)
     private Member writer;
 
-    @Column(nullable = false, name = "deleted", columnDefinition = "boolean default false")
+    @Column(name = "deleted", nullable = false, columnDefinition = "bit default 0")
     private boolean deleted;
 
     public Board(final String title, final String content, final Member writer, final LocalDateTime createdDateTime) {
