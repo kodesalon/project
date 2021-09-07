@@ -4,6 +4,7 @@ import com.project.kodesalon.config.QuerydslTestConfiguration;
 import com.project.kodesalon.domain.board.Board;
 import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
+import com.project.kodesalon.repository.board.query.dto.BoardFlatQueryDto;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -115,11 +116,9 @@ class BoardRepositoryTest {
         entityManager.flush();
         entityManager.clear();
 
-        List<Board> boards = boardRepository.selectBoards(11L, boardToBeSelectedAtOnce);
+        List<BoardFlatQueryDto> boards = boardRepository.selectQueryBoards(11L, boardToBeSelectedAtOnce);
 
-        softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
-        boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue());
-        softly.assertAll();
+        then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
     }
 
     @Test
@@ -137,11 +136,9 @@ class BoardRepositoryTest {
         entityManager.flush();
         entityManager.clear();
 
-        List<Board> boards = boardRepository.selectBoards(Long.MAX_VALUE - 1, boardToBeSelectedAtOnce);
+        List<BoardFlatQueryDto> boards = boardRepository.selectQueryBoards(Long.MAX_VALUE - 1, boardToBeSelectedAtOnce);
 
-        softly.then(boards.size()).isEqualTo(9);
-        boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue());
-        softly.assertAll();
+        then(boards.size()).isEqualTo(9);
     }
 
     @Test

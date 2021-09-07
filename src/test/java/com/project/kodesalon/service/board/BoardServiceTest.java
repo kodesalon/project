@@ -12,14 +12,11 @@ import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
-import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import com.project.kodesalon.service.member.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
@@ -37,7 +34,6 @@ import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -188,41 +184,11 @@ class BoardServiceTest {
         verify(boardRepository).selectBoardById(anyLong());
     }
 
-    @ParameterizedTest
-    @CsvSource(value = {"1, false", "10, true"})
-    @DisplayName("마지막 게시물 식별 번호, 조회할 게시물 크기를 전달 받아 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
-    void selectBoards(int size, boolean last) {
-        List<Board> boards = Arrays.asList(board, board);
-        given(board.getId()).willReturn(1L);
-        given(board.getTitle()).willReturn("게시물 제목");
-        given(board.getContent()).willReturn("게시물 내용");
-        given(board.getWriter()).willReturn(member);
-        given(member.getId()).willReturn(1L);
-        given(member.getAlias()).willReturn("alias");
-        given(boardRepository.selectBoards(anyLong(), anyInt())).willReturn(boards);
-
-        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectBoards(10L, size);
-
-        then(multiBoardSelectResponse.getBoards()).isNotNull();
-        then(multiBoardSelectResponse.isLast()).isEqualTo(last);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {"1, false", "10, true"})
-    @DisplayName("회원 식별 번호, 마지막 게시물 식별 번호, 조회할 게시물 크기 전달 받아 회원 자신이 올린 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
-    void selectMyBoard(int size, boolean last) {
-        List<Board> boards = Arrays.asList(board, board);
-        given(board.getId()).willReturn(1L);
-        given(board.getTitle()).willReturn("게시물 제목");
-        given(board.getContent()).willReturn("게시물 내용");
-        given(board.getWriter()).willReturn(member);
-        given(member.getId()).willReturn(1L);
-        given(member.getAlias()).willReturn("alias");
-        given(boardRepository.selectMyBoards(anyLong(), anyLong(), anyInt())).willReturn(boards);
-
-        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectMyBoards(1L, 10L, size);
-
-        then(multiBoardSelectResponse.getBoards()).isNotNull();
-        then(multiBoardSelectResponse.isLast()).isEqualTo(last);
+    @Test
+    @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물 조회 시 게시물이 존재하지 않을 경우 예외를 발생시킨다")
+    void selectBoard_throw_exception_with_not_exist_board_id() {
+        given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.empty());
+        thenThrownBy(() -> boardService.selectBoard(1L)).isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(NOT_EXIST_BOARD);
     }
 }

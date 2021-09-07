@@ -19,17 +19,6 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     @Override
-    public List<Board> selectBoards(final Long lastBoardId, final int size) {
-        return jpaQueryFactory.selectDistinct(board)
-                .from(board)
-                .leftJoin(board.images).fetchJoin()
-                .where(board.id.lt(lastBoardId))
-                .orderBy(board.id.desc())
-                .limit(size + CHECK_NEXT_BOARD)
-                .fetch();
-    }
-
-    @Override
     public List<Board> selectMyBoards(final Long memberId, final Long lastBoardId, final int size) {
         return jpaQueryFactory.selectDistinct(board)
                 .from(board)
@@ -39,7 +28,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         board.writer.id.eq(memberId)
                 )
                 .orderBy(board.id.desc())
-                .limit(size + CHECK_NEXT_BOARD)
+                .limit((long) size + CHECK_NEXT_BOARD)
                 .fetch();
     }
 

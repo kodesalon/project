@@ -1,5 +1,6 @@
 package com.project.kodesalon.service.dto.response;
 
+import com.project.kodesalon.service.dto.BoardQueryDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,5 +28,15 @@ public class BoardSelectResponse {
         this.writerId = writerId;
         this.writerAlias = writerAlias;
         this.boardImages = boardImages;
+    }
+
+    public BoardSelectResponse(final BoardQueryDto key, final List<BoardImageResponse> value) {
+        this.boardId = key.getBoardId();
+        this.title = key.getTitle();
+        this.content = key.getContent();
+        this.createdDateTime = key.getCreatedDateTime();
+        this.writerId = key.getMemberId();
+        this.writerAlias = key.getMemberAlias();
+        this.boardImages = value;
     }
 }
