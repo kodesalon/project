@@ -1,7 +1,5 @@
 package com.project.kodesalon.model.authentication.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.kodesalon.common.GlobalExceptionHandler;
 import com.project.kodesalon.config.AbstractControllerTest;
 import com.project.kodesalon.model.authentication.service.AuthenticationTokenService;
 import com.project.kodesalon.model.authentication.service.dto.JwtResponse;
@@ -9,20 +7,12 @@ import com.project.kodesalon.model.authentication.service.dto.LoginRequest;
 import com.project.kodesalon.model.authentication.service.dto.LoginResponse;
 import com.project.kodesalon.model.authentication.service.dto.TokenRefreshRequest;
 import io.jsonwebtoken.JwtException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -34,7 +24,6 @@ import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -65,7 +54,7 @@ public class AuthenticationTokenControllerTest extends AbstractControllerTest {
     void login_success() throws Exception {
         given(authenticationTokenService.login(any(LoginRequest.class))).willReturn(loginResponse);
 
-        this.mockMvc.perform(post("/api/v1/auth/login")
+        mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
@@ -91,7 +80,7 @@ public class AuthenticationTokenControllerTest extends AbstractControllerTest {
         given(authenticationTokenService.login(any(LoginRequest.class)))
                 .willThrow(new IllegalArgumentException(INCORRECT_PASSWORD));
 
-        this.mockMvc.perform(post("/api/v1/auth/login")
+        mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
@@ -114,7 +103,7 @@ public class AuthenticationTokenControllerTest extends AbstractControllerTest {
         given(authenticationTokenService.login(any(LoginRequest.class)))
                 .willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS));
 
-        this.mockMvc.perform(post("/api/v1/auth/login")
+        mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
@@ -131,7 +120,7 @@ public class AuthenticationTokenControllerTest extends AbstractControllerTest {
     void refresh_success() throws Exception {
         given(authenticationTokenService.reissueAccessAndRefreshToken(any(TokenRefreshRequest.class))).willReturn(jwtResponse);
 
-        this.mockMvc.perform(post("/api/v1/auth/refreshtoken")
+        mockMvc.perform(post("/api/v1/auth/refreshtoken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(tokenRefreshRequest))
                 .accept(MediaType.APPLICATION_JSON))
@@ -154,7 +143,7 @@ public class AuthenticationTokenControllerTest extends AbstractControllerTest {
     void refresh_fail_no_existing_or_expired_token() throws Exception {
         given(authenticationTokenService.reissueAccessAndRefreshToken(any(TokenRefreshRequest.class))).willThrow(new JwtException(INVALID_JWT_TOKEN));
 
-        this.mockMvc.perform(post("/api/v1/auth/refreshtoken")
+        mockMvc.perform(post("/api/v1/auth/refreshtoken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(tokenRefreshRequest))
                 .accept(MediaType.APPLICATION_JSON))

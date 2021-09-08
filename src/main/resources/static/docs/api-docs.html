@@ -1091,7 +1091,7 @@ Host: localhost:8080
   "name" : "이름",
   "email" : "email@email.com",
   "phone" : "010-1111-2222",
-  "createdDateTime" : "2021-08-10T17:19:44"
+  "createdDateTime" : "2021-09-08T16:22:53"
 }</code></pre>
 </div>
 </div>
@@ -1462,7 +1462,7 @@ Host: localhost:8080</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 283
+Content-Length: 282
 
 {
   "alias" : "alias",
@@ -1473,7 +1473,7 @@ Content-Length: 283
     "boardId" : 1,
     "title" : "게시물 제목",
     "content" : "게시물 내용",
-    "createdDateTime" : [ 2021, 8, 10, 17, 19, 45, 184751000 ]
+    "createdDateTime" : [ 2021, 9, 8, 16, 22, 53, 890815000 ]
   } ]
 }</code></pre>
 </div>
@@ -1522,7 +1522,7 @@ Host: localhost:8080
 
 {
   "password" : "ChangePassword1!",
-  "lastModifiedDateTime" : "2021-08-10T17:19:45"
+  "lastModifiedDateTime" : "2021-09-08T16:22:53"
 }</code></pre>
 </div>
 </div>
@@ -1655,7 +1655,7 @@ Content-Length: 47
 Host: localhost:8080
 
 {
-  "deletedDateTime" : "2021-08-10T17:19:44"
+  "deletedDateTime" : "2021-09-08T16:22:53"
 }</code></pre>
 </div>
 </div>
@@ -1755,14 +1755,14 @@ Content-Length: 21
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/boards HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 113
 Host: localhost:8080
 
 {
   "title" : "게시물 제목",
   "content" : "게시물 내용",
-  "createdDateTime" : "2021-08-10T17:19:43"
+  "createdDateTime" : "2021-09-08T16:22:49"
 }</code></pre>
 </div>
 </div>
@@ -1831,7 +1831,7 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -1870,7 +1870,7 @@ Content-Length: 21
 <div class="listingblock">
   <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -1909,7 +1909,7 @@ Content-Length: 21
   <div class="listingblock">
     <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -1948,7 +1948,7 @@ Content-Length: 21
         <div class="listingblock">
           <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/boards/1 HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Host: localhost:8080</code></pre>
           </div>
         </div>
@@ -2006,14 +2006,14 @@ Host: localhost:8080</code></pre>
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
-Content-Type: application/json
-Content-Length: 192
+Content-Type: application/json;charset=UTF-8
+Content-Length: 191
 
 {
   "boardId" : 1,
   "title" : "게시물 제목",
   "content" : "게시물 내용",
-  "createdDateTime" : [ 2021, 8, 10, 17, 19, 43, 518281000 ],
+  "createdDateTime" : [ 2021, 9, 8, 16, 22, 49, 117083000 ],
   "writerId" : 1,
   "writerAlias" : "alias"
 }</code></pre>
@@ -2051,7 +2051,7 @@ Content-Length: 192
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/boards?size=10 HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Host: localhost:8080</code></pre>
             </div>
           </div>
@@ -2083,7 +2083,7 @@ Host: localhost:8080</code></pre>
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/boards?lastBoardId=1&amp;size=1 HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Host: localhost:8080</code></pre>
             </div>
           </div>
@@ -2149,15 +2149,15 @@ Host: localhost:8080</code></pre>
             <div class="listingblock">
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
-Content-Type: application/json
-Content-Length: 225
+Content-Type: application/json;charset=UTF-8
+Content-Length: 224
 
 {
   "boards" : [ {
     "boardId" : 1,
     "title" : "title",
     "content" : "content",
-    "createdDateTime" : [ 2021, 8, 10, 17, 19, 43, 809342000 ],
+    "createdDateTime" : [ 2021, 9, 8, 16, 22, 50, 160002000 ],
     "writerId" : 1,
     "writerAlias" : "alias"
   } ],
@@ -2171,15 +2171,15 @@ Content-Length: 225
             <div class="listingblock">
               <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
-Content-Type: application/json
-Content-Length: 224
+Content-Type: application/json;charset=UTF-8
+Content-Length: 223
 
 {
   "boards" : [ {
     "boardId" : 0,
     "title" : "title",
     "content" : "content",
-    "createdDateTime" : [ 2021, 8, 10, 17, 19, 43, 844606000 ],
+    "createdDateTime" : [ 2021, 9, 8, 16, 22, 50, 273457000 ],
     "writerId" : 1,
     "writerAlias" : "alias"
   } ],
@@ -2240,12 +2240,12 @@ Content-Length: 224
         <div class="listingblock">
           <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/boards/1 HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 47
 Host: localhost:8080
 
 {
-  "deletedDateTime" : "2021-08-10T17:19:43"
+  "deletedDateTime" : "2021-09-08T16:22:47"
 }</code></pre>
           </div>
         </div>
@@ -2293,7 +2293,7 @@ Host: localhost:8080
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2332,7 +2332,7 @@ Content-Length: 21
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2371,7 +2371,7 @@ Content-Length: 21
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2410,7 +2410,7 @@ Content-Length: 21
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2481,14 +2481,14 @@ Content-Length: 21
         <div class="listingblock">
           <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/v1/boards/1 HTTP/1.1
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 112
 Host: localhost:8080
 
 {
   "title" : "update title",
   "content" : "update content",
-  "lastModifiedDateTime" : "2021-08-10T17:19:43"
+  "lastModifiedDateTime" : "2021-09-08T16:22:48"
 }</code></pre>
           </div>
         </div>
@@ -2536,7 +2536,7 @@ Host: localhost:8080
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2575,7 +2575,7 @@ Content-Length: 21
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2614,7 +2614,7 @@ Content-Length: 21
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2654,7 +2654,7 @@ Content-Length: 21
           <div class="listingblock">
             <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 400 Bad Request
-Content-Type: application/json
+Content-Type: application/json;charset=UTF-8
 Content-Length: 21
 
 {
@@ -2670,7 +2670,7 @@ Content-Length: 21
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-  Last updated 2021-07-30 19:13:54 +0900
+  Last updated 2021-09-08 15:32:47 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
