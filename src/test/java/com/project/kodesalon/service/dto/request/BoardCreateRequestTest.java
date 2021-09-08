@@ -29,8 +29,7 @@ class BoardCreateRequestTest {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
-    private final BoardCreateRequest boardCreateRequest
-            = new BoardCreateRequest("게시물 제목", "게시물 내용", LocalDateTime.parse("2021-06-01T23:59:59.999999"));
+    private final BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 내용", LocalDateTime.parse("2021-06-01T23:59:59.999999"));
 
     @Test
     @DisplayName("게시물의 제목, 내용, 생성 시간, 삭제 여부를 반환한다.")
@@ -56,8 +55,7 @@ class BoardCreateRequestTest {
     @Test
     @DisplayName("제목 길이가 30자를 초과할 경우, 예외가 발생합니다")
     void create_throw_exception_with_invalid_title() {
-        BoardCreateRequest boardCreateRequest
-                = new BoardCreateRequest("현재 게시물 제목의 길이가 31자이므로 예외 발생합니다.", "게시물 내용", LocalDateTime.parse("2021-06-01T23:59:59.999999"));
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("현재 게시물 제목의 길이가 31자이므로 예외 발생합니다.", "게시물 내용", LocalDateTime.parse("2021-06-01T23:59:59.999999"));
         Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
 
         then(constraintViolations)
@@ -69,8 +67,7 @@ class BoardCreateRequestTest {
     @NullAndEmptySource
     @DisplayName("null 또는 아무것도 입력하지 않을 경우, 예외가 발생합니다")
     void create_throw_exception_with_null_title(String nullArgument) {
-        BoardCreateRequest boardCreateRequest
-                = new BoardCreateRequest(nullArgument, "게시물 내용", LocalDateTime.parse("2021-06-01T23:59:59.999999"));
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest(nullArgument, "게시물 내용", LocalDateTime.parse("2021-06-01T23:59:59.999999"));
         Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
 
         then(constraintViolations)
@@ -81,8 +78,7 @@ class BoardCreateRequestTest {
     @Test
     @DisplayName("내용의 500자를 초과할 경우, 예외가 발생합니다")
     void create_throw_exception_with_invalid_content() {
-        BoardCreateRequest boardCreateRequest
-                = new BoardCreateRequest("게시물 제목", "1".repeat(501), LocalDateTime.parse("2021-06-01T23:59:59.999999"));
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "1".repeat(501), LocalDateTime.parse("2021-06-01T23:59:59.999999"));
         Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
 
         then(constraintViolations)
@@ -94,8 +90,7 @@ class BoardCreateRequestTest {
     @NullAndEmptySource
     @DisplayName("null 또는 아무것도 입력하지 않을 경우, 예외가 발생합니다")
     void create_throw_exception_with_null_content(String nullArgument) {
-        BoardCreateRequest boardCreateRequest
-                = new BoardCreateRequest("게시물 제목", nullArgument, LocalDateTime.parse("2021-06-01T23:59:59.999999"));
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", nullArgument, LocalDateTime.parse("2021-06-01T23:59:59.999999"));
         Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
 
         then(constraintViolations)
@@ -107,8 +102,7 @@ class BoardCreateRequestTest {
     @NullSource
     @DisplayName("null 일 경우, 예외가 발생합니다")
     void create_throw_exception_with_null_created_date_time(LocalDateTime createdDateTime) {
-        BoardCreateRequest boardCreateRequest
-                = new BoardCreateRequest("게시물 제목", "게시물 내용", createdDateTime);
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 내용", createdDateTime);
         Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
 
         then(constraintViolations)

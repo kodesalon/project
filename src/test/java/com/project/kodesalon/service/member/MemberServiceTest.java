@@ -41,8 +41,8 @@ class MemberServiceTest {
     private static final Member TEST_MEMBER = getTestMember();
 
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
-    private final MemberCreateRequest memberCreateRequest
-            = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+    private final MemberCreateRequest memberCreateRequest =
+            new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
     @InjectMocks
     private MemberService memberService;

@@ -8,12 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.NullSource;
 
 import java.time.LocalDateTime;
 
 import static com.project.kodesalon.exception.ErrorCode.DUPLICATED_PASSWORD;
-import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static com.project.kodesalon.utils.TestEntityUtils.getTestBoard;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -41,6 +39,7 @@ class MemberTest {
         softly.then(member.getEmail()).isEqualTo("email@email.com");
         softly.then(member.getPhone()).isEqualTo("010-1234-4444");
         softly.then(member.getCreatedDateTime()).isEqualTo(LocalDateTime.of(2021, 7, 16, 23, 59));
+        softly.then(member.getLastModifiedDateTime()).isEqualTo(LocalDateTime.of(2021, 7, 16, 23, 59));
         softly.then(member.isDeleted()).isFalse();
         softly.assertAll();
     }
@@ -99,14 +98,5 @@ class MemberTest {
         softly.then(member.isDeleted()).isTrue();
         softly.then(member.getDeletedDateTime()).isEqualTo(deletedDateTime);
         softly.assertAll();
-    }
-
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("회월 탈퇴 시간이 없으면 예외를 발생시킨다.")
-    void delete_throws_exception_with_null_deleted_date_time(LocalDateTime invalidDeletedTime) {
-        thenIllegalArgumentException()
-                .isThrownBy(() -> member.delete(invalidDeletedTime))
-                .withMessage(INVALID_DATE_TIME);
     }
 }

@@ -29,8 +29,8 @@ class MemberCreateRequestTest {
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
-    private final MemberCreateRequest memberCreateRequest
-            = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+    private final MemberCreateRequest memberCreateRequest =
+            new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
     @Test
     @DisplayName("별명, 비밀번호, 이름, 이메일, 휴대폰 번호를 반환한다.")
@@ -60,8 +60,8 @@ class MemberCreateRequestTest {
     @ValueSource(strings = {"a12", "abcde12345abcde1", "alias 1234", "1234", "a_______", "한글Alias"})
     @DisplayName("alias에 타당한 문자열 포맷이 아니면 예외가 발생합니다.")
     void create_throw_exception_with_invalid_alias(String invalidAlias) {
-        MemberCreateRequest memberCreateRequest
-                = new MemberCreateRequest(invalidAlias, "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequest =
+                new MemberCreateRequest(invalidAlias, "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
         Set<ConstraintViolation<MemberCreateRequest>> constraintViolations = validator.validate(memberCreateRequest);
 
         then(constraintViolations)
@@ -73,8 +73,8 @@ class MemberCreateRequestTest {
     @NullSource
     @DisplayName("null일 경우, 예외가 발생합니다.")
     void create_throw_exception_with_null_alias(String nullArgument) {
-        MemberCreateRequest memberCreateRequest
-                = new MemberCreateRequest(nullArgument, "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequest =
+                new MemberCreateRequest(nullArgument, "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
         Set<ConstraintViolation<MemberCreateRequest>> constraintViolations = validator.validate(memberCreateRequest);
 
         then(constraintViolations)
@@ -87,8 +87,8 @@ class MemberCreateRequestTest {
             "!!Password", "!!password12", "!!PASSWORD12", "!비밀!pass1234"})
     @DisplayName("올바르지 않은 양식의 비밀번호일 경우, 예외가 발생합니다.")
     void create_throw_exception_with_invalid_password(String invalidPassword) {
-        MemberCreateRequest memberCreateRequest
-                = new MemberCreateRequest("alias", invalidPassword, "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequest =
+                new MemberCreateRequest("alias", invalidPassword, "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
         Set<ConstraintViolation<MemberCreateRequest>> constraintViolations = validator.validate(memberCreateRequest);
 
         then(constraintViolations)
@@ -100,8 +100,8 @@ class MemberCreateRequestTest {
     @NullSource
     @DisplayName("null일 경우, 예외가 발생합니다.")
     void create_throw_exception_with_null_password(String nullArgument) {
-        MemberCreateRequest memberCreateRequest
-                = new MemberCreateRequest("alias", nullArgument, "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequest =
+                new MemberCreateRequest("alias", nullArgument, "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
         Set<ConstraintViolation<MemberCreateRequest>> constraintViolations = validator.validate(memberCreateRequest);
 
         then(constraintViolations)
@@ -113,8 +113,8 @@ class MemberCreateRequestTest {
     @ValueSource(strings = {"김", "박하늘별님구름햇님보다사랑스러우리님", "엄 이", "엄~", "abc"})
     @DisplayName("유효하지 않은 이름은 예외를 발생시킵니다.")
     void create_throw_exception_with_invalid_name(String invalidName) {
-        MemberCreateRequest memberCreateRequest
-                = new MemberCreateRequest("alias", "Password123!!", invalidName, "email@email.com", "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequest =
+                new MemberCreateRequest("alias", "Password123!!", invalidName, "email@email.com", "010-1111-2222", LocalDateTime.now());
         Set<ConstraintViolation<MemberCreateRequest>> constraintViolations = validator.validate(memberCreateRequest);
 
         then(constraintViolations)
@@ -126,8 +126,8 @@ class MemberCreateRequestTest {
     @NullSource
     @DisplayName("null일 경우, 예외가 발생합니다.")
     void create_throw_exception_with_null_name(String nullArgument) {
-        MemberCreateRequest memberCreateRequest
-                = new MemberCreateRequest("alias", "Password123!!", nullArgument, "email@email.com", "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequest =
+                new MemberCreateRequest("alias", "Password123!!", nullArgument, "email@email.com", "010-1111-2222", LocalDateTime.now());
         Set<ConstraintViolation<MemberCreateRequest>> constraintViolations = validator.validate(memberCreateRequest);
 
         then(constraintViolations)
@@ -139,8 +139,8 @@ class MemberCreateRequestTest {
     @ValueSource(strings = {"id.domain", "id.domain.com", "id@domain..com", "id@domain@com", "a\"b(c)d,e:f;g<h>i[j\\k]l@example.com"})
     @DisplayName("올바르지 않은 형식의 이메일일 경우, 예외가 발생합니다")
     void create_throw_exception_with_invalid_email(String invalidEmail) {
-        MemberCreateRequest memberCreateRequest
-                = new MemberCreateRequest("alias", "Password123!!", "이름", invalidEmail, "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequest =
+                new MemberCreateRequest("alias", "Password123!!", "이름", invalidEmail, "010-1111-2222", LocalDateTime.now());
         Set<ConstraintViolation<MemberCreateRequest>> constraintViolations = validator.validate(memberCreateRequest);
 
         then(constraintViolations)
@@ -152,8 +152,8 @@ class MemberCreateRequestTest {
     @NullAndEmptySource
     @DisplayName("null 또는 아무것도 입력하지 않을 경우, 예외가 발생합니다")
     void create_throw_exception_with_null_email(String nullArgument) {
-        MemberCreateRequest memberCreateRequest
-                = new MemberCreateRequest("alias", "Password123!!", "이름", nullArgument, "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequest =
+                new MemberCreateRequest("alias", "Password123!!", "이름", nullArgument, "010-1111-2222", LocalDateTime.now());
         Set<ConstraintViolation<MemberCreateRequest>> constraintViolations = validator.validate(memberCreateRequest);
 
         then(constraintViolations)
@@ -166,8 +166,8 @@ class MemberCreateRequestTest {
             "010-1-3333", "010-11111-3333", "010-2222-7", "010-2222-77777"})
     @DisplayName("유효하지 않은 형식의 핸드폰 번호는 예외를 발생시킵니다.")
     void create_throw_exception_with_invalid_phone(String invalidPhone) {
-        MemberCreateRequest memberCreateRequest
-                = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", invalidPhone, LocalDateTime.now());
+        MemberCreateRequest memberCreateRequest =
+                new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", invalidPhone, LocalDateTime.now());
         Set<ConstraintViolation<MemberCreateRequest>> constraintViolations = validator.validate(memberCreateRequest);
 
         then(constraintViolations)
@@ -179,8 +179,8 @@ class MemberCreateRequestTest {
     @NullSource
     @DisplayName("null일 경우, 예외가 발생합니다.")
     void create_throw_exception_with_null_phone(String nullArgument) {
-        MemberCreateRequest memberCreateRequest
-                = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", nullArgument, LocalDateTime.now());
+        MemberCreateRequest memberCreateRequest =
+                new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", nullArgument, LocalDateTime.now());
         Set<ConstraintViolation<MemberCreateRequest>> constraintViolations = validator.validate(memberCreateRequest);
 
         then(constraintViolations)
@@ -191,8 +191,8 @@ class MemberCreateRequestTest {
     @ParameterizedTest
     @NullSource
     void create_throws_exception_with_null_created_date_time(LocalDateTime createdDateTime) {
-        MemberCreateRequest memberCreateRequest
-                = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", createdDateTime);
+        MemberCreateRequest memberCreateRequest =
+                new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", createdDateTime);
         Set<ConstraintViolation<MemberCreateRequest>> constraintViolations = validator.validate(memberCreateRequest);
 
         then(constraintViolations)
