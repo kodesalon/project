@@ -111,7 +111,7 @@ class JwtManagerTest {
     @NullAndEmptySource
     @DisplayName("jwt 토큰이 없거나 빈 문자열일 경우 예외를 발생시킨다.")
     void validateToken_throw_exception_with_null_and_empty_token(String invalidJwtToken) {
-        thenThrownBy(() -> jwtManager.validateToen(invalidJwtToken))
+        thenThrownBy(() -> jwtManager.validateToken(invalidJwtToken))
                 .isInstanceOf(JwtException.class)
                 .hasMessage(INVALID_JWT_TOKEN);
     }
