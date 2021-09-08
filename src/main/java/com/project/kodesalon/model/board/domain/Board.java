@@ -30,7 +30,7 @@ public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
+    @Column(name = "board_id", updatable = false)
     private Long id;
 
     @Embedded
@@ -40,10 +40,10 @@ public class Board extends BaseEntity {
     private Content content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
+    @JoinColumn(name = "member_id", nullable = false, updatable = false)
     private Member writer;
 
-    @Column(nullable = false, name = "deleted", columnDefinition = "boolean default false")
+    @Column(name = "deleted", nullable = false, columnDefinition = "bit default 0")
     private boolean deleted;
 
     public Board(final String title, final String content, final Member writer, final LocalDateTime createdDateTime) {
@@ -51,6 +51,7 @@ public class Board extends BaseEntity {
         this.content = new Content(content);
         this.writer = writer;
         this.createdDateTime = createdDateTime;
+        this.lastModifiedDateTime = createdDateTime;
         this.writer.addBoard(this);
     }
 

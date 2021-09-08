@@ -1,8 +1,6 @@
 package com.project.kodesalon.model.board.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.kodesalon.common.GlobalExceptionHandler;
-import com.project.kodesalon.config.JacksonConfiguration;
+import com.project.kodesalon.config.AbstractControllerTest;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
@@ -12,21 +10,13 @@ import com.project.kodesalon.model.board.service.dto.MultiBoardSelectResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -49,7 +39,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -63,13 +52,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(JacksonConfiguration.class)
-@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-public class BoardControllerTest {
-
+public class BoardControllerTest extends AbstractControllerTest {
     private final BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(LocalDateTime.now());
     private final BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
-    private MockMvc mockMvc;
 
     @InjectMocks
     private BoardController boardController;
@@ -77,15 +62,9 @@ public class BoardControllerTest {
     @Mock
     private BoardService boardService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @BeforeEach
-    void setUp(RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(boardController)
-                .apply(documentationConfiguration(restDocumentation))
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
+    @Override
+    protected Object setController() {
+        return boardController;
     }
 
     @Test
@@ -274,7 +253,7 @@ public class BoardControllerTest {
     @ParameterizedTest
     @NullAndEmptySource
     @DisplayName("제목이 존재하지 않을 경우 400 Http 상태와 예외 코드를 응답합니다")
-    public void update_throw_exception_with_invalid_title(String nullAndEmptyTitle) throws Exception {
+    void update_throw_exception_with_invalid_title(String nullAndEmptyTitle) throws Exception {
         BoardUpdateRequest boardUpdateRequest
                 = new BoardUpdateRequest(nullAndEmptyTitle, "update content", LocalDateTime.now());
 

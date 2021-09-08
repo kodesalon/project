@@ -2,6 +2,7 @@ package com.project.kodesalon.model.authentication.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.kodesalon.common.GlobalExceptionHandler;
+import com.project.kodesalon.config.AbstractControllerTest;
 import com.project.kodesalon.model.authentication.service.AuthenticationTokenService;
 import com.project.kodesalon.model.authentication.service.dto.JwtResponse;
 import com.project.kodesalon.model.authentication.service.dto.LoginRequest;
@@ -41,15 +42,12 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-public class AuthenticationTokenControllerTest {
+public class AuthenticationTokenControllerTest extends AbstractControllerTest {
 
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final LoginResponse loginResponse = new LoginResponse("access token", "refresh token", 1L, "alias");
     private final TokenRefreshRequest tokenRefreshRequest = new TokenRefreshRequest("refresh token");
     private final JwtResponse jwtResponse = new JwtResponse("accessToken", "refreshToken");
-
-    private MockMvc mockMvc;
 
     @InjectMocks
     private AuthenticationTokenController authenticationTokenController;
@@ -57,15 +55,9 @@ public class AuthenticationTokenControllerTest {
     @Mock
     private AuthenticationTokenService authenticationTokenService;
 
-    ObjectMapper objectMapper = new ObjectMapper();
-
-    @BeforeEach
-    void setUp(RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(authenticationTokenController)
-                .addFilter(new CharacterEncodingFilter("UTF-8", true))
-                .apply(documentationConfiguration(restDocumentation))
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
+    @Override
+    protected Object setController() {
+        return authenticationTokenController;
     }
 
     @Test
