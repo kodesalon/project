@@ -34,6 +34,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class AuthenticationTokenServiceTest {
+
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final TokenRefreshRequest tokenRefreshRequest = new TokenRefreshRequest("refreshToken");
 

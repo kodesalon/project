@@ -13,6 +13,7 @@ import static com.project.kodesalon.common.ErrorCode.INVALID_BOARD_TITLE;
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Title {
+
     public static final int TITLE_LENGTH_MAX_BOUND = 30;
 
     @Column(length = TITLE_LENGTH_MAX_BOUND, nullable = false)

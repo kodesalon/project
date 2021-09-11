@@ -6,23 +6,31 @@ import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
+import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
+import com.project.kodesalon.model.board.service.dto.MultiBoardSelectResponse;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.service.MemberService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
+import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -30,6 +38,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardServiceTest {
+
     private final BoardUpdateRequest BOARD_UPDATE_REQUEST = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
 
     @InjectMocks
@@ -89,5 +98,37 @@ public class BoardServiceTest {
         thenThrownBy(() -> boardService.updateBoard(member.getId(), 1L, BOARD_UPDATE_REQUEST))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(NOT_EXIST_BOARD);
+    }
+
+    @Test
+    @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물을 조회하고 단일 게시물 조회 응답 DTO를 반환한다.")
+    void selectBoard() {
+        given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.of(board));
+        given(board.getWriter()).willReturn(member);
+        given(member.getId()).willReturn(1L);
+
+        BoardSelectResponse boardSelectResponse = boardService.selectBoard(1L);
+
+        then(boardSelectResponse).isNotNull();
+        verify(boardRepository).selectBoardById(anyLong());
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"1, false", "10, true"})
+    @DisplayName("마지막 게시물 식별 번호를 전달 받아 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
+    void selectBoards(int size, boolean last) {
+        List<Board> boards = Arrays.asList(board, board);
+        given(board.getId()).willReturn(1L);
+        given(board.getTitle()).willReturn("게시물 제목");
+        given(board.getContent()).willReturn("게시물 내용");
+        given(board.getWriter()).willReturn(member);
+        given(member.getId()).willReturn(1L);
+        given(member.getAlias()).willReturn("alias");
+        given(boardRepository.selectBoards(anyLong(), anyInt())).willReturn(boards);
+
+        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectBoards(10L, size);
+
+        then(multiBoardSelectResponse.getBoards()).isNotNull();
+        then(multiBoardSelectResponse.isLast()).isEqualTo(last);
     }
 }

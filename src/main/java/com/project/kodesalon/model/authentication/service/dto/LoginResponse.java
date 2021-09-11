@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginResponse {
+
     private String accessToken;
     private String refreshToken;
     private Long memberId;

@@ -81,7 +81,7 @@ public class Board extends BaseEntity {
         this.deletedDateTime = deletedDateTime;
     }
 
-    public void updateTitleAndContent(Long memberId, Title updatedTitle, Content updatedContent, LocalDateTime lastModifiedDateTime) {
+    public void updateTitleAndContent(final Long memberId, final Title updatedTitle, final Content updatedContent, final LocalDateTime lastModifiedDateTime) {
         validateAuthorizationOf(memberId);
         this.title = updatedTitle;
         this.content = updatedContent;
@@ -95,8 +95,7 @@ public class Board extends BaseEntity {
         }
     }
 
-    private boolean isSameWriterId(Long memberId) {
+    private boolean isSameWriterId(final Long memberId) {
         return writer.getId().equals(memberId);
     }
 }
-

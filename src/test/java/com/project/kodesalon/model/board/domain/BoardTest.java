@@ -21,6 +21,7 @@ import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class BoardTest {
+
     public static final Board TEST_BOARD = new Board("게시물 제목", "게시물 내용", TEST_MEMBER, LocalDateTime.now());
 
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
@@ -39,7 +40,7 @@ public class BoardTest {
     }
 
     @Test
-    @DisplayName("게시물의 제목, 내용, 작성자, 생성 시간, 삭제 여부를 반환한다.")
+    @DisplayName("게시물의 제목, 내용, 작성자, 생성 시간, 수정 시간, 삭제 여부를 반환한다.")
     void getter() {
         softly.then(board.getTitle()).isEqualTo("게시물 제목");
         softly.then(board.getContent()).isEqualTo("게시물 내용");

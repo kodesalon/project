@@ -22,12 +22,13 @@ import static com.project.kodesalon.model.board.domain.vo.Title.TITLE_LENGTH_MAX
 import static org.assertj.core.api.BDDAssertions.then;
 
 public class BoardUpdateRequestTest {
+
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
 
     @Test
-    @DisplayName("수정할 게시물의 식별자, 변경할 게시물 제목, 변경할 게시물 내용을 반환합니다")
+    @DisplayName("수정할 게시물의 식별 번호, 변경할 게시물 제목, 변경할 게시물 내용을 반환합니다")
     void getter() {
         LocalDateTime lastModifiedDateTime = LocalDateTime.now();
         BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("update title", "update content", lastModifiedDateTime);

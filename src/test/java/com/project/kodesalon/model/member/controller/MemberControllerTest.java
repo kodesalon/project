@@ -5,6 +5,7 @@ import com.project.kodesalon.model.member.service.MemberService;
 import com.project.kodesalon.model.member.service.dto.ChangePasswordRequest;
 import com.project.kodesalon.model.member.service.dto.CreateMemberRequest;
 import com.project.kodesalon.model.member.service.dto.DeleteMemberRequest;
+import com.project.kodesalon.model.member.service.dto.SelectMemberOwnBoardResponse;
 import com.project.kodesalon.model.member.service.dto.SelectMemberResponse;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +22,8 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 
 import static com.project.kodesalon.common.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.common.ErrorCode.DUPLICATED_PASSWORD;
@@ -51,6 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class MemberControllerTest extends AbstractControllerTest {
+
     private final CreateMemberRequest createMemberRequest =
             new CreateMemberRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
     private final ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("ChangePassword1!", LocalDateTime.now());
@@ -73,7 +77,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isOk())
-                .andDo(document("join/success",
+                .andDo(document("member/join/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -98,7 +102,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(ALREADY_EXIST_MEMBER_ALIAS))
-                .andDo(document("join/fail/existing-alias",
+                .andDo(document("member/join/fail/existing-alias",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("이미 존재하는 아이디에 대한 예외 코드"))));
@@ -115,7 +119,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidAlias)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_ALIAS))
-                .andDo(document("join/fail/invalid-alias",
+                .andDo(document("member/join/fail/invalid-alias",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 아이디에 대한 예외 코드"))));
@@ -132,7 +136,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidPassword)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PASSWORD))
-                .andDo(document("join/fail/invalid-password",
+                .andDo(document("member/join/fail/invalid-password",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호에 대한 예외 코드"))));
@@ -149,7 +153,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidName)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_NAME))
-                .andDo(document("join/fail/invalid-name",
+                .andDo(document("member/join/fail/invalid-name",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 이름에 대한 예외 코드"))));
@@ -166,7 +170,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidEmail)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_EMAIL))
-                .andDo(document("join/fail/invalid-email",
+                .andDo(document("member/join/fail/invalid-email",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 이메일에 대한 예외 코드"))));
@@ -183,7 +187,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequestWithInvalidPhone)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PHONE))
-                .andDo(document("join/fail/invalid-phone",
+                .andDo(document("member/join/fail/invalid-phone",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 핸드폰 번호에 대한 예외 코드"))));
@@ -201,7 +205,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(ALREADY_EXIST_MEMBER_ALIAS))
-                .andDo(document("join/fail/deleted-alias",
+                .andDo(document("member/join/fail/deleted-alias",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("이미 삭제된 회원 어아다에 대한 회원 가입 예외 코드"))));
@@ -219,7 +223,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(createMemberRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
-                .andDo(document("join/fail/null-created-date-time",
+                .andDo(document("member/join/fail/null-created-date-time",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("회원 가입 시간이 없는 경우에 대한 예외 코드"))));
@@ -228,8 +232,10 @@ public class MemberControllerTest extends AbstractControllerTest {
     @Test
     @DisplayName("존재하는 회원을 조회하면 200 상태를 response 합니다.")
     void select_exist_member_response_success() throws Exception {
+        List<SelectMemberOwnBoardResponse> ownBoards =
+                Collections.singletonList(new SelectMemberOwnBoardResponse(1L, "게시물 제목", "게시물 내용", LocalDateTime.now()));
         given(memberService.selectMember(any()))
-                .willReturn(new SelectMemberResponse("alias", "이름", "email@email.com", "010-1111-2222"));
+                .willReturn(new SelectMemberResponse("alias", "이름", "email@email.com", "010-1111-2222", ownBoards));
 
         mockMvc.perform(get("/api/v1/members")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -238,13 +244,18 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.name").value("이름"))
                 .andExpect(jsonPath("$.email").value("email@email.com"))
                 .andExpect(jsonPath("$.phone").value("010-1111-2222"))
-                .andDo(document("select/success",
+                .andDo(document("member/select/success",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 회원의 아이디"),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("조회한 회원의 이름"),
                                 fieldWithPath("email").type(JsonFieldType.STRING).description("조회한 회원의 이메일"),
-                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 회원의 핸드폰 번호"))));
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 회원의 핸드폰 번호"),
+                                fieldWithPath("ownBoards[].boardId").type(JsonFieldType.NUMBER).description("회원이 올린 게시물 식별 번호"),
+                                fieldWithPath("ownBoards[].title").type(JsonFieldType.STRING).description("회원이 올린 게시물 제목"),
+                                fieldWithPath("ownBoards[].content").type(JsonFieldType.STRING).description("회원이 올린 게시물 내용"),
+                                fieldWithPath("ownBoards[].createdDateTime").type(JsonFieldType.ARRAY).description("회원이 올린 게시물 생성 날짜")
+                        )));
     }
 
     @Test
@@ -254,7 +265,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(changePasswordRequest))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(document("changePassword/success",
+                .andDo(document("member/change-password/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -273,14 +284,14 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(changePasswordRequestWithInvalidPassword)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_MEMBER_PASSWORD))
-                .andDo(document("changePassword/fail/invalid-password",
+                .andDo(document("member/change-password/fail/invalid-password",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("유효하지 않은 비밀번호에 대한 예외 코드"))));
     }
 
     @Test
-    @DisplayName("비밀번호 변경시, 변경하려는 회원 식별자가 없는 경우 400 상태 + 예외 코드를 반환합니다.")
+    @DisplayName("비밀번호 변경시, 변경하려는 회원 식별 번호가 없는 경우 400 상태 + 예외 코드를 반환합니다.")
     void failed_change_password_with_member_id_not_exist() throws Exception {
         ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("Password123!!", LocalDateTime.now());
         willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER))
@@ -292,7 +303,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(changePasswordRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_EXIST_MEMBER))
-                .andDo(document("changePassword/fail/no-member",
+                .andDo(document("member/change-password/fail/no-member",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 회원에 대한 예외 코드"))));
@@ -311,7 +322,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(changePasswordRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(DUPLICATED_PASSWORD))
-                .andDo(document("changePassword/fail/password-duplicate",
+                .andDo(document("member/change-password/fail/password-duplicate",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("기존 비밀번호와 일치할 경우에 대한 예외 코드"))));
@@ -328,14 +339,14 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .content(objectMapper.writeValueAsString(changePasswordRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
-                .andDo(document("changePassword/fail/null-last-modified-date-time",
+                .andDo(document("member/change-password/fail/null-last-modified-date-time",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("마지막으로 수정된 시간이 없을 경우에 대한 예외 코드"))));
     }
 
     @Test
-    @DisplayName("회원의 식별자를 전달받아 회원을 탈퇴하고 200 상태 + 성공 메세지를 반환합니다.")
+    @DisplayName("회원의 식별 번호를 전달받아 회원을 탈퇴하고 200 상태 + 성공 메세지를 반환합니다.")
     void deleteMember() throws Exception {
         DeleteMemberRequest deleteMemberRequest = new DeleteMemberRequest(LocalDateTime.now());
 
@@ -343,7 +354,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(deleteMemberRequest)))
                 .andExpect(status().isOk())
-                .andDo(document("delete/success",
+                .andDo(document("member/delete/success",
                         getDocumentRequest(),
                         requestFields(
                                 fieldWithPath("deletedDateTime").type(JsonFieldType.STRING).description("회원 탈퇴 시간"))));
@@ -359,7 +370,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(deleteMemberRequest)))
                 .andExpect(status().isBadRequest())
-                .andDo(document("delete/fail/null-deleted-date-time",
+                .andDo(document("member/delete/fail/null-deleted-date-time",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("회원 탈퇴 시간이 없는 경우에 대한 예외 코드"))));
@@ -375,7 +386,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(EXPIRED_JWT_TOKEN))
-                .andDo(document("jwt/expired",
+                .andDo(document("member/jwt/expired",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").description("만료 JWT 토큰에 대한 예외 코드"))));
@@ -391,7 +402,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_JWT_TOKEN))
-                .andDo(document("jwt/invalid",
+                .andDo(document("member/jwt/invalid",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").description("유효하지 않은 JWT 토큰에 대한 예외 코드"))));
@@ -407,7 +418,7 @@ public class MemberControllerTest extends AbstractControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_HEADER))
-                .andDo(document("jwt/invalid-header",
+                .andDo(document("member/jwt/invalid-header",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").description("Header에 Authorization 속성이 없을 경우에 대한 예외 코드"))));

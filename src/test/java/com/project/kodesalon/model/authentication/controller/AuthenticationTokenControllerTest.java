@@ -32,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class AuthenticationTokenControllerTest extends AbstractControllerTest {
+
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final LoginResponse loginResponse = new LoginResponse("access token", "refresh token", 1L, "alias");
     private final TokenRefreshRequest tokenRefreshRequest = new TokenRefreshRequest("refresh token");
@@ -49,17 +50,17 @@ public class AuthenticationTokenControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @DisplayName("로그인 성공하면 회원 식별자, 별명을 담은 DTO을 Http 200으로 응답합니다.")
+    @DisplayName("로그인 성공하면 회원 식별 번호, 별명을 담은 DTO을 Http 200으로 응답합니다.")
     void login_success() throws Exception {
         given(authenticationTokenService.login(any(LoginRequest.class))).willReturn(loginResponse);
 
-        this.mockMvc.perform(post("/api/v1/auth/login")
+        mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(1L))
                 .andExpect(jsonPath("$.alias").value("alias"))
-                .andDo(document("login/success",
+                .andDo(document("auth/login/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -79,13 +80,13 @@ public class AuthenticationTokenControllerTest extends AbstractControllerTest {
         given(authenticationTokenService.login(any(LoginRequest.class)))
                 .willThrow(new IllegalArgumentException(INCORRECT_PASSWORD));
 
-        this.mockMvc.perform(post("/api/v1/auth/login")
+        mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INCORRECT_PASSWORD))
-                .andDo(document("login/fail/mismatch_password",
+                .andDo(document("auth/login/fail/mismatch-password",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -102,13 +103,13 @@ public class AuthenticationTokenControllerTest extends AbstractControllerTest {
         given(authenticationTokenService.login(any(LoginRequest.class)))
                 .willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS));
 
-        this.mockMvc.perform(post("/api/v1/auth/login")
+        mockMvc.perform(post("/api/v1/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(loginRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_EXIST_MEMBER_ALIAS))
-                .andDo(document("login/fail/no_alias",
+                .andDo(document("auth/login/fail/no-alias",
                         getDocumentResponse(),
                         responseFields(
                                 fieldWithPath("code").type(JsonFieldType.STRING).description("존재하지 않는 아이디에 대한 예외 코드"))));
@@ -119,14 +120,14 @@ public class AuthenticationTokenControllerTest extends AbstractControllerTest {
     void refresh_success() throws Exception {
         given(authenticationTokenService.reissueAccessAndRefreshToken(any(TokenRefreshRequest.class))).willReturn(jwtResponse);
 
-        this.mockMvc.perform(post("/api/v1/auth/refreshtoken")
+        mockMvc.perform(post("/api/v1/auth/refreshtoken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(tokenRefreshRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value("accessToken"))
                 .andExpect(jsonPath("$.refreshToken").value("refreshToken"))
-                .andDo(document("refreshtoken/success",
+                .andDo(document("auth/refreshtoken/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -142,12 +143,12 @@ public class AuthenticationTokenControllerTest extends AbstractControllerTest {
     void refresh_fail_no_existing_or_expired_token() throws Exception {
         given(authenticationTokenService.reissueAccessAndRefreshToken(any(TokenRefreshRequest.class))).willThrow(new JwtException(INVALID_JWT_TOKEN));
 
-        this.mockMvc.perform(post("/api/v1/auth/refreshtoken")
+        mockMvc.perform(post("/api/v1/auth/refreshtoken")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(tokenRefreshRequest))
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andDo(document("refreshtoken/fail",
+                .andDo(document("auth/refreshtoken/fail",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(

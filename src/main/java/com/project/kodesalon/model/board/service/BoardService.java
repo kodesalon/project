@@ -6,7 +6,9 @@ import com.project.kodesalon.model.board.domain.vo.Title;
 import com.project.kodesalon.model.board.repository.BoardRepository;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
+import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
+import com.project.kodesalon.model.board.service.dto.MultiBoardSelectResponse;
 import com.project.kodesalon.model.member.domain.Member;
 import com.project.kodesalon.model.member.service.MemberService;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +16,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.project.kodesalon.common.ErrorCode.NOT_EXIST_BOARD;
 
 @Slf4j
 @Service
 public class BoardService {
+
     private final BoardRepository boardRepository;
     private final MemberService memberService;
 
@@ -42,26 +47,40 @@ public class BoardService {
         board.delete(memberId, boardDeleteRequest.getDeletedDateTime());
     }
 
-    private Board findById(final Long boardId) {
-        return boardRepository.findById(boardId)
+    @Transactional(readOnly = true)
+    public BoardSelectResponse selectBoard(final Long boardId) {
+        Board board = boardRepository.selectBoardById(boardId)
                 .orElseThrow(() -> {
                     log.info("존재하지 않는 게시물 식별자 boardId : {}", boardId);
                     throw new EntityNotFoundException(NOT_EXIST_BOARD);
                 });
+
+        return new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias());
+    }
+
+    @Transactional(readOnly = true)
+    public MultiBoardSelectResponse selectBoards(final Long lastBoardId, final int size) {
+        List<Board> boards = boardRepository.selectBoards(lastBoardId, size);
+
+        List<BoardSelectResponse> boardSelectResponses = boards.stream()
+                .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias()))
+                .collect(Collectors.toList());
+
+        return new MultiBoardSelectResponse(boardSelectResponses, size);
     }
 
     @Transactional
     public void updateBoard(Long memberId, final Long boardId, final BoardUpdateRequest boardUpdateRequest) {
         Title updateTitle = new Title(boardUpdateRequest.getTitle());
         Content updateContent = new Content(boardUpdateRequest.getContent());
-        Board updatedBoard = findBoardById(boardId);
+        Board updatedBoard = findById(boardId);
         updatedBoard.updateTitleAndContent(memberId, updateTitle, updateContent, boardUpdateRequest.getLastModifiedDateTime());
     }
 
-    private Board findBoardById(final Long boardId) {
+    private Board findById(final Long boardId) {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> {
-                    log.info("게시물 수정 단계에서 존재하지 않는 게시물 식별자 boardId : {}", boardId);
+                    log.info("존재하지 않는 게시물 식별자 boardId : {}", boardId);
                     throw new EntityNotFoundException(NOT_EXIST_BOARD);
                 });
     }

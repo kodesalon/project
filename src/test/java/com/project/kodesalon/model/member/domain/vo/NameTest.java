@@ -11,6 +11,7 @@ import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 
 
 public class NameTest {
+
     @ParameterizedTest
     @ValueSource(strings = {"김씨", "박하늘별님구름햇님보다사랑스러우리"})
     @DisplayName("value 메서드를 호출하면 이름을 리턴합니다.")

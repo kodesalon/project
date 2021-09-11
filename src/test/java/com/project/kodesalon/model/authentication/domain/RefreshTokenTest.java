@@ -15,6 +15,7 @@ import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 public class RefreshTokenTest {
+
     private final LocalDateTime expiryDate = LocalDateTime.now();
     private RefreshToken refreshToken;
 
@@ -44,7 +45,7 @@ public class RefreshTokenTest {
     @Test
     @DisplayName("인자로 받은 시간과 토큰 만료시간을 비교하여 토큰이 만료되었을 경우, 예외를 발생시킨다.")
     void validate_throw_exception_with_expired_time() {
-        LocalDateTime now = LocalDateTime.now().minus(expiryDate.getNano(), ChronoUnit.NANOS);
+        LocalDateTime now = LocalDateTime.now().plus(expiryDate.getNano(), ChronoUnit.NANOS);
         thenThrownBy(() -> refreshToken.validateExpiryDate(now))
                 .isInstanceOf(JwtException.class)
                 .hasMessage(INVALID_JWT_TOKEN);
