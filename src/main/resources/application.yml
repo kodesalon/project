@@ -68,3 +68,4 @@ spring:
     hikari:
       auto-commit: true
 
+
