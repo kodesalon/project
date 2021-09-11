@@ -1,9 +1,9 @@
 package com.project.kodesalon.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.kodesalon.common.GlobalExceptionHandler;
-import com.project.kodesalon.common.argumentresolver.LoginMemberArgumentResolver;
-import com.project.kodesalon.common.interceptor.LoginInterceptor;
+import com.project.kodesalon.config.argumentresolver.LoginMemberArgumentResolver;
+import com.project.kodesalon.config.interceptor.LoginInterceptor;
+import com.project.kodesalon.exception.GlobalExceptionHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
