@@ -1,5 +1,6 @@
 package com.project.kodesalon.controller.board;
 
+import com.project.kodesalon.config.AbstractControllerTest;
 import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.service.board.BoardService;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;

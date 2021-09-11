@@ -1,14 +1,12 @@
 package com.project.kodesalon.repository.board;
 
-import com.project.kodesalon.domain.board.Board;
-import com.project.kodesalon.domain.member.Member;
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.project.kodesalon.config.DBUnitTestConfiguration;
-import com.project.kodesalon.model.board.domain.Board;
+import com.project.kodesalon.domain.board.Board;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
-class BoardRepositoryTest {
 @ActiveProfiles(profiles = "test")
 @Import(DBUnitTestConfiguration.class)
 @DbUnitConfiguration(databaseConnection = "dbUnitDatabaseConnection")
@@ -35,10 +32,13 @@ class BoardRepositoryTest {
 @DatabaseSetup(value = "classpath:boardRepositoryTestDataSet.xml", type = DatabaseOperation.CLEAN_INSERT)
 @DatabaseTearDown(value = "classpath:boardRepositoryTestDataSet.xml", type = DatabaseOperation.DELETE_ALL)
 @TestExecutionListeners({DbUnitTestExecutionListener.class, DependencyInjectionTestExecutionListener.class})
-public class BoardRepositoryTest {
+class BoardRepositoryTest {
 
     @Autowired
     private EntityManagerFactory entityManagerFactory;
+
+    @Autowired
+    private BoardRepository boardRepository;
 
     private PersistenceUnitUtil persistenceUnitUtil;
 

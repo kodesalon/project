@@ -1,5 +1,6 @@
 package com.project.kodesalon.controller.member;
 
+import com.project.kodesalon.config.AbstractControllerTest;
 import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
 import com.project.kodesalon.service.dto.request.MemberCreateRequest;
 import com.project.kodesalon.service.dto.request.MemberDeleteRequest;

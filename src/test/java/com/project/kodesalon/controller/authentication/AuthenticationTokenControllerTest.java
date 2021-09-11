@@ -1,5 +1,6 @@
 package com.project.kodesalon.controller.authentication;
 
+import com.project.kodesalon.config.AbstractControllerTest;
 import com.project.kodesalon.service.authentication.AuthenticationTokenService;
 import com.project.kodesalon.service.dto.request.LoginRequest;
 import com.project.kodesalon.service.dto.request.TokenRefreshRequest;
