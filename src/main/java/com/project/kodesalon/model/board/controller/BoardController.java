@@ -4,19 +4,15 @@ import com.project.kodesalon.common.annotation.Login;
 import com.project.kodesalon.model.board.service.BoardService;
 import com.project.kodesalon.model.board.service.dto.BoardCreateRequest;
 import com.project.kodesalon.model.board.service.dto.BoardDeleteRequest;
-import com.project.kodesalon.model.board.service.dto.BoardSelectResponse;
 import com.project.kodesalon.model.board.service.dto.BoardUpdateRequest;
-import com.project.kodesalon.model.board.service.dto.MultiBoardSelectResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -24,8 +20,6 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "/api/v1/boards")
 public class BoardController {
-
-    public static final String BOARD_ID_MAX = "9223372036854775807";
 
     private final BoardService boardService;
 
@@ -51,15 +45,15 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{boardId}")
-    public ResponseEntity<BoardSelectResponse> selectBoard(@PathVariable final Long boardId) {
-        BoardSelectResponse boardSelectResponse = boardService.selectBoard(boardId);
-        return ResponseEntity.ok().body(boardSelectResponse);
+    @PostMapping(value = "/boardss")
+    public ResponseEntity<HttpStatus> save2(@RequestBody final BoardCreateRequest boardCreateRequest) {
+        System.out.println(boardCreateRequest.getCreatedDateTime());
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
-    @GetMapping
-    public ResponseEntity<MultiBoardSelectResponse> selectBoards(@RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final int size) {
-        MultiBoardSelectResponse boardSelectMultiResponse = boardService.selectBoards(lastBoardId, size);
-        return ResponseEntity.ok().body(boardSelectMultiResponse);
+    @PostMapping(value = "/boardss")
+    public ResponseEntity<HttpStatus> save2(@RequestBody final BoardCreateRequest boardCreateRequest) {
+        System.out.println(boardCreateRequest.getCreatedDateTime());
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 }
