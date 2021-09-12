@@ -11,6 +11,12 @@ spring:
 ---
 
 spring:
+  group:
+    ci: common, local, test
+
+---
+
+spring:
   config:
     activate:
       on-profile: local
@@ -59,3 +65,13 @@ cloud:
       auto: false
     region:
       static: ap-northeast-2
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: ci
+  datasource:
+    url: jdbc:mysql://db:3306/kodesalon?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
