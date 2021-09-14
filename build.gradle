@@ -98,8 +98,11 @@ jacocoTestCoverageVerification {
                 minimum = 0.80
             }
 
-            excludes = ['com.project.kodesalon.common.config.WebConfig',
-                        'com.project.kodesalon.common.ErrorCode',
+            excludes = ['com.project.kodesalon.exception.GlobalExceptionHandler',
+                        'com.project.kodesalon.service.FileService',
+                        'com.project.kodesalon.config.AmazonS3Config',
+                        'com.project.kodesalon.config.WebConfig',
+                        'com.project.kodesalon.config.AsyncConfig',
                         'com.project.kodesalon.KodesalonApplication']
         }
     }

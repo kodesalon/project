@@ -22,6 +22,12 @@ spring:
 ---
 
 spring:
+  group:
+    ci: common, local, test
+
+---
+
+spring:
   config:
     activate:
       on-profile: common
@@ -89,3 +95,13 @@ spring:
     hikari:
       auto-commit: true
 
+
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: ci
+  datasource:
+    url: jdbc:mysql://db:3306/kodesalon?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
