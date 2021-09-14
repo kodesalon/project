@@ -22,6 +22,8 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.PersistenceUnitUtil;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
@@ -73,16 +75,5 @@ class MemberRepositoryTest {
         Optional<Member> notPresentMember = memberRepository.findMemberByAlias(new Alias("notAlias"));
 
         then(notPresentMember).isEmpty();
-    }
-
-    @Test
-    @DisplayName("회원 식별 번호를 입력받아 회원 정보와 회원이 올린 게시물 정보와 조인하여 반환한다")
-    void findMemberById() {
-        Optional<Member> selectedMember = memberRepository.selectMemberById(1L);
-
-        List<Board> boards = selectedMember.get().getBoards();
-
-        boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board)).isTrue());
-        softly.assertAll();
     }
 }

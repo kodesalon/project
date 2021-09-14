@@ -7,7 +7,6 @@ import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
 import com.project.kodesalon.config.DBUnitTestConfiguration;
 import com.project.kodesalon.domain.board.Board;
-import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,9 +22,9 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @DataJpaTest
 @ActiveProfiles(profiles = "test")
@@ -86,17 +85,8 @@ class BoardRepositoryTest {
     @DisplayName("마지막으로 조회한 게시물 번호, 조회할 게시물 수를 입력받아 다음이 게시물이 존재하지 않을 경우 조회한 게시물과 이미지를 조인하여 반환한다.")
     void selectBoards_doesnt_have_next() {
         int boardToBeSelectedAtOnce = 10;
-        List<Board> boards = boardRepository.selectBoards(10L, boardToBeSelectedAtOnce);
-        for (int board_number = 0; board_number < boardToBeSelectedAtOnce - 1; board_number++) {
-            Board board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
-            Image image = new Image("localhost:8080/bucket/directory/image" + UUID.randomUUID() + ".jpeg", board);
-            boardRepository.save(board);
-            entityManager.persist(image);
-        }
-        entityManager.flush();
-        entityManager.clear();
 
-        List<Board> boards = boardRepository.selectBoards(Long.MAX_VALUE, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(10L, boardToBeSelectedAtOnce);
 
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce - 1);
         boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue());
@@ -106,20 +96,9 @@ class BoardRepositoryTest {
     @Test
     @DisplayName("회원 식별 번호, 마지막으로 조회한 게시물 번호, 조회할 게시물 수를 입력받아 다음으로 회원이 올린 게시물이 존재할 경우 입력 크기보다 하나 많은 게시물과 이미지를 조인하여 반환한다.")
     void selectMyBoards_has_next() {
-        Member member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
-        entityManager.persist(member);
         int boardToBeSelectedAtOnce = 10;
-        for (int board_number = 0; board_number <= boardToBeSelectedAtOnce; board_number++) {
-            Board board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
-            Image image = new Image("localhost:8080/bucket/directory/" + UUID.randomUUID() + ".jpeg", board);
-            boardRepository.save(board);
-            entityManager.persist(image);
-        }
 
-        entityManager.flush();
-        entityManager.clear();
-
-        List<Board> boards = boardRepository.selectMyBoards(member.getId(), 11L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectMyBoards(1L, 11L, boardToBeSelectedAtOnce);
 
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
         boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue());
@@ -129,20 +108,12 @@ class BoardRepositoryTest {
     @Test
     @DisplayName("회원 식별 번호, 마지막으로 조회한 게시물 번호, 조회할 게시물 수를 입력받아 다음으로 회원이 올린 게시물이 존재하지 않을 경우 조회한 게시물과 이미지를 조인하여 반환한다.")
     void selectMyBoards_doesnt_have_next() {
-        Member member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
-        entityManager.persist(member);
         int boardToBeSelectedAtOnce = 10;
-        for (int board_number = 0; board_number < boardToBeSelectedAtOnce - 1; board_number++) {
-            Board board = new Board("게시물 제목", "게시물 내용", member, LocalDateTime.now());
-            Image image = new Image("localhost:8080/bucket/directory/image" + UUID.randomUUID() + ".jpeg", board);
-            boardRepository.save(board);
-            entityManager.persist(image);
-        }
-        entityManager.flush();
-        entityManager.clear();
+        Member member = new Member("alias", "Password!!123", "이름", "email@email.com", "010-1234-4444", LocalDateTime.now());
 
-        List<Board> boards = boardRepository.selectMyBoards(member.getId(), Long.MAX_VALUE, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectMyBoards(1L, 10L, boardToBeSelectedAtOnce);
 
+        System.out.println(boards.size());
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce - 1);
         boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue());
         softly.assertAll();

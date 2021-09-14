@@ -101,17 +101,17 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public MultiBoardSelectResponse selectBoards(final Long lastBoardId, final int size) {
+    public MultiBoardSelectResponse<BoardSelectResponse> selectBoards(final Long lastBoardId, final int size) {
         List<Board> boards = boardRepository.selectBoards(lastBoardId, size);
         List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(boards);
-        return new MultiBoardSelectResponse(boardSelectResponses, size);
+        return new MultiBoardSelectResponse<>(boardSelectResponses, size);
     }
 
     @Transactional(readOnly = true)
-    public MultiBoardSelectResponse selectMyBoards(final Long memberId, final Long lastBoardId, final int size) {
+    public MultiBoardSelectResponse<BoardSelectResponse> selectMyBoards(final Long memberId, final Long lastBoardId, final int size) {
         List<Board> myBoards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
         List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(myBoards);
-        return new MultiBoardSelectResponse(boardSelectResponses, size);
+        return new MultiBoardSelectResponse<>(boardSelectResponses, size);
     }
 
     private List<BoardSelectResponse> mapToBoardSelectResponse(final List<Board> boards) {

@@ -198,7 +198,7 @@ class BoardServiceTest {
         given(member.getAlias()).willReturn("alias");
         given(boardRepository.selectBoards(anyLong(), anyInt())).willReturn(boards);
 
-        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectBoards(10L, size);
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = boardService.selectBoards(10L, size);
 
         then(multiBoardSelectResponse.getBoards()).isNotNull();
         then(multiBoardSelectResponse.isLast()).isEqualTo(last);
@@ -217,9 +217,18 @@ class BoardServiceTest {
         given(member.getAlias()).willReturn("alias");
         given(boardRepository.selectMyBoards(anyLong(), anyLong(), anyInt())).willReturn(boards);
 
-        MultiBoardSelectResponse multiBoardSelectResponse = boardService.selectMyBoards(1L, 10L, size);
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = boardService.selectMyBoards(1L, 10L, size);
 
         then(multiBoardSelectResponse.getBoards()).isNotNull();
         then(multiBoardSelectResponse.isLast()).isEqualTo(last);
+    }
+
+    @Test
+    @DisplayName("")
+    void selectBoardById_throw_exception_with_not_exist_board() {
+        given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.empty());
+
+        thenThrownBy(() -> boardService.selectBoard(1L)).isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(NOT_EXIST_BOARD);
     }
 }

@@ -4,7 +4,10 @@ import com.project.kodesalon.config.AbstractControllerTest;
 import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
 import com.project.kodesalon.service.dto.request.MemberCreateRequest;
 import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
+import com.project.kodesalon.service.dto.response.BoardImageResponse;
+import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MemberSelectResponse;
+import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import com.project.kodesalon.service.member.MemberService;
 import io.jsonwebtoken.JwtException;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +24,10 @@ import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.exception.ErrorCode.DUPLICATED_PASSWORD;
@@ -37,6 +44,7 @@ import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
@@ -48,6 +56,8 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -228,26 +238,115 @@ class MemberControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @DisplayName("존재하는 회원을 조회하면 200 상태를 response 합니다.")
-    void select_exist_member_response_success() throws Exception {
-        given(memberService.selectMember(anyLong()))
-                .willReturn(new MemberSelectResponse("alias", "이름", "email@email.com", "010-1111-2222"));
+    @DisplayName("회원 식별 번호, 마지막으로 조회한 게시물의 식별 번호, 한번에 조회할 게시물의 크기를 전달받아 회원이 올린 게시물을 조회 후, 회원 정보 (아이디 + 이름 + 이메일 + 전화번호)와" +
+            "(제목 + 내용 + 생성 시간 + 작성자 별명 + 게시물 이미지들의 식별 번호 + 게시물 이미지들의 URL)과 마지막 게시물이 아니라면 마지막 게시물 여부를 거짓으로 담은 Dto객체를 Http 200로 반환한다.")
+    void selectMyBoards() throws Exception {
+        List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
+        BoardSelectResponse boardSelectResponse1 = new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages);
+        BoardSelectResponse boardSelectResponse2 = new BoardSelectResponse(2L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages);
+        List<BoardSelectResponse> content = Arrays.asList(boardSelectResponse1, boardSelectResponse2);
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = new MultiBoardSelectResponse<>(content, 1);
+        MemberSelectResponse memberSelectResponse = new MemberSelectResponse("alias", "이름", "email@email.com", "010-1111-2222", multiBoardSelectResponse);
+        given(memberService.selectMember(anyLong(), anyLong(), anyInt())).willReturn(memberSelectResponse);
 
         mockMvc.perform(get("/api/v1/members")
+                        .param("lastBoardId", "1")
+                        .param("size", "1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.alias").value("alias"))
-                .andExpect(jsonPath("$.name").value("이름"))
-                .andExpect(jsonPath("$.email").value("email@email.com"))
-                .andExpect(jsonPath("$.phone").value("010-1111-2222"))
-                .andDo(document("member/select/success",
+                .andDo(document("member/select-member/success/not-last",
+                        getDocumentRequest(),
                         getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("lastBoardId").description("마지막으로 조회한 게시물 식별 번호"),
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")),
                         responseFields(
-                                fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 회원의 아이디"),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("조회한 회원의 이름"),
-                                fieldWithPath("email").type(JsonFieldType.STRING).description("조회한 회원의 이메일"),
-                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 회원의 핸드폰 번호")
-                        )));
+                                fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 회원 아이디"),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("조회한 회원 이름"),
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("조회한 회원 이메일"),
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 회원 전화번호"),
+                                fieldWithPath("ownBoards.boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
+                                fieldWithPath("ownBoards.boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                fieldWithPath("ownBoards.boards[].content").type(JsonFieldType.STRING).description("게시물 내용"),
+                                fieldWithPath("ownBoards.boards[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
+                                fieldWithPath("ownBoards.boards[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
+                                fieldWithPath("ownBoards.boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
+                                fieldWithPath("ownBoards.boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
+                                fieldWithPath("ownBoards.boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
+                                fieldWithPath("ownBoards.last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부"))));
+    }
+
+    @Test
+    @DisplayName("회원 식별 번호, 마지막으로 조회한 게시물의 식별 번호, 한번에 조회할 게시물의 크기를 전달받아 회원이 올린 게시물을 조회 후, 회원 정보 (아이디 + 이름 + 이메일 + 전화번호)와" +
+            "(제목 + 내용 + 생성 시간 + 작성자 별명 + 게시물 이미지들의 식별 번호 + 게시물 이미지들의 URL)과 마지막 게시물이라면 마지막 게시물 여부를 참으로 담은 Dto객체를 Http 200로 반환한다.")
+    void selectMyBoards_with_last_board() throws Exception {
+        List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
+        List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(0L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages)));
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = new MultiBoardSelectResponse<>(content, 10);
+        MemberSelectResponse memberSelectResponse = new MemberSelectResponse("alias", "이름", "email@email.com", "010-1111-2222", multiBoardSelectResponse);
+        given(memberService.selectMember(anyLong(), anyLong(), anyInt())).willReturn(memberSelectResponse);
+
+
+        mockMvc.perform(get("/api/v1/members")
+                        .param("lastBoardId", "1")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("member/select-member/success/last",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("lastBoardId").description("마지막으로 조회한 게시물 식별 번호"),
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")),
+                        responseFields(
+                                fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 회원 아이디"),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("조회한 회원 이름"),
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("조회한 회원 이메일"),
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 회원 전화번호"),
+                                fieldWithPath("ownBoards.boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
+                                fieldWithPath("ownBoards.boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                fieldWithPath("ownBoards.boards[].content").type(JsonFieldType.STRING).description("게시물 내용"),
+                                fieldWithPath("ownBoards.boards[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
+                                fieldWithPath("ownBoards.boards[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
+                                fieldWithPath("ownBoards.boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
+                                fieldWithPath("ownBoards.boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
+                                fieldWithPath("ownBoards.boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
+                                fieldWithPath("ownBoards.last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부"))));
+    }
+
+    @Test
+    @DisplayName("회원이 자신이 올린 게시물을 가장 처음으로 조회할 경우, 조회할 게시물의 크기만 입력으로 받아 가장 최근 게시물을 조회 후, 회원 정보 (아이디 + 이름 + 이메일 + 전화번호)와" +
+            "(제목 + 내용 + 생성 시간 + 작성자 별명 + 게시물 이미지들의 식별 번호 + 게시물 이미지들의 URL)과 마지막 게시물이라면 마지막 게시물 여부를 참으로 담은 Dto객체와 Http 200을 반환한다.")
+    void selectMyBoard() throws Exception {
+        List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
+        List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages)));
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = new MultiBoardSelectResponse<>(content, 10);
+        MemberSelectResponse memberSelectResponse = new MemberSelectResponse("alias", "name", "email@email.com", "010-1111-2222", multiBoardSelectResponse);
+        given(memberService.selectMember(anyLong(), anyLong(), anyInt())).willReturn(memberSelectResponse);
+
+        mockMvc.perform(get("/api/v1/members")
+                        .param("size", "10")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(document("member/select-member/success/first",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("size").description("한번에 조회할 게시물 크기")),
+                        responseFields(
+                                fieldWithPath("alias").type(JsonFieldType.STRING).description("조회한 회원 아이디"),
+                                fieldWithPath("name").type(JsonFieldType.STRING).description("조회한 회원 이름"),
+                                fieldWithPath("email").type(JsonFieldType.STRING).description("조회한 회원 이메일"),
+                                fieldWithPath("phone").type(JsonFieldType.STRING).description("조회한 회원 전화번호"),
+                                fieldWithPath("ownBoards.boards[].boardId").type(JsonFieldType.NUMBER).description("게시물 식별 번호"),
+                                fieldWithPath("ownBoards.boards[].title").type(JsonFieldType.STRING).description("게시물 제목"),
+                                fieldWithPath("ownBoards.boards[].content").type(JsonFieldType.STRING).description("게시물 내용"),
+                                fieldWithPath("ownBoards.boards[].createdDateTime").type(JsonFieldType.ARRAY).description("게시물 생성 시간"),
+                                fieldWithPath("ownBoards.boards[].writerId").type(JsonFieldType.NUMBER).description("게시물 작성자 식별 번호"),
+                                fieldWithPath("ownBoards.boards[].writerAlias").type(JsonFieldType.STRING).description("게시물 작성자 아이디"),
+                                fieldWithPath("ownBoards.boards[].boardImages[].imageId").type(JsonFieldType.NUMBER).description("게시물 이미지 식별 번호"),
+                                fieldWithPath("ownBoards.boards[].boardImages[].imageUrl").type(JsonFieldType.STRING).description("게시물 이미지 URL"),
+                                fieldWithPath("ownBoards.last").type(JsonFieldType.BOOLEAN).description("마지막 게시물 여부"))));
     }
 
     @Test
@@ -415,4 +514,5 @@ class MemberControllerTest extends AbstractControllerTest {
                         responseFields(
                                 fieldWithPath("code").description("Header에 Authorization 속성이 없을 경우에 대한 예외 코드"))));
     }
+
 }

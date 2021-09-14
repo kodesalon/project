@@ -28,7 +28,7 @@ import java.util.List;
 @RequestMapping(value = "/api/v1/boards")
 public class BoardController {
 
-    public static final String BOARD_ID_MAX = "9223372036854775807";
+    private static final String BOARD_ID_MAX = "9223372036854775807";
 
     private final BoardService boardService;
 
@@ -73,14 +73,8 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<MultiBoardSelectResponse> selectBoards(@RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final int size) {
-        MultiBoardSelectResponse boardSelectMultiResponse = boardService.selectBoards(lastBoardId, size);
+    public ResponseEntity<MultiBoardSelectResponse<BoardSelectResponse>> selectBoards(@RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final int size) {
+        MultiBoardSelectResponse<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(lastBoardId, size);
         return ResponseEntity.ok().body(boardSelectMultiResponse);
-    }
-
-    @GetMapping("/my-boards")
-    public ResponseEntity<MultiBoardSelectResponse> selectMyBoard(@Login final Long memberId, @RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final int size) {
-        MultiBoardSelectResponse myBoardSelectResponse = boardService.selectMyBoards(memberId, lastBoardId, size);
-        return ResponseEntity.ok().body(myBoardSelectResponse);
     }
 }
