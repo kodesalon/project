@@ -1,17 +1,13 @@
 package com.project.kodesalon.controller.board;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.kodesalon.config.AbstractControllerTest;
 import com.project.kodesalon.config.JacksonConfiguration;
-import com.project.kodesalon.config.argumentresolver.LoginMemberArgumentResolver;
-import com.project.kodesalon.config.interceptor.LoginInterceptor;
-import com.project.kodesalon.exception.GlobalExceptionHandler;
 import com.project.kodesalon.service.board.BoardService;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardImageResponse;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,24 +16,15 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.support.WebDataBinderFactory;
-import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,23 +33,22 @@ import java.util.List;
 
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_DELETED_BOARD;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_CONTENT;
-import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_IMAGES_SIZE;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_TITLE;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
-import static com.project.kodesalon.exception.ErrorCode.INVALID_IMAGE;
 import static com.project.kodesalon.exception.ErrorCode.NOT_AUTHORIZED_MEMBER;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_BOARD;
-import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_IMAGE;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_IMAGES_SIZE;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_IMAGE;
+import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_IMAGE;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.fileUpload;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -82,11 +68,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @Import(JacksonConfiguration.class)
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-class BoardControllerTest {
+class BoardControllerTest extends AbstractControllerTest {
 
     private final BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(LocalDateTime.now());
     private final BoardUpdateRequest boardUpdateRequest = new BoardUpdateRequest("update title", "update content", LocalDateTime.now());
-    private MockMvc mockMvc;
 
     @InjectMocks
     private BoardController boardController;
@@ -94,34 +79,18 @@ class BoardControllerTest {
     @Mock
     private BoardService boardService;
 
-    @Mock
-    private LoginInterceptor loginInterceptor;
-
-    @Mock
-    private LoginMemberArgumentResolver loginMemberArgumentResolver;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @BeforeEach
-    void setUp(RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(boardController)
-                .setCustomArgumentResolvers(loginMemberArgumentResolver)
-                .addInterceptors(loginInterceptor)
-                .apply(documentationConfiguration(restDocumentation))
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
-
-        given(loginInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any()))
-                .willReturn(true);
-        given(loginMemberArgumentResolver.supportsParameter(any(MethodParameter.class))).willReturn(true);
-        given(loginMemberArgumentResolver.resolveArgument(any(MethodParameter.class), any(ModelAndViewContainer.class),
-                any(NativeWebRequest.class), any(WebDataBinderFactory.class))).willReturn(1L);
+    @Override
+    protected Object setController() {
+        return boardController;
     }
 
     @Test
     @DisplayName("제목, 내용, 생성 날짜, 게시물 사진을 전달받아 게시물을 생성하고 HTTP 200을 반환한다.")
     void save_success() throws Exception {
+        BoardCreateRequest boardCreateRequest = new BoardCreateRequest("게시물 제목", "게시물 내용", LocalDateTime.now());
+        mockMvc.perform(post("/api/v1/boards")
+                .content(objectMapper.writeValueAsString(boardCreateRequest))
+                .contentType(MediaType.APPLICATION_JSON))
         mockMvc.perform(fileUpload("/api/v1/boards")
                         .param("title", "게시물 제목")
                         .param("content", "게시물 내용")

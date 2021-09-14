@@ -1,38 +1,21 @@
 package com.project.kodesalon.controller.member;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.kodesalon.config.JacksonConfiguration;
-import com.project.kodesalon.config.argumentresolver.LoginMemberArgumentResolver;
-import com.project.kodesalon.config.interceptor.LoginInterceptor;
-import com.project.kodesalon.exception.GlobalExceptionHandler;
+import com.project.kodesalon.config.AbstractControllerTest;
 import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
 import com.project.kodesalon.service.dto.request.MemberCreateRequest;
 import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
 import com.project.kodesalon.service.dto.response.MemberSelectResponse;
 import com.project.kodesalon.service.member.MemberService;
 import io.jsonwebtoken.JwtException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
-import org.springframework.core.MethodParameter;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.bind.support.WebDataBinderFactory;
-import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
@@ -58,7 +41,6 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
@@ -69,15 +51,11 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(JacksonConfiguration.class)
-@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-class MemberControllerTest {
+class MemberControllerTest extends AbstractControllerTest {
 
     private final MemberCreateRequest memberCreateRequest =
             new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
     private final MemberChangePasswordRequest memberChangePasswordRequest = new MemberChangePasswordRequest("ChangePassword1!", LocalDateTime.now());
-
-    private MockMvc mockMvc;
 
     @InjectMocks
     private MemberController memberController;
@@ -85,29 +63,9 @@ class MemberControllerTest {
     @Mock
     private MemberService memberService;
 
-    @Mock
-    private LoginInterceptor loginInterceptor;
-
-    @Mock
-    private LoginMemberArgumentResolver loginMemberArgumentResolver;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @BeforeEach
-    void setUp(RestDocumentationContextProvider restDocumentation) {
-        mockMvc = MockMvcBuilders.standaloneSetup(memberController)
-                .setCustomArgumentResolvers(loginMemberArgumentResolver)
-                .addInterceptors(loginInterceptor)
-                .apply(documentationConfiguration(restDocumentation))
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
-
-        given(loginInterceptor.preHandle(any(HttpServletRequest.class), any(HttpServletResponse.class), any()))
-                .willReturn(true);
-        given(loginMemberArgumentResolver.supportsParameter(any(MethodParameter.class))).willReturn(true);
-        given(loginMemberArgumentResolver.resolveArgument(any(MethodParameter.class), any(ModelAndViewContainer.class),
-                any(NativeWebRequest.class), any(WebDataBinderFactory.class))).willReturn(1L);
+    @Override
+    protected Object setController() {
+        return memberController;
     }
 
     @Test
@@ -168,8 +126,8 @@ class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 비밀번호를 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_password() throws Exception {
-        MemberCreateRequest memberCreateRequestWithInvalidPassword
-                = new MemberCreateRequest("alias", "", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequestWithInvalidPassword =
+                new MemberCreateRequest("alias", "", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -185,8 +143,8 @@ class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 이름을 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_name() throws Exception {
-        MemberCreateRequest memberCreateRequestWithInvalidName
-                = new MemberCreateRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequestWithInvalidName =
+                new MemberCreateRequest("alias", "Password123!!", "", "email@email.com", "010-1111-2222", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -202,8 +160,8 @@ class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 이메일을 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_email() throws Exception {
-        MemberCreateRequest memberCreateRequestWithInvalidEmail
-                = new MemberCreateRequest("alias", "Password123!!", "이름", " ", "010-1111-2222", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequestWithInvalidEmail =
+                new MemberCreateRequest("alias", "Password123!!", "이름", " ", "010-1111-2222", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -219,8 +177,8 @@ class MemberControllerTest {
     @Test
     @DisplayName("회원가입 시 유효하지 않은 휴대폰 번호를 입력할 경우, 예외 메시지를 다음 DTO를 Http 400으로 응답합니다.")
     void join_fail_with_invalid_phone() throws Exception {
-        MemberCreateRequest memberCreateRequestWithInvalidPhone
-                = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "", LocalDateTime.now());
+        MemberCreateRequest memberCreateRequestWithInvalidPhone =
+                new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "", LocalDateTime.now());
 
         mockMvc.perform(post("/api/v1/members/join")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -255,8 +213,8 @@ class MemberControllerTest {
     @NullSource
     @DisplayName("회원 가입시 회원 가입 시간이 없는 경우 예외 메세지를 반환합니다.")
     void join_fail_with_null_created_date_time(LocalDateTime invalidCreateDateTime) throws Exception {
-        MemberCreateRequest memberCreateRequest
-                = new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", invalidCreateDateTime);
+        MemberCreateRequest memberCreateRequest =
+                new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", invalidCreateDateTime);
 
         mockMvc.perform(post("/api/v1/members/join")
                         .contentType(MediaType.APPLICATION_JSON)

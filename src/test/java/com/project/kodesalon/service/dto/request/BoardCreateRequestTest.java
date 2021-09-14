@@ -62,8 +62,8 @@ class BoardCreateRequestTest {
     @Test
     @DisplayName("제목 길이가 30자를 초과할 경우, 예외가 발생합니다")
     void create_throw_exception_with_invalid_title() {
-        BoardCreateRequest boardCreateRequest
-                = new BoardCreateRequest("현재 게시물 제목의 길이가 31자이므로 예외 발생합니다.", "게시물 내용", LocalDateTime.parse("2021-06-01T23:59:59.999999"), Optional.empty());
+        BoardCreateRequest boardCreateRequest =
+                new BoardCreateRequest("현재 게시물 제목의 길이가 31자이므로 예외 발생합니다.", "게시물 내용", LocalDateTime.parse("2021-06-01T23:59:59.999999"), Optional.empty());
         Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
 
         then(constraintViolations)
@@ -75,8 +75,8 @@ class BoardCreateRequestTest {
     @NullAndEmptySource
     @DisplayName("null 또는 아무것도 입력하지 않을 경우, 예외가 발생합니다")
     void create_throw_exception_with_null_title(String nullArgument) {
-        BoardCreateRequest boardCreateRequest
-                = new BoardCreateRequest(nullArgument, "게시물 내용", LocalDateTime.parse("2021-06-01T23:59:59.999999"), Optional.empty());
+        BoardCreateRequest boardCreateRequest =
+                new BoardCreateRequest(nullArgument, "게시물 내용", LocalDateTime.parse("2021-06-01T23:59:59.999999"), Optional.empty());
         Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
 
         then(constraintViolations)
@@ -87,8 +87,8 @@ class BoardCreateRequestTest {
     @Test
     @DisplayName("내용의 500자를 초과할 경우, 예외가 발생합니다")
     void create_throw_exception_with_invalid_content() {
-        BoardCreateRequest boardCreateRequest
-                = new BoardCreateRequest("게시물 제목", "1".repeat(501), LocalDateTime.parse("2021-06-01T23:59:59.999999"), Optional.empty());
+        BoardCreateRequest boardCreateRequest =
+                new BoardCreateRequest("게시물 제목", "1".repeat(501), LocalDateTime.parse("2021-06-01T23:59:59.999999"), Optional.empty());
         Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
 
         then(constraintViolations)
@@ -100,8 +100,8 @@ class BoardCreateRequestTest {
     @NullAndEmptySource
     @DisplayName("null 또는 아무것도 입력하지 않을 경우, 예외가 발생합니다")
     void create_throw_exception_with_null_content(String nullArgument) {
-        BoardCreateRequest boardCreateRequest
-                = new BoardCreateRequest("게시물 제목", nullArgument, LocalDateTime.parse("2021-06-01T23:59:59.999999"), Optional.empty());
+        BoardCreateRequest boardCreateRequest =
+                new BoardCreateRequest("게시물 제목", nullArgument, LocalDateTime.parse("2021-06-01T23:59:59.999999"), Optional.empty());
         Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
 
         then(constraintViolations)
@@ -113,8 +113,8 @@ class BoardCreateRequestTest {
     @NullSource
     @DisplayName("null 일 경우, 예외가 발생합니다")
     void create_throw_exception_with_null_created_date_time(LocalDateTime createdDateTime) {
-        BoardCreateRequest boardCreateRequest
-                = new BoardCreateRequest("게시물 제목", "게시물 내용", createdDateTime, Optional.empty());
+        BoardCreateRequest boardCreateRequest =
+                new BoardCreateRequest("게시물 제목", "게시물 내용", createdDateTime, Optional.empty());
         Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
 
         then(constraintViolations)
@@ -128,8 +128,8 @@ class BoardCreateRequestTest {
         MultipartFile image = new MockMultipartFile("images", "test".getBytes());
         List<MultipartFile> images = Arrays.asList(image, image, image, image, image, image);
 
-        BoardCreateRequest boardCreateRequest
-                = new BoardCreateRequest("게시물 제목", "게시물 내용", LocalDateTime.now(), Optional.of(images));
+        BoardCreateRequest boardCreateRequest =
+                new BoardCreateRequest("게시물 제목", "게시물 내용", LocalDateTime.now(), Optional.of(images));
         Set<ConstraintViolation<BoardCreateRequest>> constraintViolations = validator.validate(boardCreateRequest);
 
         then(constraintViolations)
