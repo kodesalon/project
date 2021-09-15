@@ -30,7 +30,7 @@ include::{snippets}/member/jwt/invalid-header/http-response.adoc[]
 include::{snippets}/auth/login/success/request-fields.adoc[]
 include::{snippets}/auth/login/success/http-request.adoc[]
 
-=== Reponse
+=== Response
 
 ==== *성공*
 
@@ -113,14 +113,29 @@ include::{snippets}/member/join/fail/null-created-date-time/http-response.adoc[]
 
 === Request
 
-include::{snippets}/member/select/success/http-request.adoc[]
-include::{snippets}/member/select/success/response-fields.adoc[]
+==== 회원, 회원이 올린 게시물 최초 조회
+
+include::{snippets}/member/select-member/success/first/request-parameters.adoc[]
+include::{snippets}/member/select-member/success/first/http-request.adoc[]
+
+==== 회원, 회원이 올린 게시물 조회
+
+include::{snippets}/member/select-member/success/last/request-parameters.adoc[]
+include::{snippets}/member/select-member/success/last/http-request.adoc[]
 
 === Response
 
 ==== *성공*
 
-include::{snippets}/member/select/success/http-response.adoc[]
+==== 게시물이 마지막 게시물이 아닐 경우
+
+include::{snippets}/member/select-member/success/not-last/response-fields.adoc[]
+include::{snippets}/member/select-member/success/not-last/http-response.adoc[]
+
+==== 게시물이 마지막 게시물일 경우
+
+include::{snippets}/member/select-member/success/last/response-fields.adoc[]
+include::{snippets}/member/select-member/success/last/http-response.adoc[]
 
 == Change Password
 
@@ -167,15 +182,23 @@ include::{snippets}/member/delete/fail/null-deleted-date-time/http-response.adoc
 = Board
 == Save
 === Request
-include::{snippets}/board/create/success/request-fields.adoc[]
-include::{snippets}/board/create/success/http-request.adoc[]
+include::{snippets}/board/create/success/with-images/request-parameters.adoc[]
+include::{snippets}/board/create/success/with-images/request-parts.adoc[]
+
+==== *With Images*
+
+include::{snippets}/board/create/success/with-images/http-request.adoc[]
+
+==== *Without Images*
+
+include::{snippets}/board/create/success/without-images/http-request.adoc[]
 
 === Response
 
 ==== *성공*
 
 include::{snippets}/board/create/fail/invalid-title/response-fields.adoc[]
-include::{snippets}/board/create/success/http-response.adoc[]
+include::{snippets}/board/create/success/with-images/http-response.adoc[]
 
 ==== *실패*
 
@@ -190,7 +213,6 @@ include::{snippets}/board/create/fail/invalid-content/http-response.adoc[]
 - 유효하지 않은 작성 시간
 include::{snippets}/board/create/fail/null-created-date-time/response-fields.adoc[]
 include::{snippets}/board/create/fail/null-created-date-time/http-response.adoc[]
-
 
 == Select Single
 
@@ -212,25 +234,25 @@ include::{snippets}/board/select-single/success/http-response.adoc[]
 
 ==== 최초 조회
 
-include::{snippets}/board/select-multi-first/success/request-parameters.adoc[]
-include::{snippets}/board/select-multi-first/success/http-request.adoc[]
+include::{snippets}/board/select-multi/success/first/request-parameters.adoc[]
+include::{snippets}/board/select-multi/success/first/http-request.adoc[]
 
 ==== 조회
 
-include::{snippets}/board/select-multi/success/request-parameters.adoc[]
-include::{snippets}/board/select-multi/success/http-request.adoc[]
+include::{snippets}/board/select-multi/success/not-last/request-parameters.adoc[]
+include::{snippets}/board/select-multi/success/not-last/request-parameters.adoc[]
 
 ==== *성공*
 
-include::{snippets}/board/select-multi/success/response-fields.adoc[]
+include::{snippets}/board/select-multi/success/not-last/response-fields.adoc[]
 
 ===== 마지막 게시물 미포함
 
-include::{snippets}/board/select-multi/success/http-response.adoc[]
+include::{snippets}/board/select-multi/success/not-last/http-response.adoc[]
 
 ===== 마지막 게시물 포함
 
-include::{snippets}/board/select-multi-last/success/http-response.adoc[]
+include::{snippets}/board/select-multi/success/last/http-response.adoc[]
 
 == Delete
 
@@ -296,4 +318,37 @@ include::{snippets}/board/update/fail/no-board/http-response.adoc[]
 include::{snippets}/board/update/fail/invalid-last-modified-date-time/response-fields.adoc[]
 include::{snippets}/board/update/fail/invalid-last-modified-date-time/http-response.adoc[]
 
+== Add Images
+
+=== Request
+
+include::{snippets}/board/add-images/success/path-parameters.adoc[]
+include::{snippets}/board/add-images/success/request-parts.adoc[]
+include::{snippets}/board/add-images/success/http-request.adoc[]
+
+==== *성공*
+
+include::{snippets}/board/add-images/success/http-response.adoc[]
+
+==== *실패*
+
+- 유효하지 않은 이미지 파일
+include::{snippets}/board/add-images/fail/invalid-file/response-fields.adoc[]
+include::{snippets}/board/add-images/fail/invalid-file/http-response.adoc[]
+
+== Remove Images
+
+=== Request
+
+include::{snippets}/board/remove-images/success/path-parameters.adoc[]
+include::{snippets}/board/remove-images/success/http-request.adoc[]
+
+==== *성공*
+
+include::{snippets}/board/remove-images/success/http-response.adoc[]
+
+==== *실패*
+
+include::{snippets}/board/remove-images/fail/not-exist-image/response-fields.adoc[]
+include::{snippets}/board/remove-images/fail/not-exist-image/http-response.adoc[]
 

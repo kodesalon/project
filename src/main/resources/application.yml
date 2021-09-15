@@ -22,6 +22,12 @@ spring:
 ---
 
 spring:
+  group:
+    ci: common, local, test
+
+---
+
+spring:
   config:
     activate:
       on-profile: common
@@ -43,7 +49,7 @@ spring:
     activate:
       on-profile: local
   datasource:
-    url: jdbc:mysql://db:3306/kodesalon?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
+    url: jdbc:mysql://localhost:3306/kodesalon?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: kodesalon
     password: kodesalon2021!
@@ -55,6 +61,28 @@ spring:
     secret: bG9jYWxUZXN0S2V5
     accessExpirationMs: 1800000
     refreshExpirationWeeks: 2
+  file:
+    directory: src/main/resources/images/
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 15MB
+
+cloud:
+  aws:
+    credentials:
+      access-key: accesskey
+      secret-key: secretkey
+    s3:
+      image:
+        bucket: kodesalon
+        directory: image/
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
   flyway:
     locations: classpath:db/migration/{vendor}
 ---
@@ -64,8 +92,16 @@ spring:
     activate:
       on-profile: test
   datasource:
-    url: jdbc:mysql://db:3306/kodesalon?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
     hikari:
       auto-commit: true
 
 
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: ci
+  datasource:
+    url: jdbc:mysql://db:3306/kodesalon?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
