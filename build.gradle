@@ -115,8 +115,6 @@ task copyHTMLDocument(type: Copy) {
 }
 
 build {
-    String activeProfile = System.properties['spring.profiles.active']
-    systemProperty "spring.profiles.active", activeProfile
     dependsOn copyHTMLDocument
 }
 
@@ -125,4 +123,10 @@ bootJar {
     from("${asciidoctor.outputDir}") {
         into 'static/docs'
     }
+}
+
+bootRun {
+    String activeProfile = System.properties['spring.profiles.active']
+    println "zone: $activeProfile"
+    systemProperty "spring.profiles.active", activeProfile
 }
