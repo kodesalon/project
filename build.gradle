@@ -115,6 +115,8 @@ task copyHTMLDocument(type: Copy) {
 }
 
 build {
+    String activeProfile = System.properties['spring.profiles.active']
+    systemProperty "spring.profiles.active", activeProfile
     dependsOn copyHTMLDocument
 }
 
