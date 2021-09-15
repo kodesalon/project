@@ -22,8 +22,9 @@ spring:
 ---
 
 spring:
-  group:
-    ci: common, local, test
+  profiles:
+    group:
+      ci: common, local, test
 
 ---
 
