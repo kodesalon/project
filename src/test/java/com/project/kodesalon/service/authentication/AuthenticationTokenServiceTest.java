@@ -17,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -28,7 +27,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -127,19 +125,6 @@ class AuthenticationTokenServiceTest {
     @Test
     @DisplayName("인자로 받은 Refresh token이 DB에 저장되어있지 않을 경우, 예외가 발생한다.")
     void refreshToken_throw_exception_with_not_in_DB() {
-        thenThrownBy(() -> authenticationTokenService.reissueAccessAndRefreshToken(tokenRefreshRequest))
-                .isInstanceOf(JwtException.class)
-                .hasMessage(INVALID_JWT_TOKEN);
-    }
-
-    @Test
-    @DisplayName("인자로 받은 Refresh token이 만료된 경우, 예외가 발생한다.")
-    void refreshToken_throw_exception_with_expired_token() {
-        given(refreshTokenRepository.findByToken(anyString())).willReturn(Optional.of(refreshToken));
-        willThrow(new JwtException(INVALID_JWT_TOKEN))
-                .given(refreshToken)
-                .validateExpiryDate(any(LocalDateTime.class));
-
         thenThrownBy(() -> authenticationTokenService.reissueAccessAndRefreshToken(tokenRefreshRequest))
                 .isInstanceOf(JwtException.class)
                 .hasMessage(INVALID_JWT_TOKEN);
