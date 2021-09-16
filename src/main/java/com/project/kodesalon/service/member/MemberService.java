@@ -1,5 +1,7 @@
 package com.project.kodesalon.service.member;
 
+import com.project.kodesalon.domain.board.Board;
+import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.domain.member.vo.Alias;
 import com.project.kodesalon.repository.board.BoardRepository;
@@ -7,13 +9,18 @@ import com.project.kodesalon.repository.member.MemberRepository;
 import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
 import com.project.kodesalon.service.dto.request.MemberCreateRequest;
 import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
+import com.project.kodesalon.service.dto.response.BoardImageResponse;
+import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MemberSelectResponse;
+import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER;
@@ -56,10 +63,25 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberSelectResponse selectMember(final Long memberId) {
+    public MemberSelectResponse selectMember(final Long memberId, final Long lastBoardId, final int size) {
         Member member = findById(memberId);
+        List<Board> ownBoards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
+        List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(member, ownBoards);
+        MultiBoardSelectResponse<BoardSelectResponse> boards = new MultiBoardSelectResponse<>(boardSelectResponses, size);
+        return new MemberSelectResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone(), boards);
+    }
 
-        return new MemberSelectResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone());
+    private List<BoardSelectResponse> mapToBoardSelectResponse(final Member member, final List<Board> ownBoards) {
+        return ownBoards.stream()
+                .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(),
+                        board.getCreatedDateTime(), member.getId(), member.getAlias(), mapToImages(board.getImages())))
+                .collect(Collectors.toList());
+    }
+
+    private List<BoardImageResponse> mapToImages(final List<Image> images) {
+        return images.stream()
+                .map(image -> new BoardImageResponse(image.getId(), image.getUrl()))
+                .collect(Collectors.toList());
     }
 
     @Transactional

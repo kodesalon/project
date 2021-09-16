@@ -41,6 +41,7 @@ class MemberTest {
         softly.then(member.getEmail()).isEqualTo(email);
         softly.then(member.getPhone()).isEqualTo(phone);
         softly.then(member.getCreatedDateTime()).isEqualTo(createdDateTime);
+        softly.then(member.getLastModifiedDateTime());
         softly.then(member.isDeleted()).isFalse();
         softly.assertAll();
     }

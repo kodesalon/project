@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_BOARD;
-import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_IMAGE;
 
 @Slf4j
 @Service
@@ -52,7 +51,7 @@ public class BoardService {
     public void save(final Long memberId, final BoardCreateRequest boardCreateRequest) {
         Member member = memberService.findById(memberId);
         Board createdBoard = boardCreateRequest.toBoard(member);
-        List<String> urls = s3Uploader.upload(boardCreateRequest.getImages(), directory);
+        List<String> urls = s3Uploader.uploadFiles(boardCreateRequest.getImages(), directory);
         urls.forEach(url -> new Image(url, createdBoard));
         boardRepository.save(createdBoard);
         log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
@@ -61,24 +60,23 @@ public class BoardService {
     @Transactional
     public void addImages(final Long boardId, final List<MultipartFile> images) {
         Board board = findById(boardId);
-        List<String> urls = s3Uploader.upload(images, directory);
+        List<String> urls = s3Uploader.uploadFiles(images, directory);
         urls.forEach(url -> new Image(url, board));
     }
 
+    /**
+     * 이미지에서 게시물에 Cascade 설정이 들어가는 순간 문제가 발생할수 있음
+     *
+     * @param imageIds
+     */
     @Transactional
     public void removeImages(final List<Long> imageIds) {
-        imageIds.stream()
-                .map(this::findBoardImageById)
-                .forEach(image -> {
-                    String key = image.getKey();
-                    s3Uploader.delete(key);
-                    imageRepository.delete(image);
-                });
-    }
-
-    private Image findBoardImageById(final Long imageId) {
-        return imageRepository.findById(imageId)
-                .orElseThrow(() -> new EntityNotFoundException(NOT_EXIST_IMAGE));
+        List<Image> images = imageRepository.findAllById(imageIds);
+        List<String> imageKeys = images.stream()
+                .map(Image::getKey)
+                .collect(Collectors.toList());
+        imageRepository.deleteInBatch(images);
+        s3Uploader.delete(imageKeys);
     }
 
     @Transactional
@@ -103,17 +101,17 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public MultiBoardSelectResponse selectBoards(final Long lastBoardId, final int size) {
+    public MultiBoardSelectResponse<BoardSelectResponse> selectBoards(final Long lastBoardId, final int size) {
         List<Board> boards = boardRepository.selectBoards(lastBoardId, size);
         List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(boards);
-        return new MultiBoardSelectResponse(boardSelectResponses, size);
+        return new MultiBoardSelectResponse<>(boardSelectResponses, size);
     }
 
     @Transactional(readOnly = true)
-    public MultiBoardSelectResponse selectMyBoards(final Long memberId, final Long lastBoardId, final int size) {
+    public MultiBoardSelectResponse<BoardSelectResponse> selectMyBoards(final Long memberId, final Long lastBoardId, final int size) {
         List<Board> myBoards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
         List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(myBoards);
-        return new MultiBoardSelectResponse(boardSelectResponses, size);
+        return new MultiBoardSelectResponse<>(boardSelectResponses, size);
     }
 
     private List<BoardSelectResponse> mapToBoardSelectResponse(final List<Board> boards) {

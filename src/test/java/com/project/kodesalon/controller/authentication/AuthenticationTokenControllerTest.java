@@ -1,27 +1,18 @@
 package com.project.kodesalon.controller.authentication;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.kodesalon.exception.GlobalExceptionHandler;
+import com.project.kodesalon.config.AbstractControllerTest;
 import com.project.kodesalon.service.authentication.AuthenticationTokenService;
 import com.project.kodesalon.service.dto.request.LoginRequest;
 import com.project.kodesalon.service.dto.request.TokenRefreshRequest;
 import com.project.kodesalon.service.dto.response.LoginResponse;
 import com.project.kodesalon.service.dto.response.TokenResponse;
 import io.jsonwebtoken.JwtException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.persistence.EntityNotFoundException;
 
@@ -33,7 +24,6 @@ import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
@@ -41,15 +31,12 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-class AuthenticationTokenControllerTest {
+class AuthenticationTokenControllerTest extends AbstractControllerTest {
 
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final LoginResponse loginResponse = new LoginResponse("access token", "refresh token", 1L, "alias");
     private final TokenRefreshRequest tokenRefreshRequest = new TokenRefreshRequest("refresh token");
     private final TokenResponse tokenResponse = new TokenResponse("accessToken", "refreshToken");
-
-    private MockMvc mockMvc;
 
     @InjectMocks
     private AuthenticationTokenController authenticationTokenController;
@@ -57,15 +44,9 @@ class AuthenticationTokenControllerTest {
     @Mock
     private AuthenticationTokenService authenticationTokenService;
 
-    ObjectMapper objectMapper = new ObjectMapper();
-
-    @BeforeEach
-    void setUp(RestDocumentationContextProvider restDocumentation) {
-        this.mockMvc = MockMvcBuilders.standaloneSetup(authenticationTokenController)
-                .addFilter(new CharacterEncodingFilter("UTF-8", true))
-                .apply(documentationConfiguration(restDocumentation))
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
+    @Override
+    protected Object setController() {
+        return authenticationTokenController;
     }
 
     @Test
@@ -73,9 +54,9 @@ class AuthenticationTokenControllerTest {
     void login_success() throws Exception {
         given(authenticationTokenService.login(any(LoginRequest.class))).willReturn(loginResponse);
 
-        this.mockMvc.perform(post("/api/v1/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest)))
+        mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memberId").value(1L))
                 .andExpect(jsonPath("$.alias").value("alias"))
@@ -99,10 +80,10 @@ class AuthenticationTokenControllerTest {
         given(authenticationTokenService.login(any(LoginRequest.class)))
                 .willThrow(new IllegalArgumentException(INCORRECT_PASSWORD));
 
-        this.mockMvc.perform(post("/api/v1/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest))
-                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INCORRECT_PASSWORD))
                 .andDo(document("auth/login/fail/mismatch-password",
@@ -122,10 +103,10 @@ class AuthenticationTokenControllerTest {
         given(authenticationTokenService.login(any(LoginRequest.class)))
                 .willThrow(new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS));
 
-        this.mockMvc.perform(post("/api/v1/auth/login")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(loginRequest))
-                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/v1/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_EXIST_MEMBER_ALIAS))
                 .andDo(document("auth/login/fail/no-alias",
@@ -139,10 +120,10 @@ class AuthenticationTokenControllerTest {
     void refresh_success() throws Exception {
         given(authenticationTokenService.reissueAccessAndRefreshToken(any(TokenRefreshRequest.class))).willReturn(tokenResponse);
 
-        this.mockMvc.perform(post("/api/v1/auth/refreshtoken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(tokenRefreshRequest))
-                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/v1/auth/refreshtoken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tokenRefreshRequest))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value("accessToken"))
                 .andExpect(jsonPath("$.refreshToken").value("refreshToken"))
@@ -162,10 +143,10 @@ class AuthenticationTokenControllerTest {
     void refresh_fail_no_existing_or_expired_token() throws Exception {
         given(authenticationTokenService.reissueAccessAndRefreshToken(any(TokenRefreshRequest.class))).willThrow(new JwtException(INVALID_JWT_TOKEN));
 
-        this.mockMvc.perform(post("/api/v1/auth/refreshtoken")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(tokenRefreshRequest))
-                .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/v1/auth/refreshtoken")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(tokenRefreshRequest))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andDo(document("auth/refreshtoken/fail",
                         getDocumentRequest(),
