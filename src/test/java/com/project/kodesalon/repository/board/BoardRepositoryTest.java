@@ -3,7 +3,7 @@ package com.project.kodesalon.repository.board;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
-import com.project.kodesalon.config.dbunit.DbUnitTest;
+import com.project.kodesalon.config.dbunit.annotation.DbUnitTest;
 import com.project.kodesalon.domain.board.Board;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;

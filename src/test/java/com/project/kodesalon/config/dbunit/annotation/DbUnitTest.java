@@ -1,7 +1,8 @@
-package com.project.kodesalon.config.dbunit;
+package com.project.kodesalon.config.dbunit.annotation;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+import com.project.kodesalon.config.dbunit.DBUnitTestConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
