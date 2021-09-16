@@ -74,10 +74,10 @@ public class Member extends BaseEntity {
         this.email = new Email(email);
         this.name = new Name(name);
         this.createdDateTime = createdDateTime;
+        this.lastModifiedDateTime = createdDateTime;
         if (phone != null) {
             this.phone = new Phone(phone);
         }
-        this.lastModifiedDateTime = createdDateTime;
     }
 
     public Long getId() {

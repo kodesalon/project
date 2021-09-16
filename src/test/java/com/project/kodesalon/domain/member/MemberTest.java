@@ -12,7 +12,6 @@ import org.junit.jupiter.params.provider.NullSource;
 import java.time.LocalDateTime;
 
 import static com.project.kodesalon.exception.ErrorCode.DUPLICATED_PASSWORD;
-import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
@@ -144,17 +143,5 @@ class MemberTest {
         softly.then(member.isDeleted()).isTrue();
         softly.then(member.getDeletedDateTime()).isEqualTo(deletedDateTime);
         softly.assertAll();
-    }
-
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("회원 탈퇴 시간이 없으면 예외를 발생시킨다.")
-    void delete_throws_exception_with_null_deleted_date_time(LocalDateTime invalidDeletedTime) {
-        Member member = new Member("alias", "Password123!", "이름", "email@email.com",
-                "010-1234-4444", LocalDateTime.of(2021, 7, 16, 23, 59));
-
-        thenIllegalArgumentException()
-                .isThrownBy(() -> member.delete(invalidDeletedTime))
-                .withMessage(INVALID_DATE_TIME);
     }
 }
