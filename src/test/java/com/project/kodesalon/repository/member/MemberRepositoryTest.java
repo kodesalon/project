@@ -1,57 +1,32 @@
 package com.project.kodesalon.repository.member;
 
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
-import com.github.springtestdbunit.annotation.DbUnitConfiguration;
-import com.project.kodesalon.config.DBUnitTestConfiguration;
+import com.project.kodesalon.config.dbunit.DbUnitTest;
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.domain.member.vo.Alias;
 import org.assertj.core.api.BDDSoftAssertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestExecutionListeners;
-import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceUnitUtil;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 import static org.assertj.core.api.BDDAssertions.then;
 
-@DataJpaTest
-@ActiveProfiles(profiles = "test")
-@Import(DBUnitTestConfiguration.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@DbUnitConfiguration(databaseConnection = "dbUnitDatabaseConnection")
+@DbUnitTest
 @DatabaseSetup(value = "classpath:memberRepositoryDataSet.xml", type = DatabaseOperation.CLEAN_INSERT)
 @DatabaseTearDown(value = "classpath:memberRepositoryDataSet.xml", type = DatabaseOperation.DELETE_ALL)
-@TestExecutionListeners({DbUnitTestExecutionListener.class, DependencyInjectionTestExecutionListener.class})
 class MemberRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private EntityManagerFactory entityManagerFactory;
-
     private final BDDSoftAssertions softly = new BDDSoftAssertions();
-    private PersistenceUnitUtil persistenceUnitUtil;
-
-    @BeforeEach
-    void setUp() {
-        persistenceUnitUtil = entityManagerFactory.getPersistenceUnitUtil();
-    }
 
     @Test
     @DisplayName("DB에 존재하는 회원을 아이디(Alias)로 조회할 경우, 해당 아이디를 가진 회원을 리턴합니다")
