@@ -2,10 +2,10 @@
 <project version="4">
   <component name="PersistenceUnitSettings">
     <persistence-units>
-      <persistence-unit name="Default">
-        <packages>
-          <package value="com.project.kodesalon"/>
-        </packages>
+      <persistence-unit name="Default" defaultSearchScope="Project and Libraries">
+          <packages>
+              <package value="com.project.kodesalon"/>
+          </packages>
       </persistence-unit>
     </persistence-units>
   </component>
