@@ -12,170 +12,193 @@ kodesalon;
 == JWT Token Error
 === Response
 - 만료된 JWT token
-include::{snippets}/jwt/expired/response-fields.adoc[]
-include::{snippets}/jwt/expired/http-response.adoc[]
+include::{snippets}/member/jwt/expired/response-fields.adoc[]
+include::{snippets}/member/jwt/expired/http-response.adoc[]
 
 - 유효하지 않은 JWT token
-include::{snippets}/jwt/invalid/response-fields.adoc[]
-include::{snippets}/jwt/invalid/http-response.adoc[]
+include::{snippets}/member/jwt/invalid/response-fields.adoc[]
+include::{snippets}/member/jwt/invalid/http-response.adoc[]
 
-- 유효하지 않은 Authorization 속성 값
-include::{snippets}/jwt/invalid-header/response-fields.adoc[]
-include::{snippets}/jwt/invalid-header/http-response.adoc[]
+- 유효하지 않은 Authorization 속성
+include::{snippets}/member/jwt/invalid-header/response-fields.adoc[]
+include::{snippets}/member/jwt/invalid-header/http-response.adoc[]
 
 == Login
 
 === Request
 
-include::{snippets}/login/success/request-fields.adoc[]
-include::{snippets}/login/success/http-request.adoc[]
+include::{snippets}/auth/login/success/request-fields.adoc[]
+include::{snippets}/auth/login/success/http-request.adoc[]
 
-=== Reponse
+=== Response
 
 ==== *성공*
 
-include::{snippets}/login/success/response-fields.adoc[]
-include::{snippets}/login/success/http-response.adoc[]
+include::{snippets}/auth/login/success/response-fields.adoc[]
+include::{snippets}/auth/login/success/http-response.adoc[]
 
 ==== *실패*
 
 - 존재하지 않는 Alias
-include::{snippets}/login/fail/no_alias/response-fields.adoc[]
-include::{snippets}/login/fail/no_alias/http-response.adoc[]
+include::{snippets}/auth/login/fail/no-alias/response-fields.adoc[]
+include::{snippets}/auth/login/fail/no-alias/http-response.adoc[]
 
 - 일치하지 않는 Password
-include::{snippets}/login/fail/mismatch_password/response-fields.adoc[]
-include::{snippets}/login/fail/mismatch_password/http-response.adoc[]
+include::{snippets}/auth/login/fail/mismatch-password/response-fields.adoc[]
+include::{snippets}/auth/login/fail/mismatch-password/http-response.adoc[]
 
 == Refresh Token
 
 === Request
 
-include::{snippets}/refreshtoken/success/request-fields.adoc[]
-include::{snippets}/refreshtoken/success/http-request.adoc[]
+include::{snippets}/auth/refreshtoken/success/request-fields.adoc[]
+include::{snippets}/auth/refreshtoken/success/http-request.adoc[]
 
 === Response
 
 ==== *성공*
 
-include::{snippets}/refreshtoken/success/response-fields.adoc[]
-include::{snippets}/refreshtoken/success/http-response.adoc[]
+include::{snippets}/auth/refreshtoken/success/response-fields.adoc[]
+include::{snippets}/auth/refreshtoken/success/http-response.adoc[]
 
 ==== *실패*
 
 - 유효하지 않거나 만료된 토큰
-include::{snippets}/refreshtoken/fail/response-fields.adoc[]
-include::{snippets}/refreshtoken/fail/http-response.adoc[]
+include::{snippets}/auth/refreshtoken/fail/response-fields.adoc[]
+include::{snippets}/auth/refreshtoken/fail/http-response.adoc[]
 
 = Member
 == Join
 === Request
-include::{snippets}/join/success/request-fields.adoc[]
-include::{snippets}/join/success/http-request.adoc[]
+include::{snippets}/member/join/success/request-fields.adoc[]
+include::{snippets}/member/join/success/http-request.adoc[]
 
 === Response
 
 ==== *성공*
 
-include::{snippets}/join/success/http-response.adoc[]
+include::{snippets}/member/join/success/http-response.adoc[]
 
 ==== *실패*
 
 - 이미 존재하는 Alias
-include::{snippets}/join/fail/existing-alias/response-fields.adoc[]
-include::{snippets}/join/fail/existing-alias/http-response.adoc[]
+include::{snippets}/member/join/fail/existing-alias/response-fields.adoc[]
+include::{snippets}/member/join/fail/existing-alias/http-response.adoc[]
 
 - 유효하지 않은 Password
-include::{snippets}/join/fail/invalid-password/response-fields.adoc[]
-include::{snippets}/join/fail/invalid-password/http-response.adoc[]
+include::{snippets}/member/join/fail/invalid-password/response-fields.adoc[]
+include::{snippets}/member/join/fail/invalid-password/http-response.adoc[]
 
 - 유효하지 않은 Alias
-include::{snippets}/join/fail/invalid-alias/response-fields.adoc[]
-include::{snippets}/join/fail/invalid-alias/http-response.adoc[]
+include::{snippets}/member/join/fail/invalid-alias/response-fields.adoc[]
+include::{snippets}/member/join/fail/invalid-alias/http-response.adoc[]
 
 - 유효하지 않은 Email
-include::{snippets}/join/fail/invalid-email/response-fields.adoc[]
-include::{snippets}/join/fail/invalid-email/http-response.adoc[]
+include::{snippets}/member/join/fail/invalid-email/response-fields.adoc[]
+include::{snippets}/member/join/fail/invalid-email/http-response.adoc[]
 
 - 유효하지 않은 Name
-include::{snippets}/join/fail/invalid-name/response-fields.adoc[]
-include::{snippets}/join/fail/invalid-name/http-response.adoc[]
+include::{snippets}/member/join/fail/invalid-name/response-fields.adoc[]
+include::{snippets}/member/join/fail/invalid-name/http-response.adoc[]
 
 - 유효하지 않은 Phone
-include::{snippets}/join/fail/invalid-phone/response-fields.adoc[]
-include::{snippets}/join/fail/invalid-phone/http-response.adoc[]
+include::{snippets}/member/join/fail/invalid-phone/response-fields.adoc[]
+include::{snippets}/member/join/fail/invalid-phone/http-response.adoc[]
 
 - 유효하지 않은 가입 시간
-include::{snippets}/join/fail/null-created-date-time/response-fields.adoc[]
-include::{snippets}/join/fail/null-created-date-time/http-response.adoc[]
+include::{snippets}/member/join/fail/null-created-date-time/response-fields.adoc[]
+include::{snippets}/member/join/fail/null-created-date-time/http-response.adoc[]
 
 == Select
 
 === Request
 
-include::{snippets}/select/success/http-request.adoc[]
-include::{snippets}/select/success/response-fields.adoc[]
+==== 회원, 회원이 올린 게시물 최초 조회
+
+include::{snippets}/member/select-member/success/first/request-parameters.adoc[]
+include::{snippets}/member/select-member/success/first/http-request.adoc[]
+
+==== 회원, 회원이 올린 게시물 조회
+
+include::{snippets}/member/select-member/success/last/request-parameters.adoc[]
+include::{snippets}/member/select-member/success/last/http-request.adoc[]
 
 === Response
 
 ==== *성공*
 
-include::{snippets}/select/success/http-response.adoc[]
+==== 게시물이 마지막 게시물이 아닐 경우
+
+include::{snippets}/member/select-member/success/not-last/response-fields.adoc[]
+include::{snippets}/member/select-member/success/not-last/http-response.adoc[]
+
+==== 게시물이 마지막 게시물일 경우
+
+include::{snippets}/member/select-member/success/last/response-fields.adoc[]
+include::{snippets}/member/select-member/success/last/http-response.adoc[]
 
 == Change Password
 
 === Request
 
-include::{snippets}/changePassword/success/request-fields.adoc[]
-include::{snippets}/changePassword/success/http-request.adoc[]
+include::{snippets}/member/change-password/success/request-fields.adoc[]
+include::{snippets}/member/change-password/success/http-request.adoc[]
 
 === Response
 
 ==== *성공*
 
-include::{snippets}/changePassword/success/http-response.adoc[]
+include::{snippets}/member/change-password/success/http-response.adoc[]
 
 ==== *실패*
 
 - 유효하지 않은 비밀번호
-include::{snippets}/changePassword/fail/invalid-password/response-fields.adoc[]
-include::{snippets}/changePassword/fail/invalid-password/http-response.adoc[]
+include::{snippets}/member/change-password/fail/invalid-password/response-fields.adoc[]
+include::{snippets}/member/change-password/fail/invalid-password/http-response.adoc[]
 
 - 유효하지 않은 변경 시간
-include::{snippets}/changePassword/fail/null-last-modified-date-time/response-fields.adoc[]
-include::{snippets}/changePassword/fail/null-last-modified-date-time/http-response.adoc[]
+include::{snippets}/member/change-password/fail/null-last-modified-date-time/response-fields.adoc[]
+include::{snippets}/member/change-password/fail/null-last-modified-date-time/http-response.adoc[]
 
 == Delete
 
 === Request
 
-include::{snippets}/delete/success/request-fields.adoc[]
-include::{snippets}/delete/success/http-request.adoc[]
+include::{snippets}/member/delete/success/request-fields.adoc[]
+include::{snippets}/member/delete/success/http-request.adoc[]
 
 === Response
 
 ==== *성공*
 
-include::{snippets}/delete/success/http-response.adoc[]
+include::{snippets}/member/delete/success/http-response.adoc[]
 
 ==== *실패*
 
 - 유효하지 않은 탈퇴 시간
-include::{snippets}/delete/fail/null-deleted-date-time/response-fields.adoc[]
-include::{snippets}/delete/fail/null-deleted-date-time/http-response.adoc[]
+include::{snippets}/member/delete/fail/null-deleted-date-time/response-fields.adoc[]
+include::{snippets}/member/delete/fail/null-deleted-date-time/http-response.adoc[]
 
 = Board
 == Save
 === Request
-include::{snippets}/board/create/success/request-fields.adoc[]
-include::{snippets}/board/create/success/http-request.adoc[]
+include::{snippets}/board/create/success/with-images/request-parameters.adoc[]
+include::{snippets}/board/create/success/with-images/request-parts.adoc[]
+
+==== *With Images*
+
+include::{snippets}/board/create/success/with-images/http-request.adoc[]
+
+==== *Without Images*
+
+include::{snippets}/board/create/success/without-images/http-request.adoc[]
 
 === Response
 
 ==== *성공*
 
 include::{snippets}/board/create/fail/invalid-title/response-fields.adoc[]
-include::{snippets}/board/create/success/http-response.adoc[]
+include::{snippets}/board/create/success/with-images/http-response.adoc[]
 
 ==== *실패*
 
@@ -191,6 +214,45 @@ include::{snippets}/board/create/fail/invalid-content/http-response.adoc[]
 include::{snippets}/board/create/fail/null-created-date-time/response-fields.adoc[]
 include::{snippets}/board/create/fail/null-created-date-time/http-response.adoc[]
 
+== Select Single
+
+=== Request
+
+include::{snippets}/board/select-single/success/path-parameters.adoc[]
+include::{snippets}/board/select-single/success/http-request.adoc[]
+
+=== Response
+
+==== *성공*
+
+include::{snippets}/board/select-single/success/response-fields.adoc[]
+include::{snippets}/board/select-single/success/http-response.adoc[]
+
+== Select Multi
+
+=== Request
+
+==== 최초 조회
+
+include::{snippets}/board/select-multi/success/first/request-parameters.adoc[]
+include::{snippets}/board/select-multi/success/first/http-request.adoc[]
+
+==== 조회
+
+include::{snippets}/board/select-multi/success/not-last/request-parameters.adoc[]
+include::{snippets}/board/select-multi/success/not-last/request-parameters.adoc[]
+
+==== *성공*
+
+include::{snippets}/board/select-multi/success/not-last/response-fields.adoc[]
+
+===== 마지막 게시물 미포함
+
+include::{snippets}/board/select-multi/success/not-last/http-response.adoc[]
+
+===== 마지막 게시물 포함
+
+include::{snippets}/board/select-multi/success/last/http-response.adoc[]
 
 == Delete
 
@@ -256,4 +318,37 @@ include::{snippets}/board/update/fail/no-board/http-response.adoc[]
 include::{snippets}/board/update/fail/invalid-last-modified-date-time/response-fields.adoc[]
 include::{snippets}/board/update/fail/invalid-last-modified-date-time/http-response.adoc[]
 
+== Add Images
+
+=== Request
+
+include::{snippets}/board/add-images/success/path-parameters.adoc[]
+include::{snippets}/board/add-images/success/request-parts.adoc[]
+include::{snippets}/board/add-images/success/http-request.adoc[]
+
+==== *성공*
+
+include::{snippets}/board/add-images/success/http-response.adoc[]
+
+==== *실패*
+
+- 유효하지 않은 이미지 파일
+include::{snippets}/board/add-images/fail/invalid-file/response-fields.adoc[]
+include::{snippets}/board/add-images/fail/invalid-file/http-response.adoc[]
+
+== Remove Images
+
+=== Request
+
+include::{snippets}/board/remove-images/success/path-parameters.adoc[]
+include::{snippets}/board/remove-images/success/http-request.adoc[]
+
+==== *성공*
+
+include::{snippets}/board/remove-images/success/http-response.adoc[]
+
+==== *실패*
+
+include::{snippets}/board/remove-images/fail/not-exist-image/response-fields.adoc[]
+include::{snippets}/board/remove-images/fail/not-exist-image/http-response.adoc[]
 

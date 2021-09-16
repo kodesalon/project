@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'org.asciidoctor.jvm.convert' version '3.2.0'
+    id 'jacoco'
 }
 
 group = 'com.project'
@@ -18,6 +19,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url 'https://repo.spring.io/libs-milestone'}
 }
 
 dependencies {
@@ -25,12 +27,16 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation "org.flywaydb:flyway-core:7.14.0"
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.5.RELEASE'
     implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.11'
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+    testImplementation group: 'io.findify', name: 's3mock_2.13', version: '0.2.6'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.dbunit:dbunit:2.6.0'
+    testImplementation 'com.github.springtestdbunit:spring-test-dbunit:1.3.0'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    runtimeOnly 'com.h2database:h2:1.4.199'
     runtimeOnly 'mysql:mysql-connector-java'
     implementation group: 'net.logstash.logback', name: 'logstash-logback-encoder', version: '6.3'
     annotationProcessor 'org.projectlombok:lombok'
@@ -42,6 +48,10 @@ ext {
     snippetsDir = file('build/generated-snippets')
 }
 
+jacoco {
+    toolVersion = "0.8.7"
+}
+
 asciidoctor {
     configurations 'asciidoctorExtension'
     inputs.dir snippetsDir
@@ -50,8 +60,52 @@ asciidoctor {
 }
 
 test {
+    finalizedBy jacocoTestReport
     outputs.dir snippetsDir
     useJUnitPlatform()
+}
+
+jacocoTestReport {
+    finalizedBy jacocoTestCoverageVerification
+
+    reports {
+        csv.required = false
+        xml.required = true
+        html.required = true
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.80
+            }
+        }
+
+        rule {
+            element = 'CLASS'
+
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+
+            limit {
+                counter = 'METHOD'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+
+            excludes = ['com.project.kodesalon.exception.GlobalExceptionHandler',
+                        'com.project.kodesalon.service.FileService',
+                        'com.project.kodesalon.config.AmazonS3Config',
+                        'com.project.kodesalon.config.WebConfig',
+                        'com.project.kodesalon.config.AsyncConfig',
+                        'com.project.kodesalon.KodesalonApplication']
+        }
+    }
 }
 
 task copyHTMLDocument(type: Copy) {

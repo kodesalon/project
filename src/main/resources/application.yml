@@ -1,31 +1,32 @@
 spring:
   profiles:
-    active: local
+    group:
+      local: common
+
 ---
 
 spring:
-  group:
-    prod:
-      - prod-db
+  profiles:
+    group:
+      prod: common
+
+---
+
+spring:
+  profiles:
+    group:
+      ci: local
 
 ---
 
 spring:
   config:
     activate:
-      on-profile: local
+      on-profile: common
   datasource:
-    url: jdbc:h2:mem:test_mem
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
     hikari:
       auto-commit: false
   jpa:
-    show-sql: true
-    database-platform: H2
-    hibernate:
-      ddl-auto: create
     properties:
       hibernate:
         default_batch_fetch_size: 50
@@ -33,7 +34,55 @@ spring:
           in_clause_parameter_padding: true
         format_sql: true
     open-in-view: false
+
+---
+
+spring:
+  profiles:
+    default: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/kodesalon?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: kodesalon
+    password: kodesalon2021!
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
   jwt:
     secret: bG9jYWxUZXN0S2V5
-    accessExpirationMs: 180000
+    accessExpirationMs: 1800000
     refreshExpirationWeeks: 2
+  file:
+    directory: src/main/resources/images/
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 15MB
+
+cloud:
+  aws:
+    credentials:
+      access-key: accesskey
+      secret-key: secretkey
+    s3:
+      image:
+        bucket: kodesalon
+        directory: image/
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
+  flyway:
+    locations: classpath:db/migration/{vendor}
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: ci
+  datasource:
+    url: jdbc:mysql://db:3306/kodesalon?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
