@@ -20,7 +20,7 @@ class MultiBoardSelectResponseTest {
         BoardSelectResponse boardSelectResponse1 = new BoardSelectResponse(1L, "게시물 제목", "게시물 내용", LocalDateTime.now(), 1L, "alias", Collections.emptyList());
         BoardSelectResponse boardSelectResponse2 = new BoardSelectResponse(2L, "게시물 제목", "게시물 내용", LocalDateTime.now(), 1L, "alias", Collections.emptyList());
         BoardSelectResponse boardSelectResponse3 = new BoardSelectResponse(3L, "게시물 제목", "게시물 내용", LocalDateTime.now(), 1L, "alias", Collections.emptyList());
-        MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(Arrays.asList(boardSelectResponse1, boardSelectResponse2, boardSelectResponse3), size);
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = new MultiBoardSelectResponse<>(Arrays.asList(boardSelectResponse1, boardSelectResponse2, boardSelectResponse3), size);
 
         List<BoardSelectResponse> boards = multiBoardSelectResponse.getBoards();
         boolean isLast = multiBoardSelectResponse.isLast();
