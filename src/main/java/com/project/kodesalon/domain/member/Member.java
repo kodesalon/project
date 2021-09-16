@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.DUPLICATED_PASSWORD;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
@@ -38,6 +39,8 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
 @Table(name = "member", uniqueConstraints = {
         @UniqueConstraint(name = "member_unique_constraint", columnNames = {"alias"})})
 public class Member extends BaseEntity {
+
+    private static final String PHONE_EMPTY = "";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -65,14 +68,16 @@ public class Member extends BaseEntity {
     @Column(name = "deleted", nullable = false, columnDefinition = "bit default 0")
     private boolean deleted;
 
-    public Member(final String alias, final String password, final String name, final String email, final String phone, LocalDateTime createdDateTime) {
+    public Member(final String alias, final String password, final String name, final String email, final String phone, final LocalDateTime createdDateTime) {
         this.alias = new Alias(alias);
         this.password = new Password(password);
         this.email = new Email(email);
         this.name = new Name(name);
-        this.phone = new Phone(phone);
         this.createdDateTime = createdDateTime;
         this.lastModifiedDateTime = createdDateTime;
+        if (phone != null) {
+            this.phone = new Phone(phone);
+        }
     }
 
     public Long getId() {
@@ -96,7 +101,9 @@ public class Member extends BaseEntity {
     }
 
     public String getPhone() {
-        return phone.value();
+        return Optional.ofNullable(phone)
+                .map(Phone::value)
+                .orElse(PHONE_EMPTY);
     }
 
     public boolean isDeleted() {
