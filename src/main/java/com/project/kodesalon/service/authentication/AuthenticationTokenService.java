@@ -53,14 +53,15 @@ public class AuthenticationTokenService {
         String newRefreshToken = UUID.randomUUID().toString();
         String accessToken = jwtManager.generateJwtToken(memberId);
 
-        refreshTokenRepository.findByMember(member)
+        refreshTokenRepository.findByMemberId(member.getId())
                 .ifPresentOrElse(
                         existRefreshToken -> {
                             existRefreshToken.replace(newRefreshToken);
+                            refreshTokenRepository.save(existRefreshToken);
                             log.info("회원 ID : {}, Alias : {}, Access Token : {}, Refresh Token : {} 토큰 재발급", memberId, member.getAlias(), accessToken, newRefreshToken);
                         },
                         () -> {
-                            RefreshToken refreshToken = new RefreshToken(member, newRefreshToken, LocalDateTime.now().plus(refreshExpirationWeeks, ChronoUnit.WEEKS));
+                            RefreshToken refreshToken = new RefreshToken(member.getId(), newRefreshToken, LocalDateTime.now().plus(refreshExpirationWeeks, ChronoUnit.WEEKS));
                             refreshTokenRepository.save(refreshToken);
                             log.info("회원 ID : {}, Alias : {}, Access Token : {}, Refresh Token : {} 토큰 최초 발급", memberId, member.getAlias(), accessToken, newRefreshToken);
                         }
@@ -73,7 +74,7 @@ public class AuthenticationTokenService {
         String refreshTokenFromRequest = tokenRefreshRequest.getRefreshToken();
         RefreshToken refreshToken = findByToken(refreshTokenFromRequest);
         refreshToken.validateExpiryDate(LocalDateTime.now());
-        return updateToken(refreshToken.getMember().getId(), refreshToken);
+        return updateToken(refreshToken.getMemberId(), refreshToken);
     }
 
     private RefreshToken findByToken(final String token) {
@@ -88,6 +89,7 @@ public class AuthenticationTokenService {
         String accessToken = jwtManager.generateJwtToken(memberId);
         String newRefreshToken = UUID.randomUUID().toString();
         refreshToken.replace(newRefreshToken);
+        refreshTokenRepository.save(refreshToken);
         log.info("회원 ID : {}, Access Token : {}, Refresh Token : {} 토큰 재발급", memberId, accessToken, newRefreshToken);
         return new TokenResponse(accessToken, newRefreshToken);
     }

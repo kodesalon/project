@@ -1,47 +1,39 @@
 package com.project.kodesalon.domain.authentication;
 
-import com.project.kodesalon.domain.member.Member;
 import io.jsonwebtoken.JwtException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
 
 @Slf4j
 @Getter
-@Entity
+@RedisHash(value = "refreshToken")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RefreshToken {
+public class RefreshToken implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "refresh_token_id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @Indexed
+    private Long memberId;
 
-    @Column(nullable = false, unique = true)
+    @Indexed
     private String token;
 
-    @Column(nullable = false)
+
     private LocalDateTime expiryDate;
 
-    public RefreshToken(Member member, String token, LocalDateTime expiryDate) {
-        this.member = member;
+    public RefreshToken(final Long memberId, final String token, final LocalDateTime expiryDate) {
+        this.memberId = memberId;
         this.token = token;
         this.expiryDate = expiryDate;
     }

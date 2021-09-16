@@ -1,6 +1,5 @@
 package com.project.kodesalon.domain.authentication;
 
-import com.project.kodesalon.domain.member.Member;
 import io.jsonwebtoken.JwtException;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,20 +10,17 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
-import static com.project.kodesalon.utils.TestEntityUtils.getTestMember;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 
 class RefreshTokenTest {
-
-    private static final Member TEST_MEMBER = getTestMember();
 
     private final LocalDateTime expiryDate = LocalDateTime.now();
     private RefreshToken refreshToken;
 
     @BeforeEach
     void setUp() {
-        refreshToken = new RefreshToken(TEST_MEMBER, "token", expiryDate);
+        refreshToken = new RefreshToken(1L, "token", expiryDate);
     }
 
     @Test
