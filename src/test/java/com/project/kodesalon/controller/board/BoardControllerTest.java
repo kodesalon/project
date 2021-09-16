@@ -1,7 +1,6 @@
 package com.project.kodesalon.controller.board;
 
 import com.project.kodesalon.config.AbstractControllerTest;
-import com.project.kodesalon.config.JacksonConfiguration;
 import com.project.kodesalon.service.board.BoardService;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
@@ -10,18 +9,14 @@ import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -65,8 +60,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import(JacksonConfiguration.class)
-@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 class BoardControllerTest extends AbstractControllerTest {
 
     private final BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(LocalDateTime.now());
