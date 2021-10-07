@@ -62,6 +62,8 @@ spring:
       max-request-size: 15MB
   redis:
     host: localhost
+  flyway:
+    locations: classpath:db/migration/{vendor}
 
 cloud:
   aws:
@@ -76,8 +78,6 @@ cloud:
       auto: false
     region:
       static: ap-northeast-2
-  flyway:
-    locations: classpath:db/migration/{vendor}
 
 ---
 
