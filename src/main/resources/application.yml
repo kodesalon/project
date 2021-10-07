@@ -87,3 +87,5 @@ spring:
       on-profile: ci
   datasource:
     url: jdbc:mysql://db:3306/kodesalon?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
+  redis:
+    host: redis
