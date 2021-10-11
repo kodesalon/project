@@ -39,7 +39,7 @@
 
 ## ✅ 서버 구조도
 
-<img width="1308" alt="스크린샷 2021-10-06 오후 12 39 27" src="https://user-images.githubusercontent.com/42570260/136137531-313c17b6-0ff4-4a19-9882-5c454935008f.png">
+![server-structure](https://user-images.githubusercontent.com/44643805/136835630-454cf625-2b12-4277-8203-4b91f3264de2.png)
 
 ### 서버 구조를 적용한 방법
 
@@ -71,3 +71,4 @@
 - [Production 깔끔하게 유지하며, 테스트 기반으로 API 문서를 자동화하는 Rest Docs 활용하기](https://www.notion.so/seongbeenkim/Spring-REST-Docs-12e598fd203c4a69bddbee6267d12cb7)
 - [DB Unit 을 활용하여 DB 테스트 간소화 및 테스트 별 독립적인 테스트 환경 구축하기](https://www.notion.so/DB-Unit-b9c221b3d0fe4f94bdd46ada22ac31cf)
 - [형상 관리를 통한 DB 마이그레이션을 하는 Flyway 적용하기](https://www.notion.so/seongbeenkim/Flyway-a1299bd54e94455e85facea386df6643)
+- [DB 분산 처리를 위한 Replication 적용하기](https://www.notion.so/seongbeenkim/Replication-31fb707a5d0849aea6ccc0e7b1bb28b5#e02eb99a1da1460db054fd34f00cc6bf)
