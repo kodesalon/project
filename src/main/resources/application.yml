@@ -1,12 +1,8 @@
 spring:
   profiles:
-    active: local
----
-
-spring:
-  profiles:
     group:
       local: common
+
 ---
 
 spring:
@@ -15,10 +11,12 @@ spring:
       prod: common
 
 ---
+
 spring:
   profiles:
     group:
-      test: common, local
+      ci: local
+
 ---
 
 spring:
@@ -36,14 +34,11 @@ spring:
           in_clause_parameter_padding: true
         format_sql: true
     open-in-view: false
-  redis:
-    host: localhost
 ---
 
 spring:
-  config:
-    activate:
-      on-profile: local
+  profiles:
+    default: local
   datasource:
     url: jdbc:mysql://localhost:3306/kodesalon?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -57,15 +52,40 @@ spring:
     secret: bG9jYWxUZXN0S2V5
     accessExpirationMs: 1800000
     refreshExpirationWeeks: 2
+  file:
+    directory: src/main/resources/images/
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-file-size: 3MB
+      max-request-size: 15MB
+  redis:
+    host: localhost
+
+cloud:
+  aws:
+    credentials:
+      access-key: accesskey
+      secret-key: secretkey
+    s3:
+      image:
+        bucket: kodesalon
+        directory: image/
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
   flyway:
     locations: classpath:db/migration/{vendor}
+
 ---
 
 spring:
   config:
     activate:
-      on-profile: test
+      on-profile: ci
   datasource:
-    hikari:
-      auto-commit: true
-
+    url: jdbc:mysql://db:3306/kodesalon?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
+  redis:
+    host: redis

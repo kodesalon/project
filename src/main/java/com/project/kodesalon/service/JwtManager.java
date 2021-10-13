@@ -78,9 +78,8 @@ public class JwtManager {
     }
 
     private Key getSignKey() {
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         byte[] secretKeyBytes = secretKey.getBytes();
-        return new SecretKeySpec(secretKeyBytes, signatureAlgorithm.getJcaName());
+        return new SecretKeySpec(secretKeyBytes, SignatureAlgorithm.HS256.getJcaName());
     }
 }
 

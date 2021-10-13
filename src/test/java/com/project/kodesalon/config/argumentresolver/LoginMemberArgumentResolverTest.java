@@ -47,8 +47,8 @@ class LoginMemberArgumentResolverTest {
     }
 
     @Test
-    @DisplayName("parameter가 Login annotation을 가지고 있고 Member 타입이면 true를 반환한다.")
-    void supportsParameter() {
+    @DisplayName("parameter가 Login annotation을 가지고 있고 Long 타입이면 true를 반환한다.")
+    void supportsParameter_return_true_with_login_parameter() {
         given(parameter.hasParameterAnnotation(Login.class)).willReturn(true);
         willReturn(Long.class).given(parameter).getParameterType();
 
@@ -59,7 +59,7 @@ class LoginMemberArgumentResolverTest {
 
     @Test
     @DisplayName("parameter가 Login annotation을 가지고 있지 않으면 Long 타입이면 false를 반환한다.")
-    void supportsParameter_return_false_with_not_has_login_parameter() {
+    void supportsParameter_return_false_with_no_login_parameter() {
         given(parameter.hasParameterAnnotation(Login.class)).willReturn(false);
         willReturn(Long.class).given(parameter).getParameterType();
 

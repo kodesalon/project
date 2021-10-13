@@ -29,6 +29,10 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        if (request.getMethod().equals("OPTIONS")) {
+            return true;
+        }
+
         String uuid = UUID.randomUUID().toString();
         String requestURI = request.getRequestURI();
         MDC.put(LOG_ID, uuid);

@@ -2,6 +2,9 @@ package com.project.kodesalon.exception;
 
 public class ErrorCode {
 
+    private ErrorCode() {
+    }
+
     // Member
     public static final String NOT_EXIST_MEMBER_ALIAS = "M001";
     public static final String ALREADY_EXIST_MEMBER_ALIAS = "M002";
@@ -20,6 +23,7 @@ public class ErrorCode {
     public static final String NOT_EXIST_BOARD = "B003";
     public static final String NOT_AUTHORIZED_MEMBER = "B004";
     public static final String ALREADY_DELETED_BOARD = "B005";
+    public static final String INVALID_BOARD_IMAGES_SIZE = "B006";
 
     // JWT
     public static final String EXPIRED_JWT_TOKEN = "J001";
@@ -28,4 +32,12 @@ public class ErrorCode {
 
     // Date Time
     public static final String INVALID_DATE_TIME = "D001";
+
+    // Image
+    public static final String INVALID_IMAGE = "I001";
+    public static final String NOT_EXIST_IMAGE = "I002";
+
+    // External
+    public static final String CLOUD_ERROR = "E001";
+    public static final String INVALID_FILE = "E002";
 }
