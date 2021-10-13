@@ -104,7 +104,8 @@ jacocoTestCoverageVerification {
                         'com.project.kodesalon.config.AmazonS3Config',
                         'com.project.kodesalon.config.WebConfig',
                         'com.project.kodesalon.config.AsyncConfig',
-                        'com.project.kodesalon.KodesalonApplication']
+                        'com.project.kodesalon.KodesalonApplication',
+                        'com.project.kodesalon.config.RedisConfiguration']
         }
     }
 }

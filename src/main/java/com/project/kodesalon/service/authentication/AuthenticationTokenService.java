@@ -1,8 +1,6 @@
 package com.project.kodesalon.service.authentication;
 
-import com.project.kodesalon.domain.authentication.RefreshToken;
 import com.project.kodesalon.domain.member.Member;
-import com.project.kodesalon.repository.refreshtoken.RefreshTokenRepository;
 import com.project.kodesalon.service.JwtManager;
 import com.project.kodesalon.service.dto.request.LoginRequest;
 import com.project.kodesalon.service.dto.request.TokenRefreshRequest;
@@ -12,12 +10,13 @@ import com.project.kodesalon.service.member.MemberService;
 import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
 
@@ -25,72 +24,99 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
 @Service
 public class AuthenticationTokenService {
 
-    private final RefreshTokenRepository refreshTokenRepository;
     private final MemberService memberService;
     private final JwtManager jwtManager;
-    private final int refreshExpirationWeeks;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final int refreshExpirationDays;
 
-    public AuthenticationTokenService(final RefreshTokenRepository refreshTokenRepository, final MemberService memberService, final JwtManager jwtManager, @Value("${spring.jwt.refreshExpirationWeeks}") final int refreshExpirationWeeks) {
-        this.refreshTokenRepository = refreshTokenRepository;
+    public AuthenticationTokenService(final MemberService memberService, final JwtManager jwtManager,
+                                      final StringRedisTemplate stringRedisTemplate,
+                                      @Value("${spring.jwt.refreshExpirationDays}") final int refreshExpirationDays) {
         this.memberService = memberService;
         this.jwtManager = jwtManager;
-        this.refreshExpirationWeeks = refreshExpirationWeeks;
+        this.stringRedisTemplate = stringRedisTemplate;
+        this.refreshExpirationDays = refreshExpirationDays;
     }
 
     @Transactional
     public LoginResponse login(final LoginRequest loginRequest) {
         String alias = loginRequest.getAlias();
         Member member = memberService.findMemberByAlias(alias);
+
         String password = loginRequest.getPassword();
         member.login(password);
-        TokenResponse tokenResponse = issueToken(member);
-        log.info("ID : {}, Alias : {} Member 로그인", member.getId(), member.getAlias());
-        return new LoginResponse(tokenResponse.getAccessToken(), tokenResponse.getRefreshToken(), member.getId(), member.getAlias());
+
+        Long memberId = member.getId();
+        TokenResponse tokenResponse = issueToken(memberId);
+
+        String memberAlias = member.getAlias();
+        String accessToken = tokenResponse.getAccessToken();
+        String refreshToken = tokenResponse.getRefreshToken();
+        log.info("회원 ID : {}, Access Token : {}, Refresh Token : {} 로그인 토큰 발급", memberId, accessToken, refreshToken);
+
+        return new LoginResponse(accessToken, refreshToken, memberId, memberAlias);
     }
 
-    private TokenResponse issueToken(final Member member) {
-        Long memberId = member.getId();
-        String newRefreshToken = UUID.randomUUID().toString();
+    private TokenResponse issueToken(final Long memberId) {
         String accessToken = jwtManager.generateJwtToken(memberId);
+        String refreshToken = issueRefreshToken(memberId);
 
-        refreshTokenRepository.findByMemberId(member.getId())
-                .ifPresentOrElse(
-                        existRefreshToken -> {
-                            existRefreshToken.replace(newRefreshToken);
-                            refreshTokenRepository.save(existRefreshToken);
-                            log.info("회원 ID : {}, Alias : {}, Access Token : {}, Refresh Token : {} 토큰 재발급", memberId, member.getAlias(), accessToken, newRefreshToken);
-                        },
-                        () -> {
-                            RefreshToken refreshToken = new RefreshToken(member.getId(), newRefreshToken, LocalDateTime.now().plus(refreshExpirationWeeks, ChronoUnit.WEEKS));
-                            refreshTokenRepository.save(refreshToken);
-                            log.info("회원 ID : {}, Alias : {}, Access Token : {}, Refresh Token : {} 토큰 최초 발급", memberId, member.getAlias(), accessToken, newRefreshToken);
-                        }
-                );
-        return new TokenResponse(accessToken, newRefreshToken);
+        return new TokenResponse(accessToken, refreshToken);
+    }
+
+    private String issueRefreshToken(final Long memberId) {
+        String newRefreshToken = UUID.randomUUID().toString();
+        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+        String foundRefreshToken = valueOperations.get(memberId.toString());
+
+        if (foundRefreshToken != null) {
+            stringRedisTemplate.delete(memberId.toString());
+            stringRedisTemplate.delete(foundRefreshToken);
+        }
+
+        valueOperations.set(memberId.toString(), newRefreshToken, refreshExpirationDays, TimeUnit.DAYS);
+        valueOperations.set(newRefreshToken, memberId.toString(), refreshExpirationDays, TimeUnit.DAYS);
+
+        return newRefreshToken;
     }
 
     @Transactional
     public TokenResponse reissueAccessAndRefreshToken(final TokenRefreshRequest tokenRefreshRequest) {
         String refreshTokenFromRequest = tokenRefreshRequest.getRefreshToken();
-        RefreshToken refreshToken = findByToken(refreshTokenFromRequest);
-        refreshToken.validateExpiryDate(LocalDateTime.now());
-        return updateToken(refreshToken.getMemberId(), refreshToken);
+        Long memberId = findMemberIdByToken(refreshTokenFromRequest);
+        return updateToken(memberId, refreshTokenFromRequest);
     }
 
-    private RefreshToken findByToken(final String token) {
-        return refreshTokenRepository.findByToken(token)
-                .orElseThrow(() -> {
-                    log.info("{} Refresh token이 DB에 존재하지 않음", token);
-                    throw new JwtException(INVALID_JWT_TOKEN);
-                });
+    private Long findMemberIdByToken(final String token) {
+        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+        String memberId = valueOperations.get(token);
+
+        if (memberId == null) {
+            log.info("{} RefreshToken이 존재하지 않음", token);
+            throw new JwtException(INVALID_JWT_TOKEN);
+        }
+
+        return Long.parseLong(memberId);
     }
 
-    private TokenResponse updateToken(final Long memberId, final RefreshToken refreshToken) {
+    private TokenResponse updateToken(final Long memberId, final String refreshToken) {
         String accessToken = jwtManager.generateJwtToken(memberId);
-        String newRefreshToken = UUID.randomUUID().toString();
-        refreshToken.replace(newRefreshToken);
-        refreshTokenRepository.save(refreshToken);
+        String newRefreshToken = reissueRefreshToken(refreshToken);
         log.info("회원 ID : {}, Access Token : {}, Refresh Token : {} 토큰 재발급", memberId, accessToken, newRefreshToken);
         return new TokenResponse(accessToken, newRefreshToken);
+    }
+
+    private String reissueRefreshToken(final String refreshToken) {
+        String newRefreshToken = UUID.randomUUID().toString();
+        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+        String memberId = valueOperations.get(refreshToken);
+
+        stringRedisTemplate.delete(memberId);
+        stringRedisTemplate.delete(refreshToken);
+
+        valueOperations.set(memberId, newRefreshToken, refreshExpirationDays, TimeUnit.DAYS);
+        valueOperations.set(newRefreshToken, memberId, refreshExpirationDays, TimeUnit.DAYS);
+
+        return newRefreshToken;
     }
 }
