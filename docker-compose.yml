@@ -10,6 +10,9 @@ services:
       - ./docker/mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: kodesalon
+      MYSQL_USER: kodesalon
+      MYSQL_PASSWORD: kodesalon2021!
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
