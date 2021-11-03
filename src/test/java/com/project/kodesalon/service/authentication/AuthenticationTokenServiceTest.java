@@ -35,7 +35,7 @@ import static org.mockito.Mockito.verify;
 class AuthenticationTokenServiceTest {
 
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
-    private final TokenRefreshRequest tokenRefreshRequest = new TokenRefreshRequest("refreshToken");
+    private final TokenRefreshRequest tokenRefreshRequest = new TokenRefreshRequest(1L, "refreshToken");
 
     private AuthenticationTokenService authenticationTokenService;
 
@@ -114,14 +114,14 @@ class AuthenticationTokenServiceTest {
         ValueOperations<String, String> valueOperations = mock(ValueOperations.class);
         given(stringRedisTemplate.opsForValue()).willReturn(valueOperations);
         given(jwtManager.generateJwtToken(anyLong())).willReturn("access-token");
-        given(valueOperations.get(anyString())).willReturn("1");
+        given(valueOperations.get(anyString())).willReturn("refreshToken");
 
         TokenResponse tokenResponse = authenticationTokenService.reissueAccessAndRefreshToken(tokenRefreshRequest);
 
         then(tokenResponse.getAccessToken()).isNotEmpty();
         then(tokenResponse.getRefreshToken()).isNotEmpty();
         verify(jwtManager, times(1)).generateJwtToken(anyLong());
-        verify(valueOperations, times(2)).set(anyString(), anyString(), anyLong(), any(TimeUnit.class));
+        verify(valueOperations, times(1)).set(anyString(), anyString(), anyLong(), any(TimeUnit.class));
     }
 
     @Test

@@ -66,57 +66,62 @@ public class AuthenticationTokenService {
 
     private String issueRefreshToken(final Long memberId) {
         String newRefreshToken = UUID.randomUUID().toString();
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        String foundRefreshToken = valueOperations.get(memberId.toString());
+        String foundRefreshToken = findRefreshTokenByMemberId(memberId.toString());
 
-        if (foundRefreshToken != null) {
-            stringRedisTemplate.delete(memberId.toString());
-            stringRedisTemplate.delete(foundRefreshToken);
-        }
-
-        valueOperations.set(memberId.toString(), newRefreshToken, refreshExpirationDays, TimeUnit.DAYS);
-        valueOperations.set(newRefreshToken, memberId.toString(), refreshExpirationDays, TimeUnit.DAYS);
+        deleteRefreshTokenIfExist(memberId, foundRefreshToken);
+        saveRefreshToken(memberId.toString(), newRefreshToken);
 
         return newRefreshToken;
+    }
+
+    private void deleteRefreshTokenIfExist(final Long memberId, final String foundRefreshToken) {
+        if (foundRefreshToken != null) {
+            stringRedisTemplate.delete(memberId.toString());
+        }
     }
 
     @Transactional
     public TokenResponse reissueAccessAndRefreshToken(final TokenRefreshRequest tokenRefreshRequest) {
         String refreshTokenFromRequest = tokenRefreshRequest.getRefreshToken();
-        Long memberId = findMemberIdByToken(refreshTokenFromRequest);
+        Long memberId = tokenRefreshRequest.getMemberId();
+
         return updateToken(memberId, refreshTokenFromRequest);
-    }
-
-    private Long findMemberIdByToken(final String token) {
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        String memberId = valueOperations.get(token);
-
-        if (memberId == null) {
-            log.info("{} RefreshToken이 존재하지 않음", token);
-            throw new JwtException(INVALID_JWT_TOKEN);
-        }
-
-        return Long.parseLong(memberId);
     }
 
     private TokenResponse updateToken(final Long memberId, final String refreshToken) {
         String accessToken = jwtManager.generateJwtToken(memberId);
-        String newRefreshToken = reissueRefreshToken(refreshToken);
+        String newRefreshToken = reissueRefreshToken(memberId, refreshToken);
+
         log.info("회원 ID : {}, Access Token : {}, Refresh Token : {} 토큰 재발급", memberId, accessToken, newRefreshToken);
+
         return new TokenResponse(accessToken, newRefreshToken);
     }
 
-    private String reissueRefreshToken(final String refreshToken) {
+    private String reissueRefreshToken(final Long memberId, final String refreshToken) {
         String newRefreshToken = UUID.randomUUID().toString();
-        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        String memberId = valueOperations.get(refreshToken);
+        String foundRefreshToken = findRefreshTokenByMemberId(memberId.toString());
 
-        stringRedisTemplate.delete(memberId);
-        stringRedisTemplate.delete(refreshToken);
+        validateSameRefreshToken(refreshToken, foundRefreshToken);
+        stringRedisTemplate.delete(memberId.toString());
 
-        valueOperations.set(memberId, newRefreshToken, refreshExpirationDays, TimeUnit.DAYS);
-        valueOperations.set(newRefreshToken, memberId, refreshExpirationDays, TimeUnit.DAYS);
+        saveRefreshToken(memberId.toString(), newRefreshToken);
 
         return newRefreshToken;
+    }
+
+    private String findRefreshTokenByMemberId(final String memberId) {
+        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+        return valueOperations.get(memberId);
+    }
+
+    private void validateSameRefreshToken(final String refreshToken, final String foundRefreshToken) {
+        if (!refreshToken.equals(foundRefreshToken)) {
+            throw new JwtException(INVALID_JWT_TOKEN);
+        }
+    }
+
+    private void saveRefreshToken(final String memberId, final String refreshToken) {
+        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+        valueOperations.set(memberId, refreshToken, refreshExpirationDays, TimeUnit.DAYS);
     }
 }

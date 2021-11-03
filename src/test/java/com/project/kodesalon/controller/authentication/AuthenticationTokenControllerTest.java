@@ -35,7 +35,7 @@ class AuthenticationTokenControllerTest extends AbstractControllerTest {
 
     private final LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
     private final LoginResponse loginResponse = new LoginResponse("access token", "refresh token", 1L, "alias");
-    private final TokenRefreshRequest tokenRefreshRequest = new TokenRefreshRequest("refresh token");
+    private final TokenRefreshRequest tokenRefreshRequest = new TokenRefreshRequest(1L, "refresh token");
     private final TokenResponse tokenResponse = new TokenResponse("accessToken", "refreshToken");
 
     @InjectMocks
@@ -131,6 +131,7 @@ class AuthenticationTokenControllerTest extends AbstractControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
+                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 식별 번호"),
                                 fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("refresh 토큰")
                         ),
                         responseFields(
@@ -152,6 +153,7 @@ class AuthenticationTokenControllerTest extends AbstractControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
+                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 식별 번호"),
                                 fieldWithPath("refreshToken").type(JsonFieldType.STRING).description("유효하지 않거나 만료된 refresh 토큰")
                         ),
                         responseFields(
