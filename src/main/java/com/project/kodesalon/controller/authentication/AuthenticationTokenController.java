@@ -29,7 +29,7 @@ public class AuthenticationTokenController {
         return ResponseEntity.ok().body(loginResponse);
     }
 
-    @PostMapping("/refreshtoken")
+    @PostMapping("/refresh-token")
     public ResponseEntity<TokenResponse> reissueAccessAndRefreshToken(@RequestBody @Valid final TokenRefreshRequest tokenRefreshRequest) {
         TokenResponse tokenResponse = authenticationTokenService.reissueAccessAndRefreshToken(tokenRefreshRequest);
         return ResponseEntity.ok().body(tokenResponse);

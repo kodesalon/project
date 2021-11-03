@@ -51,21 +51,21 @@ include::{snippets}/auth/login/fail/mismatch-password/http-response.adoc[]
 
 === Request
 
-include::{snippets}/auth/refreshtoken/success/request-fields.adoc[]
-include::{snippets}/auth/refreshtoken/success/http-request.adoc[]
+include::{snippets}/auth/refresh-token/success/request-fields.adoc[]
+include::{snippets}/auth/refresh-token/success/http-request.adoc[]
 
 === Response
 
 ==== *성공*
 
-include::{snippets}/auth/refreshtoken/success/response-fields.adoc[]
-include::{snippets}/auth/refreshtoken/success/http-response.adoc[]
+include::{snippets}/auth/refresh-token/success/response-fields.adoc[]
+include::{snippets}/auth/refresh-token/success/http-response.adoc[]
 
 ==== *실패*
 
 - 유효하지 않거나 만료된 토큰
-include::{snippets}/auth/refreshtoken/fail/response-fields.adoc[]
-include::{snippets}/auth/refreshtoken/fail/http-response.adoc[]
+include::{snippets}/auth/refresh-token/fail/response-fields.adoc[]
+include::{snippets}/auth/refresh-token/fail/http-response.adoc[]
 
 = Member
 == Join

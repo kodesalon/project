@@ -120,14 +120,14 @@ class AuthenticationTokenControllerTest extends AbstractControllerTest {
     void refresh_success() throws Exception {
         given(authenticationTokenService.reissueAccessAndRefreshToken(any(TokenRefreshRequest.class))).willReturn(tokenResponse);
 
-        mockMvc.perform(post("/api/v1/auth/refreshtoken")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(tokenRefreshRequest))
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/v1/auth/refresh-token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(tokenRefreshRequest))
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value("accessToken"))
                 .andExpect(jsonPath("$.refreshToken").value("refreshToken"))
-                .andDo(document("auth/refreshtoken/success",
+                .andDo(document("auth/refresh-token/success",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
@@ -143,12 +143,12 @@ class AuthenticationTokenControllerTest extends AbstractControllerTest {
     void refresh_fail_no_existing_or_expired_token() throws Exception {
         given(authenticationTokenService.reissueAccessAndRefreshToken(any(TokenRefreshRequest.class))).willThrow(new JwtException(INVALID_JWT_TOKEN));
 
-        mockMvc.perform(post("/api/v1/auth/refreshtoken")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(tokenRefreshRequest))
-                        .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(post("/api/v1/auth/refresh-token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(tokenRefreshRequest))
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andDo(document("auth/refreshtoken/fail",
+                .andDo(document("auth/refresh-token/fail",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(

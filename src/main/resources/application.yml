@@ -51,7 +51,7 @@ spring:
   jwt:
     secret: bG9jYWxUZXN0S2V5
     accessExpirationMs: 1800000
-    refreshExpirationWeeks: 2
+    refreshExpirationDays: 14
   file:
     directory: src/main/resources/images/
   main:
@@ -62,6 +62,7 @@ spring:
       max-request-size: 15MB
   redis:
     host: localhost
+    port: 6379
 
 cloud:
   aws:
