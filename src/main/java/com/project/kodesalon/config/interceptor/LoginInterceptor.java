@@ -18,7 +18,7 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_HEADER;
 public class LoginInterceptor implements HandlerInterceptor {
 
     public static final String LOGIN_MEMBER = "loginMember";
-    private static final int BEARER_LENGTH = 7;
+    private static final String BEARER_TYPE = "Bearer ";
     private static final String LOG_ID = "logId";
 
     private final JwtManager jwtManager;
@@ -29,7 +29,7 @@ public class LoginInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if (request.getMethod().equals("OPTIONS")) {
+        if (isPreflightRequest(request)) {
             return true;
         }
 
@@ -45,10 +45,22 @@ public class LoginInterceptor implements HandlerInterceptor {
         return true;
     }
 
+    private boolean isPreflightRequest(final HttpServletRequest request) {
+        return request.getMethod().equals("OPTIONS");
+    }
+
     private String parseTokenFrom(HttpServletRequest request) {
         try {
-            return request.getHeader("Authorization").substring(BEARER_LENGTH);
+            String authorization = request.getHeader("Authorization");
+            validateStartWithBearerType(authorization);
+            return authorization.substring(BEARER_TYPE.length());
         } catch (NullPointerException e) {
+            throw new JwtException(INVALID_HEADER);
+        }
+    }
+
+    private void validateStartWithBearerType(final String authorization) {
+        if (!authorization.startsWith(BEARER_TYPE)) {
             throw new JwtException(INVALID_HEADER);
         }
     }
