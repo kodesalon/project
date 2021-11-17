@@ -37,10 +37,9 @@ public class MemberController {
     }
 
     @GetMapping
-    public ResponseEntity<MemberSelectResponse> selectMember(@Login final Long memberId, @RequestParam(required = false, defaultValue = BOARD_ID_MAX) Long lastBoardId,
-                                                             @RequestParam int size) {
-        MemberSelectResponse memberSelectResponse = memberService.selectMember(memberId, lastBoardId, size);
-        return ResponseEntity.ok().body(memberSelectResponse);
+    public ResponseEntity<MemberSelectResponse> selectMyBoard(@Login final Long memberId, @RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final int size) {
+        MemberSelectResponse myBoardSelectResponse = memberService.selectMember(memberId, lastBoardId, size);
+        return ResponseEntity.ok().body(myBoardSelectResponse);
     }
 
     @PutMapping("/password")

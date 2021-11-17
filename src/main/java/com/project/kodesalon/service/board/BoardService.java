@@ -87,7 +87,7 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public BoardSelectResponse selectBoard(final Long boardId) {
-        Board board = boardRepository.selectBoardById(boardId)
+        Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> {
                     log.info("존재하지 않는 게시물 식별자 boardId : {}", boardId);
                     throw new EntityNotFoundException(NOT_EXIST_BOARD);
@@ -101,16 +101,9 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public MultiBoardSelectResponse<BoardSelectResponse> selectBoards(final Long lastBoardId, final int size) {
+    public MultiBoardSelectResponse<BoardSelectResponse> selectBoards(final Long lastBoardId, final long size) {
         List<Board> boards = boardRepository.selectBoards(lastBoardId, size);
         List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(boards);
-        return new MultiBoardSelectResponse<>(boardSelectResponses, size);
-    }
-
-    @Transactional(readOnly = true)
-    public MultiBoardSelectResponse<BoardSelectResponse> selectMyBoards(final Long memberId, final Long lastBoardId, final int size) {
-        List<Board> myBoards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
-        List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(myBoards);
         return new MultiBoardSelectResponse<>(boardSelectResponses, size);
     }
 
