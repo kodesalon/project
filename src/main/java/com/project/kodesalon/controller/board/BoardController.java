@@ -8,6 +8,7 @@ import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
 import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ import java.util.List;
 @RequestMapping(value = "/api/v1/boards")
 public class BoardController {
 
-    private static final String BOARD_ID_MAX = "9223372036854775807";
+    public static final String BOARD_ID_MAX = "9223372036854775807";
 
     private final BoardService boardService;
 
@@ -36,7 +37,7 @@ public class BoardController {
         this.boardService = boardService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> save(@Login final Long memberId, @ModelAttribute @Valid final BoardCreateRequest boardCreateRequest) {
         boardService.save(memberId, boardCreateRequest);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -73,7 +74,7 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<MultiBoardSelectResponse<BoardSelectResponse>> selectBoards(@RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final int size) {
+    public ResponseEntity<MultiBoardSelectResponse<BoardSelectResponse>> selectBoards(@RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final long size) {
         MultiBoardSelectResponse<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(lastBoardId, size);
         return ResponseEntity.ok().body(boardSelectMultiResponse);
     }

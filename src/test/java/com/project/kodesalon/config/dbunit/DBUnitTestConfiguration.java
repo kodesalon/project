@@ -2,11 +2,13 @@ package com.project.kodesalon.config.dbunit;
 
 import com.github.springtestdbunit.bean.DatabaseConfigBean;
 import com.github.springtestdbunit.bean.DatabaseDataSourceConnectionFactoryBean;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.dbunit.ext.mysql.MySqlDataTypeFactory;
 import org.dbunit.ext.mysql.MySqlMetadataHandler;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 
+import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
 @TestConfiguration
@@ -27,5 +29,10 @@ public class DBUnitTestConfiguration {
         dbUnitDatabaseConnection.setDataSource(dataSource);
         dbUnitDatabaseConnection.setDatabaseConfig(dbUnitDatabaseConfig());
         return dbUnitDatabaseConnection;
+    }
+
+    @Bean
+    public JPAQueryFactory jpaQueryFactory(final EntityManager entityManager) {
+        return new JPAQueryFactory(entityManager);
     }
 }
