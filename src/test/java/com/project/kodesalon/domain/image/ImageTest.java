@@ -27,6 +27,7 @@ class ImageTest {
 
         softly.then(image.getUrl()).isEqualTo(url);
         softly.then(image.getKey()).isEqualTo(key);
+        softly.then(image.getBoard()).isNotNull();
         softly.then(board.getImages()).hasSize(1);
         softly.assertAll();
     }

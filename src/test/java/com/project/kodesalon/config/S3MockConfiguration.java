@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 @TestConfiguration
 public class S3MockConfiguration {
 
-    @Bean
+    @Bean(initMethod = "start", destroyMethod = "shutdown")
     public S3Mock s3Mock() {
         return new S3Mock.Builder().withPort(8001).withInMemoryBackend().build();
     }

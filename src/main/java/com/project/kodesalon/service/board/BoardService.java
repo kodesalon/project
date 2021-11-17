@@ -13,6 +13,7 @@ import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardImageResponse;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
+import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import com.project.kodesalon.service.member.MemberService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,7 +51,7 @@ public class BoardService {
     public void save(final Long memberId, final BoardCreateRequest boardCreateRequest) {
         Member member = memberService.findById(memberId);
         Board createdBoard = boardCreateRequest.toBoard(member);
-        List<String> urls = s3Uploader.upload(boardCreateRequest.getImages(), directory);
+        List<String> urls = s3Uploader.uploadFiles(boardCreateRequest.getImages(), directory);
         urls.forEach(url -> new Image(url, createdBoard));
         boardRepository.save(createdBoard);
         log.info("Member alias : {}, Board Id : {}", member.getAlias(), createdBoard.getId());
@@ -59,17 +60,22 @@ public class BoardService {
     @Transactional
     public void addImages(final Long boardId, final List<MultipartFile> images) {
         Board board = findById(boardId);
-        List<String> urls = s3Uploader.upload(images, directory);
+        List<String> urls = s3Uploader.uploadFiles(images, directory);
         urls.forEach(url -> new Image(url, board));
     }
 
+    /**
+     * 이미지에서 게시물에 Cascade 설정이 들어가는 순간 문제가 발생할수 있음
+     *
+     * @param imageIds
+     */
     @Transactional
     public void removeImages(final List<Long> imageIds) {
         List<Image> images = imageRepository.findAllById(imageIds);
         List<String> imageKeys = images.stream()
                 .map(Image::getKey)
                 .collect(Collectors.toList());
-        imageRepository.deleteAll(images);
+        imageRepository.deleteInBatch(images);
         s3Uploader.delete(imageKeys);
     }
 
@@ -92,6 +98,34 @@ public class BoardService {
                 .collect(Collectors.toList());
 
         return new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(), board.getWriter().getId(), board.getWriter().getAlias(), boardImages);
+    }
+
+    @Transactional(readOnly = true)
+    public MultiBoardSelectResponse<BoardSelectResponse> selectBoards(final Long lastBoardId, final int size) {
+        List<Board> boards = boardRepository.selectBoards(lastBoardId, size);
+        List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(boards);
+        return new MultiBoardSelectResponse(boardSelectResponses, size);
+    }
+
+    @Transactional(readOnly = true)
+    public MultiBoardSelectResponse<BoardSelectResponse> selectMyBoards(final Long memberId, final Long lastBoardId, final int size) {
+        List<Board> myBoards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
+        List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(myBoards);
+        return new MultiBoardSelectResponse(boardSelectResponses, size);
+    }
+
+    private List<BoardSelectResponse> mapToBoardSelectResponse(final List<Board> boards) {
+        return boards.stream()
+                .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(), board.getCreatedDateTime(),
+                        board.getWriter().getId(), board.getWriter().getAlias(), getBoardImageResponses(board)))
+                .collect(Collectors.toList());
+    }
+
+    private List<BoardImageResponse> getBoardImageResponses(final Board board) {
+        return board.getImages()
+                .stream()
+                .map(image -> new BoardImageResponse(image.getId(), image.getUrl()))
+                .collect(Collectors.toList());
     }
 
     @Transactional

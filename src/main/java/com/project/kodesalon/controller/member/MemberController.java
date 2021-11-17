@@ -22,7 +22,7 @@ import javax.validation.Valid;
 @RequestMapping("/api/v1/members")
 public class MemberController {
 
-    public static final String BOARD_ID_MAX = "9223372036854775807";
+    private static final String BOARD_ID_MAX = "9223372036854775807";
 
     private final MemberService memberService;
 

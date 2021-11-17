@@ -69,9 +69,6 @@ class BoardServiceTest {
     private Board board;
 
     @Mock
-    private Image image;
-
-    @Mock
     MultipartFile multipartFile;
 
     @BeforeEach
@@ -90,7 +87,7 @@ class BoardServiceTest {
         boardService.save(anyLong(), boardCreateRequest);
 
         verify(boardRepository, times(1)).save(any(Board.class));
-        verify(s3Uploader, times(1)).upload(anyList(), anyString());
+        verify(s3Uploader, times(1)).uploadFiles(anyList(), anyString());
     }
 
     @Test
@@ -111,7 +108,7 @@ class BoardServiceTest {
         MockMultipartFile image = new MockMultipartFile("images", "image.png", "image/png", "test".getBytes());
         List<MultipartFile> images = Arrays.asList(image, image);
         boardService.addImages(1L, images);
-        verify(s3Uploader, times(1)).upload(anyList(), anyString());
+        verify(s3Uploader, times(1)).uploadFiles(anyList(), anyString());
     }
 
     @Test
@@ -130,11 +127,11 @@ class BoardServiceTest {
     @DisplayName("이미지를 전달받아 이미지를 추가한다.")
     void addImages() {
         List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile);
-        given(s3Uploader.upload(anyList(), anyString())).willReturn(Arrays.asList(IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL));
+        given(s3Uploader.uploadFiles(anyList(), anyString())).willReturn(Arrays.asList(IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL));
         given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
         boardService.addImages(1L, multipartFiles);
 
-        verify(s3Uploader, times(1)).upload(anyList(), anyString());
+        verify(s3Uploader, times(1)).uploadFiles(anyList(), anyString());
     }
 
     @Test
@@ -143,7 +140,7 @@ class BoardServiceTest {
         List<MultipartFile> multipartFiles
                 = Arrays.asList(multipartFile, multipartFile, multipartFile, multipartFile, multipartFile, multipartFile);
         given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
-        given(s3Uploader.upload(anyList(), anyString())).willReturn(Arrays.asList(IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL,
+        given(s3Uploader.uploadFiles(anyList(), anyString())).willReturn(Arrays.asList(IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL,
                 IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL, IMAGE_UPLOAD_URL));
         willThrow(new IllegalArgumentException(INVALID_BOARD_IMAGES_SIZE)).given(board).addImage(any(Image.class));
         thenIllegalArgumentException().isThrownBy(() -> boardService.addImages(1L, multipartFiles))
@@ -157,7 +154,7 @@ class BoardServiceTest {
 
         boardService.removeImages(imageIds);
 
-        verify(imageRepository, times(1)).deleteAll(anyList());
+        verify(imageRepository, times(1)).deleteInBatch(anyList());
         verify(s3Uploader, times(1)).delete(anyList());
     }
 
@@ -184,11 +181,56 @@ class BoardServiceTest {
         verify(boardRepository).selectBoardById(anyLong());
     }
 
-    @Test
-    @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물 조회 시 게시물이 존재하지 않을 경우 예외를 발생시킨다")
-    void selectBoard_throw_exception_with_not_exist_board_id() {
-        given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.empty());
-        thenThrownBy(() -> boardService.selectBoard(1L)).isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining(NOT_EXIST_BOARD);
+    @ParameterizedTest
+    @CsvSource(value = {"1, false", "10, true"})
+    @DisplayName("마지막 게시물 식별 번호, 조회할 게시물 크기를 전달 받아 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
+    void selectBoards(int size, boolean last) {
+        List<Board> boards = Arrays.asList(board, board);
+        given(board.getId()).willReturn(1L);
+        given(board.getTitle()).willReturn("게시물 제목");
+        given(board.getContent()).willReturn("게시물 내용");
+        given(board.getWriter()).willReturn(member);
+        given(member.getId()).willReturn(1L);
+        given(member.getAlias()).willReturn("alias");
+        given(boardRepository.selectBoards(anyLong(), anyInt())).willReturn(boards);
+
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = boardService.selectBoards(10L, size);
+
+        then(multiBoardSelectResponse.getBoards()).isNotNull();
+        then(multiBoardSelectResponse.isLast()).isEqualTo(last);
     }
-}
+
+    @ParameterizedTest
+    @CsvSource(value = {"1, false", "10, true"})
+    @DisplayName("회원 식별 번호, 마지막 게시물 식별 번호, 조회할 게시물 크기 전달 받아 회원 자신이 올린 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
+    void selectMyBoard(int size, boolean last) {
+        List<Board> boards = Arrays.asList(board, board);
+        given(board.getId()).willReturn(1L);
+        given(board.getTitle()).willReturn("게시물 제목");
+        given(board.getContent()).willReturn("게시물 내용");
+        given(board.getWriter()).willReturn(member);
+        given(member.getId()).willReturn(1L);
+        given(member.getAlias()).willReturn("alias");
+        given(boardRepository.selectMyBoards(anyLong(), anyLong(), anyInt())).willReturn(boards);
+
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = boardService.selectMyBoards(1L, 10L, size);
+
+        then(multiBoardSelectResponse.getBoards()).isNotNull();
+        then(multiBoardSelectResponse.isLast()).isEqualTo(last);
+        @Test
+        @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물 조회 시 게시물이 존재하지 않을 경우 예외를 발생시킨다")
+        void selectBoard_throw_exception_with_not_exist_board_id () {
+            given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.empty());
+            thenThrownBy(() -> boardService.selectBoard(1L)).isInstanceOf(EntityNotFoundException.class)
+                    .hasMessageContaining(NOT_EXIST_BOARD);
+        }
+
+        @Test
+        @DisplayName("")
+        void selectBoardById_throw_exception_with_not_exist_board () {
+            given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.empty());
+
+            thenThrownBy(() -> boardService.selectBoard(1L)).isInstanceOf(EntityNotFoundException.class)
+                    .hasMessageContaining(NOT_EXIST_BOARD);
+        }
+    }

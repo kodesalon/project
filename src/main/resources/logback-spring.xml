@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30 seconds">
-    <springProfile name="local">
+    <springProfile name="local,test">
         <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
         <conversionRule conversionWord="wEx"
                         converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
@@ -19,7 +19,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="prod">
+    <springProfile name="prod1, prod2">
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>/home/ec2-user/app/jenkins/logback/log/app.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">

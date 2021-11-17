@@ -58,13 +58,13 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/add-images/{boardId}")
+    @PostMapping("/images/{boardId}")
     public ResponseEntity<Void> addImages(@RequestParam final List<MultipartFile> images, @PathVariable final Long boardId) {
         boardService.addImages(boardId, images);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/remove-images/{imageIds}")
+    @DeleteMapping("/images/{imageIds}")
     public ResponseEntity<Void> removeImages(@PathVariable final List<Long> imageIds) {
         boardService.removeImages(imageIds);
         return ResponseEntity.ok().build();

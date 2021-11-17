@@ -2,9 +2,8 @@ package com.project.kodesalon.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.MultiObjectDeleteException;
 import com.project.kodesalon.config.S3MockConfiguration;
-import io.findify.s3mock.S3Mock;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,23 +29,14 @@ class S3UploaderTest {
     public static final String BUCKET = "testbucket";
 
     @Autowired
-    private S3Mock s3Mock;
-
-    @Autowired
     private AmazonS3 amazonS3;
 
     private S3Uploader s3Uploader;
 
     @BeforeEach
     void setUp() {
-        s3Mock.start();
         amazonS3.createBucket("testbucket");
-        s3Uploader = new S3Uploader(amazonS3, "testbucket");
-    }
-
-    @AfterEach
-    void tearDown() {
-        s3Mock.stop();
+        s3Uploader = new S3Uploader(amazonS3, "testbucket", new FileService("src/main/resources/images/"));
     }
 
     @Test
@@ -55,31 +45,17 @@ class S3UploaderTest {
         MultipartFile multipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
         List<MultipartFile> multipartFiles = Collections.singletonList(multipartFile);
 
-        List<String> results = s3Uploader.upload(multipartFiles, "static");
+        List<String> results = s3Uploader.uploadFiles(multipartFiles, "static");
 
         then(results).isNotNull();
     }
-
-    @Test
-    @DisplayName("s3 bucket에 있는 이미지 파일을 삭제한다.")
-    void delete() {
-        MultipartFile multipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
-        String fileUrl = s3Uploader.upload(multipartFile, "static");
-        String key = extractKey(fileUrl);
-
-        s3Uploader.delete(key);
-
-        thenThrownBy(() -> amazonS3.getObject(BUCKET, key))
-                .isInstanceOf(AmazonS3Exception.class);
-    }
-
 
     @Test
     @DisplayName("s3 bucket에 있는 여러 개의 이미지 파일을 삭제한다.")
     void delete_multiple_images() {
         MultipartFile multipartFile = new MockMultipartFile("file", "mock1.png", "image/png", "test data".getBytes());
         List<MultipartFile> multipartFiles = Arrays.asList(multipartFile, multipartFile, multipartFile);
-        List<String> imageUrls = s3Uploader.upload(multipartFiles, "static");
+        List<String> imageUrls = s3Uploader.uploadFiles(multipartFiles, "static");
         List<String> imageKeys = imageUrls.stream()
                 .map(this::extractKey)
                 .collect(Collectors.toList());
@@ -89,6 +65,15 @@ class S3UploaderTest {
         imageKeys.forEach(imageKey ->
                 thenThrownBy(() -> amazonS3.getObject(BUCKET, imageKey))
                         .isInstanceOf(AmazonS3Exception.class));
+    }
+
+    @Test
+    @DisplayName("존재하지 않은 이미지 Key를 삭제할 경우 예외가 발생한다.")
+    void delete_images_throws_exception_with_not_exist_image_keys() {
+        String imageKey = "bucket/image.png";
+        List<String> keys = Collections.singletonList(imageKey);
+
+        thenThrownBy(() -> s3Uploader.delete(keys)).isInstanceOf(MultiObjectDeleteException.class);
     }
 
     private String extractKey(String url) {

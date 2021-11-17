@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -14,13 +15,11 @@ import java.time.LocalDateTime;
 import static com.project.kodesalon.domain.member.vo.Alias.ALIAS_REGEX;
 import static com.project.kodesalon.domain.member.vo.Name.NAME_REGEX;
 import static com.project.kodesalon.domain.member.vo.Password.PASSWORD_REGEX;
-import static com.project.kodesalon.domain.member.vo.Phone.PHONE_REGEX;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_DATE_TIME;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_ALIAS;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_EMAIL;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_NAME;
 import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
-import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PHONE;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -39,11 +38,9 @@ public class MemberCreateRequest {
     private String name;
 
     @NotEmpty(message = INVALID_MEMBER_EMAIL)
-    @javax.validation.constraints.Email(message = INVALID_MEMBER_EMAIL)
+    @Email(message = INVALID_MEMBER_EMAIL)
     private String email;
 
-    @NotNull(message = INVALID_MEMBER_PHONE)
-    @Pattern(regexp = PHONE_REGEX, message = INVALID_MEMBER_PHONE)
     private String phone;
 
     @NotNull(message = INVALID_DATE_TIME)
