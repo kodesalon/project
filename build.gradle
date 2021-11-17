@@ -90,10 +90,10 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification {
-    def Qdomains = []
+    def qDomains = []
 
     for (qPattern in "*.QA".."*.QZ") {
-        Qdomains.add(qPattern + "*")
+        qDomains.add(qPattern + "*")
     }
 
     violationRules {
@@ -125,7 +125,7 @@ jacocoTestCoverageVerification {
                         'com.project.kodesalon.config.AsyncConfig',
                         'com.project.kodesalon.config.QuerydslConfig',
                         'com.project.kodesalon.KodesalonApplication',
-                        'com.project.kodesalon.controller.ProfileController'] + Qdomains
+                        'com.project.kodesalon.controller.DeployController'] + qDomains
         }
     }
 }

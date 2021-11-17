@@ -19,7 +19,7 @@
         </root>
     </springProfile>
 
-    <springProfile name="prod1, prod2">
+    <springProfile name="prod">
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>/home/ec2-user/app/jenkins/logback/log/app.log</file>
             <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
