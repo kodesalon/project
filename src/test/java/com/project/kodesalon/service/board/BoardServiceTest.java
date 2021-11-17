@@ -171,66 +171,21 @@ class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물을 조회하고 단일 게시물 조회 응답 DTO를 반환한다.")
     void selectBoard() {
-        given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.of(board));
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
         given(board.getWriter()).willReturn(member);
         given(member.getId()).willReturn(1L);
 
         BoardSelectResponse boardSelectResponse = boardService.selectBoard(1L);
 
         then(boardSelectResponse).isNotNull();
-        verify(boardRepository).selectBoardById(anyLong());
+        verify(boardRepository).findById(anyLong());
     }
 
-    @ParameterizedTest
-    @CsvSource(value = {"1, false", "10, true"})
-    @DisplayName("마지막 게시물 식별 번호, 조회할 게시물 크기를 전달 받아 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
-    void selectBoards(int size, boolean last) {
-        List<Board> boards = Arrays.asList(board, board);
-        given(board.getId()).willReturn(1L);
-        given(board.getTitle()).willReturn("게시물 제목");
-        given(board.getContent()).willReturn("게시물 내용");
-        given(board.getWriter()).willReturn(member);
-        given(member.getId()).willReturn(1L);
-        given(member.getAlias()).willReturn("alias");
-        given(boardRepository.selectBoards(anyLong(), anyInt())).willReturn(boards);
-
-        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = boardService.selectBoards(10L, size);
-
-        then(multiBoardSelectResponse.getBoards()).isNotNull();
-        then(multiBoardSelectResponse.isLast()).isEqualTo(last);
+    @Test
+    @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물 조회 시 게시물이 존재하지 않을 경우 예외를 발생시킨다")
+    void selectBoard_throw_exception_with_not_exist_board_id() {
+        given(boardRepository.findById(anyLong())).willReturn(Optional.empty());
+        thenThrownBy(() -> boardService.selectBoard(1L)).isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining(NOT_EXIST_BOARD);
     }
-
-    @ParameterizedTest
-    @CsvSource(value = {"1, false", "10, true"})
-    @DisplayName("회원 식별 번호, 마지막 게시물 식별 번호, 조회할 게시물 크기 전달 받아 회원 자신이 올린 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
-    void selectMyBoard(int size, boolean last) {
-        List<Board> boards = Arrays.asList(board, board);
-        given(board.getId()).willReturn(1L);
-        given(board.getTitle()).willReturn("게시물 제목");
-        given(board.getContent()).willReturn("게시물 내용");
-        given(board.getWriter()).willReturn(member);
-        given(member.getId()).willReturn(1L);
-        given(member.getAlias()).willReturn("alias");
-        given(boardRepository.selectMyBoards(anyLong(), anyLong(), anyInt())).willReturn(boards);
-
-        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = boardService.selectMyBoards(1L, 10L, size);
-
-        then(multiBoardSelectResponse.getBoards()).isNotNull();
-        then(multiBoardSelectResponse.isLast()).isEqualTo(last);
-        @Test
-        @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물 조회 시 게시물이 존재하지 않을 경우 예외를 발생시킨다")
-        void selectBoard_throw_exception_with_not_exist_board_id () {
-            given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.empty());
-            thenThrownBy(() -> boardService.selectBoard(1L)).isInstanceOf(EntityNotFoundException.class)
-                    .hasMessageContaining(NOT_EXIST_BOARD);
-        }
-
-        @Test
-        @DisplayName("")
-        void selectBoardById_throw_exception_with_not_exist_board () {
-            given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.empty());
-
-            thenThrownBy(() -> boardService.selectBoard(1L)).isInstanceOf(EntityNotFoundException.class)
-                    .hasMessageContaining(NOT_EXIST_BOARD);
-        }
-    }
+}

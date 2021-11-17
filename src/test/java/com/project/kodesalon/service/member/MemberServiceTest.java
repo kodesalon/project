@@ -1,8 +1,6 @@
 package com.project.kodesalon.service.member;
 
 import com.project.kodesalon.domain.board.Board;
-import com.project.kodesalon.domain.board.Board;
-import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.domain.member.vo.Alias;
 import com.project.kodesalon.repository.board.BoardRepository;
@@ -34,7 +32,6 @@ import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -109,7 +106,7 @@ class MemberServiceTest {
         Board board = new Board("title", "content", member, LocalDateTime.now());
         List<Board> boards = Arrays.asList(board, board);
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
-        given(boardRepository.selectMyBoards(anyLong(), anyLong(), anyInt())).willReturn(boards);
+        given(boardRepository.selectBoards(anyLong(), anyLong(), anyLong())).willReturn(boards);
 
         MemberSelectResponse memberSelectResponse = memberService.selectMember(1L, Long.MAX_VALUE, size);
 

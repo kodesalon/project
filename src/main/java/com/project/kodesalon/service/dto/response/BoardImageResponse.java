@@ -1,6 +1,5 @@
 package com.project.kodesalon.service.dto.response;
 
-import com.project.kodesalon.repository.board.query.dto.BoardFlatQueryDto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,10 +13,5 @@ public class BoardImageResponse {
     public BoardImageResponse(final Long imageId, final String imageUrl) {
         this.imageId = imageId;
         this.imageUrl = imageUrl;
-    }
-
-    public BoardImageResponse(final BoardFlatQueryDto boardFlatQueryDto) {
-        this.imageId = boardFlatQueryDto.getImageId();
-        this.imageUrl = boardFlatQueryDto.getImageUrl();
     }
 }

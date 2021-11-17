@@ -2,7 +2,6 @@ package com.project.kodesalon.controller.board;
 
 import com.project.kodesalon.config.AbstractControllerTest;
 import com.project.kodesalon.service.board.BoardService;
-import com.project.kodesalon.service.board.query.BoardQueryService;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardImageResponse;
@@ -38,7 +37,6 @@ import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_IMAGE;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.project.kodesalon.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -71,9 +69,6 @@ class BoardControllerTest extends AbstractControllerTest {
 
     @Mock
     private BoardService boardService;
-
-    @Mock
-    private BoardQueryService boardQueryService;
 
     @Override
     protected Object setController() {
@@ -496,8 +491,8 @@ class BoardControllerTest extends AbstractControllerTest {
         BoardSelectResponse boardSelectResponse1 = new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages);
         BoardSelectResponse boardSelectResponse2 = new BoardSelectResponse(2L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages);
         List<BoardSelectResponse> content = Arrays.asList(boardSelectResponse1, boardSelectResponse2);
-        MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content, 1);
-        given(boardQueryService.selectBoards(anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = new MultiBoardSelectResponse<>(content, 1);
+        given(boardService.selectBoards(anyLong(), anyLong())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards")
                         .param("lastBoardId", "1")
@@ -528,8 +523,8 @@ class BoardControllerTest extends AbstractControllerTest {
     void selectBoards_first() throws Exception {
         List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
         List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(0L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages)));
-        MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content, 10);
-        given(boardQueryService.selectBoards(anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = new MultiBoardSelectResponse<>(content, 10);
+        given(boardService.selectBoards(anyLong(), anyLong())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards")
                         .param("lastBoardId", "1")
@@ -560,8 +555,8 @@ class BoardControllerTest extends AbstractControllerTest {
     void selectBoards_at_first() throws Exception {
         List<BoardImageResponse> boardImages = Collections.singletonList(new BoardImageResponse(1L, "localhost:8080/bucket/directory/image.jpeg"));
         List<BoardSelectResponse> content = new ArrayList<>(Collections.singletonList(new BoardSelectResponse(1L, "title", "content", LocalDateTime.now(), 1L, "alias", boardImages)));
-        MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(content, 10);
-        given(boardQueryService.selectBoards(anyLong(), anyInt())).willReturn(multiBoardSelectResponse);
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = new MultiBoardSelectResponse<>(content, 10);
+        given(boardService.selectBoards(anyLong(), anyLong())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards")
                         .param("size", "10")

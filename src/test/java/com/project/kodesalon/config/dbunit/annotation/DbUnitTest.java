@@ -2,6 +2,7 @@ package com.project.kodesalon.config.dbunit.annotation;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+import com.project.kodesalon.config.QuerydslTestConfiguration;
 import com.project.kodesalon.config.dbunit.DBUnitTestConfiguration;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -18,7 +19,7 @@ import java.lang.annotation.Target;
 @DataJpaTest
 @Target(value = ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import(DBUnitTestConfiguration.class)
+@Import({DBUnitTestConfiguration.class, QuerydslTestConfiguration.class})
 @DbUnitConfiguration(databaseConnection = "dbUnitDatabaseConnection")
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @TestPropertySource(properties = "spring.datasource.hikari.auto-commit=true")

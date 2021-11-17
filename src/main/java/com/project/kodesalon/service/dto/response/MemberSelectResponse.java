@@ -12,9 +12,9 @@ public class MemberSelectResponse {
     private String name;
     private String email;
     private String phone;
-    private MultiBoardSelectResponse boards;
+    private MultiBoardSelectResponse<BoardSelectResponse> boards;
 
-    public MemberSelectResponse(final String alias, final String name, final String email, final String phone, final MultiBoardSelectResponse boards) {
+    public MemberSelectResponse(final String alias, final String name, final String email, final String phone, final MultiBoardSelectResponse<BoardSelectResponse> boards) {
         this.alias = alias;
         this.name = name;
         this.email = email;

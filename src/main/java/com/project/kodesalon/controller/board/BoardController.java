@@ -2,7 +2,6 @@ package com.project.kodesalon.controller.board;
 
 import com.project.kodesalon.config.argumentresolver.annotation.Login;
 import com.project.kodesalon.service.board.BoardService;
-import com.project.kodesalon.service.board.query.BoardQueryService;
 import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
@@ -33,11 +32,9 @@ public class BoardController {
     public static final String BOARD_ID_MAX = "9223372036854775807";
 
     private final BoardService boardService;
-    private final BoardQueryService boardQueryService;
 
-    public BoardController(final BoardService boardService, final BoardQueryService boardQueryService) {
+    public BoardController(final BoardService boardService) {
         this.boardService = boardService;
-        this.boardQueryService = boardQueryService;
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -77,8 +74,8 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<MultiBoardSelectResponse> selectBoards(@RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final int size) {
-        MultiBoardSelectResponse boardSelectMultiResponse = boardQueryService.selectBoards(lastBoardId, size);
+    public ResponseEntity<MultiBoardSelectResponse<BoardSelectResponse>> selectBoards(@RequestParam(required = false, defaultValue = BOARD_ID_MAX) final Long lastBoardId, @RequestParam final long size) {
+        MultiBoardSelectResponse<BoardSelectResponse> boardSelectMultiResponse = boardService.selectBoards(lastBoardId, size);
         return ResponseEntity.ok().body(boardSelectMultiResponse);
     }
 }

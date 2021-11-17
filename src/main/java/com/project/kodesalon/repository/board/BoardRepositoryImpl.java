@@ -1,10 +1,10 @@
 package com.project.kodesalon.repository.board;
 
 import com.project.kodesalon.domain.board.Board;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.project.kodesalon.domain.board.QBoard.board;
 
@@ -19,17 +19,25 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     @Override
-    public List<Board> selectMyBoards(final Long memberId, final Long lastBoardId, final int size) {
+    public List<Board> selectBoards(final Long memberId, final Long lastBoardId, final long size) {
         return jpaQueryFactory.selectDistinct(board)
                 .from(board)
                 .leftJoin(board.images).fetchJoin()
                 .where(
                         board.id.lt(lastBoardId),
-                        board.writer.id.eq(memberId)
+                        eqWriterId(memberId)
                 )
                 .orderBy(board.id.desc())
-                .limit((long) size + CHECK_NEXT_BOARD)
+                .limit(size + CHECK_NEXT_BOARD)
                 .fetch();
+    }
+
+    private BooleanExpression eqWriterId(final Long memberId) {
+        if (memberId == null) {
+            return null;
+        }
+
+        return board.writer.id.eq(memberId);
     }
 
     @Override
@@ -38,14 +46,5 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .set(board.deleted, true)
                 .where(board.writer.id.eq(memberId))
                 .execute();
-    }
-
-    @Override
-    public Optional<Board> selectBoardById(final Long boardId) {
-        return Optional.ofNullable(jpaQueryFactory
-                .select(board)
-                .from(board)
-                .where(board.id.eq(boardId))
-                .fetchOne());
     }
 }

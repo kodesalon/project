@@ -1,6 +1,5 @@
 package com.project.kodesalon.repository.member;
 
-import com.project.kodesalon.config.QuerydslTestConfiguration;
 import com.github.springtestdbunit.annotation.DatabaseOperation;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
@@ -11,8 +10,6 @@ import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;

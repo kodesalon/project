@@ -65,9 +65,9 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberSelectResponse selectMember(final Long memberId, final Long lastBoardId, final int size) {
         Member member = findById(memberId);
-        List<Board> boards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
+        List<Board> boards = boardRepository.selectBoards(memberId, lastBoardId, size);
         List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponses(member, boards);
-        MultiBoardSelectResponse multiBoardSelectResponse = new MultiBoardSelectResponse(boardSelectResponses, size);
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = new MultiBoardSelectResponse<>(boardSelectResponses, size);
         return new MemberSelectResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone(), multiBoardSelectResponse);
     }
 

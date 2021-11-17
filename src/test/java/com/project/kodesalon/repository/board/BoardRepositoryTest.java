@@ -5,7 +5,6 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.DatabaseTearDown;
 import com.project.kodesalon.config.dbunit.annotation.DbUnitTest;
 import com.project.kodesalon.domain.board.Board;
-import com.project.kodesalon.repository.board.query.dto.BoardFlatQueryDto;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +51,7 @@ class BoardRepositoryTest {
     @Test
     @DisplayName("게시물 식별 번호를 입력받아 게시물을 조회하면 작성자 정보와 함께 조인하여 반환한다.")
     void selectBoard() {
-        Optional<Board> selectedBoard = boardRepository.selectBoardById(1L);
+        Optional<Board> selectedBoard = boardRepository.findById(1L);
 
         softly.then(selectedBoard).isNotEmpty();
         softly.then(persistenceUnitUtil.isLoaded(selectedBoard.get().getWriter())).isTrue();
@@ -63,9 +62,9 @@ class BoardRepositoryTest {
     void selectBoards_has_next() {
         int boardToBeSelectedAtOnce = 10;
 
-        List<BoardFlatQueryDto> boards = boardRepository.selectQueryBoards(11L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(null, 12L, boardToBeSelectedAtOnce);
 
-        then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
+        then(boards.size()).isEqualTo(boardToBeSelectedAtOnce + 1);
     }
 
     @Test
@@ -73,9 +72,9 @@ class BoardRepositoryTest {
     void selectBoards_doesnt_have_next() {
         int boardToBeSelectedAtOnce = 10;
 
-        List<BoardFlatQueryDto> boards = boardRepository.selectQueryBoards(Long.MAX_VALUE - 1, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(null, 11L, boardToBeSelectedAtOnce);
 
-        then(boards.size()).isEqualTo(9);
+        then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
     }
 
     @Test
@@ -83,7 +82,7 @@ class BoardRepositoryTest {
     void selectMyBoards_has_next() {
         int boardToBeSelectedAtOnce = 10;
 
-        List<Board> boards = boardRepository.selectMyBoards(1L, 11L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(1L, 11L, boardToBeSelectedAtOnce);
 
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
         boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue());
@@ -95,7 +94,7 @@ class BoardRepositoryTest {
     void selectMyBoards_doesnt_have_next() {
         int boardToBeSelectedAtOnce = 10;
 
-        List<Board> boards = boardRepository.selectMyBoards(1L, 10L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(1L, 10L, boardToBeSelectedAtOnce);
 
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce - 1);
         boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue());
