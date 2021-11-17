@@ -102,8 +102,8 @@ public class BoardService {
 
     @Transactional(readOnly = true)
     public MultiBoardSelectResponse<BoardSelectResponse> selectBoards(final Long lastBoardId, final long size) {
-        List<Board> myBoards = boardRepository.selectBoards(null, lastBoardId, size);
-        List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(myBoards);
+        List<Board> boards = boardRepository.selectBoards(lastBoardId, size);
+        List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(boards);
         return new MultiBoardSelectResponse<>(boardSelectResponses, size);
     }
 

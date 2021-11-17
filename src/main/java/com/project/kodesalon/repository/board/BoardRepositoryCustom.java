@@ -8,7 +8,10 @@ import java.util.List;
 public interface BoardRepositoryCustom {
 
     @Transactional(readOnly = true)
-    List<Board> selectBoards(final Long memberId, final Long lastBoardId, final long size);
+    List<Board> selectBoards(final Long lastBoardId, final long size);
+
+    @Transactional(readOnly = true)
+    List<Board> selectMyBoards(final Long memberId, final Long lastBoardId, final long size);
 
     @Transactional
     void deleteBoardByMemberId(final Long memberId);
