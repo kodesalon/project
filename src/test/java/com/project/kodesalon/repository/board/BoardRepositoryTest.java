@@ -10,13 +10,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
 import java.util.List;
 import java.util.Optional;
-
-import static org.assertj.core.api.BDDAssertions.then;
 
 @DbUnitTest
 @DatabaseSetup(value = "classpath:boardRepositoryTestDataSet.xml", type = DatabaseOperation.CLEAN_INSERT)
@@ -62,19 +61,30 @@ class BoardRepositoryTest {
     void selectBoards_has_next() {
         int boardToBeSelectedAtOnce = 10;
 
-        List<Board> boards = boardRepository.selectBoards(null, 12L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(12L, boardToBeSelectedAtOnce);
 
-        then(boards.size()).isEqualTo(boardToBeSelectedAtOnce + 1);
+        softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce + 1);
+        boards.forEach(board -> {
+            softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue();
+            softly.then(persistenceUnitUtil.isLoaded(board.getWriter())).isTrue();
+        });
+        softly.assertAll();
     }
 
     @Test
+    @Transactional(readOnly = true)
     @DisplayName("마지막으로 조회한 게시물 번호, 조회할 게시물 수를 입력받아 다음이 게시물이 존재하지 않을 경우 조회한 게시물과 이미지를 조인하여 반환한다.")
     void selectBoards_doesnt_have_next() {
         int boardToBeSelectedAtOnce = 10;
 
-        List<Board> boards = boardRepository.selectBoards(null, 11L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(11L, boardToBeSelectedAtOnce);
 
-        then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
+        softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
+        boards.forEach(board -> {
+            softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue();
+            softly.then(persistenceUnitUtil.isLoaded(board.getWriter())).isTrue();
+        });
+        softly.assertAll();
     }
 
     @Test
@@ -82,7 +92,7 @@ class BoardRepositoryTest {
     void selectMyBoards_has_next() {
         int boardToBeSelectedAtOnce = 10;
 
-        List<Board> boards = boardRepository.selectBoards(1L, 11L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectMyBoards(1L, 11L, boardToBeSelectedAtOnce);
 
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
         boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue());
@@ -94,7 +104,7 @@ class BoardRepositoryTest {
     void selectMyBoards_doesnt_have_next() {
         int boardToBeSelectedAtOnce = 10;
 
-        List<Board> boards = boardRepository.selectBoards(1L, 10L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectMyBoards(1L, 10L, boardToBeSelectedAtOnce);
 
         softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce - 1);
         boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue());

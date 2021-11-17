@@ -79,6 +79,12 @@ jacocoTestReport {
 }
 
 jacocoTestCoverageVerification {
+    def Qdomains = []
+
+    for (qPattern in "*.QA".."*.QZ") {
+        Qdomains.add(qPattern + "*")
+    }
+
     violationRules {
         rule {
             limit {
@@ -106,8 +112,9 @@ jacocoTestCoverageVerification {
                         'com.project.kodesalon.config.AmazonS3Config',
                         'com.project.kodesalon.config.WebConfig',
                         'com.project.kodesalon.config.AsyncConfig',
+                        'com.project.kodesalon.config.QuerydslConfig',
                         'com.project.kodesalon.KodesalonApplication',
-                        'com.project.kodesalon.controller.ProfileController']
+                        'com.project.kodesalon.controller.ProfileController'] + Qdomains
         }
     }
 }

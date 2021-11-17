@@ -12,6 +12,7 @@ import com.project.kodesalon.service.dto.request.BoardCreateRequest;
 import com.project.kodesalon.service.dto.request.BoardDeleteRequest;
 import com.project.kodesalon.service.dto.request.BoardUpdateRequest;
 import com.project.kodesalon.service.dto.response.BoardSelectResponse;
+import com.project.kodesalon.service.dto.response.MultiBoardSelectResponse;
 import com.project.kodesalon.service.member.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +40,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -187,5 +189,34 @@ class BoardServiceTest {
         given(boardRepository.findById(anyLong())).willReturn(Optional.empty());
         thenThrownBy(() -> boardService.selectBoard(1L)).isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining(NOT_EXIST_BOARD);
+    }
+
+    @Test
+    @DisplayName("마지막 게시물 식별 번호와 크기를 입력받아 복수의 게시물을 반환한다.")
+    void selectBoards() {
+        Board board = mock(Board.class);
+        List<Board> boards = List.of(board);
+        given(board.getId()).willReturn(1L);
+        given(board.getTitle()).willReturn("게시물 제목");
+        given(board.getContent()).willReturn("게시물 내용");
+        given(board.getCreatedDateTime()).willReturn(LocalDateTime.of(2021, 2, 17, 1, 2, 3));
+
+        Member writer = mock(Member.class);
+        given(board.getWriter()).willReturn(writer);
+        given(writer.getId()).willReturn(1L);
+        given(writer.getAlias()).willReturn("alias");
+
+        Image image = mock(Image.class);
+        List<Image> images = List.of(image);
+        given(board.getImages()).willReturn(images);
+        given(image.getId()).willReturn(1L);
+        given(image.getUrl()).willReturn("localhost:8080/image.jpg");
+
+        given(boardRepository.selectBoards(anyLong(), anyLong())).willReturn(boards);
+
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = boardService.selectBoards(3L, 10);
+
+        verify(boardRepository, times(1)).selectBoards(anyLong(), anyLong());
+        then(multiBoardSelectResponse).isNotNull();
     }
 }

@@ -106,7 +106,7 @@ class MemberServiceTest {
         Board board = new Board("title", "content", member, LocalDateTime.now());
         List<Board> boards = Arrays.asList(board, board);
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(member));
-        given(boardRepository.selectBoards(anyLong(), anyLong(), anyLong())).willReturn(boards);
+        given(boardRepository.selectMyBoards(anyLong(), anyLong(), anyLong())).willReturn(boards);
 
         MemberSelectResponse memberSelectResponse = memberService.selectMember(1L, Long.MAX_VALUE, size);
 
