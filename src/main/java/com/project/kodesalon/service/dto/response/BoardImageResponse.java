@@ -16,8 +16,8 @@ public class BoardImageResponse {
         this.imageUrl = imageUrl;
     }
 
-    public BoardImageResponse(final BoardFlatQueryDto flat) {
-        this.imageId = flat.getImageId();
-        this.imageUrl = flat.getImageUrl();
+    public BoardImageResponse(final BoardFlatQueryDto boardFlatQueryDto) {
+        this.imageId = boardFlatQueryDto.getImageId();
+        this.imageUrl = boardFlatQueryDto.getImageUrl();
     }
 }

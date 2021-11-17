@@ -29,23 +29,23 @@ public class BoardQueryService {
 
     @Transactional(readOnly = true)
     public MultiBoardSelectResponse selectBoards(final Long lastBoardId, final int size) {
-        List<BoardFlatQueryDto> flats = boardRepository.selectQueryBoards(lastBoardId, size);
-        LinkedHashMap<BoardQueryDto, List<BoardImageResponse>> boardQueryDtos = convertFrom(flats);
-        List<BoardSelectResponse> boards = mapToBoardsFrom(boardQueryDtos);
-        return new MultiBoardSelectResponse(boards, size);
+        List<BoardFlatQueryDto> boardFlatQueryDtos = boardRepository.selectQueryBoards(lastBoardId, size);
+        LinkedHashMap<BoardQueryDto, List<BoardImageResponse>> boardQueryDtos = groupBoardQueryDtoByImageDtoFrom(boardFlatQueryDtos);
+        List<BoardSelectResponse> boardSelectResponses = mapToBoardResponseFrom(boardQueryDtos);
+        return new MultiBoardSelectResponse(boardSelectResponses, size);
     }
 
-    private List<BoardSelectResponse> mapToBoardsFrom(final LinkedHashMap<BoardQueryDto, List<BoardImageResponse>> boardQueryDtos) {
+    private LinkedHashMap<BoardQueryDto, List<BoardImageResponse>> groupBoardQueryDtoByImageDtoFrom(final List<BoardFlatQueryDto> boardFlatQueryDtos) {
+        return boardFlatQueryDtos.stream()
+                .collect(groupingBy(BoardQueryDto::new, LinkedHashMap::new,
+                        filtering(boardFlatQueryDto -> boardFlatQueryDto.getImageUrl() != null && boardFlatQueryDto.getImageId() != null,
+                                mapping(BoardImageResponse::new, toList()))));
+    }
+
+    private List<BoardSelectResponse> mapToBoardResponseFrom(final LinkedHashMap<BoardQueryDto, List<BoardImageResponse>> boardQueryDtos) {
         return boardQueryDtos.entrySet()
                 .stream()
                 .map(boardQueryDto -> new BoardSelectResponse(boardQueryDto.getKey(), boardQueryDto.getValue()))
                 .collect(Collectors.toList());
-    }
-
-    private LinkedHashMap<BoardQueryDto, List<BoardImageResponse>> convertFrom(final List<BoardFlatQueryDto> flats) {
-        return flats.stream()
-                .collect(groupingBy(BoardQueryDto::new, LinkedHashMap::new,
-                        filtering(flat -> flat.getImageUrl() != null && flat.getImageId() != null,
-                                mapping(BoardImageResponse::new, toList()))));
     }
 }

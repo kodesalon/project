@@ -30,13 +30,13 @@ public class BoardSelectResponse {
         this.boardImages = boardImages;
     }
 
-    public BoardSelectResponse(final BoardQueryDto key, final List<BoardImageResponse> value) {
-        this.boardId = key.getBoardId();
-        this.title = key.getTitle();
-        this.content = key.getContent();
-        this.createdDateTime = key.getCreatedDateTime();
-        this.writerId = key.getMemberId();
-        this.writerAlias = key.getMemberAlias();
-        this.boardImages = value;
+    public BoardSelectResponse(final BoardQueryDto boardQueryDto, final List<BoardImageResponse> boardImageResponses) {
+        this.boardId = boardQueryDto.getBoardId();
+        this.title = boardQueryDto.getTitle();
+        this.content = boardQueryDto.getContent();
+        this.createdDateTime = boardQueryDto.getCreatedDateTime();
+        this.writerId = boardQueryDto.getMemberId();
+        this.writerAlias = boardQueryDto.getMemberAlias();
+        this.boardImages = boardImageResponses;
     }
 }
