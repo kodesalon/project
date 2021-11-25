@@ -63,8 +63,9 @@ public class MemberController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteMember(@Login final Long memberId, @RequestBody @Valid final MemberDeleteRequest memberDeleteRequest) {
+    public ResponseEntity<Void> deleteMember(@Login final Long memberId, @RequestBody @Valid final MemberDeleteRequest memberDeleteRequest, final HttpSession httpSession) {
         memberService.deleteMember(memberId, memberDeleteRequest);
+        httpSession.invalidate();
         return ResponseEntity.ok().build();
     }
 }
