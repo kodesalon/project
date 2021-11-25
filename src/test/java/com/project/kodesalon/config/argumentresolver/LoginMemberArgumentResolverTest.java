@@ -10,13 +10,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.MethodParameter;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import static com.project.kodesalon.config.interceptor.LoginInterceptor.LOGIN_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willReturn;
 
@@ -81,13 +81,15 @@ class LoginMemberArgumentResolverTest {
 
     @Test
     @DisplayName("NativeWebRequest을 HttpServletRequest으로 변환 후 속성으로 받아온 회원 식별 번호를 반환한다.")
-    void resolveArgument() throws Exception {
+    void resolveArgument() {
+        MockHttpSession session = new MockHttpSession();
+        long memberId = 1L;
+        session.setAttribute(LOGIN_MEMBER, memberId);
         given(webRequest.getNativeRequest()).willReturn(request);
-        given(request.getAttribute(anyString())).willReturn(1L);
+        given(request.getSession(false)).willReturn(session);
 
-        loginMemberArgumentResolver.resolveArgument(parameter, mavContainer, webRequest, binderFactory);
-        Long attributedMemberId = (Long) request.getAttribute(LOGIN_MEMBER);
+        Object resolvedArgument = loginMemberArgumentResolver.resolveArgument(parameter, mavContainer, webRequest, binderFactory);
 
-        then(attributedMemberId).isEqualTo(1L);
+        then(resolvedArgument).isEqualTo(memberId);
     }
 }

@@ -1,8 +1,8 @@
 package com.project.kodesalon.exception;
 
 import com.project.kodesalon.service.dto.response.ErrorResponse;
-import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.SessionException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -20,7 +20,8 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_IMAGE;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler({IllegalArgumentException.class, EntityNotFoundException.class, IllegalStateException.class, DataIntegrityViolationException.class})
+    @ExceptionHandler({IllegalArgumentException.class, EntityNotFoundException.class, IllegalStateException.class,
+            DataIntegrityViolationException.class, SessionException.class})
     protected ResponseEntity<ErrorResponse> handleBusinessException(RuntimeException e) {
         log.info(e.getMessage());
         return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
@@ -31,11 +32,6 @@ public class GlobalExceptionHandler {
         log.info(e.getMessage());
         String errorMessage = e.getFieldError().getDefaultMessage();
         return ResponseEntity.badRequest().body(new ErrorResponse(errorMessage));
-    }
-
-    @ExceptionHandler(JwtException.class)
-    protected ResponseEntity<ErrorResponse> handleJwtException(JwtException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(DateTimeParseException.class)

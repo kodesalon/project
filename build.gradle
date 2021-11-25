@@ -20,7 +20,7 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven { url 'https://repo.spring.io/libs-milestone'}
+    maven { url 'https://repo.spring.io/libs-milestone' }
 }
 
 dependencies {
@@ -79,14 +79,15 @@ jacocoTestReport {
     }
 
     def qDomains = []
-    for(qPattern in "**/QA" .. "**/QZ"){
-        qDomains.add(qPattern+"*")
+    for (qPattern in "**/QA".."**/QZ") {
+        qDomains.add(qPattern + "*")
     }
 
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it,
-                    exclude: [] + qDomains)
+                    exclude: ["com/project/kodesalon/config/*Config.*",
+                              "com/project/kodesalon/exception/*"] + qDomains)
         }))
     }
 }
@@ -120,16 +121,11 @@ jacocoTestCoverageVerification {
                 minimum = 0.80
             }
 
-            excludes = ['com.project.kodesalon.exception.GlobalExceptionHandler',
-                        'com.project.kodesalon.service.FileService',
-                        'com.project.kodesalon.config.AmazonS3Config',
-                        'com.project.kodesalon.config.WebConfig',
-                        'com.project.kodesalon.config.AsyncConfig',
-                        'com.project.kodesalon.config.QuerydslConfig',
-                        'com.project.kodesalon.KodesalonApplication',
+            excludes = ['com.project.kodesalon.KodesalonApplication',
+                        'com.project.kodesalon.config.*Config',
+                        'com.project.kodesalon.exception.*',
                         'com.project.kodesalon.controller.DeployController',
-                        'com.project.kodesalon.KodesalonApplication',
-                        'com.project.kodesalon.config.RedisConfiguration'] + qDomains
+                        'com.project.kodesalon.service.FileService'] + qDomains
         }
     }
 }

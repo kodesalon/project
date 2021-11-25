@@ -8,6 +8,7 @@ import com.project.kodesalon.domain.member.vo.Name;
 import com.project.kodesalon.domain.member.vo.Password;
 import com.project.kodesalon.domain.member.vo.Phone;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
@@ -26,7 +27,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.DUPLICATED_PASSWORD;
@@ -35,6 +35,7 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
 @Slf4j
 @Entity
 @Where(clause = "deleted = 'false'")
+@EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member", uniqueConstraints = {
         @UniqueConstraint(name = "member_unique_constraint", columnNames = {"alias"})})
@@ -147,18 +148,5 @@ public class Member extends BaseEntity {
 
     public void addBoard(final Board newBoard) {
         boards.add(newBoard);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Member member = (Member) o;
-        return id.equals(member.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
     }
 }
