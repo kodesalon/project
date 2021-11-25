@@ -12,9 +12,7 @@ permissions:
     group: ec2-user
 
 hooks:
-  ApplicationStop:
-    - location: scripts/kill_process.sh
   ApplicationStart:
-    - location: scripts/deploy.sh
+    - location: deploy.sh
       timeout: 60
       runas: ec2-user

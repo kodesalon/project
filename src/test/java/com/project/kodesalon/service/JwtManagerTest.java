@@ -115,5 +115,3 @@ class JwtManagerTest {
                 .hasMessage(INVALID_JWT_TOKEN);
     }
 }
-
-

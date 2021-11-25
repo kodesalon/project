@@ -65,20 +65,20 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberSelectResponse selectMember(final Long memberId, final Long lastBoardId, final int size) {
         Member member = findById(memberId);
-        List<Board> ownBoards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
-        List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(member, ownBoards);
-        MultiBoardSelectResponse<BoardSelectResponse> boards = new MultiBoardSelectResponse<>(boardSelectResponses, size);
-        return new MemberSelectResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone(), boards);
+        List<Board> boards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
+        List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponses(member, boards);
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = new MultiBoardSelectResponse<>(boardSelectResponses, size);
+        return new MemberSelectResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone(), multiBoardSelectResponse);
     }
 
-    private List<BoardSelectResponse> mapToBoardSelectResponse(final Member member, final List<Board> ownBoards) {
-        return ownBoards.stream()
+    private List<BoardSelectResponse> mapToBoardSelectResponses(final Member member, final List<Board> boards) {
+        return boards.stream()
                 .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(),
-                        board.getCreatedDateTime(), member.getId(), member.getAlias(), mapToImages(board.getImages())))
+                        board.getCreatedDateTime(), member.getId(), member.getAlias(), mapToBoardImageResponses(board.getImages())))
                 .collect(Collectors.toList());
     }
 
-    private List<BoardImageResponse> mapToImages(final List<Image> images) {
+    private List<BoardImageResponse> mapToBoardImageResponses(final List<Image> images) {
         return images.stream()
                 .map(image -> new BoardImageResponse(image.getId(), image.getUrl()))
                 .collect(Collectors.toList());
