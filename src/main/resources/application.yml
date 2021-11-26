@@ -61,8 +61,12 @@ spring:
       max-file-size: 3MB
       max-request-size: 15MB
   redis:
-    host: localhost
-    port: 6379
+    session:
+      host: localhost
+      port: 6379
+    cache:
+      host: localhost
+      port: 6380
 
 cloud:
   aws:
