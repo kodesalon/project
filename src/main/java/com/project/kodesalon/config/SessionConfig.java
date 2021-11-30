@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -15,15 +16,15 @@ import org.springframework.session.web.context.AbstractHttpSessionApplicationIni
 
 @Configuration
 @EnableRedisHttpSession
-public class RedisConfig extends AbstractHttpSessionApplicationInitializer {
+public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
 
     private final String host;
     private final int port;
     private final ObjectMapper objectMapper;
 
-    public RedisConfig(@Value("${spring.redis.host}") final String host,
-                       @Value("${spring.redis.port}") final int port,
-                       final ObjectMapper objectMapper) {
+    public SessionConfig(@Value("${spring.redis.session.host}") final String host,
+                         @Value("${spring.redis.session.port}") final int port,
+                         final ObjectMapper objectMapper) {
         this.host = host;
         this.port = port;
         this.objectMapper = objectMapper;
@@ -42,6 +43,7 @@ public class RedisConfig extends AbstractHttpSessionApplicationInitializer {
     }
 
     @Bean
+    @Primary
     public RedisConnectionFactory lettuceConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
         return new LettuceConnectionFactory(redisStandaloneConfiguration);

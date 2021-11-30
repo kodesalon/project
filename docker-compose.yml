@@ -16,8 +16,15 @@ services:
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
-  redis:
+  session:
     image: redis
-    container_name: redis
+    container_name: redis_session
     ports:
       - 6379:6379
+  cache:
+    image: redis
+    container_name: redis_cache
+    ports:
+      - 6380:6379
+    volumes:
+      - ./docker/redis.conf:/usr/local/etc/redis/redis.conf

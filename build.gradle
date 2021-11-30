@@ -101,12 +101,6 @@ jacocoTestCoverageVerification {
 
     violationRules {
         rule {
-            limit {
-                minimum = 0.80
-            }
-        }
-
-        rule {
             element = 'CLASS'
 
             limit {
