@@ -319,6 +319,7 @@ include::{snippets}/board/add-images/fail/invalid-file/http-response.adoc[]
 === Request
 
 include::{snippets}/board/remove-images/success/path-parameters.adoc[]
+include::{snippets}/board/remove-images/success/request-parameters.adoc[]
 include::{snippets}/board/remove-images/success/http-request.adoc[]
 
 ==== *성공*

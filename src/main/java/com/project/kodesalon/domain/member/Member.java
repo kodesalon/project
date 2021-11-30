@@ -9,6 +9,7 @@ import com.project.kodesalon.domain.member.vo.Password;
 import com.project.kodesalon.domain.member.vo.Phone;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
@@ -34,6 +35,7 @@ import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_PASSWORD;
 
 @Slf4j
 @Entity
+@Getter
 @Where(clause = "deleted = 'false'")
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -81,10 +83,6 @@ public class Member extends BaseEntity {
         }
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getAlias() {
         return alias.value();
     }
@@ -105,10 +103,6 @@ public class Member extends BaseEntity {
         return Optional.ofNullable(phone)
                 .map(Phone::value)
                 .orElse(PHONE_EMPTY);
-    }
-
-    public boolean isDeleted() {
-        return deleted;
     }
 
     public List<Board> getBoards() {
