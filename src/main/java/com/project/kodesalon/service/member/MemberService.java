@@ -6,6 +6,7 @@ import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.domain.member.vo.Alias;
 import com.project.kodesalon.repository.board.BoardRepository;
 import com.project.kodesalon.repository.member.MemberRepository;
+import com.project.kodesalon.service.dto.request.LoginRequest;
 import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
 import com.project.kodesalon.service.dto.request.MemberCreateRequest;
 import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
@@ -19,9 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.project.kodesalon.config.interceptor.LoginInterceptor.LOGIN_MEMBER;
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
@@ -60,6 +63,28 @@ public class MemberService {
         } catch (DataIntegrityViolationException e) {
             throw new IllegalArgumentException(ALREADY_EXIST_MEMBER_ALIAS);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public void login(final LoginRequest loginRequest, final HttpSession session) {
+        String alias = loginRequest.getAlias();
+        Member member = findMemberByAlias(alias);
+
+        String password = loginRequest.getPassword();
+        member.login(password);
+
+        Long memberId = member.getId();
+        String memberAlias = member.getAlias();
+        session.setAttribute(LOGIN_MEMBER, memberId);
+        log.info("회원 식별 번호 : {}, 별명 : {} 로그인 성공", memberId, memberAlias);
+    }
+
+    private Member findMemberByAlias(final String alias) {
+        return memberRepository.findMemberByAlias(new Alias(alias))
+                .orElseThrow(() -> {
+                    log.info("{}인 Alias를 가진 사용자가 존재하지 않음", alias);
+                    throw new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS);
+                });
     }
 
     @Transactional(readOnly = true)
@@ -103,15 +128,6 @@ public class MemberService {
                 .orElseThrow(() -> {
                     log.info("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
                     throw new EntityNotFoundException(NOT_EXIST_MEMBER);
-                });
-    }
-
-    @Transactional(readOnly = true)
-    public Member findMemberByAlias(final String alias) {
-        return memberRepository.findMemberByAlias(new Alias(alias))
-                .orElseThrow(() -> {
-                    log.info("{}인 Alias를 가진 사용자가 존재하지 않음", alias);
-                    throw new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS);
                 });
     }
 }

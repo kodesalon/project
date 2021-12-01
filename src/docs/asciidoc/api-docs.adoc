@@ -8,65 +8,6 @@ kodesalon;
 :sectlinks:
 
 [[Introduction]]
-= AuthenticationToken
-== JWT Token Error
-=== Response
-- 만료된 JWT token
-include::{snippets}/member/jwt/expired/response-fields.adoc[]
-include::{snippets}/member/jwt/expired/http-response.adoc[]
-
-- 유효하지 않은 JWT token
-include::{snippets}/member/jwt/invalid/response-fields.adoc[]
-include::{snippets}/member/jwt/invalid/http-response.adoc[]
-
-- 유효하지 않은 Authorization 속성
-include::{snippets}/member/jwt/invalid-header/response-fields.adoc[]
-include::{snippets}/member/jwt/invalid-header/http-response.adoc[]
-
-== Login
-
-=== Request
-
-include::{snippets}/auth/login/success/request-fields.adoc[]
-include::{snippets}/auth/login/success/http-request.adoc[]
-
-=== Response
-
-==== *성공*
-
-include::{snippets}/auth/login/success/response-fields.adoc[]
-include::{snippets}/auth/login/success/http-response.adoc[]
-
-==== *실패*
-
-- 존재하지 않는 Alias
-include::{snippets}/auth/login/fail/no-alias/response-fields.adoc[]
-include::{snippets}/auth/login/fail/no-alias/http-response.adoc[]
-
-- 일치하지 않는 Password
-include::{snippets}/auth/login/fail/mismatch-password/response-fields.adoc[]
-include::{snippets}/auth/login/fail/mismatch-password/http-response.adoc[]
-
-== Refresh Token
-
-=== Request
-
-include::{snippets}/auth/refreshtoken/success/request-fields.adoc[]
-include::{snippets}/auth/refreshtoken/success/http-request.adoc[]
-
-=== Response
-
-==== *성공*
-
-include::{snippets}/auth/refreshtoken/success/response-fields.adoc[]
-include::{snippets}/auth/refreshtoken/success/http-response.adoc[]
-
-==== *실패*
-
-- 유효하지 않거나 만료된 토큰
-include::{snippets}/auth/refreshtoken/fail/response-fields.adoc[]
-include::{snippets}/auth/refreshtoken/fail/http-response.adoc[]
-
 = Member
 == Join
 === Request
@@ -105,6 +46,46 @@ include::{snippets}/member/join/fail/invalid-name/http-response.adoc[]
 - 유효하지 않은 가입 시간
 include::{snippets}/member/join/fail/null-created-date-time/response-fields.adoc[]
 include::{snippets}/member/join/fail/null-created-date-time/http-response.adoc[]
+
+== Login
+
+=== Request
+
+include::{snippets}/member/login/success/request-fields.adoc[]
+include::{snippets}/member/login/success/http-request.adoc[]
+
+=== Response
+
+==== *성공*
+
+include::{snippets}/member/login/success/http-response.adoc[]
+
+==== *실패*
+
+- 존재하지 않는 Alias
+include::{snippets}/member/login/fail/no-alias/response-fields.adoc[]
+include::{snippets}/member/login/fail/no-alias/http-response.adoc[]
+
+- 일치하지 않는 Password
+include::{snippets}/member/login/fail/mismatch-password/response-fields.adoc[]
+include::{snippets}/member/login/fail/mismatch-password/http-response.adoc[]
+
+== Logout
+
+=== Request
+
+include::{snippets}/member/logout/success/http-request.adoc[]
+
+=== Response
+
+==== *성공*
+
+include::{snippets}/member/logout/success/http-response.adoc[]
+
+==== *실패*
+
+- 유효하지 않은 Session
+include::{snippets}/member/logout/fail/no-session/http-response.adoc[]
 
 == Select
 
@@ -338,6 +319,7 @@ include::{snippets}/board/add-images/fail/invalid-file/http-response.adoc[]
 === Request
 
 include::{snippets}/board/remove-images/success/path-parameters.adoc[]
+include::{snippets}/board/remove-images/success/request-parameters.adoc[]
 include::{snippets}/board/remove-images/success/http-request.adoc[]
 
 ==== *성공*

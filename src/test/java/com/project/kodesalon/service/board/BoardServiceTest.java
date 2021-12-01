@@ -150,12 +150,16 @@ class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("삭제하려는 게시물의 식별 번호를 입력 받아 이미지를 삭제한다.")
+    @DisplayName("게시물의 식별 번호, 삭제하려는 게시물 식별번호를 입력 받아 이미지를 삭제한다.")
     void deleteImages() {
+        Board board = mock(Board.class);
         List<Long> imageIds = Arrays.asList(1L, 2L);
+        given(board.getId()).willReturn(1L);
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
 
-        boardService.removeImages(imageIds);
+        boardService.deleteImages(board.getId(), imageIds);
 
+        verify(boardRepository, times(1)).findById(anyLong());
         verify(imageRepository, times(1)).deleteInBatch(anyList());
         verify(s3Uploader, times(1)).delete(anyList());
     }
@@ -173,20 +177,22 @@ class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물을 조회하고 단일 게시물 조회 응답 DTO를 반환한다.")
     void selectBoard() {
-        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
+        given(boardRepository.selectBoard(anyLong())).willReturn(Optional.of(board));
         given(board.getWriter()).willReturn(member);
+        given(board.getCreatedDateTime()).willReturn(LocalDateTime.now());
         given(member.getId()).willReturn(1L);
 
         BoardSelectResponse boardSelectResponse = boardService.selectBoard(1L);
 
         then(boardSelectResponse).isNotNull();
-        verify(boardRepository).findById(anyLong());
+        verify(boardRepository, times(1)).selectBoard(anyLong());
     }
 
     @Test
     @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물 조회 시 게시물이 존재하지 않을 경우 예외를 발생시킨다")
     void selectBoard_throw_exception_with_not_exist_board_id() {
-        given(boardRepository.findById(anyLong())).willReturn(Optional.empty());
+        given(boardRepository.selectBoard(anyLong())).willReturn(Optional.empty());
+
         thenThrownBy(() -> boardService.selectBoard(1L)).isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining(NOT_EXIST_BOARD);
     }

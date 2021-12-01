@@ -34,7 +34,6 @@ spring:
           in_clause_parameter_padding: true
         format_sql: true
     open-in-view: false
-
 ---
 
 spring:
@@ -49,10 +48,6 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: validate
-  jwt:
-    secret: bG9jYWxUZXN0S2V5
-    accessExpirationMs: 1800000
-    refreshExpirationWeeks: 2
   file:
     directory: src/main/resources/images/
   main:
@@ -61,6 +56,13 @@ spring:
     multipart:
       max-file-size: 3MB
       max-request-size: 15MB
+  redis:
+    session:
+      host: localhost
+      port: 6379
+    cache:
+      host: localhost
+      port: 6380
 
 cloud:
   aws:
@@ -86,3 +88,5 @@ spring:
       on-profile: ci
   datasource:
     url: jdbc:mysql://db:3306/kodesalon?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false
+  redis:
+    host: redis
