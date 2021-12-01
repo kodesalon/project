@@ -19,28 +19,28 @@
 
 - Java11
 - Spring Boot
-- JPA, Querydsl, Flyway
-- Junit5, Mockito, DbUnit
+- JPA, Querydsl
+- Junit5, Mockito
 - Gradle
 
 ### DevOps
 
 - AWS - EC2, RDS, S3, CodeDeploy
-- MySQL, Redis
+- MySQL, H2
 - Jenkins
 - Nginx
 - Sonarqube
-- Docker
 
 ### Collaboration & Tool
 
 - Slack
 - Intellij, Vim
-- Git, Github
+- Git
 
 ## ✅ 서버 구조도
 
-<img width="1277" alt="kodesalon-structure" src="https://user-images.githubusercontent.com/44643805/144169788-a23af487-dbaf-4a33-9da7-29d17612693b.png">
+<img width="1253" alt="스크린샷 2021-12-01 오전 7 03 37" src="https://user-images.githubusercontent.com/44643805/144135484-5f92ba4d-69ec-4da8-a9ec-2098d08a6cba.png">
+
 ### 서버 구조를 적용한 방법
 
 #### AWS
@@ -70,16 +70,12 @@
   - [분산 서버 Session 관리 방법 3 - Session Storage용 Database](https://www.notion.so/seongbeenkim/bfe0124212734b0f91fe2f190a51ac86?v=92efa7174bf44632ae00e8e831771cd4&p=3c9fbcfb3ce74a89b8ec68774d6d9582)
   - [JWT → Redis for session - 1. JWT를 사용하지 말아야 하는 이유](https://seongbeenkim.notion.site/JWT-Redis-for-session-1-JWT-1dc34ee724aa4dca82c1ef9b03462c80)
   - [JWT → Redis for session - 2. Redis 적용](https://www.notion.so/seongbeenkim/b463d484f43249c2b3ae22142d4c2015?v=fa1582d8d8de4913a694275c1915bfca&p=aedc7b46b00046e284a67337c96be690)
-
 - 성능 향상
   - [JPA 기존 paging 조회 시 발생하는 N+1, 불필요한 Count 쿼리 발생, full scan 쿼리를 Query 튜닝을 활용한 성능 개선하기](https://www.notion.so/Paging-e804041f2a0a4274aaf982e93a0a4954)
   - [성능 향상을 위한 Cache 적용 - 1. Cache, Cashing Strategies](https://www.notion.so/seongbeenkim/b463d484f43249c2b3ae22142d4c2015?v=fa1582d8d8de4913a694275c1915bfca&p=6e85614d73a84bf98ae0b2fdb7dfaec2)
   - [성능 향상을 위한 Cache 적용 - 2. Redis 적용 & Eviction](https://www.notion.so/seongbeenkim/b463d484f43249c2b3ae22142d4c2015?v=fa1582d8d8de4913a694275c1915bfca&p=2d1dd944738d4f33b8501b96739d56e3)
-  - [DB 분산 처리를 위한 Replication 적용하기](https://www.notion.so/seongbeenkim/Replication-31fb707a5d0849aea6ccc0e7b1bb28b5#e02eb99a1da1460db054fd34f00cc6bf)
-
 - [JPA DTO 프로젝션을 간소회하기 위해 Querydsl 도입하기](https://www.notion.so/QueryDsl-f09fc5067e5b4a0a809b1509053dc238)
 - [목표로 잡은 테스트 커버리지를 유지하기 위해 Jacoco 적용하기](https://www.notion.so/seongbeenkim/Jacoco-db6f0853e10749019b902c68efa5875b)
 - [Production 깔끔하게 유지하며, 테스트 기반으로 API 문서를 자동화하는 Rest Docs 활용하기](https://www.notion.so/seongbeenkim/Spring-REST-Docs-12e598fd203c4a69bddbee6267d12cb7)
 - [DB Unit 을 활용하여 DB 테스트 간소화 및 테스트 별 독립적인 테스트 환경 구축하기](https://www.notion.so/DB-Unit-b9c221b3d0fe4f94bdd46ada22ac31cf)
 - [형상 관리를 통한 DB 마이그레이션을 하는 Flyway 적용하기](https://www.notion.so/seongbeenkim/Flyway-a1299bd54e94455e85facea386df6643)
-
