@@ -115,8 +115,15 @@ jacocoTestCoverageVerification {
                 minimum = 0.80
             }
 
+            limit {
+                counter = 'BRANCH'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+
             excludes = ['com.project.kodesalon.KodesalonApplication',
                         'com.project.kodesalon.config.*Config',
+                        'com.project.kodesalon.config.datasource.*',
                         'com.project.kodesalon.exception.*',
                         'com.project.kodesalon.controller.DeployController',
                         'com.project.kodesalon.service.FileService'] + qDomains
