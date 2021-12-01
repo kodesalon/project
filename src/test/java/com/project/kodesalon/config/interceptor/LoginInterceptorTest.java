@@ -1,26 +1,21 @@
 package com.project.kodesalon.config.interceptor;
 
-import com.project.kodesalon.service.JwtManager;
-import io.jsonwebtoken.JwtException;
-import org.junit.jupiter.api.BeforeEach;
+import org.hibernate.SessionException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 
 import static com.project.kodesalon.config.interceptor.LoginInterceptor.LOGIN_MEMBER;
-import static com.project.kodesalon.exception.ErrorCode.INVALID_HEADER;
-import static com.project.kodesalon.exception.ErrorCode.INVALID_JWT_TOKEN;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_SESSION;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -29,9 +24,6 @@ class LoginInterceptorTest {
 
     @InjectMocks
     private LoginInterceptor loginInterceptor;
-
-    @Mock
-    private JwtManager jwtManager;
 
     @Spy
     private MockHttpServletRequest request;
@@ -42,41 +34,46 @@ class LoginInterceptorTest {
     @Spy
     private MockMvcResultHandlers handler;
 
-    @BeforeEach
-    void setUp() {
-        request.addHeader("Authorization", "Bearer token");
-    }
+    @Spy
+    private MockHttpSession session;
 
     @Test
-    @DisplayName("request header에 jwt 토큰을 입력받아 회원 식별 번호를 attribute에 등록하고 true를 반환한다.")
-    void preHandle() throws Exception {
-        given(jwtManager.validateToken(anyString())).willReturn(true);
-        given(jwtManager.getMemberIdFrom(anyString())).willReturn(1L);
+    @DisplayName("Session이 존재하고, 회원 정보를 포함한다면 참을 반환한다.")
+    void preHandle() {
+        session.setAttribute(LOGIN_MEMBER, 1L);
+        request.setSession(session);
 
         boolean expect = loginInterceptor.preHandle(request, response, handler);
 
-        then(request.getAttribute(LOGIN_MEMBER)).isNotNull();
         then(expect).isTrue();
     }
 
     @Test
-    @DisplayName("유효한 access token이 아닌 경우 예외를 발생시킨다.")
-    void preHandle_throws_exception_with_invalid_jwt_token() {
-        given(jwtManager.validateToken(anyString())).willThrow(new JwtException(INVALID_JWT_TOKEN));
+    @DisplayName("Preflight 요청일 경우, 참을 반환한다.")
+    void preHandle_with_preflight() {
+        request.setMethod("OPTIONS");
 
-        thenThrownBy(() -> loginInterceptor.preHandle(request, response, handler))
-                .isInstanceOf(JwtException.class)
-                .hasMessage(INVALID_JWT_TOKEN);
+        boolean expect = loginInterceptor.preHandle(request, response, handler);
+
+        then(expect).isTrue();
     }
 
     @Test
-    @DisplayName("Header에 Authorizaiotn attribute가 없을 경우 예외를 발생시킨다.")
-    void preHandle_throw_exception_with_null_authorized_header() {
-        given(request.getHeader(anyString())).willThrow(new NullPointerException());
+    @DisplayName("Session이 존재하지 않을 경우, 예외를 발생시킨다.")
+    void preHandle_throws_exception_with_not_exist_session() {
+        thenThrownBy(() -> loginInterceptor.preHandle(request, response, handler))
+                .isInstanceOf(SessionException.class)
+                .hasMessage(INVALID_SESSION);
+    }
+
+    @Test
+    @DisplayName("Session이 존재하지만, 회원 정보를 포함하지 않을 경우, 예외를 발생시킨다.")
+    void preHandle_throws_exception_with_not_member_id() {
+        request.setSession(session);
 
         thenThrownBy(() -> loginInterceptor.preHandle(request, response, handler))
-                .isInstanceOf(JwtException.class)
-                .hasMessage(INVALID_HEADER);
+                .isInstanceOf(SessionException.class)
+                .hasMessage(INVALID_SESSION);
     }
 
     @Test

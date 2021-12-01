@@ -6,6 +6,7 @@ import com.project.kodesalon.domain.board.vo.Title;
 import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Where;
@@ -23,16 +24,19 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_IMAGES_SIZE;
 import static com.project.kodesalon.exception.ErrorCode.NOT_AUTHORIZED_MEMBER;
 
 @Slf4j
+@Getter
 @Entity
 @Where(clause = "deleted = 'false'")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Board extends BaseEntity {
+
     public static final int BOARD_IMAGE_LENGTH_MAX_BOUND = 5;
 
     @Id
@@ -54,7 +58,7 @@ public class Board extends BaseEntity {
     private boolean deleted;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
-    private List<Image> images = new ArrayList<>();
+    private final List<Image> images = new ArrayList<>();
 
     public Board(final String title, final String content, final Member writer, final LocalDateTime createdDateTime) {
         this.title = new Title(title);
@@ -65,10 +69,6 @@ public class Board extends BaseEntity {
         this.writer.addBoard(this);
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getTitle() {
         return title.value();
     }
@@ -77,16 +77,8 @@ public class Board extends BaseEntity {
         return content.value();
     }
 
-    public Member getWriter() {
-        return writer;
-    }
-
-    public boolean isDeleted() {
-        return deleted;
-    }
-
     public List<Image> getImages() {
-        return images;
+        return Collections.unmodifiableList(images);
     }
 
     public void delete(final Long memberId, final LocalDateTime deletedDateTime) {
@@ -119,5 +111,11 @@ public class Board extends BaseEntity {
         }
 
         images.add(image);
+    }
+
+    public void deleteImages(final List<Image> images) {
+        for (Image image : images) {
+            this.images.remove(image);
+        }
     }
 }

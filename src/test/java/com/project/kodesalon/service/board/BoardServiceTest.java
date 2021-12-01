@@ -18,8 +18,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
@@ -37,12 +35,12 @@ import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.assertj.core.api.BDDAssertions.thenThrownBy;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -152,12 +150,16 @@ class BoardServiceTest {
     }
 
     @Test
-    @DisplayName("삭제하려는 게시물의 식별 번호를 입력 받아 이미지를 삭제한다.")
+    @DisplayName("게시물의 식별 번호, 삭제하려는 게시물 식별번호를 입력 받아 이미지를 삭제한다.")
     void deleteImages() {
+        Board board = mock(Board.class);
         List<Long> imageIds = Arrays.asList(1L, 2L);
+        given(board.getId()).willReturn(1L);
+        given(boardRepository.findById(anyLong())).willReturn(Optional.of(board));
 
-        boardService.removeImages(imageIds);
+        boardService.deleteImages(board.getId(), imageIds);
 
+        verify(boardRepository, times(1)).findById(anyLong());
         verify(imageRepository, times(1)).deleteInBatch(anyList());
         verify(s3Uploader, times(1)).delete(anyList());
     }
@@ -175,60 +177,52 @@ class BoardServiceTest {
     @Test
     @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물을 조회하고 단일 게시물 조회 응답 DTO를 반환한다.")
     void selectBoard() {
-        given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.of(board));
+        given(boardRepository.selectBoard(anyLong())).willReturn(Optional.of(board));
         given(board.getWriter()).willReturn(member);
+        given(board.getCreatedDateTime()).willReturn(LocalDateTime.now());
         given(member.getId()).willReturn(1L);
 
         BoardSelectResponse boardSelectResponse = boardService.selectBoard(1L);
 
         then(boardSelectResponse).isNotNull();
-        verify(boardRepository).selectBoardById(anyLong());
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {"1, false", "10, true"})
-    @DisplayName("마지막 게시물 식별 번호, 조회할 게시물 크기를 전달 받아 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
-    void selectBoards(int size, boolean last) {
-        List<Board> boards = Arrays.asList(board, board);
-        given(board.getId()).willReturn(1L);
-        given(board.getTitle()).willReturn("게시물 제목");
-        given(board.getContent()).willReturn("게시물 내용");
-        given(board.getWriter()).willReturn(member);
-        given(member.getId()).willReturn(1L);
-        given(member.getAlias()).willReturn("alias");
-        given(boardRepository.selectBoards(anyLong(), anyInt())).willReturn(boards);
-
-        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = boardService.selectBoards(10L, size);
-
-        then(multiBoardSelectResponse.getBoards()).isNotNull();
-        then(multiBoardSelectResponse.isLast()).isEqualTo(last);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {"1, false", "10, true"})
-    @DisplayName("회원 식별 번호, 마지막 게시물 식별 번호, 조회할 게시물 크기 전달 받아 회원 자신이 올린 복수 게시물을 조회하고 복수 게시물과 다음 게시물이 있는지 여부를 반환한다.")
-    void selectMyBoard(int size, boolean last) {
-        List<Board> boards = Arrays.asList(board, board);
-        given(board.getId()).willReturn(1L);
-        given(board.getTitle()).willReturn("게시물 제목");
-        given(board.getContent()).willReturn("게시물 내용");
-        given(board.getWriter()).willReturn(member);
-        given(member.getId()).willReturn(1L);
-        given(member.getAlias()).willReturn("alias");
-        given(boardRepository.selectMyBoards(anyLong(), anyLong(), anyInt())).willReturn(boards);
-
-        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = boardService.selectMyBoards(1L, 10L, size);
-
-        then(multiBoardSelectResponse.getBoards()).isNotNull();
-        then(multiBoardSelectResponse.isLast()).isEqualTo(last);
+        verify(boardRepository, times(1)).selectBoard(anyLong());
     }
 
     @Test
-    @DisplayName("")
-    void selectBoardById_throw_exception_with_not_exist_board() {
-        given(boardRepository.selectBoardById(anyLong())).willReturn(Optional.empty());
+    @DisplayName("컨트롤러에서 게시물 식별 번호를 전달받아 게시물 조회 시 게시물이 존재하지 않을 경우 예외를 발생시킨다")
+    void selectBoard_throw_exception_with_not_exist_board_id() {
+        given(boardRepository.selectBoard(anyLong())).willReturn(Optional.empty());
 
         thenThrownBy(() -> boardService.selectBoard(1L)).isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining(NOT_EXIST_BOARD);
+    }
+
+    @Test
+    @DisplayName("마지막 게시물 식별 번호와 크기를 입력받아 복수의 게시물을 반환한다.")
+    void selectBoards() {
+        Board board = mock(Board.class);
+        List<Board> boards = List.of(board);
+        given(board.getId()).willReturn(1L);
+        given(board.getTitle()).willReturn("게시물 제목");
+        given(board.getContent()).willReturn("게시물 내용");
+        given(board.getCreatedDateTime()).willReturn(LocalDateTime.of(2021, 2, 17, 1, 2, 3));
+
+        Member writer = mock(Member.class);
+        given(board.getWriter()).willReturn(writer);
+        given(writer.getId()).willReturn(1L);
+        given(writer.getAlias()).willReturn("alias");
+
+        Image image = mock(Image.class);
+        List<Image> images = List.of(image);
+        given(board.getImages()).willReturn(images);
+        given(image.getId()).willReturn(1L);
+        given(image.getUrl()).willReturn("localhost:8080/image.jpg");
+
+        given(boardRepository.selectBoards(anyLong(), anyLong())).willReturn(boards);
+
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = boardService.selectBoards(3L, 10);
+
+        verify(boardRepository, times(1)).selectBoards(anyLong(), anyLong());
+        then(multiBoardSelectResponse).isNotNull();
     }
 }

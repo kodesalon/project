@@ -25,6 +25,6 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
-        return request.getAttribute(LOGIN_MEMBER);
+        return request.getSession(false).getAttribute(LOGIN_MEMBER);
     }
 }

@@ -34,6 +34,8 @@ spring:
           in_clause_parameter_padding: true
         format_sql: true
     open-in-view: false
+  file:
+    directory: src/main/resources/images/
 ---
 
 spring:
@@ -48,12 +50,6 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: validate
-  jwt:
-    secret: bG9jYWxUZXN0S2V5
-    accessExpirationMs: 1800000
-    refreshExpirationWeeks: 2
-  file:
-    directory: src/main/resources/images/
   main:
     allow-bean-definition-overriding: true
   servlet:
@@ -61,7 +57,12 @@ spring:
       max-file-size: 3MB
       max-request-size: 15MB
   redis:
-    host: localhost
+    session:
+      host: localhost
+      port: 6379
+    cache:
+      host: localhost
+      port: 6380
   flyway:
     locations: classpath:db/migration/{vendor}
 

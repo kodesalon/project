@@ -6,6 +6,7 @@ import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.domain.member.vo.Alias;
 import com.project.kodesalon.repository.board.BoardRepository;
 import com.project.kodesalon.repository.member.MemberRepository;
+import com.project.kodesalon.service.dto.request.LoginRequest;
 import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
 import com.project.kodesalon.service.dto.request.MemberCreateRequest;
 import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
@@ -19,9 +20,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.project.kodesalon.config.interceptor.LoginInterceptor.LOGIN_MEMBER;
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
@@ -63,22 +66,44 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public MemberSelectResponse selectMember(final Long memberId, final Long lastBoardId, final int size) {
-        Member member = findById(memberId);
-        List<Board> ownBoards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
-        List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponse(member, ownBoards);
-        MultiBoardSelectResponse<BoardSelectResponse> boards = new MultiBoardSelectResponse<>(boardSelectResponses, size);
-        return new MemberSelectResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone(), boards);
+    public void login(final LoginRequest loginRequest, final HttpSession session) {
+        String alias = loginRequest.getAlias();
+        Member member = findMemberByAlias(alias);
+
+        String password = loginRequest.getPassword();
+        member.login(password);
+
+        Long memberId = member.getId();
+        String memberAlias = member.getAlias();
+        session.setAttribute(LOGIN_MEMBER, memberId);
+        log.info("회원 식별 번호 : {}, 별명 : {} 로그인 성공", memberId, memberAlias);
     }
 
-    private List<BoardSelectResponse> mapToBoardSelectResponse(final Member member, final List<Board> ownBoards) {
-        return ownBoards.stream()
+    private Member findMemberByAlias(final String alias) {
+        return memberRepository.findMemberByAlias(new Alias(alias))
+                .orElseThrow(() -> {
+                    log.info("{}인 Alias를 가진 사용자가 존재하지 않음", alias);
+                    throw new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS);
+                });
+    }
+
+    @Transactional(readOnly = true)
+    public MemberSelectResponse selectMember(final Long memberId, final Long lastBoardId, final int size) {
+        Member member = findById(memberId);
+        List<Board> boards = boardRepository.selectMyBoards(memberId, lastBoardId, size);
+        List<BoardSelectResponse> boardSelectResponses = mapToBoardSelectResponses(member, boards);
+        MultiBoardSelectResponse<BoardSelectResponse> multiBoardSelectResponse = new MultiBoardSelectResponse<>(boardSelectResponses, size);
+        return new MemberSelectResponse(member.getAlias(), member.getName(), member.getEmail(), member.getPhone(), multiBoardSelectResponse);
+    }
+
+    private List<BoardSelectResponse> mapToBoardSelectResponses(final Member member, final List<Board> boards) {
+        return boards.stream()
                 .map(board -> new BoardSelectResponse(board.getId(), board.getTitle(), board.getContent(),
-                        board.getCreatedDateTime(), member.getId(), member.getAlias(), mapToImages(board.getImages())))
+                        board.getCreatedDateTime(), member.getId(), member.getAlias(), mapToBoardImageResponses(board.getImages())))
                 .collect(Collectors.toList());
     }
 
-    private List<BoardImageResponse> mapToImages(final List<Image> images) {
+    private List<BoardImageResponse> mapToBoardImageResponses(final List<Image> images) {
         return images.stream()
                 .map(image -> new BoardImageResponse(image.getId(), image.getUrl()))
                 .collect(Collectors.toList());
@@ -103,15 +128,6 @@ public class MemberService {
                 .orElseThrow(() -> {
                     log.info("회원 조회 단계에서 존재하지 않는 회원 식별자 memberId : {}", memberId);
                     throw new EntityNotFoundException(NOT_EXIST_MEMBER);
-                });
-    }
-
-    @Transactional(readOnly = true)
-    public Member findMemberByAlias(final String alias) {
-        return memberRepository.findMemberByAlias(new Alias(alias))
-                .orElseThrow(() -> {
-                    log.info("{}인 Alias를 가진 사용자가 존재하지 않음", alias);
-                    throw new EntityNotFoundException(NOT_EXIST_MEMBER_ALIAS);
                 });
     }
 }

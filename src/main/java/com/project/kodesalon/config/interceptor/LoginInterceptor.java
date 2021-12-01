@@ -1,35 +1,28 @@
 package com.project.kodesalon.config.interceptor;
 
-import com.project.kodesalon.service.JwtManager;
-import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.SessionException;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
-import static com.project.kodesalon.exception.ErrorCode.INVALID_HEADER;
+import static com.project.kodesalon.exception.ErrorCode.INVALID_SESSION;
 
 @Slf4j
 @Component
 public class LoginInterceptor implements HandlerInterceptor {
 
     public static final String LOGIN_MEMBER = "loginMember";
-    private static final int BEARER_LENGTH = 7;
     private static final String LOG_ID = "logId";
-
-    private final JwtManager jwtManager;
-
-    public LoginInterceptor(JwtManager jwtManager) {
-        this.jwtManager = jwtManager;
-    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        if (request.getMethod().equals("OPTIONS")) {
+        if (isPreflightRequest(request)) {
             return true;
         }
 
@@ -38,18 +31,19 @@ public class LoginInterceptor implements HandlerInterceptor {
         MDC.put(LOG_ID, uuid);
         log.info("REQUEST : [logId : {}] [requestURI : {}] [handler : {}]", uuid, requestURI, handler);
 
-        String token = parseTokenFrom(request);
-        jwtManager.validateToken(token);
-        Long memberId = jwtManager.getMemberIdFrom(token);
-        request.setAttribute(LOGIN_MEMBER, memberId);
+        HttpSession session = request.getSession(false);
+        checkEmpty(session);
+
         return true;
     }
 
-    private String parseTokenFrom(HttpServletRequest request) {
-        try {
-            return request.getHeader("Authorization").substring(BEARER_LENGTH);
-        } catch (NullPointerException e) {
-            throw new JwtException(INVALID_HEADER);
+    private boolean isPreflightRequest(final HttpServletRequest request) {
+        return request.getMethod().equals("OPTIONS");
+    }
+
+    private void checkEmpty(final HttpSession session) {
+        if (session == null || session.getAttribute(LOGIN_MEMBER) == null) {
+            throw new SessionException(INVALID_SESSION);
         }
     }
 
@@ -59,6 +53,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         String logId = MDC.get(LOG_ID);
         log.info("RESPONSE : [logId : {}] [requestURI : {}] [handler : {}]", logId, requestURI, handler);
         MDC.clear();
+
         if (ex != null) {
             log.error("afterCompletion error : {}", ex.getMessage());
         }

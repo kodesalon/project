@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnitUtil;
@@ -49,7 +50,7 @@ class BoardRepositoryTest {
     @Test
     @DisplayName("게시물 식별 번호를 입력받아 게시물을 조회하면 작성자 정보와 함께 조인하여 반환한다.")
     void selectBoard() {
-        Optional<Board> selectedBoard = boardRepository.selectBoardById(1L);
+        Optional<Board> selectedBoard = boardRepository.findById(1L);
 
         softly.then(selectedBoard).isNotEmpty();
         softly.then(persistenceUnitUtil.isLoaded(selectedBoard.get().getWriter())).isTrue();
@@ -60,22 +61,29 @@ class BoardRepositoryTest {
     void selectBoards_has_next() {
         int boardToBeSelectedAtOnce = 10;
 
-        List<Board> boards = boardRepository.selectBoards(11L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(12L, boardToBeSelectedAtOnce);
 
-        softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
-        boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue());
+        softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce + 1);
+        boards.forEach(board -> {
+            softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue();
+            softly.then(persistenceUnitUtil.isLoaded(board.getWriter())).isTrue();
+        });
         softly.assertAll();
     }
 
     @Test
+    @Transactional(readOnly = true)
     @DisplayName("마지막으로 조회한 게시물 번호, 조회할 게시물 수를 입력받아 다음이 게시물이 존재하지 않을 경우 조회한 게시물과 이미지를 조인하여 반환한다.")
     void selectBoards_doesnt_have_next() {
         int boardToBeSelectedAtOnce = 10;
 
-        List<Board> boards = boardRepository.selectBoards(10L, boardToBeSelectedAtOnce);
+        List<Board> boards = boardRepository.selectBoards(11L, boardToBeSelectedAtOnce);
 
-        softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce - 1);
-        boards.forEach(board -> softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue());
+        softly.then(boards.size()).isEqualTo(boardToBeSelectedAtOnce);
+        boards.forEach(board -> {
+            softly.then(persistenceUnitUtil.isLoaded(board.getImages())).isTrue();
+            softly.then(persistenceUnitUtil.isLoaded(board.getWriter())).isTrue();
+        });
         softly.assertAll();
     }
 

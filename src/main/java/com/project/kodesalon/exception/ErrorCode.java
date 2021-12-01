@@ -25,10 +25,8 @@ public class ErrorCode {
     public static final String ALREADY_DELETED_BOARD = "B005";
     public static final String INVALID_BOARD_IMAGES_SIZE = "B006";
 
-    // JWT
-    public static final String EXPIRED_JWT_TOKEN = "J001";
-    public static final String INVALID_JWT_TOKEN = "J002";
-    public static final String INVALID_HEADER = "J003";
+    // SESSION
+    public static final String INVALID_SESSION = "S001";
 
     // Date Time
     public static final String INVALID_DATE_TIME = "D001";
@@ -37,7 +35,7 @@ public class ErrorCode {
     public static final String INVALID_IMAGE = "I001";
     public static final String NOT_EXIST_IMAGE = "I002";
 
-    // External
+    // S3, FILE
     public static final String CLOUD_ERROR = "E001";
     public static final String INVALID_FILE = "E002";
 }
