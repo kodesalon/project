@@ -3,7 +3,6 @@ package com.project.kodesalon.domain.member.vo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.project.kodesalon.exception.ErrorCode.INVALID_MEMBER_NAME;
@@ -31,7 +30,7 @@ class NameTest {
     }
 
     @ParameterizedTest
-    @NullSource
+    @ValueSource(strings = {"김", "박하늘별님구름햇님보다사랑스러우리님", "엄 이", "엄~", "abc"})
     @DisplayName("null일 경우, 예외가 발생합니다")
     void name_throw_exception_with_null(String nullArgument) {
         thenIllegalArgumentException().isThrownBy(() -> new Name(nullArgument))
