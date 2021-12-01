@@ -2,6 +2,7 @@ package com.project.kodesalon.domain.board;
 
 import com.project.kodesalon.domain.board.vo.Content;
 import com.project.kodesalon.domain.board.vo.Title;
+import com.project.kodesalon.domain.image.Image;
 import com.project.kodesalon.domain.member.Member;
 import org.assertj.core.api.BDDSoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,11 +13,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
+import static com.project.kodesalon.exception.ErrorCode.INVALID_BOARD_IMAGES_SIZE;
 import static com.project.kodesalon.exception.ErrorCode.NOT_AUTHORIZED_MEMBER;
 import static org.assertj.core.api.BDDAssertions.then;
 import static org.assertj.core.api.BDDAssertions.thenIllegalArgumentException;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class BoardTest {
@@ -96,5 +100,44 @@ class BoardTest {
         thenIllegalArgumentException()
                 .isThrownBy(() -> board.updateTitleAndContent(stranger.getId(), updatedTitle, updatedContent, LocalDateTime.now()))
                 .withMessage(NOT_AUTHORIZED_MEMBER);
+    }
+
+    @Test
+    @DisplayName("이미지를 추가한다.")
+    void addImage() {
+        //given
+        Image image = mock(Image.class);
+
+        //when
+        board.addImage(image);
+
+        //then
+        then(board.getImages()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("5장 초과하여 이미지를 추가할 경우, 예외가 발생한다.")
+    void addImage_throw_exception_image_size_bound() {
+        Image image = mock(Image.class);
+        for (int i = 0; i < 5; i++) {
+            board.addImage(image);
+        }
+
+        thenIllegalArgumentException()
+                .isThrownBy(() -> board.addImage(image))
+                .withMessage(INVALID_BOARD_IMAGES_SIZE);
+    }
+
+    @Test
+    @DisplayName("이미지를 제거한다.")
+    void deleteImages() {
+        Image image1 = mock(Image.class);
+        Image image2 = mock(Image.class);
+        board.addImage(image1);
+        board.addImage(image2);
+
+        board.deleteImages(Arrays.asList(image1, image2));
+
+        then(board.getImages()).isEmpty();
     }
 }

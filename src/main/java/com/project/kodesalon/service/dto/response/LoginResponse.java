@@ -8,15 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginResponse {
 
-    private String accessToken;
-    private String refreshToken;
-    private Long memberId;
     private String alias;
 
-    public LoginResponse(String accessToken, String refreshToken, Long memberId, String alias) {
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
-        this.memberId = memberId;
+    public LoginResponse(final String alias) {
         this.alias = alias;
     }
 }

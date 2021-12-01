@@ -4,6 +4,7 @@ import com.project.kodesalon.domain.board.Board;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.project.kodesalon.domain.board.QBoard.board;
 
@@ -15,6 +16,17 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     public BoardRepositoryImpl(final JPAQueryFactory jpaQueryFactory) {
         this.jpaQueryFactory = jpaQueryFactory;
+    }
+
+    @Override
+    public Optional<Board> selectBoard(final Long boardId) {
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(board)
+                .innerJoin(board.writer).fetchJoin()
+                .leftJoin(board.images).fetchJoin()
+                .where(
+                        board.id.eq(boardId)
+                )
+                .fetchOne());
     }
 
     @Override

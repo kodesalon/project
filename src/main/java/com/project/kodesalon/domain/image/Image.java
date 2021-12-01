@@ -2,6 +2,7 @@ package com.project.kodesalon.domain.image;
 
 import com.project.kodesalon.domain.board.Board;
 import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
@@ -16,6 +17,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "image", uniqueConstraints = {
         @UniqueConstraint(name = "image_unique_constraints", columnNames = {"image_url", "image_key"})
@@ -50,22 +52,7 @@ public class Image {
         int indexOfImageName = url.lastIndexOf(PATH_DELIMITER);
         String urlWithoutImageName = url.substring(0, indexOfImageName);
         int indexOfDirectoryName = urlWithoutImageName.lastIndexOf(PATH_DELIMITER);
+
         return url.substring(indexOfDirectoryName + 1);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public Board getBoard() {
-        return board;
     }
 }

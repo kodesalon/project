@@ -79,10 +79,10 @@ class BoardControllerTest extends AbstractControllerTest {
     @DisplayName("제목, 내용, 생성 날짜, 게시물 사진을 전달받아 게시물을 생성하고 HTTP 200을 반환한다.")
     void save_success() throws Exception {
         mockMvc.perform(fileUpload("/api/v1/boards")
-                        .param("title", "게시물 제목")
-                        .param("content", "게시물 내용")
-                        .param("createdDateTime", "2021-07-18T17:48:25")
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .param("title", "게시물 제목")
+                .param("content", "게시물 내용")
+                .param("createdDateTime", "2021-07-18T17:48:25")
+                .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
                 .andDo(document("board/create/success/without-images",
                         getDocumentRequest(),
@@ -98,15 +98,15 @@ class BoardControllerTest extends AbstractControllerTest {
         MockMultipartFile images = new MockMultipartFile("images", "image1.png", "image/png", "test".getBytes());
 
         mockMvc.perform(fileUpload("/api/v1/boards")
-                        .file(images)
-                        .file(images)
-                        .file(images)
-                        .file(images)
-                        .file(images)
-                        .param("title", "게시물 제목")
-                        .param("content", "게시물 내용")
-                        .param("createdDateTime", "2021-07-18T17:48:25")
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .file(images)
+                .file(images)
+                .file(images)
+                .file(images)
+                .file(images)
+                .param("title", "게시물 제목")
+                .param("content", "게시물 내용")
+                .param("createdDateTime", "2021-07-18T17:48:25")
+                .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isOk())
                 .andDo(document("board/create/success/with-images",
                         getDocumentRequest(),
@@ -122,10 +122,10 @@ class BoardControllerTest extends AbstractControllerTest {
     @DisplayName("제목이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
     void save_fail_with_invalid_title() throws Exception {
         mockMvc.perform(fileUpload("/api/v1/boards")
-                        .param("title", "")
-                        .param("content", "게시물 내용")
-                        .param("createdDateTime", "2021-07-18T17:48:25")
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .param("title", "")
+                .param("content", "게시물 내용")
+                .param("createdDateTime", "2021-07-18T17:48:25")
+                .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/create/fail/invalid-title",
                         getDocumentRequest(),
@@ -138,10 +138,10 @@ class BoardControllerTest extends AbstractControllerTest {
     @DisplayName("내용이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
     void save_fail_with_invalid_content() throws Exception {
         mockMvc.perform(post("/api/v1/boards")
-                        .param("title", "게시물 제목")
-                        .param("content", "")
-                        .param("createdDateTime", "2021-07-18T17:48:25")
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .param("title", "게시물 제목")
+                .param("content", "")
+                .param("createdDateTime", "2021-07-18T17:48:25")
+                .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/create/fail/invalid-content",
                         getDocumentRequest(),
@@ -154,10 +154,10 @@ class BoardControllerTest extends AbstractControllerTest {
     @DisplayName("생성 시간이 존재하지 않을 경우 HTTP 400과 예외 코드를 반환한다.")
     void save_fail_with_invalid_created_date_time() throws Exception {
         mockMvc.perform(fileUpload("/api/v1/boards")
-                        .param("title", "게시물 제목")
-                        .param("content", "게시물 내용")
-                        .param("createdDateTime", "")
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .param("title", "게시물 제목")
+                .param("content", "게시물 내용")
+                .param("createdDateTime", "")
+                .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/create/fail/null-created-date-time",
@@ -173,16 +173,16 @@ class BoardControllerTest extends AbstractControllerTest {
         MockMultipartFile images = new MockMultipartFile("images", "image1.png", "image/png", "test".getBytes());
 
         mockMvc.perform(fileUpload("/api/v1/boards")
-                        .file(images)
-                        .file(images)
-                        .file(images)
-                        .file(images)
-                        .file(images)
-                        .file(images)
-                        .param("title", "게시물 제목")
-                        .param("content", "게시물 내용")
-                        .param("createdDateTime", "")
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .file(images)
+                .file(images)
+                .file(images)
+                .file(images)
+                .file(images)
+                .file(images)
+                .param("title", "게시물 제목")
+                .param("content", "게시물 내용")
+                .param("createdDateTime", "")
+                .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/create/fail/invalid-board-images-size",
@@ -194,14 +194,14 @@ class BoardControllerTest extends AbstractControllerTest {
 
     @Test
     @DisplayName("저장할 여러 개의 이미지 파일을 인자로 요청받아, 이미지를 추가하고 HTTP 200 상태를 반환한다.")
-    void save() throws Exception {
+    void addImages() throws Exception {
         MockMultipartFile image1 = new MockMultipartFile("images", "image1.png", "image/png", "<<png data>>".getBytes());
         MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
 
         mockMvc.perform(fileUpload("/api/v1/boards/images/{boardId}", 1)
-                        .file(image1)
-                        .file(image2)
-                        .param("boardId", "1"))
+                .file(image1)
+                .file(image2)
+                .param("boardId", "1"))
                 .andExpect(status().isOk())
                 .andDo(document("board/add-images/success",
                         getDocumentRequest(),
@@ -214,14 +214,14 @@ class BoardControllerTest extends AbstractControllerTest {
 
     @Test
     @DisplayName("추가하려는 이미지가 유효하지 않을 경우, HTTP 400 상태와 예외 코드를 반환한다.")
-    void save_throw_exception_with_invalid_image() throws Exception {
+    void addImages_throw_exception_with_invalid_image() throws Exception {
         MockMultipartFile image1 = new MockMultipartFile("images", "image1.png", "image/png", "<<png data>>".getBytes());
         MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
         willThrow(new IllegalArgumentException(INVALID_IMAGE)).given(boardService).addImages(any(), anyList());
 
         mockMvc.perform(fileUpload("/api/v1/boards/images/{boardId}", 1)
-                        .file(image1)
-                        .file(image2))
+                .file(image1)
+                .file(image2))
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/add-images/fail/invalid-file",
                         getDocumentResponse(),
@@ -231,14 +231,14 @@ class BoardControllerTest extends AbstractControllerTest {
 
     @Test
     @DisplayName("이미지 추가시 게시물의 이미지가 6이상일 경우, HTTP 400 상태와 예외 코드를 반환한다.")
-    void save_throw_exception_with_invalid_image_size() throws Exception {
+    void addImages_throw_exception_with_invalid_image_size() throws Exception {
         MockMultipartFile image1 = new MockMultipartFile("images", "image1.png", "image/png", "<<png data>>".getBytes());
         MockMultipartFile image2 = new MockMultipartFile("images", "image2.png", "image/png", "<<png data>>".getBytes());
         willThrow(new IllegalArgumentException(INVALID_BOARD_IMAGES_SIZE)).given(boardService).addImages(any(), anyList());
 
         mockMvc.perform(fileUpload("/api/v1/boards/images/{boardId}", 1)
-                        .file(image1)
-                        .file(image2))
+                .file(image1)
+                .file(image2))
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/add-images/fail/invalid-image-size",
                         getDocumentResponse(),
@@ -247,31 +247,37 @@ class BoardControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    @DisplayName("삭제할 이미지의 리스트를 요청받아, 이미지를 삭제하고 HTTP 200 상태를 반환한다.")
-    void remove() throws Exception {
-        Object[] deleteIds = {1L, 2L, 3L};
+    @DisplayName("게시물 식별번호와 게시물의 삭제할 이미지의 리스트를 요청받아, 이미지를 삭제하고 HTTP 200 상태를 반환한다.")
+    void deleteImages() throws Exception {
+        Long boardId = 1L;
 
-        mockMvc.perform(delete("/api/v1/boards/images/{imageIds}", deleteIds))
+        mockMvc.perform(delete("/api/v1/boards/images/{boardId}", boardId)
+                .queryParam("imageIds", "1", "2", "3"))
                 .andExpect(status().isOk())
                 .andDo(document("board/remove-images/success",
                         getDocumentRequest(),
                         pathParameters(
+                                parameterWithName("boardId").description("게시물 식별 번호")),
+                        requestParameters(
                                 parameterWithName("imageIds").description("삭제할 이미지 리스트"))));
     }
 
     @Test
     @DisplayName("삭제할 이미지가 존재하지 않을 경우, 이미지를 삭제하고 HTTP 400 상태와 예외 코드를 반환한다.")
-    void remove_throw_exception_with_not_exist_image() throws Exception {
-        Object[] deleteIds = {1L, 2L, 3L};
+    void deleteImages_throw_exception_with_not_exist_image() throws Exception {
+        Long boardId = 1L;
 
-        willThrow(new IllegalArgumentException(NOT_EXIST_IMAGE)).given(boardService).removeImages(anyList());
+        willThrow(new IllegalArgumentException(NOT_EXIST_IMAGE)).given(boardService).deleteImages(anyLong(), anyList());
 
-        mockMvc.perform(delete("/api/v1/boards/images/{imageIds}", deleteIds))
+        mockMvc.perform(delete("/api/v1/boards/images/{boardId}", boardId)
+                .queryParam("imageIds", "1", "2", "3"))
                 .andExpect(status().isBadRequest())
                 .andDo(document("board/remove-images/fail/not-exist-image",
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("code").description("존재하지 않는 이미지에 대한 예외 코드"))));
+                                fieldWithPath("code").description("존재하지 않는 이미지에 대한 예외 코드")),
+                        requestParameters(
+                                parameterWithName("imageIds").description("삭제할 이미지 리스트"))));
     }
 
     @Test
@@ -280,8 +286,8 @@ class BoardControllerTest extends AbstractControllerTest {
         BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(LocalDateTime.now());
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(boardDeleteRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
                 .andExpect(status().isOk())
                 .andDo(document("board/delete/success",
                         getDocumentRequest(),
@@ -300,8 +306,8 @@ class BoardControllerTest extends AbstractControllerTest {
                 .delete(anyLong(), anyLong(), any(BoardDeleteRequest.class));
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(boardDeleteRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_AUTHORIZED_MEMBER))
                 .andDo(document("board/delete/fail/invalid-auth",
@@ -319,8 +325,8 @@ class BoardControllerTest extends AbstractControllerTest {
                 .delete(anyLong(), anyLong(), any(BoardDeleteRequest.class));
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(boardDeleteRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(ALREADY_DELETED_BOARD))
                 .andDo(document("board/delete/fail/already-deleted",
@@ -338,8 +344,8 @@ class BoardControllerTest extends AbstractControllerTest {
                 .delete(anyLong(), anyLong(), any(BoardDeleteRequest.class));
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(boardDeleteRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_EXIST_BOARD))
                 .andDo(document("board/delete/fail/not-exist-board",
@@ -356,8 +362,8 @@ class BoardControllerTest extends AbstractControllerTest {
         BoardDeleteRequest boardDeleteRequest = new BoardDeleteRequest(deletedDateTime);
 
         mockMvc.perform(delete("/api/v1/boards/{boardId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(boardDeleteRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardDeleteRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
                 .andDo(document("board/delete/fail/null-deleted-date-time",
@@ -371,8 +377,8 @@ class BoardControllerTest extends AbstractControllerTest {
     @DisplayName("회원 식별 번호, 수정할 게시물의 제목과 내용을 요청받아 성공시 200을 응답합니다")
     void update() throws Exception {
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isOk())
                 .andDo(document("board/update/success",
                         getDocumentRequest(),
@@ -393,8 +399,8 @@ class BoardControllerTest extends AbstractControllerTest {
                 = new BoardUpdateRequest(nullAndEmptyTitle, "update content", LocalDateTime.now());
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_BOARD_TITLE))
                 .andDo(document("board/update/fail/invalid-title",
@@ -411,8 +417,8 @@ class BoardControllerTest extends AbstractControllerTest {
                 = new BoardUpdateRequest("update content", nullAndEmptyContent, LocalDateTime.now());
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_BOARD_CONTENT))
                 .andDo(document("board/update/fail/invalid-content",
@@ -429,8 +435,8 @@ class BoardControllerTest extends AbstractControllerTest {
                 = new BoardUpdateRequest("updated title", "updated content", invalidLastModifiedDateTime);
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(INVALID_DATE_TIME))
                 .andDo(document("board/update/fail/invalid-last-modified-date-time",
@@ -447,8 +453,8 @@ class BoardControllerTest extends AbstractControllerTest {
                 .updateBoard(anyLong(), anyLong(), any(BoardUpdateRequest.class));
 
         mockMvc.perform(put("/api/v1/boards/{boardId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(boardUpdateRequest)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(boardUpdateRequest)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(NOT_EXIST_BOARD))
                 .andDo(document("board/update/fail/no-board",
@@ -465,7 +471,7 @@ class BoardControllerTest extends AbstractControllerTest {
         given(boardService.selectBoard(anyLong())).willReturn(boardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards/{boardId}", 1L)
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("board/select-single/success",
                         getDocumentRequest(),
@@ -495,9 +501,9 @@ class BoardControllerTest extends AbstractControllerTest {
         given(boardService.selectBoards(anyLong(), anyLong())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards")
-                        .param("lastBoardId", "1")
-                        .param("size", "1")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param("lastBoardId", "1")
+                .param("size", "1")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("board/select-multi/success/not-last",
                         getDocumentRequest(),
@@ -527,9 +533,9 @@ class BoardControllerTest extends AbstractControllerTest {
         given(boardService.selectBoards(anyLong(), anyLong())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards")
-                        .param("lastBoardId", "1")
-                        .param("size", "10")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param("lastBoardId", "1")
+                .param("size", "10")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("board/select-multi/success/last",
                         getDocumentRequest(),
@@ -559,8 +565,8 @@ class BoardControllerTest extends AbstractControllerTest {
         given(boardService.selectBoards(anyLong(), anyLong())).willReturn(multiBoardSelectResponse);
 
         mockMvc.perform(get("/api/v1/boards")
-                        .param("size", "10")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .param("size", "10")
+                .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document("board/select-multi/success/first",
                         getDocumentRequest(),

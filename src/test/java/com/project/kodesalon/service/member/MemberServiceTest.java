@@ -5,6 +5,7 @@ import com.project.kodesalon.domain.member.Member;
 import com.project.kodesalon.domain.member.vo.Alias;
 import com.project.kodesalon.repository.board.BoardRepository;
 import com.project.kodesalon.repository.member.MemberRepository;
+import com.project.kodesalon.service.dto.request.LoginRequest;
 import com.project.kodesalon.service.dto.request.MemberChangePasswordRequest;
 import com.project.kodesalon.service.dto.request.MemberCreateRequest;
 import com.project.kodesalon.service.dto.request.MemberDeleteRequest;
@@ -19,14 +20,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.mock.web.MockHttpSession;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static com.project.kodesalon.exception.ErrorCode.ALREADY_EXIST_MEMBER_ALIAS;
+import static com.project.kodesalon.exception.ErrorCode.INCORRECT_PASSWORD;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER;
 import static com.project.kodesalon.exception.ErrorCode.NOT_EXIST_MEMBER_ALIAS;
 import static org.assertj.core.api.BDDAssertions.then;
@@ -46,6 +51,7 @@ class MemberServiceTest {
 
     private final MemberCreateRequest memberCreateRequest =
             new MemberCreateRequest("alias", "Password123!!", "이름", "email@email.com", "010-1111-2222", LocalDateTime.now());
+
     @InjectMocks
     private MemberService memberService;
 
@@ -93,6 +99,41 @@ class MemberServiceTest {
         thenThrownBy(() -> memberService.join(memberCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ALREADY_EXIST_MEMBER_ALIAS);
+    }
+
+    @Test
+    @DisplayName("회원 별명, 비밀번호를 전달받고 회원 alias를 DTO에 담아 반환한다.")
+    void login() {
+        Member member = mock(Member.class);
+        given(memberRepository.findMemberByAlias(any(Alias.class))).willReturn(Optional.of(member));
+        HttpSession session = new MockHttpSession();
+        memberService.login(new LoginRequest("alias", "Password123!"), session);
+
+        verify(memberRepository, times(1)).findMemberByAlias(any(Alias.class));
+    }
+
+    @Test
+    @DisplayName("로그인 시 존재하지 않는 아이디(Alias)일 경우, 예외가 발생합니다.")
+    void login_throw_exception_with_invalid_alias() {
+        LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
+        given(memberRepository.findMemberByAlias(any(Alias.class))).willThrow(new NoSuchElementException(NOT_EXIST_MEMBER_ALIAS));
+        MockHttpSession session = new MockHttpSession();
+
+        thenThrownBy(() -> memberService.login(loginRequest, session))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessage(NOT_EXIST_MEMBER_ALIAS);
+    }
+
+    @Test
+    @DisplayName("로그인 시 비밀번호 틀렸을 경우, 예외 메세지를 반환합니다.")
+    void login_throw_exception_with_invalid_password() {
+        LoginRequest loginRequest = new LoginRequest("alias", "Password123!!");
+        given(memberRepository.findMemberByAlias(any(Alias.class))).willThrow(new IllegalArgumentException(INCORRECT_PASSWORD));
+        MockHttpSession session = new MockHttpSession();
+
+        thenThrownBy(() -> memberService.login(loginRequest, session))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(INCORRECT_PASSWORD);
     }
 
     @ParameterizedTest
@@ -181,15 +222,5 @@ class MemberServiceTest {
         thenThrownBy(() -> memberService.findById(anyLong()))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessage(NOT_EXIST_MEMBER);
-    }
-
-    @Test
-    @DisplayName("회원 아이디로 조회시 회원이 없으면 예외를 발생시킨다.")
-    void findByAlias_throw_exception_with_not_exist_member() {
-        given(memberRepository.findMemberByAlias(any(Alias.class)))
-                .willReturn(Optional.empty());
-
-        thenThrownBy(() -> memberService.findMemberByAlias("alias")).isInstanceOf(EntityNotFoundException.class)
-                .hasMessageContaining(NOT_EXIST_MEMBER_ALIAS);
     }
 }

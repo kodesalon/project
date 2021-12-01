@@ -61,9 +61,9 @@ public class BoardController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/images/{imageIds}")
-    public ResponseEntity<Void> removeImages(@PathVariable final List<Long> imageIds) {
-        boardService.removeImages(imageIds);
+    @DeleteMapping("/images/{boardId}")
+    public ResponseEntity<Void> deleteImages(@RequestParam final List<Long> imageIds, @PathVariable final Long boardId) {
+        boardService.deleteImages(boardId, imageIds);
         return ResponseEntity.ok().build();
     }
 
