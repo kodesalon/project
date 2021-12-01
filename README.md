@@ -40,8 +40,7 @@
 
 ## ✅ 서버 구조도
 
-<img width="1253" alt="스크린샷 2021-12-01 오전 7 03 37" src="https://user-images.githubusercontent.com/44643805/144135484-5f92ba4d-69ec-4da8-a9ec-2098d08a6cba.png">
-
+<img width="1277" alt="kodesalon-structure" src="https://user-images.githubusercontent.com/44643805/144169788-a23af487-dbaf-4a33-9da7-29d17612693b.png">
 ### 서버 구조를 적용한 방법
 
 #### AWS
