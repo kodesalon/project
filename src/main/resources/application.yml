@@ -48,10 +48,6 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: validate
-  jwt:
-    secret: bG9jYWxUZXN0S2V5
-    accessExpirationMs: 1800000
-    refreshExpirationDays: 14
   file:
     directory: src/main/resources/images/
   main:
