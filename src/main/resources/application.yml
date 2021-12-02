@@ -34,8 +34,6 @@ spring:
           in_clause_parameter_padding: true
         format_sql: true
     open-in-view: false
-  file:
-    directory: src/main/resources/images/
 ---
 
 spring:
@@ -50,6 +48,8 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: validate
+  file:
+    directory: src/main/resources/images/
   main:
     allow-bean-definition-overriding: true
   servlet:
@@ -63,8 +63,6 @@ spring:
     cache:
       host: localhost
       port: 6380
-  flyway:
-    locations: classpath:db/migration/{vendor}
 
 cloud:
   aws:
@@ -79,6 +77,8 @@ cloud:
       auto: false
     region:
       static: ap-northeast-2
+  flyway:
+    locations: classpath:db/migration/{vendor}
 
 ---
 
